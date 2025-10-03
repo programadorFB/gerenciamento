@@ -5,7 +5,7 @@ class Config:
     # === DATABASE CONFIGURATION ===
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL", 
-        "postgresql://devfuzabalta:SqFS0DABi8m0Z99eFNE29KU0pkCBiSNh@dpg-d3g4aam3jp1c73a95sr0-a/usuarios_674h"
+        "postgresql://devfuzabalta:SqFS0DABi8m0Z99eFNE29KU0pkCBiSNh@dpg-d3g4aam3jp1c73a95sr0-a.oregon-postgres.render.com/usuarios_674h"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
