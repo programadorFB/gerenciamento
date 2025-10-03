@@ -1,42 +1,40 @@
 # backend/app/__init__.py
+import logging
+import sys
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from config import config
 
-# Inicializa as extensões para serem importadas por outros arquivos
 db = SQLAlchemy()
 
 def create_app(config_name='default'):
-    """
-    Esta é a 'App Factory'. Ela cria e configura a aplicação Flask.
-    """
     app = Flask(__name__)
     
-    # Carrega as configurações do arquivo config.py
     app_config = config.get(config_name)
-    if app_config is None:
-        raise ValueError(f"Config '{config_name}' not found.")
     app.config.from_object(app_config)
     
-    # Inicializa as extensões com a instância da aplicação
+    # --- CONFIGURAÇÃO DE LOGGING PARA A RENDER ---
+    # Isto garante que os erros aparecem na consola de logs da Render.
+    app.logger.handlers.clear()
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    ))
+    app.logger.addHandler(handler)
+    app.logger.setLevel(logging.INFO)
+    # --- FIM DA CONFIGURAÇÃO DE LOGGING ---
+
     db.init_app(app)
     CORS(app, resources={r"/*": {"origins": app.config.get('CORS_ORIGINS', '*')}})
 
-    # Registra o Blueprint que contém todas as suas rotas
-    from app.routes import main as main_blueprint
+    from .routes import main as main_blueprint
     app.register_blueprint(main_blueprint, url_prefix='/')
 
-    # ====================================================================
-    # A SOLUÇÃO CORRIGIDA
-    # ====================================================================
-    # Agora que as rotas e modelos já foram carregados, o SQLAlchemy
-    # sabe quais tabelas precisam ser criadas.
     with app.app_context():
-        # Importamos os modelos aqui para ter certeza de que eles são conhecidos
-        # antes de chamar db.create_all()
         from . import models
         db.create_all()
-    # ====================================================================
+        app.logger.info("Tabelas do banco de dados verificadas/criadas.")
 
     return app
+
