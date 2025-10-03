@@ -1,0 +1,525 @@
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes profile-entry {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --- Container Principal --- */
+.container {
+  background-color: #000;
+  color: #ccc;
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 50px 20px 20px;
+  background-color: rgba(0,0,0,0.9);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+.headerTitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #FFD700;
+  margin: 0;
+}
+.backButton {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #FFD700;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.headerRight { width: 40px; color: #FFD700; text-align: center; }
+
+.scrollView {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-bottom: 40px;
+}
+.introduction {
+  padding: 30px 20px;
+  text-align: center;
+}
+.introTitle {
+  font-size: 28px;
+  font-weight: bold;
+  color: #FFD700;
+  margin: 0 0 15px;
+}
+.introDescription {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* --- Risk Slider Component --- */
+.sliderComponent {
+  background-color: rgba(26, 26, 26, 0.8);
+  margin: 0 20px 30px;
+  padding: 30px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.sliderHeader { text-align: center; margin-bottom: 20px; }
+.sliderTitle { font-size: 18px; font-weight: bold; color: #FFD700; margin-bottom: 15px; }
+.currentProfileIndicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 8px 15px;
+    border-radius: 20px;
+}
+.sliderWrapper { position: relative; padding-top: 40px; }
+
+/* Floating Icon over Slider */
+.floatingIcon {
+  position: absolute;
+  top: -10px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: left 0.2s;
+}
+.iconBubble {
+  background-color: #000;
+  border: 2px solid;
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-weight: bold;
+}
+.iconArrow {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid;
+}
+
+/* --- Input Range (Slider) Styling --- */
+.sliderInput {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: #333;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+/* Track styling */
+.sliderInput::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(to right, var(--track-color) 0%, var(--track-color) var(--progress), #333 var(--progress), #333 100%);
+  border-radius: 4px;
+}
+/* Thumb (knob) styling */
+.sliderInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: var(--track-color);
+  border-radius: 50%;
+  border: 4px solid #000;
+  margin-top: -8px; /* Center thumb on track */
+}
+
+.sliderLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #666;
+  padding: 10px 0;
+}
+
+/* --- Profile Display --- */
+.profileDisplay {
+  background-color: #1a1a1a;
+  margin: 0 20px 30px;
+  padding: 25px;
+  border-radius: 20px;
+  border: 2px solid var(--profile-color);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+}
+.profileDisplayVisible {
+  animation: profile-entry 0.5s forwards ease-out;
+}
+.rouletteWheel {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--profile-color);
+  background: #1a1a1a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 25px;
+  position: relative;
+}
+.rouletteCenter {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.rouletteNumber {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--profile-color);
+}
+.profileTitle { font-size: 24px; font-weight: bold; color: var(--profile-color); margin-bottom: 10px; }
+.profileDescription { line-height: 1.5; margin-bottom: 20px; }
+.featuresContainer {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-radius: 15px;
+  padding: 15px;
+  text-align: left;
+}
+.featuresTitle { font-size: 16px; color: var(--profile-color); font-weight: bold; margin-bottom: 12px; text-align: center; }
+.featureItem { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+
+/* --- StopLossCard Mock --- */
+.stopLossCard {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 15px;
+  padding: 20px;
+  cursor: pointer;
+}
+
+/* --- Action Buttons --- */
+.actionButtons { padding: 0 20px 20px; }
+.mainSaveButton {
+  width: 100%;
+  padding: 18px;
+  border-radius: 15px;
+  background-color: var(--profile-color);
+  color: #000;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.criticalText {
+  color: #F44336;
+  font-weight: bold;
+}
+
+.amountSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.amountItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.amountLabel {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.amountValue {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.spinner { animation: spin 1s linear infinite; }
+.riskWarning {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--profile-color);
+  background-color: color-mix(in srgb, var(--profile-color) 10%, transparent);
+  color: var(--profile-color);
+  border-radius: 12px;
+  padding: 15px;
+  margin: 20px;
+}
+
+/* --- Modal Styles --- */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s;
+  z-index: 100;
+}
+.modalContainer {
+  width: 90%;
+  max-width: 400px;
+  background: #1E1E1E;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 15px;
+}
+.modalHeader { display: flex; justify-content: space-between; padding: 20px; border-bottom: 1px solid rgba(255, 215, 0, 0.2); }
+.modalTitle { font-size: 18px; font-weight: bold; color: #FFD700; margin: 0; }
+.modalCloseButton { background: none; border: none; color: #fff; cursor: pointer; }
+.modalContent { padding: 20px; }
+.inputLabel { display: block; margin-bottom: 8px; }
+.modalInput {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid #555;
+  border-radius: 10px;
+  padding: 15px;
+  color: #fff;
+  font-size: 18px;
+  box-sizing: border-box;
+}
+.errorText { color: #F44336; margin-top: 8px; font-size: 12px; }
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+  border-top: 1px solid rgba(255, 215, 0, 0.2);
+  gap: 10px;
+}
+.cancelButton, .saveButton {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+.cancelButton { background: #333; color: #ccc; }
+.saveButton { background: #FFD700; color: #000; }
+/* Adicione estas classes ao seu CSS existente */
+
+.loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: white;
+    text-align: center;
+}
+
+.loadingSpinner {
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.riskDescription {
+    text-align: center;
+    margin: 1rem 0;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border-left: 3px solid var(--profile-color, #FFD700);
+}
+
+.riskDescription p {
+    margin: 0;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.profileHeader {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.profileText {
+    flex: 1;
+}
+
+.labelMarker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.percentageTips {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border-left: 3px solid #FFD700;
+}
+
+.tipTitle {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #FFD700;
+}
+
+.tipItem {
+    font-size: 0.875rem;
+    margin: 0.25rem 0;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.recommendations {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.recommendationsTitle {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--profile-color, #FFD700);
+}
+
+.recommendationItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.recommendationItem:last-child {
+    border-bottom: none;
+}
+
+.stopLossSection {
+    padding: 0 20px;
+    margin: 2rem 0;
+}
+
+.sectionTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #FFD700;
+    text-align: center;
+}
+
+.statusMessage {
+    padding: 1rem;
+    margin: 1rem 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+    animation: slideIn 0.3s ease;
+}
+
+.statusMessage.success {
+    background: rgba(76, 175, 80, 0.2);
+    border: 1px solid #4CAF50;
+    color: #4CAF50;
+}
+
+.statusMessage.error {
+    background: rgba(244, 67, 54, 0.2);
+    border: 1px solid #F44336;
+    color: #F44336;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 1rem;
+    padding: 0 20px;
+    margin: 2rem 0;
+}
+
+.secondaryButton {
+    flex: 1;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.secondaryButton:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.secondaryButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.warningContent {
+    flex: 1;
+}
+
+.warningContent p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .profileHeader {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .actionButtons {
+        flex-direction: column;
+    }
+    
+    .riskDescription {
+        margin: 0.5rem 0;
+    }
+}

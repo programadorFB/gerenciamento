@@ -1,0 +1,180 @@
+@keyframes spin {
+    from {
+        transform: rotateY(0deg);
+    }
+    to {
+        transform: rotateY(360deg);
+    }
+}
+
+.container {
+    min-height: 100vh;
+    min-width: 100vw;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #fff;
+}
+
+.overlayGradient {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.scrollContainer {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 450px;
+    max-height: 95vh;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.logoContainer {
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 150px;
+    height: 150px;
+    animation: spin 4s linear infinite;
+}
+
+.header h1 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 3px 8px rgba(255, 223, 0, 0.8);
+    margin: 0 0 8px;
+}
+
+.header p {
+    font-size: 18px;
+    color: #ddd;
+    margin: 0;
+}
+
+.errorContainer {
+    background: rgba(244, 67, 54, 0.15);
+    border: 1px solid #F44336;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    color: #F44336;
+    font-weight: 500;
+}
+
+.form {
+    width: 100%;
+}
+
+.inputGroup {
+    margin-bottom: 20px;
+}
+
+.inputGroup label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    color: #FFD700;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.inputGroup input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 16px;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+.inputGroup input:focus {
+    outline: none;
+    border-color: #FFD700;
+}
+
+.passwordWrapper, .currencyInputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.currencyInputWrapper span {
+    position: absolute;
+    left: 15px;
+    font-size: 16px;
+    color: #FFD700;
+    font-weight: bold;
+}
+
+.currencyInputWrapper input {
+    padding-left: 45px;
+}
+
+.passwordToggle {
+    position: absolute;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+}
+
+.submitButton {
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 0;
+    margin-top: 30px;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 6px 12px rgba(255, 215, 0, 0.4);
+}
+
+.goldGradient {
+    padding: 18px;
+    background: linear-gradient(45deg, #FFD700, #F0C040);
+    color: #000;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.submitButton:disabled .goldGradient {
+    opacity: 0.7;
+}
+
+.toggleButton {
+    margin-top: 30px;
+    background: none;
+    border: none;
+    color: #ddd;
+    font-size: 16px;
+    width: 100%;
+    cursor: pointer;
+    text-align: center;
+}
+
+.toggleButton span {
+    color: #FFD700;
+    font-weight: bold;
+}

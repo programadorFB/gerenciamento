@@ -1,0 +1,318 @@
+/* --- ObjectiveModal.module.css --- */
+
+:root {
+  --color-primary: #FFD700;
+  --color-dark-bg: #1a1a1a;
+  --color-dark-bg-modal: rgba(26, 26, 26, 0.98);
+  --color-text-light: #FFFFFF;
+  --color-text-medium: #CCCCCC;
+  --color-text-dark: #888888;
+  --color-error: #F44336;
+  --color-success: #4CAF50;
+  --border-color: rgba(255, 215, 0, 0.2);
+}
+
+/* --- Modal Base --- */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.modalVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modalContent {
+  width: 100%;
+  max-width: 450px;
+  background-color: var(--color-dark-bg-modal);
+  border-radius: 20px;
+  height: 90vh;
+  max-height: 700px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--color-primary);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+.contentVisible {
+  transform: scale(1);
+}
+
+/* --- Header --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.headerTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--color-primary);
+  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.4);
+}
+.cancelButton, .saveButton {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cancelButton {
+  background-color: rgba(244, 67, 54, 0.2);
+  border-color: rgba(244, 67, 54, 0.4);
+  color: var(--color-error);
+}
+.cancelButton:hover {
+  background-color: rgba(244, 67, 54, 0.4);
+}
+.saveButton {
+  background-color: var(--color-primary);
+  color: #000;
+}
+.saveButton:disabled {
+  background-color: #666;
+  color: #888;
+  cursor: not-allowed;
+}
+.saveButton:hover:not(:disabled) {
+  box-shadow: 0 0 10px var(--color-primary);
+}
+
+/* --- Content & Form --- */
+.content {
+  flex-grow: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background-color: var(--color-dark-bg);
+}
+.inputContainer {
+  margin-bottom: 1.5rem;
+}
+.label {
+  display: block;
+  font-size: 1rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+.input {
+  width: 100%;
+  background-color: var(--color-dark-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 1rem;
+  color: var(--color-text-light);
+  box-sizing: border-box;
+}
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
+}
+.inputError {
+  border-color: var(--color-error);
+}
+.errorText {
+  color: var(--color-error);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* --- Date Input & Suggestions --- */
+.dateInputContainer {
+  position: relative;
+}
+.dateInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.dateInput {
+  cursor: pointer;
+}
+.calendarIcon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.dateSuggestions {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.suggestionLabel {
+  font-size: 0.9rem;
+  color: var(--color-text-medium);
+}
+.suggestionButtons {
+  display: flex;
+  gap: 10px;
+}
+.suggestionButton {
+  background-color: rgba(255, 215, 0, 0.1);
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  font-size: 0.8rem;
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+/* --- Progress Preview --- */
+.previewContainer {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+.previewTitle {
+  font-size: 1rem;
+  color: var(--color-primary);
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.progressBar {
+  width: 100%;
+  height: 12px;
+  background-color: rgba(51, 51, 51, 0.8);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+.progressFill {
+  height: 100%;
+  border-radius: 6px;
+  background-color: var(--color-success);
+}
+.progressText {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  font-weight: 600;
+}
+
+/* --- DatePicker Modal --- */
+.datePickerOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+.datePickerContainer {
+  background-color: var(--color-dark-bg);
+  border-radius: 20px;
+  width: 90%;
+  max-width: 350px;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+}
+.datePickerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.datePickerTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+.datePickerCloseButton {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--color-text-medium);
+  cursor: pointer;
+}
+.calendarContainer {
+  padding: 0.5rem 0;
+}
+.calendarHeader {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 0.5rem;
+}
+.calendarHeaderText {
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-align: center;
+}
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+.calendarDay, .calendarDayEmpty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1 / 1;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: var(--color-text-light);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.calendarDay:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.calendarDayToday {
+  border: 2px solid var(--color-success);
+}
+.calendarDaySelected {
+  background-color: var(--color-primary);
+  color: #000;
+  font-weight: bold;
+}
+.datePickerActions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  gap: 10px;
+}
+.datePickerTodayButton, .datePickerConfirmButton {
+  flex: 1;
+  padding: 0.7rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border: 1px solid;
+}
+.datePickerTodayButton {
+  background-color: transparent;
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+.datePickerConfirmButton {
+  background-color: var(--color-primary);
+  color: #000;
+  border-color: var(--color-primary);
+}

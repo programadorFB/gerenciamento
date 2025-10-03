@@ -1,0 +1,232 @@
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-width: 100vw;
+  background-color: #000;
+  color: #fff;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* --- Header --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 50px 20px 20px;
+  background-color: #111;
+}
+.header h1 {
+  font-size: 20px;
+  color: #FFD700;
+  margin: 0;
+}
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #FFD700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.backButton:active {
+  transform: scale(0.95);
+}
+.headerSpacer {
+  width: 80px; /* Balance the header */
+}
+
+/* --- Abas --- */
+.tabContainer {
+  display: flex;
+  background-color: #111;
+  padding: 0 20px;
+}
+.tabContainer button {
+  flex: 1;
+  padding: 15px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #888;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.tabContainer button.activeTab {
+  color: #FFD700;
+  border-bottom-color: #FFD700;
+}
+
+/* --- Conteúdo Principal --- */
+.content {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+.formContainer, .objectivesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.inputGroup label {
+  font-size: 16px;
+  color: #FFD700;
+  font-weight: 600;
+}
+.input {
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 15px;
+  color: #fff;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+.input:focus {
+  outline: none;
+  border-color: #FFD700;
+}
+
+/* --- Seletor de Tipo --- */
+.typeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.typeButton {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-left: 4px solid var(--type-color);
+  border-radius: 8px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #fff;
+  text-align: left;
+}
+.typeButton:hover {
+  background-color: #222;
+}
+.typeButton.typeButtonActive {
+  background-color: var(--type-color);
+  color: #000;
+}
+.typeButtonIcon {
+  font-size: 28px;
+  margin-bottom: 8px;
+  color: var(--type-color);
+}
+.typeButton.typeButtonActive .typeButtonIcon {
+  color: #000;
+}
+.typeButtonText {
+  display: flex;
+  flex-direction: column;
+}
+.typeButtonText span {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* --- Date Picker --- */
+.dateInputContainer {
+  position: relative;
+}
+.calendarIcon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #FFD700;
+  cursor: pointer;
+}
+.datePickerOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+.datePickerContainer {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 350px;
+}
+
+/* --- Checkbox --- */
+.checkboxContainer {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+.checkbox {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #555;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+.checkbox.checkboxActive {
+  background-color: #FFD700;
+  border-color: #FFD700;
+}
+.checkbox svg { color: #000; }
+.checkboxLabel { font-weight: 600; cursor: pointer; }
+.checkboxDescription { font-size: 12px; color: #888; margin: 0; cursor: pointer; }
+
+/* --- Botão de Submissão --- */
+.submitButton {
+  padding: 18px;
+  background: linear-gradient(45deg, #FFD700, #F0C040);
+  border: none;
+  border-radius: 12px;
+  color: #000;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+}
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Objetivos --- */
+.addObjectiveButton {
+  width: 100%;
+  padding: 15px;
+  background: #FFD700;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 20px;
+}

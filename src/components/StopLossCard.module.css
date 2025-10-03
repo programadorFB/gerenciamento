@@ -1,0 +1,170 @@
+/* src/components/StopLossCard/StopLossCard.module.css */
+
+.container {
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: rgba(var(--status-color, 158, 158, 158), 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin: 1rem 0;
+}
+
+.gradient {
+    padding: 24px;
+    background-image: linear-gradient(145deg, rgba(38, 38, 38, 0.9), rgba(28, 28, 28, 0.9));
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.iconWrapper {
+    font-size: 28px;
+    color: var(--status-color);
+}
+
+.title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--status-color);
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 0.8rem;
+    color: #a0a0a0;
+    margin: 2px 0 0 0;
+}
+
+.editButton {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--status-color);
+    color: var(--status-color);
+    border-radius: 8px;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.editButton:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.percentageSection, .amountSection {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.percentageItem, .amountItem {
+    flex: 1;
+}
+
+.percentageLabel, .amountLabel {
+    font-size: 0.8rem;
+    color: #a0a0a0;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.percentageValue {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.criticalText {
+    color: #F44336 !important;
+}
+
+.progressSection {
+    margin-top: 8px;
+}
+
+.progressBar {
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    border-radius: 4px;
+    background-color: var(--status-color);
+    transition: width 0.3s ease-in-out;
+}
+
+.progressText {
+    font-size: 0.75rem;
+    color: #a0a0a0;
+    text-align: center;
+    margin-top: 8px;
+}
+
+.amountSection {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.amountValue {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.statusMessage {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid var(--status-color);
+    text-align: center;
+    font-size: 0.9rem;
+}
+.criticalText {
+  color: #F44336;
+  font-weight: bold;
+}
+
+.amountSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.amountItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.amountLabel {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.amountValue {
+  font-weight: 600;
+  font-size: 0.95rem;
+}

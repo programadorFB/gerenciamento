@@ -1,0 +1,129 @@
+/* Animação para novos itens */
+@keyframes pulse-glow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.5);
+  }
+}
+
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  background-color: rgba(26, 26, 26, 0.7);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px); /* Suporte para Safari */
+  z-index: 1000;
+  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.container.visible {
+  transform: translateX(0);
+}
+
+.profileSection {
+  text-align: center;
+  padding: 40px 20px;
+  border-bottom: 1px solid #333333;
+}
+
+.userName {
+  font-size: 20px;
+  font-weight: bold;
+  color: #FFFFFF;
+  margin: 0 0 5px 0;
+}
+
+.userEmail {
+  font-size: 14px;
+  color: #CCCCCC;
+  margin: 0;
+}
+
+.menuItems {
+  flex-grow: 1;
+  padding-top: 20px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  margin: 4px 10px;
+  border-radius: 12px;
+  background-color: transparent;
+  color: #FFFFFF;
+  border: 1px solid transparent;
+  width: calc(100% - 20px);
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.menuItem:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menuItem:active {
+  transform: scale(0.97);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.menuIcon {
+  width: 30px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.menuText {
+  flex-grow: 1;
+}
+
+/* Estilos para o item de Logout */
+.logoutItem {
+  color: #FF6B6B;
+}
+
+.logoutItem .menuIcon {
+  color: #FF6B6B;
+}
+
+/* Estilos para o item "Novo" */
+.newItem {
+  border-color: rgba(255, 215, 0, 0.5);
+  background-color: rgba(255, 215, 0, 0.1);
+  color: #FFD700;
+  animation: pulse-glow 2.5s infinite ease-in-out;
+}
+
+.separator {
+  height: 1px;
+  background-color: rgba(51, 51, 51, 0.8);
+  margin: 15px 20px;
+}
+
+.footer {
+  padding: 20px;
+  border-top: 1px solid #333333;
+  text-align: center;
+}
+
+.footerText {
+  font-size: 12px;
+  color: #888888;
+  margin: 0;
+}
