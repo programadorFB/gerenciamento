@@ -23,19 +23,21 @@ def create_app(config_name='default'):
     db.init_app(app)
     CORS(app, resources={r"/*": {"origins": app.config.get('CORS_ORIGINS', '*')}})
 
+    # Registra o Blueprint que contém todas as suas rotas
+    from .routes import main as main_blueprint
+    app.register_blueprint(main_blueprint, url_prefix='/')
+
     # ====================================================================
-    # A SOLUÇÃO MÁGICA ESTÁ AQUI
+    # A SOLUÇÃO CORRIGIDA
     # ====================================================================
-    # Este bloco de código é executado quando a aplicação inicia.
-    # Ele cria todas as tabelas definidas em models.py se elas
-    # ainda não existirem no banco de dados.
-    # Isso elimina a necessidade de rodar "flask init-db" manualmente.
+    # Agora que as rotas e modelos já foram carregados, o SQLAlchemy
+    # sabe quais tabelas precisam ser criadas.
     with app.app_context():
+        # Importamos os modelos aqui para ter certeza de que eles são conhecidos
+        # antes de chamar db.create_all()
+        from . import models
         db.create_all()
     # ====================================================================
 
-    # Registra o Blueprint que contém todas as suas rotas
-    from .app.routes import main as main_blueprint
-    app.register_blueprint(main_blueprint, url_prefix='/')
-
     return app
+
