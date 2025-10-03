@@ -14,15 +14,16 @@ def create_app(config_name='default'):
     app_config = config.get(config_name)
     app.config.from_object(app_config)
     
-    # --- CONFIGURAÇÃO DE LOGGING PARA A RENDER ---
-    # Isto garante que os erros aparecem na consola de logs da Render.
-    app.logger.handlers.clear()
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    ))
-    app.logger.addHandler(handler)
-    app.logger.setLevel(logging.INFO)
+    # --- CONFIGURAÇÃO DE LOGGING DEFINITIVA PARA A RENDER ---
+    # Isto força todos os logs, especialmente os erros, a aparecerem na consola da Render.
+    if not app.debug:
+        app.logger.handlers.clear()
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setFormatter(logging.Formatter(
+            '%(asctime)s [%(levelname)s] in %(module)s: %(message)s'
+        ))
+        app.logger.addHandler(handler)
+        app.logger.setLevel(logging.INFO)
     # --- FIM DA CONFIGURAÇÃO DE LOGGING ---
 
     db.init_app(app)
