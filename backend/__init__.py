@@ -24,7 +24,7 @@ def create_app(config_name='default'):
     CORS(app, resources={r"/*": {"origins": app.config.get('CORS_ORIGINS', '*')}})
 
     # Registra o Blueprint que contém todas as suas rotas
-    from .routes import main as main_blueprint
+    from app.routes import main as main_blueprint
     app.register_blueprint(main_blueprint, url_prefix='/')
 
     # ====================================================================
@@ -40,4 +40,3 @@ def create_app(config_name='default'):
     # ====================================================================
 
     return app
-
