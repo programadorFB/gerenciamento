@@ -1,7 +1,11 @@
 # wsgi.py
 import os
-from backend.run import app
+# Importamos a factory 'create_app' diretamente do seu pacote da aplicação.
+# Assumindo que seu pacote principal se chama 'app'. Se for outro nome, ajuste aqui.
+from app import create_app
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+# A Render vai configurar a variável de ambiente, mas 'production' é um padrão seguro.
+config_name = os.getenv('FLASK_ENV', 'production')
+
+# Criamos a instância da aplicação que o Gunicorn vai usar.
+app = create_app(config_name)
