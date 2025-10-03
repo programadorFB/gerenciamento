@@ -35,7 +35,7 @@ def create_app(config_name='default'):
     # ====================================================================
 
     # Registra o Blueprint que contém todas as suas rotas
-    from .routes import main as main_blueprint
+    from .app.routes import main as main_blueprint
     app.register_blueprint(main_blueprint, url_prefix='/')
 
     return app
