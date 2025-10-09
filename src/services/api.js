@@ -6,10 +6,10 @@ import axios from 'axios';
 const getBaseURL = () => {
   if (import.meta.env.DEV) {
     // Para desenvolvimento web, o localhost é o padrão.
-    return 'http://127.0.0.1:5000';
+    return 'https://gerenciamento.sortehub.online/';
   } else {
     // URL da sua API em produção
-    return 'https://your-production-api.com';
+    return 'https://gerenciamento.sortehub.online/';
   }
 };
 
@@ -142,7 +142,7 @@ const apiService = {
   },
 
   // REGISTRO ATUALIZADO COM VALIDAÇÃO DE BANCA INICIAL
-  async register(name, email, password, initialBank) {
+  async register(name, email, password, initialBank,riskValue) {
     try {
       if (!name || !email || !password) {
         return { success: false, error: 'Nome, email e senha são obrigatórios' };
@@ -162,7 +162,8 @@ const apiService = {
         name: name.trim(), 
         email: email.trim().toLowerCase(), 
         password,
-        initialBank: bankAmount
+        initialBank: bankAmount,
+        riskValue: riskValue 
       });
 
       if (response.success && response.token) {
