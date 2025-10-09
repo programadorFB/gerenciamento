@@ -9,7 +9,7 @@ import { FaChartLine, FaBullseye, FaUserTie } from 'react-icons/fa';
 import { FiDownload, FiSettings } from 'react-icons/fi';
 
 // CSS Module
-import styles from './SideMenu.module.css';
+import styles from './Sidemenu.module.css';
 
 const MenuItem = ({ icon, text, onClick, isLogout = false }) => {
   const itemClasses = `${styles.menuItem} ${isLogout ? styles.logoutItem : ''}`;
