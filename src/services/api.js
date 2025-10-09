@@ -12,7 +12,7 @@ const getBaseURL = () => {
     return 'https://gerenciamento.sortehub.online/';
   }
 };
-
+// ouh79hu:h
 const API_BASE_URL = getBaseURL();
 
 const api = axios.create({
