@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext'; // Adjust path as needed
-import styles from './ProfileScreen.module.css';
+import styles from './profileScreen.module.css';
 
 const ProfileScreen = () => {
   const { user, updateProfile, logout } = useAuth();
