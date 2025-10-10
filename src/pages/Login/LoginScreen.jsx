@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from 'react';
-// 1. Importe o `useNavigate` para poder fazer o redirecionamento
 import { useNavigate } from 'react-router-dom';
 import { MdEmail, MdLock, MdPerson, MdVisibility, MdVisibilityOff } from 'react-icons/md';
 import { FaCoins, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
 
-// --- Contexts and Components (adjust paths as needed) ---
 import { useAuth } from '../../contexts/AuthContext';
 import RiskSlider from '../../components/RiskSlider';
 
-// --- Assets ---
 import background from '../../assets/fundoLuxo.jpg';
 import logo from '../../assets/logo.png';
-
-// --- CSS Module ---
 import styles from './LoginScreen.module.css';
 
 const LoginScreen = () => {
@@ -24,9 +19,13 @@ const LoginScreen = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [riskValue, setRiskValue] = useState(5);
 
-    const { login, register, isLoading, error, clearError } = useAuth();
-    // 2. Inicialize o hook `useNavigate`
+    const { login, register, isLoading, error, clearError, user } = useAuth();
     const navigate = useNavigate();
+
+    // ✅ Quando user mudar (autenticado), redireciona automaticamente
+    useEffect(() => {
+        if (user) navigate('/dashboard');
+    }, [user, navigate]);
 
     useEffect(() => {
         clearError();
@@ -50,24 +49,23 @@ const LoginScreen = () => {
         }
         clearError();
 
-        let result; // Variável para armazenar o resultado da autenticação
-
-        if (isLogin) {
-            result = await login(email.trim().toLowerCase(), password);
-        } else {
-            const bankAmount = Number(parseFloat(initialBank.replace(',', '.')).toFixed(2));
-            result = await register({
-                name: name.trim(),
-                email: email.trim().toLowerCase(),
-                password: password,
-                initialBank: bankAmount,
-                riskLevel: riskValue 
-            });
-        }
-
-        // 3. Verifique se o resultado foi um sucesso e redirecione
-        if (result && result.success) {
-            navigate('/dashboard');
+        try {
+            if (isLogin) {
+                await login(email.trim().toLowerCase(), password);
+            } else {
+                const bankAmount = Number(parseFloat(initialBank.replace(',', '.')).toFixed(2));
+                await register({
+                    name: name.trim(),
+                    email: email.trim().toLowerCase(),
+                    password,
+                    initialBank: bankAmount,
+                    riskLevel: riskValue
+                });
+            }
+            // ❌ NÃO usamos navigate aqui — o redirecionamento é feito no useEffect acima
+        } catch (err) {
+            console.error('Erro no login/cadastro:', err);
+            alert('Erro na autenticação. Verifique os dados.');
         }
     };
 
@@ -97,20 +95,47 @@ const LoginScreen = () => {
                     {!isLogin && (
                         <div className={styles.inputGroup}>
                             <label htmlFor="name"><MdPerson /> Nome Completo</label>
-                            <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Digite seu nome" required minLength="2" />
+                            <input
+                                id="name"
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Digite seu nome"
+                                required
+                                minLength="2"
+                            />
                         </div>
                     )}
 
                     <div className={styles.inputGroup}>
                         <label htmlFor="email"><MdEmail /> Email</label>
-                        <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="seu@email.com" required />
+                        <input
+                            id="email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="seu@email.com"
+                            required
+                        />
                     </div>
 
                     <div className={styles.inputGroup}>
                         <label htmlFor="password"><MdLock /> Senha</label>
                         <div className={styles.passwordWrapper}>
-                            <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Pelo menos 6 caracteres" required minLength="6" />
-                            <button type="button" onClick={() => setShowPassword(!showPassword)} className={styles.passwordToggle}>
+                            <input
+                                id="password"
+                                type={showPassword ? 'text' : 'password'}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Pelo menos 6 caracteres"
+                                required
+                                minLength="6"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className={styles.passwordToggle}
+                            >
                                 {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
                             </button>
                         </div>
@@ -122,9 +147,18 @@ const LoginScreen = () => {
                                 <label htmlFor="initialBank"><FaCoins /> Banca Inicial</label>
                                 <div className={styles.currencyInputWrapper}>
                                     <span>R$</span>
-                                    <input id="initialBank" type="text" inputMode="decimal" value={initialBank} onChange={(e) => setInitialBank(e.target.value)} placeholder="100,00" required />
+                                    <input
+                                        id="initialBank"
+                                        type="text"
+                                        inputMode="decimal"
+                                        value={initialBank}
+                                        onChange={(e) => setInitialBank(e.target.value)}
+                                        placeholder="100,00"
+                                        required
+                                    />
                                 </div>
                             </div>
+
                             <div className={styles.inputGroup}>
                                 <label>Perfil de Investimento</label>
                                 <RiskSlider value={riskValue} onValueChange={setRiskValue} />
@@ -134,7 +168,11 @@ const LoginScreen = () => {
 
                     <button type="submit" className={styles.submitButton} disabled={isLoading}>
                         <div className={styles.goldGradient}>
-                            {isLoading ? 'Carregando...' : (isLogin ? <><FaSignInAlt /> Entrar</> : <><FaUserPlus /> Criar Conta</>)}
+                            {isLoading
+                                ? 'Carregando...'
+                                : isLogin
+                                    ? <><FaSignInAlt /> Entrar</>
+                                    : <><FaUserPlus /> Criar Conta</>}
                         </div>
                     </button>
                 </form>
