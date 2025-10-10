@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
 import apiService from '../services/api'; // Certifique-se que o caminho para seu api.js está correto
 
 const AuthContext = createContext(null);
@@ -87,13 +87,7 @@ const STORAGE_KEYS = {
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  useEffect(() => {
-    // Ao iniciar a aplicação, tenta restaurar a sessão
-    initializeAuth();
-  }, []);
-
-  // --- Funções de Armazenamento (convertidas para localStorage) ---
-
+  // --- Funções de Armazenamento ---
   const saveToStorage = (token, user) => {
     try {
       localStorage.setItem(STORAGE_KEYS.TOKEN, token);
@@ -112,82 +106,86 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const initializeAuth = async () => {
-    try {
-      // localStorage é síncrono, não precisa de 'await'
-      const savedToken = localStorage.getItem(STORAGE_KEYS.TOKEN);
-      const savedUser = localStorage.getItem(STORAGE_KEYS.USER);
+  // Ao iniciar a aplicação, tenta restaurar a sessão
+  useEffect(() => {
+    const initializeAuth = () => {
+        try {
+          const savedToken = localStorage.getItem(STORAGE_KEYS.TOKEN);
+          const savedUser = localStorage.getItem(STORAGE_KEYS.USER);
 
-      if (savedToken && savedUser) {
-        const userData = JSON.parse(savedUser);
-        apiService.setAuthToken(savedToken);
-        
-        // Simplesmente restaura a sessão com os dados locais
-        // A validação com o servidor pode ser feita em outro momento, se necessário
-        dispatch({
-          type: AUTH_ACTIONS.RESTORE_SESSION,
-          payload: { user: userData, token: savedToken },
-        });
-        return;
-      }
-      // Se não houver dados, simplesmente desloga
-      clearStorage();
-      dispatch({ type: AUTH_ACTIONS.LOGOUT });
-    } catch (error) {
-      console.error('Erro ao inicializar autenticação:', error);
-      clearStorage();
-      dispatch({ type: AUTH_ACTIONS.LOGOUT });
-    }
-  };
+          if (savedToken && savedUser) {
+            const userData = JSON.parse(savedUser);
+            apiService.setAuthToken(savedToken);
+            
+            dispatch({
+              type: AUTH_ACTIONS.RESTORE_SESSION,
+              payload: { user: userData, token: savedToken },
+            });
+          } else {
+            // Se não houver dados, garante que o estado seja de logout
+            dispatch({ type: AUTH_ACTIONS.LOGOUT });
+          }
+        } catch (error) {
+          console.error('Erro ao inicializar autenticação:', error);
+          clearStorage();
+          dispatch({ type: AUTH_ACTIONS.LOGOUT });
+        }
+    };
+    
+    initializeAuth();
+  }, []);
 
-  // --- Funções de Ação ---
 
-  const login = async (email, password) => {
+  // --- Funções de Ação com useCallback ---
+
+  const login = useCallback(async (email, password) => {
     dispatch({ type: AUTH_ACTIONS.LOGIN_START });
     try {
       const response = await apiService.login(email, password);
-      if (response.success) {
+      
+      // IMPORTANTE: Ajuste esta condição para corresponder à resposta REAL da sua API
+      if (response && response.token && response.user) { // Exemplo: checa se token e user existem
         const { token, user } = response;
         apiService.setAuthToken(token);
-        saveToStorage(token, user); // Síncrono
+        saveToStorage(token, user);
         dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: { token, user } });
         return { success: true };
       } else {
-        dispatch({ type: AUTH_ACTIONS.LOGIN_FAILURE, payload: response.error || 'Login falhou' });
-        return { success: false, error: response.error };
+        // Usa a mensagem de erro da API, ou uma mensagem padrão
+        const errorMessage = response.error || 'Login falhou. Verifique suas credenciais.';
+        dispatch({ type: AUTH_ACTIONS.LOGIN_FAILURE, payload: errorMessage });
+        return { success: false, error: errorMessage };
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.error || error.message || 'Erro de rede';
+      const errorMessage = error.response?.data?.error || error.message || 'Erro de rede ou servidor indisponível.';
       dispatch({ type: AUTH_ACTIONS.LOGIN_FAILURE, payload: errorMessage });
       return { success: false, error: errorMessage };
     }
-  };
+  }, []);
   
-  // --- FUNÇÃO REGISTER ATUALIZADA ---
-  // Agora aceita um único objeto com todos os dados do usuário
-  const register = async (userData) => { // <-- MUDANÇA AQUI
+  const register = useCallback(async (userData) => {
     dispatch({ type: AUTH_ACTIONS.REGISTER_START });
     try {
-      // Passa o objeto userData diretamente para o serviço da API
-      const response = await apiService.register(userData); // <-- MUDANÇA AQUI
+      const response = await apiService.register(userData);
+      
       if (response.success) {
         const { token, user } = response;
         apiService.setAuthToken(token);
-        saveToStorage(token, user); // Síncrono
+        saveToStorage(token, user);
         dispatch({ type: AUTH_ACTIONS.REGISTER_SUCCESS, payload: { token, user } });
         return { success: true };
       } else {
-        dispatch({ type: AUTH_ACTIONS.REGISTER_FAILURE, payload: response.error || 'Cadastro falhou' });
+        dispatch({ type: AUTH_ACTIONS.REGISTER_FAILURE, payload: response.error || 'Cadastro falhou.' });
         return { success: false, error: response.error };
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.error || error.message || 'Erro de rede';
+      const errorMessage = error.response?.data?.error || error.message || 'Erro de rede ou servidor indisponível.';
       dispatch({ type: AUTH_ACTIONS.REGISTER_FAILURE, payload: errorMessage });
       return { success: false, error: errorMessage };
     }
-  };
+  }, []);
 
-  const updateProfile = async (profileData) => {
+  const updateProfile = useCallback(async (profileData) => {
     dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_START });
     try {
       const response = await apiService.updateUserProfile(profileData);
@@ -204,24 +202,22 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_FAILURE, payload: error.message });
       return { success: false, error: error.message };
     }
-  };
+  }, [state.user]); // Dependência de state.user para ter a versão mais recente
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
-      if (state.token) {
-        // Se você tiver uma rota de 'logout' no backend, chame-a aqui
-        // await apiService.logout(); 
-      }
+      // Opcional: Chame a API de logout se houver uma.
+      // await apiService.logout(); 
     } finally {
       apiService.clearAuthToken();
-      clearStorage(); // Síncrono
+      clearStorage();
       dispatch({ type: AUTH_ACTIONS.LOGOUT });
     }
-  };
+  }, []);
 
-  const clearError = () => {
+  const clearError = useCallback(() => {
     dispatch({ type: AUTH_ACTIONS.CLEAR_ERROR });
-  };
+  }, []);
   
   // Valor que será provido para os componentes filhos
   const value = {
