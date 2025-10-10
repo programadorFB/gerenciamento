@@ -32,7 +32,9 @@
     width: 100%;
     max-width: 450px;
     max-height: 95vh;
-    overflow-y: auto;
+    overflow-y:auto;
+    scrollbar-width: thin;
+    scrollbar-color: transparent;
     padding: 20px;
 }
 

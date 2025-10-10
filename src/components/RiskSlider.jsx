@@ -4,15 +4,39 @@ import { FaShieldAlt, FaBalanceScale, FaFire } from 'react-icons/fa';
 import styles from './RiskSlider.module.css';
 
 // Configuração centralizada dos perfis (mesma do código refatorado)
+// Substitua o seu array PROFILES vazio por este:
 const PROFILES = [
-  // ... (a mesma configuração de perfis do exemplo anterior)
+  {
+    maxValue: 3,
+    title: 'Perfil Conservador',
+    description: 'Prioriza a segurança e a preservação do capital.',
+    icon: 'shield-alt',
+    color: '#39db34ff', // Azul
+    gradient: ['#80ff74ff', '#42db34ff'],
+  },
+  {
+    maxValue: 7,
+    title: 'Perfil Moderado',
+    description: 'Busca um equilíbrio entre segurança e rentabilidade.',
+    icon: 'balance-scale',
+    color: '#f1c40f', // Amarelo
+    gradient: ['#f5de7a', '#f1c40f'],
+  },
+  {
+    maxValue: 10,
+    title: 'Perfil Agressivo',
+    description: 'Foco em maximizar ganhos, aceitando maior volatilidade.',
+    icon: 'fire',
+    color: '#e74c3c', // Vermelho
+    gradient: ['#ff8a80', '#e74c3c'],
+  },
 ];
 
 const getProfileForValue = (value) => {
   return PROFILES.find((p) => value <= p.maxValue);
 };
 
-const RiskSlider = ({ value, onValuecha, compact = false, containerStyle = {} }) => {
+const RiskSlider = ({ value, onValueChange, compact = false, containerStyle = {} }) => {
   const [sliderWidth, setSliderWidth] = useState(0);
   const knobSize = 40; // O knob é maior na web para facilitar o clique
   const trackRef = useRef(null);
