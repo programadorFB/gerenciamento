@@ -59,7 +59,7 @@ const LoginScreen = () => {
                     email: email.trim().toLowerCase(),
                     password,
                     initialBank: bankAmount,
-                    riskLevel: riskValue
+                    riskValue
                 });
             }
             // ❌ NÃO usamos navigate aqui — o redirecionamento é feito no useEffect acima

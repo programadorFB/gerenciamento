@@ -142,7 +142,7 @@ const apiService = {
   },
 
   // REGISTRO ATUALIZADO COM VALIDAÇÃO DE BANCA INICIAL
-  async register(name, email, password, initialBank,riskValue) {
+  async register({name, email, password, initialBank,riskValue}) {
     try {
       if (!name || !email || !password) {
         return { success: false, error: 'Nome, email e senha são obrigatórios' };
