@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
-import apiService from '../services/api'; // Certifique-se que o caminho para seu api.js está correto
+import apiService from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -25,7 +25,7 @@ const initialState = {
   token: null,
   isAuthenticated: false,
   isLoading: false,
-  isInitializing: true, // Começa como true para verificar a sessão
+  isInitializing: true,
   error: null,
 };
 
@@ -122,7 +122,6 @@ export const AuthProvider = ({ children }) => {
               payload: { user: userData, token: savedToken },
             });
           } else {
-            // Se não houver dados, garante que o estado seja de logout
             dispatch({ type: AUTH_ACTIONS.LOGOUT });
           }
         } catch (error) {
@@ -135,7 +134,6 @@ export const AuthProvider = ({ children }) => {
     initializeAuth();
   }, []);
 
-
   // --- Funções de Ação com useCallback ---
 
   const login = useCallback(async (email, password) => {
@@ -143,15 +141,13 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await apiService.login(email, password);
       
-      // IMPORTANTE: Ajuste esta condição para corresponder à resposta REAL da sua API
-      if (response && response.token && response.user) { // Exemplo: checa se token e user existem
+      if (response && response.token && response.user) {
         const { token, user } = response;
         apiService.setAuthToken(token);
         saveToStorage(token, user);
         dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: { token, user } });
         return { success: true };
       } else {
-        // Usa a mensagem de erro da API, ou uma mensagem padrão
         const errorMessage = response.error || 'Login falhou. Verifique suas credenciais.';
         dispatch({ type: AUTH_ACTIONS.LOGIN_FAILURE, payload: errorMessage });
         return { success: false, error: errorMessage };
@@ -189,25 +185,28 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_START });
     try {
       const response = await apiService.updateUserProfile(profileData);
+      
       if (response.success) {
         const updatedUser = { ...state.user, ...response.data };
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
         dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_SUCCESS, payload: { user: updatedUser } });
-        return { success: true };
+        return { success: true, data: response.data };
       } else {
         dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_FAILURE, payload: response.error });
         return { success: false, error: response.error };
       }
     } catch (error) {
-      dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_FAILURE, payload: error.message });
-      return { success: false, error: error.message };
+      const errorMessage = error.message || 'Erro ao atualizar perfil.';
+      dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_FAILURE, payload: errorMessage });
+      return { success: false, error: errorMessage };
     }
-  }, [state.user]); // Dependência de state.user para ter a versão mais recente
+  }, [state.user]);
 
   const logout = useCallback(async () => {
     try {
-      // Opcional: Chame a API de logout se houver uma.
-      // await apiService.logout(); 
+      await apiService.logout();
+    } catch (error) {
+      console.log('Logout API call failed, but clearing local token');
     } finally {
       apiService.clearAuthToken();
       clearStorage();

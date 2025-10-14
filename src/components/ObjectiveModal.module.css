@@ -11,7 +11,27 @@
   --color-success: #4CAF50;
   --border-color: rgba(255, 215, 0, 0.2);
 }
+/* Adicione estas classes ao final do seu ObjectiveModal.module.css */
 
+.datePickerNav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navButton {
+  background: transparent;
+  border: none;
+  color: var(--color-text-medium);
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 0.5rem;
+}
+
+.navButton:hover {
+  color: var(--color-primary);
+}
 /* --- Modal Base --- */
 .modalOverlay {
   position: fixed;

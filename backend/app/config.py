@@ -5,7 +5,7 @@ class Config:
     # === DATABASE CONFIGURATION ===
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL", 
-        "postgresql://postgres:1234@localhost/app-banca"
+        "postgresql://postgres:1234@localhost/betting-tracker"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {

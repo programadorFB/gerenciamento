@@ -75,7 +75,7 @@ const SideMenu = () => {
           <MenuItem
             icon={<FaBullseye size={20} />}
             text="Objetivos"
-            onClick={() => handleNavigation('/transaction?showObjectives=true')}
+            onClick={() => handleNavigation('/objectives')} // Alterado para '/objectives'
           />
           <MenuItem
             icon={<FaUserTie size={20} />}

@@ -3,10 +3,16 @@ import { MdClose, MdEdit, MdDelete, MdInfoOutline, MdTouchApp, MdEvent } from 'r
 import { FaBullseye } from 'react-icons/fa';
 import styles from './ObjectiveList.module.css';
 
+// 1. Importar o seu serviço de API
+//    Ajuste o caminho se necessário
+import apiService from '../services/api';
+
 // --- COMPONENTE DO MODAL DE EDIÇÃO ---
 const EditObjectiveModal = ({ visible, objective, onClose, onSave }) => {
   const [editedObjective, setEditedObjective] = useState({});
   const [errors, setErrors] = useState({});
+  // Adiciona um estado de carregamento para o botão de salvar
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (objective) {
@@ -19,6 +25,7 @@ const EditObjectiveModal = ({ visible, objective, onClose, onSave }) => {
   }, [objective]);
 
   const validateFields = () => {
+    // ... (nenhuma alteração na validação)
     const newErrors = {};
     if (!editedObjective.title?.trim()) newErrors.title = 'Título é obrigatório';
     if (!editedObjective.target_amount || editedObjective.target_amount <= 0) newErrors.target_amount = 'Meta deve ser maior que zero';
@@ -37,18 +44,27 @@ const EditObjectiveModal = ({ visible, objective, onClose, onSave }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
+  // Transforma handleSave em uma função assíncrona para aguardar a API
+  const handleSave = async () => {
     if (!validateFields()) {
       alert('Erro: Por favor, corrija os campos antes de salvar.');
       return;
     }
-    onSave({
-      ...editedObjective,
-      title: editedObjective.title.trim(),
-      current_amount: parseFloat(editedObjective.current_amount) || 0,
-      target_amount: parseFloat(editedObjective.target_amount),
-    });
-    onClose();
+
+    setLoading(true);
+    try {
+      await onSave({ // onSave agora é uma Promise
+        ...editedObjective,
+        title: editedObjective.title.trim(),
+        current_amount: parseFloat(editedObjective.current_amount) || 0,
+        target_amount: parseFloat(editedObjective.target_amount),
+      });
+      onClose();
+    } catch (error) {
+        alert(`Erro ao salvar: ${error.message}`);
+    } finally {
+        setLoading(false);
+    }
   };
 
   const handleAmountChange = (e) => {
@@ -73,6 +89,7 @@ const EditObjectiveModal = ({ visible, objective, onClose, onSave }) => {
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContainer}>
+        {/* ... */}
         <header className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>Editar Objetivo</h2>
           <button onClick={onClose} className={styles.closeButton}>
@@ -80,8 +97,8 @@ const EditObjectiveModal = ({ visible, objective, onClose, onSave }) => {
           </button>
         </header>
         <div className={styles.modalContent}>
-          {/* Título, Valor Atual, Meta, Data Limite... */}
-          <div className={styles.inputContainer}>
+          {/* ... (inputs sem alteração) ... */}
+           <div className={styles.inputContainer}>
             <label className={styles.inputLabel}>Título do Objetivo *</label>
             <input name="title" type="text" className={`${styles.textInput} ${errors.title ? styles.inputError : ''}`} value={editedObjective.title || ''} onChange={handleChange} placeholder="Ex: Comprar um carro" />
             {errors.title && <p className={styles.errorText}>{errors.title}</p>}
@@ -101,7 +118,6 @@ const EditObjectiveModal = ({ visible, objective, onClose, onSave }) => {
             <input name="target_date" type="date" className={`${styles.textInput} ${errors.target_date ? styles.inputError : ''}`} value={editedObjective.target_date || ''} onChange={handleChange} />
             {errors.target_date && <p className={styles.errorText}>{errors.target_date}</p>}
           </div>
-          {/* Prévia */}
           <div className={styles.previewContainer}>
             <p className={styles.previewLabel}>Prévia do Objetivo:</p>
             <div className={styles.previewCard}>
@@ -115,7 +131,10 @@ const EditObjectiveModal = ({ visible, objective, onClose, onSave }) => {
         </div>
         <footer className={styles.modalActions}>
           <button className={styles.cancelButton} onClick={onClose}>Cancelar</button>
-          <button className={styles.saveButton} onClick={handleSave}>Salvar Alterações</button>
+          {/* Desabilita o botão enquanto salva */}
+          <button className={styles.saveButton} onClick={handleSave} disabled={loading}>
+            {loading ? 'Salvando...' : 'Salvar Alterações'}
+          </button>
         </footer>
       </div>
     </div>
@@ -141,17 +160,20 @@ const ObjectiveItem = ({ item, onUpdateObjective, onDeleteObjective }) => {
     setEditModalVisible(true);
   };
   
-  const handleDelete = (e) => {
+  const handleDelete = async (e) => {
     e.stopPropagation();
     setShowActions(false);
     if (window.confirm(`Tem certeza que deseja excluir o objetivo "${item.title}"?`)) {
       setIsDeleting(true);
-      setTimeout(() => onDeleteObjective(item.id), 300); // Aguarda animação
+      // A UI é removida após a animação, e a API é chamada no componente pai
+      setTimeout(() => onDeleteObjective(item.id), 300); 
     }
   };
   
-  const handleSaveObjective = (editedObjective) => {
-    onUpdateObjective(editedObjective.id, editedObjective);
+  // A função se torna assíncrona
+  const handleSaveObjective = async (editedObjective) => {
+    // onUpdateObjective agora retorna uma Promise da chamada da API
+    await onUpdateObjective(editedObjective.id, editedObjective);
   };
 
   const getProgressGradientId = (p) => {
@@ -161,7 +183,6 @@ const ObjectiveItem = ({ item, onUpdateObjective, onDeleteObjective }) => {
     return 'gradientRed';
   };
 
-  // SVG Donut Chart constants
   const RADIUS = 35;
   const STROKE_WIDTH = 8;
   const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
@@ -170,6 +191,7 @@ const ObjectiveItem = ({ item, onUpdateObjective, onDeleteObjective }) => {
   return (
     <>
       <div className={`${styles.objectiveItem} ${isDeleting ? styles.isDeleting : ''}`} onClick={() => setShowActions(!showActions)}>
+        {/* ... (conteúdo visual do item) ... */}
         <div className={styles.objectiveHeader}>
             <h3 className={styles.objectiveTitle}>{item.title}</h3>
             <span className={styles.objectiveProgress}>{progress.toFixed(1)}%</span>
@@ -222,10 +244,39 @@ const ObjectivesList = ({ objectives, onUpdateObjective, onDeleteObjective }) =>
     setLocalObjectives(objectives);
   }, [objectives]);
   
-  const handleObjectiveDeleted = (deletedId) => {
+  // 2. A função de exclusão agora chama a API
+  const handleObjectiveDeleted = async (deletedId) => {
+    // Atualização otimista da UI
     setLocalObjectives(current => current.filter(obj => obj.id !== deletedId));
-    // A função onDeleteObjective passada como prop ainda será chamada para a lógica de API
-    onDeleteObjective(deletedId);
+    
+    try {
+      await apiService.deleteObjective(deletedId);
+      // Se a prop onDeleteObjective for usada para outra coisa (ex: atualizar o context), chame-a aqui
+      if (onDeleteObjective) onDeleteObjective(deletedId);
+    } catch (error) {
+      alert(`Erro ao excluir objetivo: ${error.message}`);
+      // Reverte a UI em caso de erro
+      setLocalObjectives(objectives);
+    }
+  };
+  
+  // 3. A função de atualização agora chama a API
+  const handleObjectiveUpdated = async (id, updatedData) => {
+    // Atualiza o estado local para uma resposta rápida da UI
+    setLocalObjectives(currentObjs =>
+      currentObjs.map(obj => (obj.id === id ? { ...obj, ...updatedData } : obj))
+    );
+
+    try {
+      // Chama a API para salvar
+      await apiService.updateObjective(id, updatedData);
+      // Chama a prop original se ela existir
+      if (onUpdateObjective) onUpdateObjective(id, updatedData);
+    } catch(error) {
+        alert(`Erro ao atualizar objetivo: ${error.message}`);
+        // Reverte a UI em caso de erro
+        setLocalObjectives(objectives);
+    }
   };
   
   if (!localObjectives || localObjectives.length === 0) {
@@ -248,8 +299,9 @@ const ObjectivesList = ({ objectives, onUpdateObjective, onDeleteObjective }) =>
         <ObjectiveItem
           key={item.id}
           item={item}
-          onUpdateObjective={onUpdateObjective}
-          onDeleteObjective={() => handleObjectiveDeleted(item.id)} // Passa a função que atualiza a UI
+          // 4. Passa as novas funções que se comunicam com a API
+          onUpdateObjective={handleObjectiveUpdated}
+          onDeleteObjective={handleObjectiveDeleted}
         />
       ))}
     </div>

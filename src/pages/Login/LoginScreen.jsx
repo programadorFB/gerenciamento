@@ -41,6 +41,32 @@ const LoginScreen = () => {
         return true;
     };
 
+    const formatCurrencyInput = (value) => {
+        // Remove tudo que não é número, ponto ou vírgula
+        let cleaned = value.replace(/[^\d,]/g, '');
+        
+        // Permite apenas uma vírgula
+        const commaCount = cleaned.split(',').length - 1;
+        if (commaCount > 1) {
+            cleaned = cleaned.replace(/,+$/, '');
+        }
+        
+        // Limita a 2 casas decimais após a vírgula
+        if (cleaned.includes(',')) {
+            const parts = cleaned.split(',');
+            if (parts[1].length > 2) {
+                cleaned = parts[0] + ',' + parts[1].substring(0, 2);
+            }
+        }
+        
+        return cleaned;
+    };
+
+    const handleInitialBankChange = (e) => {
+        const formattedValue = formatCurrencyInput(e.target.value);
+        setInitialBank(formattedValue);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validateForm()) {
@@ -53,7 +79,13 @@ const LoginScreen = () => {
             if (isLogin) {
                 await login(email.trim().toLowerCase(), password);
             } else {
-                const bankAmount = Number(parseFloat(initialBank.replace(',', '.')).toFixed(2));
+                // Converte o valor para número e formata para 2 casas decimais
+                const bankAmount = parseFloat(initialBank.replace(',', '.'));
+                if (isNaN(bankAmount) || bankAmount <= 0) {
+                    alert('Valor da banca inicial inválido.');
+                    return;
+                }
+
                 await register({
                     name: name.trim(),
                     email: email.trim().toLowerCase(),
@@ -75,6 +107,8 @@ const LoginScreen = () => {
         setPassword('');
         setName('');
         setInitialBank('');
+        setRiskValue(5);
+        clearError();
     };
 
     return (
@@ -152,21 +186,31 @@ const LoginScreen = () => {
                                         type="text"
                                         inputMode="decimal"
                                         value={initialBank}
-                                        onChange={(e) => setInitialBank(e.target.value)}
+                                        onChange={handleInitialBankChange}
                                         placeholder="100,00"
                                         required
                                     />
                                 </div>
+                                <small className={styles.helpText}>
+                                    Este valor será registrado como sua banca inicial (is_initial_bank = true)
+                                </small>
                             </div>
 
                             <div className={styles.inputGroup}>
                                 <label>Perfil de Investimento</label>
                                 <RiskSlider value={riskValue} onValueChange={setRiskValue} />
+                                <small className={styles.helpText}>
+                                    Defina seu nível de risco para metas de lucro automáticas
+                                </small>
                             </div>
                         </>
                     )}
 
-                    <button type="submit" className={styles.submitButton} disabled={isLoading}>
+                    <button 
+                        type="submit" 
+                        className={styles.submitButton} 
+                        disabled={isLoading || !validateForm()}
+                    >
                         <div className={styles.goldGradient}>
                             {isLoading
                                 ? 'Carregando...'

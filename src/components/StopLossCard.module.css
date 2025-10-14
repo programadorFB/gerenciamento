@@ -69,17 +69,17 @@
     gap: 1.25rem;
 }
 
-.percentageSection, .amountSection {
+.percentageSection {
     display: flex;
     justify-content: space-around;
     text-align: center;
 }
 
-.percentageItem, .amountItem {
+.percentageItem {
     flex: 1;
 }
 
-.percentageLabel, .amountLabel {
+.percentageLabel {
     font-size: 0.8rem;
     color: #a0a0a0;
     display: block;
@@ -90,10 +90,6 @@
     font-size: 1.75rem;
     font-weight: 700;
     color: #fff;
-}
-
-.criticalText {
-    color: #F44336 !important;
 }
 
 .progressSection {
@@ -121,17 +117,6 @@
     margin-top: 8px;
 }
 
-.amountSection {
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.amountValue {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #fff;
-}
-
 .statusMessage {
     background-color: rgba(0, 0, 0, 0.2);
     padding: 12px;
@@ -140,6 +125,7 @@
     text-align: center;
     font-size: 0.9rem;
 }
+
 .criticalText {
   color: #F44336;
   font-weight: bold;
@@ -150,6 +136,8 @@
   flex-direction: column;
   gap: 8px;
   margin-top: 16px;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .amountItem {
@@ -167,4 +155,48 @@
 .amountValue {
   font-weight: 600;
   font-size: 0.95rem;
+  color: #fff;
+}
+
+/* Estilos do Slider */
+.sliderSection {
+  padding: 10px 0;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+  opacity: 0.8;
+  transition: opacity .2s;
+  margin-top: 12px;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--status-color, #4CAF50);
+  cursor: pointer;
+  border: 2px solid #1c1c1c;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--status-color, #4CAF50);
+  cursor: pointer;
+  border: 2px solid #1c1c1c;
 }

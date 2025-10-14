@@ -1,6 +1,42 @@
 .container {
   background-color: #000;
   color: #fff;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+/* Header Styles */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #333;
+  background-color: #000;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: #FFD700;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #FFD700;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+.headerSpacer {
+  width: 40px; /* Same as back button for balance */
 }
 
 .imageSection {
@@ -52,11 +88,21 @@
   cursor: pointer;
   font-weight: bold;
   font-size: 14px;
+  color: #000;
+  transition: background-color 0.2s ease;
+}
+
+.imageButton:hover {
+  background-color: #E6C200;
 }
 
 .removeButton {
   background-color: #F44336;
   color: #fff;
+}
+
+.removeButton:hover {
+  background-color: #D32F2F;
 }
 
 .section {
@@ -92,11 +138,18 @@
   font-size: 16px;
   color: #fff;
   box-sizing: border-box;
+  transition: border-color 0.2s ease;
 }
 
 .input:focus {
   outline: none;
   border-color: #FFD700;
+}
+
+.input:disabled {
+  background-color: #0A0A0A;
+  color: #888;
+  cursor: not-allowed;
 }
 
 .disabledInput {
@@ -126,6 +179,7 @@
   font-weight: bold;
   cursor: pointer;
   width: 100%;
+  transition: all 0.2s ease;
 }
 
 .button:disabled {
@@ -133,12 +187,46 @@
   cursor: not-allowed;
 }
 
+.button:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .saveButton {
   background-color: #FFD700;
   color: #000;
 }
 
+.saveButton:not(:disabled):hover {
+  background-color: #E6C200;
+}
+
 .logoutButton {
   background-color: #F44336;
   color: #fff;
+}
+
+.logoutButton:hover {
+  background-color: #D32F2F;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .imageButtons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .imageButton {
+    width: 100%;
+  }
+  
+  .header {
+    padding: 12px 16px;
+  }
+  
+  .title {
+    font-size: 18px;
+  }
 }

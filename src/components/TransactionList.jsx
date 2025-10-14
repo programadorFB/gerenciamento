@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { MdClose, MdEvent, MdAccessTime, MdEdit, MdDelete, MdInfoOutline, MdTouchApp } from 'react-icons/md';
 import { FaPlusCircle, FaMinusCircle, FaReceipt } from 'react-icons/fa';
-import { FinancialProvider, useFinancial } from '../contexts/FinancialContext'; // Ajuste o caminho se necessário
+import { FinancialProvider, useFinancial } from '../contexts/FinancialContext';
 import styles from './TransactionList.module.css';
 
 // --- COMPONENTE DO MODAL DE EDIÇÃO ---
@@ -63,6 +63,13 @@ const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
     }
   };
 
+  const handleTypeChange = (type) => {
+    setEditedTransaction(prev => ({ ...prev, type }));
+    if (errors.type) {
+      setErrors(prev => ({ ...prev, type: null }));
+    }
+  };
+
   const predefinedCategories = ['Alimentação', 'Transporte', 'Entretenimento', 'Saúde', 'Educação', 'Compras', 'Contas', 'Investimento', 'Emergência', 'Outros'];
 
   if (!visible) return null;
@@ -78,6 +85,38 @@ const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
         </header>
 
         <div className={styles.modalContent}>
+          {/* Tipo */}
+          <div className={styles.inputContainer}>
+            <label className={styles.inputLabel}>Tipo *</label>
+            <div className={styles.typeContainer}>
+              <button
+                className={`${styles.typeButton} ${editedTransaction.type === 'deposit' ? styles.typeButtonActiveDeposit : ''}`}
+                onClick={() => handleTypeChange('deposit')}
+              >
+                <FaPlusCircle /> Depósito
+              </button>
+              <button
+                className={`${styles.typeButton} ${editedTransaction.type === 'withdraw' ? styles.typeButtonActiveWithdraw : ''}`}
+                onClick={() => handleTypeChange('withdraw')}
+              >
+                <FaMinusCircle /> Saque
+              </button>
+              <button
+                className={`${styles.typeButton} ${editedTransaction.type === 'gains' ? styles.typeButtonActiveDeposit : ''}`}
+                onClick={() => handleTypeChange('gains')}
+              >
+                <FaPlusCircle /> Ganho
+              </button>
+              <button
+                className={`${styles.typeButton} ${editedTransaction.type === 'losses' ? styles.typeButtonActiveWithdraw : ''}`}
+                onClick={() => handleTypeChange('losses')}
+              >
+                <FaMinusCircle /> Perda
+              </button>
+            </div>
+            {errors.type && <p className={styles.errorText}>{errors.type}</p>}
+          </div>
+
           {/* Categoria */}
           <div className={styles.inputContainer}>
             <label className={styles.inputLabel}>Categoria *</label>
@@ -102,6 +141,7 @@ const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
               ))}
             </div>
           </div>
+
           {/* Valor */}
           <div className={styles.inputContainer}>
             <label className={styles.inputLabel}>Valor (R$) *</label>
@@ -114,26 +154,6 @@ const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
               placeholder="0,00"
             />
             {errors.amount && <p className={styles.errorText}>{errors.amount}</p>}
-          </div>
-
-          {/* Tipo */}
-          <div className={styles.inputContainer}>
-            <label className={styles.inputLabel}>Tipo *</label>
-            <div className={styles.typeContainer}>
-              <button
-                className={`${styles.typeButton} ${editedTransaction.type === 'deposit' ? styles.typeButtonActiveDeposit : ''}`}
-                onClick={() => setEditedTransaction(prev => ({ ...prev, type: 'deposit' }))}
-              >
-                <FaPlusCircle /> Depósito
-              </button>
-              <button
-                className={`${styles.typeButton} ${editedTransaction.type === 'withdraw' ? styles.typeButtonActiveWithdraw : ''}`}
-                onClick={() => setEditedTransaction(prev => ({ ...prev, type: 'withdraw' }))}
-              >
-                <FaMinusCircle /> Saque
-              </button>
-            </div>
-            {errors.type && <p className={styles.errorText}>{errors.type}</p>}
           </div>
 
           {/* Data e Hora */}
@@ -182,9 +202,52 @@ const TransactionItem = ({ item, showActions = true }) => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const isDeposit = item.type === 'deposit';
+  // Função para determinar as cores e ícones baseados no tipo
+  const getTransactionInfo = () => {
+    switch (item.type) {
+      case 'deposit':
+      case 'gains':
+        return {
+          isPositive: true,
+          icon: <FaPlusCircle className={styles.depositColor} size={20} />,
+          sideIndicatorClass: styles.depositBg,
+          iconBgClass: styles.depositIconBg,
+          amountClass: styles.depositColor,
+          sign: '+',
+          typeLabel: item.type === 'gains' ? 'Ganho' : 'Depósito'
+        };
+      case 'withdraw':
+      case 'losses':
+        return {
+          isPositive: false,
+          icon: <FaMinusCircle className={styles.withdrawColor} size={20} />,
+          sideIndicatorClass: styles.withdrawBg,
+          iconBgClass: styles.withdrawIconBg,
+          amountClass: styles.withdrawColor,
+          sign: '-',
+          typeLabel: item.type === 'losses' ? 'Perda' : 'Saque'
+        };
+      default:
+        // Fallback para tipos desconhecidos
+        const isPositive = parseFloat(item.amount) >= 0;
+        return {
+          isPositive,
+          icon: isPositive ? 
+            <FaPlusCircle className={styles.depositColor} size={20} /> : 
+            <FaMinusCircle className={styles.withdrawColor} size={20} />,
+          sideIndicatorClass: isPositive ? styles.depositBg : styles.withdrawBg,
+          iconBgClass: isPositive ? styles.depositIconBg : styles.withdrawIconBg,
+          amountClass: isPositive ? styles.depositColor : styles.withdrawColor,
+          sign: isPositive ? '+' : '-',
+          typeLabel: 'Transação'
+        };
+    }
+  };
 
-  const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
+  const transactionInfo = getTransactionInfo();
+  const amountValue = Math.abs(parseFloat(item.amount) || 0);
+
+  const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
   const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
 
   const handleEdit = (e) => {
@@ -195,7 +258,7 @@ const TransactionItem = ({ item, showActions = true }) => {
   
   const handleDelete = (e) => {
     e.stopPropagation();
-    const confirmationMessage = `Tem certeza que deseja excluir a transação "${item.category}"?\n\nValor: ${formatCurrency(item.amount)}\nData: ${formatDate(item.date)}\n\nEsta ação não pode ser desfeita.`;
+    const confirmationMessage = `Tem certeza que deseja excluir a transação "${item.category}"?\n\nValor: ${formatCurrency(item.amount)}\nData: ${formatDate(item.date)}\nTipo: ${transactionInfo.typeLabel}\n\nEsta ação não pode ser desfeita.`;
     if (window.confirm(confirmationMessage)) {
       confirmDelete();
     }
@@ -236,26 +299,28 @@ const TransactionItem = ({ item, showActions = true }) => {
   };
 
   const itemClasses = `${styles.transactionItem} ${isDeleting ? styles.isDeleting : ''}`;
-  const amountColor = isDeposit ? styles.depositColor : styles.withdrawColor;
 
   return (
     <>
       <div className={itemClasses} onClick={() => showActions && setActionsVisible(!actionsVisible)}>
-        <div className={`${styles.sideIndicator} ${isDeposit ? styles.depositBg : styles.withdrawBg}`} />
+        <div className={`${styles.sideIndicator} ${transactionInfo.sideIndicatorClass}`} />
         
-        <div className={`${styles.transactionIcon} ${isDeposit ? styles.depositIconBg : styles.withdrawIconBg}`}>
-          {isDeposit ? <FaPlusCircle className={amountColor} size={20} /> : <FaMinusCircle className={amountColor} size={20} />}
+        <div className={`${styles.transactionIcon} ${transactionInfo.iconBgClass}`}>
+          {transactionInfo.icon}
         </div>
         
         <div className={styles.transactionDetails}>
-          <p className={styles.transactionCategory}>{item.category || 'Não categorizado'}</p>
+          <div className={styles.categoryRow}>
+            <p className={styles.transactionCategory}>{item.category || 'Não categorizado'}</p>
+            <span className={styles.typeBadge}>{transactionInfo.typeLabel}</span>
+          </div>
           <p className={styles.transactionDate}>{formatDate(item.date)}</p>
           {item.description && <p className={styles.transactionDescription}>{item.description}</p>}
         </div>
         
         <div className={styles.transactionAmountContainer}>
-          <p className={`${styles.transactionAmount} ${amountColor}`}>
-            {isDeposit ? '+' : '-'} {formatCurrency(item.amount)}
+          <p className={`${styles.transactionAmount} ${transactionInfo.amountClass}`}>
+            {transactionInfo.sign} {formatCurrency(amountValue)}
           </p>
           {showActions && <span className={styles.longPressHint}>Clique para ações</span>}
         </div>
@@ -282,9 +347,26 @@ const TransactionItem = ({ item, showActions = true }) => {
   );
 };
 
-
 // --- COMPONENTE PRINCIPAL DA LISTA ---
-const TransactionList = ({ transactions, showActions = true, emptyMessage }) => {
+const TransactionList = ({ transactions, showActions = true, emptyMessage, sortByRecent = true }) => {
+  // Ordena as transações por data (mais recentes primeiro)
+  const sortedTransactions = useMemo(() => {
+    if (!transactions || transactions.length === 0) return [];
+    
+    return [...transactions].sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      
+      if (sortByRecent) {
+        // Mais recentes primeiro (padrão)
+        return dateB - dateA;
+      } else {
+        // Mais antigos primeiro
+        return dateA - dateB;
+      }
+    });
+  }, [transactions, sortByRecent]);
+
   if (!transactions || transactions.length === 0) {
     return (
       <div className={styles.emptyContainer}>
@@ -303,10 +385,10 @@ const TransactionList = ({ transactions, showActions = true, emptyMessage }) => 
 
   return (
     <div className={styles.listContainer}>
-      {transactions.map((transaction) => (
+      {sortedTransactions.map((transaction) => (
         <TransactionItem key={transaction.id} item={transaction} showActions={showActions} />
       ))}
-      {showActions && transactions.length > 3 && (
+      {showActions && sortedTransactions.length > 3 && (
         <div className={styles.listFooter}>
           <div className={styles.tipContainer}>
             <MdTouchApp size={16} />

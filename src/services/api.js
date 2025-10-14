@@ -1,15 +1,11 @@
 // Enhanced api.js ported for React-Vite with unified transaction system support
 import axios from 'axios';
 
-// 1. A função getBaseURL foi simplificada para a web.
-// Usa import.meta.env.DEV (padrão do Vite) em vez de __DEV__ e remove a checagem de Platform.
 const getBaseURL = () => {
   if (import.meta.env.DEV) {
-    // Para desenvolvimento web, o localhost é o padrão.
-    return 'https://gerenciamento.sortehub.online/';
+    return 'http://127.0.0.1:5000';
   } else {
-    // URL da sua API em produção
-    return 'https://gerenciamento.sortehub.online/';
+    return 'http://127.0.0.1:5000';
   }
 };
 
@@ -33,8 +29,6 @@ const TRANSACTION_TYPES = {
 
 const VALID_TRANSACTION_TYPES = Object.values(TRANSACTION_TYPES);
 
-// 2. O tokenManager foi atualizado para usar localStorage em vez de AsyncStorage.
-// As funções agora são síncronas, pois o localStorage é síncrono.
 const tokenManager = {
   getToken() {
     try {
@@ -65,7 +59,6 @@ const tokenManager = {
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    // A chamada ao tokenManager agora é síncrona.
     const token = tokenManager.getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -100,10 +93,7 @@ api.interceptors.response.use(
     }
 
     if (error.response?.status === 401) {
-      // A chamada para limpar o token agora é síncrona
       tokenManager.clearToken();
-      // Aqui você pode redirecionar para a página de login ou disparar um evento de logout
-      // Ex: window.location.href = '/login';
     }
 
     const message = error.response?.data?.error || 
@@ -115,7 +105,7 @@ api.interceptors.response.use(
   }
 );
 
-// Updated API service
+// Updated API service with is_initial_bank support
 const apiService = {
   // Constants for transaction types
   TRANSACTION_TYPES,
@@ -142,7 +132,7 @@ const apiService = {
   },
 
   // REGISTRO ATUALIZADO COM VALIDAÇÃO DE BANCA INICIAL
-  async register({name, email, password, initialBank,riskValue}) {
+  async register({name, email, password, initialBank, riskValue}) {
     try {
       if (!name || !email || !password) {
         return { success: false, error: 'Nome, email e senha são obrigatórios' };
@@ -186,10 +176,35 @@ const apiService = {
     }
   },
 
-  // User profile
+  // User profile management
   async getUserProfile() {
     try {
-      return await api.get('/user/profile');
+      const response = await api.get('/user/profile');
+      return response;
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  async updateUserProfile(profileData) {
+    try {
+      const config = profileData instanceof FormData ? {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      } : {};
+
+      const response = await api.put('/user/profile', profileData, config);
+      return response;
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  async changePassword(passwordData) {
+    try {
+      const response = await api.put('/user/change-password', passwordData);
+      return response;
     } catch (error) {
       return { success: false, error: error.message };
     }
@@ -213,7 +228,58 @@ const apiService = {
   getBalance: () => api.get('/balance'),
   getTransactions: (params = {}) => api.get('/transactions', { params }),
   
-  // TRANSAÇÃO COMPLETAMENTE ATUALIZADA PARA O SISTEMA UNIFICADO
+  // NOVA FUNÇÃO: Obter transações de banca inicial específicas
+  async getInitialBankTransactions() {
+    try {
+      return await api.get('/transactions', { 
+        params: { is_initial_bank: true } 
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  // NOVA FUNÇÃO: Obter saldo da banca inicial
+  async getInitialBankBalance() {
+    try {
+      const response = await api.get('/balance/initial-bank');
+      return response;
+    } catch (error) {
+      // Se o endpoint não existir, calculamos localmente
+      const transactionsResponse = await this.getInitialBankTransactions();
+      if (transactionsResponse.success) {
+        const initialBankBalance = this.calculateInitialBankBalance(transactionsResponse.data);
+        return { 
+          success: true, 
+          balance: initialBankBalance,
+          transactions: transactionsResponse.data 
+        };
+      }
+      return { success: false, error: error.message };
+    }
+  },
+
+  // FUNÇÃO AUXILIAR: Calcular banca inicial localmente
+  calculateInitialBankBalance(transactions) {
+    if (!transactions || transactions.length === 0) return 0;
+
+    const total = transactions.reduce((sum, transaction) => {
+      const amount = transaction.amount && !isNaN(parseFloat(transaction.amount)) 
+        ? parseFloat(transaction.amount) 
+        : 0;
+      
+      if (transaction.type === TRANSACTION_TYPES.DEPOSIT) {
+        return sum + amount;
+      } else if (transaction.type === TRANSACTION_TYPES.WITHDRAW) {
+        return sum - amount;
+      }
+      return sum;
+    }, 0);
+    
+    return Math.max(0, total);
+  },
+
+  // TRANSAÇÃO COMPLETAMENTE ATUALIZADA PARA O SISTEMA UNIFICADO COM is_initial_bank
   async createTransaction(data) {
     try {
       if (!data.type || !VALID_TRANSACTION_TYPES.includes(data.type)) {
@@ -232,7 +298,7 @@ const apiService = {
         date: data.date,
         description: data.description || this.getDefaultDescription(data.type),
         category: data.category || this.getDefaultCategory(data.type),
-        isInitialBank: data.isInitialBank || false
+        is_initial_bank: data.is_initial_bank || false // ← COLUNA ATUALIZADA
       };
 
       return await api.post('/transactions', transactionData);
@@ -263,7 +329,7 @@ const apiService = {
     }
   },
 
-  // Validação específica para cada tipo de transação (pode ser útil no frontend)
+  // Validação específica para cada tipo de transação
   validateTransaction(data) {
     if (!data.type || !VALID_TRANSACTION_TYPES.includes(data.type)) {
       return { isValid: false, error: 'Tipo de transação é obrigatório e deve ser válido' };
@@ -275,7 +341,8 @@ const apiService = {
       return { isValid: false, error: 'Data é obrigatória' };
     }
 
-    if (data.type === TRANSACTION_TYPES.DEPOSIT && data.isInitialBank && data.amount < 1) {
+    // Validação específica para transações de banca inicial
+    if (data.is_initial_bank && data.type === TRANSACTION_TYPES.DEPOSIT && data.amount < 1) {
       return { isValid: false, error: 'Banca inicial deve ser de pelo menos R$ 1,00' };
     }
 
@@ -347,25 +414,21 @@ const apiService = {
 
   async testConnection() {
     try {
-      // Usamos o endpoint /health que não requer autenticação
-      const response = await api.get('/health', { timeout: 5000 }); // Timeout de 5s
+      const response = await api.get('/health', { timeout: 5000 });
       
-      // Verificamos se a resposta tem um status de sucesso (2xx)
       if (response && response.status === 'ok') {
         console.log('API Connection successful:', response);
         return { success: true, data: response };
       } else {
-        // Se a resposta não for o esperado, consideramos falha
         console.error('API Connection failed: Invalid response', response);
         return { success: false, error: 'Resposta inválida da API' };
       }
     } catch (error) {
-      // Se houver qualquer erro na chamada (timeout, network error, etc.)
       console.error('API Connection failed:', error.message);
       return { success: false, error: error.message };
     }
   },
-
+  
   // Utility methods
   validateInitialBank(amount) {
     const minAmount = 1.00;

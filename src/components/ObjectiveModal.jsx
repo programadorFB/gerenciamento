@@ -80,10 +80,24 @@ const SimpleDatePicker = ({ visible, onClose, onDateSelect, selectedDate }) => {
   return (
     <div className={styles.datePickerOverlay}>
       <div className={styles.datePickerContainer}>
-        <div className={styles.datePickerHeader}>
-          <span className={styles.datePickerTitle}>{months[month]} {year}</span>
-          <button onClick={onClose} className={styles.datePickerCloseButton}>✕</button>
-        </div>
+<div className={styles.datePickerHeader}>
+    {/* Controles do Ano */}
+    <div className={styles.datePickerNav}>
+        <button onClick={() => changeYear(-1)} className={styles.navButton}>«</button>
+        <span>{year}</span>
+        <button onClick={() => changeYear(1)} className={styles.navButton}>»</button>
+    </div>
+
+    {/* Controles do Mês */}
+    <div className={styles.datePickerNav}>
+        <button onClick={() => changeMonth(-1)} className={styles.navButton}>‹</button>
+        <span className={styles.datePickerTitle}>{months[month]}</span>
+        <button onClick={() => changeMonth(1)} className={styles.navButton}>›</button>
+    </div>
+    
+    <button onClick={onClose} className={styles.datePickerCloseButton}>✕</button>
+</div>
+
         
         <div className={styles.calendarContainer}>
           <div className={styles.calendarHeader}>

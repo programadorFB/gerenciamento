@@ -170,7 +170,7 @@ const Dashboard = () => {
                                         color={isStopLossTriggered ? '#F44336' : '#FF9800'} 
                                     />
                                 </div>
-                                <span className={styles.riskCardTitle}>Limite de Perda</span>
+                                <span className={styles.riskCardTitle}>StopLoss</span>
                             </div>
                             
                             {/* LÓGICA DE EXIBIÇÃO MODIFICADA */}
@@ -315,10 +315,10 @@ const Dashboard = () => {
                         </button>
                     </div>
                     {recentTransactions.length > 0 ? (
-                        <TransactionList 
-                            transactions={recentTransactions} 
-                            showActions={false} 
-                        />
+                       <TransactionList 
+                            transactions={transactions}
+                            emptyMessage="Nenhuma transação encontrada"
+                            />
                     ) : (
                         <div className={styles.emptyState}>
                             <FaReceipt size={40} />

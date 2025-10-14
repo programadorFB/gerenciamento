@@ -1,18 +1,19 @@
 import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
-import apiService from '../services/api'; // Supondo que você tenha este serviço
-import { useAuth } from './AuthContext'; // Supondo que você tenha este contexto
+import apiService from '../services/api';
+import { useAuth } from './AuthContext';
 
 const FinancialContext = createContext();
 
 // Action types
 const FINANCIAL_ACTIONS = {
+  
+  SET_BALANCE: 'SET_BALANCE',
   SET_LOADING: 'SET_LOADING',
   SET_REFRESHING: 'SET_REFRESHING',
   SET_TRANSACTIONS: 'SET_TRANSACTIONS',
   ADD_TRANSACTION: 'ADD_TRANSACTION',
   UPDATE_TRANSACTION: 'UPDATE_TRANSACTION',
   DELETE_TRANSACTION: 'DELETE_TRANSACTION',
-  SET_BALANCE: 'SET_BALANCE',
   SET_OBJECTIVES: 'SET_OBJECTIVES',
   ADD_OBJECTIVE: 'ADD_OBJECTIVE',
   UPDATE_OBJECTIVE: 'UPDATE_OBJECTIVE',
@@ -26,7 +27,10 @@ const FINANCIAL_ACTIONS = {
 // Initial state
 const initialState = {
   transactions: [],
-  balance: 0,
+    balance: {
+    current: 0,
+    initial: 0,
+  },
   objectives: [],
   analytics: {
     overview: null,
@@ -89,7 +93,7 @@ const financialReducer = (state, action) => {
     case FINANCIAL_ACTIONS.SET_BALANCE:
       return {
         ...state,
-        balance: action.payload,
+        balance: { ...state.balance, ...action.payload },
       };
 
     case FINANCIAL_ACTIONS.SET_OBJECTIVES:
@@ -157,6 +161,20 @@ const CACHE_KEYS = {
   LAST_SYNC: 'last_sync_time',
 };
 
+// Função auxiliar para normalizar transações
+const normalizeTransaction = (transaction) => {
+  const amount = parseFloat(transaction.amount) || 0;
+  
+  return {
+    ...transaction,
+    amount: Math.abs(amount),
+    // Garante que o tipo seja sempre um dos quatro suportados
+    type: ['deposit', 'withdraw', 'gains', 'losses'].includes(transaction.type) 
+      ? transaction.type 
+      : (amount >= 0 ? 'deposit' : 'withdraw')
+  };
+};
+
 export const FinancialProvider = ({ children }) => {
   const [state, dispatch] = useReducer(financialReducer, initialState);
   const { isAuthenticated, user } = useAuth();
@@ -177,9 +195,10 @@ export const FinancialProvider = ({ children }) => {
       const cachedObjectives = localStorage.getItem(CACHE_KEYS.OBJECTIVES);
 
       if (cachedTransactions) {
+        const transactions = JSON.parse(cachedTransactions).map(normalizeTransaction);
         dispatch({
           type: FINANCIAL_ACTIONS.SET_TRANSACTIONS,
-          payload: JSON.parse(cachedTransactions),
+          payload: transactions,
         });
       }
 
@@ -238,7 +257,7 @@ export const FinancialProvider = ({ children }) => {
     if (showRefreshing) {
       dispatch({ type: FINANCIAL_ACTIONS.SET_REFRESHING, payload: true });
     }
-    
+
     try {
       const [transactionsResponse, balanceResponse, objectivesResponse] = await Promise.all([
         apiService.getTransactions(),
@@ -247,20 +266,30 @@ export const FinancialProvider = ({ children }) => {
       ]);
 
       if (transactionsResponse.success) {
+        const normalizedTransactions = transactionsResponse.data.map(normalizeTransaction);
         dispatch({
           type: FINANCIAL_ACTIONS.SET_TRANSACTIONS,
-          payload: transactionsResponse.data,
+          payload: normalizedTransactions,
         });
-        saveToCache(CACHE_KEYS.TRANSACTIONS, transactionsResponse.data);
+        saveToCache(CACHE_KEYS.TRANSACTIONS, normalizedTransactions);
       }
 
       if (balanceResponse.success) {
-        const balance = parseFloat(balanceResponse.balance);
+        // 1. Captura ambos os valores da API
+        const currentBalance = parseFloat(balanceResponse.balance);
+        const initialBalanceValue = parseFloat(balanceResponse.initial_bank);
+
+        // 2. Despacha ambos para o reducer
         dispatch({
           type: FINANCIAL_ACTIONS.SET_BALANCE,
-          payload: balance,
+          payload: {
+            current: currentBalance,
+            initial: initialBalanceValue,
+          },
         });
-        saveToCache(CACHE_KEYS.BALANCE, balance.toString());
+
+        // 3. Salva no cache (opcionalmente pode salvar o objeto todo)
+        saveToCache(CACHE_KEYS.BALANCE, currentBalance.toString());
       }
 
       if (objectivesResponse.success) {
@@ -289,20 +318,23 @@ export const FinancialProvider = ({ children }) => {
   const addTransaction = async (transactionData) => {
     try {
       const currentState = state;
-      const response = await apiService.createTransaction(transactionData);
+      const normalizedData = normalizeTransaction(transactionData);
+      const response = await apiService.createTransaction(normalizedData);
       
       if (response.success) {
+        const normalizedTransaction = normalizeTransaction(response.data);
+        
         dispatch({
           type: FINANCIAL_ACTIONS.ADD_TRANSACTION,
-          payload: response.data,
+          payload: normalizedTransaction,
         });
         
         let newBalance;
-        const transactionAmount = parseFloat(response.data.amount);
+        const transactionAmount = parseFloat(normalizedTransaction.amount);
 
-        if (response.data.type === 'deposit' || response.data.type === 'gains') {
+        if (normalizedTransaction.type === 'deposit' || normalizedTransaction.type === 'gains') {
           newBalance = currentState.balance + transactionAmount;
-        } else if (response.data.type === 'withdraw' || response.data.type === 'losses') {
+        } else if (normalizedTransaction.type === 'withdraw' || normalizedTransaction.type === 'losses') {
           newBalance = currentState.balance - transactionAmount;
         } else {
           newBalance = currentState.balance;
@@ -313,11 +345,11 @@ export const FinancialProvider = ({ children }) => {
           payload: newBalance,
         });
         
-        const updatedTransactions = [response.data, ...currentState.transactions];
+        const updatedTransactions = [normalizedTransaction, ...currentState.transactions];
         saveToCache(CACHE_KEYS.TRANSACTIONS, updatedTransactions);
         saveToCache(CACHE_KEYS.BALANCE, newBalance.toString());
         
-        return { success: true, data: response.data };
+        return { success: true, data: normalizedTransaction };
       } else {
         return { success: false, error: response.error };
       }
@@ -329,17 +361,21 @@ export const FinancialProvider = ({ children }) => {
 
   const updateTransaction = async (transactionId, updateData) => {
     try {
-      const response = await apiService.updateTransaction(transactionId, updateData);
+      const normalizedData = normalizeTransaction(updateData);
+      const response = await apiService.updateTransaction(transactionId, normalizedData);
       
       if (response.success) {
-        await refreshData(); 
+        const normalizedTransaction = normalizeTransaction(response.data);
         
         dispatch({
           type: FINANCIAL_ACTIONS.UPDATE_TRANSACTION,
-          payload: response.data,
+          payload: normalizedTransaction,
         });
 
-        return { success: true, data: response.data };
+        // Recálcula o saldo após atualização
+        await refreshData();
+        
+        return { success: true, data: normalizedTransaction };
       } else {
         return { success: false, error: response.error };
       }
@@ -354,12 +390,13 @@ export const FinancialProvider = ({ children }) => {
       const response = await apiService.deleteTransaction(transactionId);
       
       if (response.success) {
-        await refreshData();
-        
         dispatch({
           type: FINANCIAL_ACTIONS.DELETE_TRANSACTION,
           payload: transactionId,
         });
+        
+        // Recálcula o saldo após exclusão
+        await refreshData();
         
         return { success: true };
       } else {
@@ -558,30 +595,38 @@ export const FinancialProvider = ({ children }) => {
 
   const initialBankBalance = (() => {
     try {
-      const initialTx = state.transactions.find(tx => tx.is_initial_bank);
-      return initialTx && initialTx.amount && !isNaN(parseFloat(initialTx.amount)) 
-        ? parseFloat(initialTx.amount) 
-        : 0;
+      // Busca todas as transações de banca inicial
+      const initialTransactions = state.transactions.filter(tx => tx.is_initial_bank === true);
+      
+      if (initialTransactions.length === 0) return 0;
+
+      const total = initialTransactions.reduce((sum, tx) => {
+        const amount = tx.amount && !isNaN(parseFloat(tx.amount)) ? parseFloat(tx.amount) : 0;
+        
+        if (tx.type === 'deposit') {
+          return sum + amount;
+        } else if (tx.type === 'withdraw') {
+          return sum - amount;
+        }
+        return sum;
+      }, 0);
+      
+      return Math.max(0, total);
     } catch (error) {
       console.error('Error getting initial bank balance:', error);
       return 0;
     }
   })();
 
-  const getEffectiveInitialBalance = () => {
-    try {
-      const effectiveBalance = initialBankBalance || totalDeposits || 0;
-      return isNaN(effectiveBalance) ? 0 : effectiveBalance;
-    } catch (error) {
-      console.error('Error calculating effective initial balance:', error);
-      return 0;
-    }
-  };
 
+  const getEffectiveInitialBalance = () => {
+    return state.balance.initial || 0;
+  };
+// Também modifique a função initialBankBalance para ser mais precisa:
   const getOperationalProfit = () => {
     try {
       const effectiveInitial = getEffectiveInitialBalance();
-      const profit = state.balance - effectiveInitial;
+      const profit = state.balanceInitial - effectiveInitial;
       return isNaN(profit) ? 0 : profit;
     } catch (error) {
       console.error('Error calculating operational profit:', error);
@@ -618,6 +663,7 @@ export const FinancialProvider = ({ children }) => {
         const amount = tx.amount && !isNaN(parseFloat(tx.amount)) ? parseFloat(tx.amount) : 0;
         
         if (tx.type === 'deposit') monthlyData[monthKey].deposits += amount;
+        else if (tx.type === 'initial-deposit') monthlyData[monthKey].initialBalance += amount;
         else if (tx.type === 'withdraw') monthlyData[monthKey].withdraws += amount;
         else if (tx.type === 'gains') monthlyData[monthKey].gains += amount;
         else if (tx.type === 'losses') monthlyData[monthKey].losses += amount;
@@ -657,7 +703,8 @@ export const FinancialProvider = ({ children }) => {
   const value = {
     // State
     transactions: state.transactions,
-    balance: state.balance,
+    balance: state.balance.current,
+    initialBankBalance: state.balance.initial,
     objectives: state.objectives,
     analytics: state.analytics,
     loading: state.loading,

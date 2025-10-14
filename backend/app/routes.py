@@ -91,9 +91,106 @@ def _get_user_initial_bank(user_id):
     
     # Valor padrão se não encontrar
     return Decimal('0.00')
-
+@main.route('/auth/logout', methods=['POST'])
+@token_required
+def logout(current_user_id):
+    """
+    Realiza logout do usuário
+    """
+    try:
+        # Em sistemas JWT stateless, o logout é basicamente esquecer o token no frontend
+        # Mas podemos registrar o logout para auditoria se necessário
+        return jsonify({
+            'success': True,
+            'message': 'Logout realizado com sucesso'
+        })
+    except Exception as e:
+        return jsonify({'error': 'Erro ao realizar logout'}), 500
 # === AUTHENTICATION ROUTES ===
+@main.route('/user/profile', methods=['PUT'])
+@token_required
+def update_user_profile(current_user_id):
+    try:
+        user = User.query.get(current_user_id)
+        if not user:
+            return jsonify({'error': 'Usuário não encontrado'}), 404
 
+        # Acessar dados do formulário e arquivo
+        name = request.form.get('name')
+        current_password = request.form.get('current_password')
+        new_password = request.form.get('new_password')
+        remove_profile_photo = request.form.get('remove_profile_photo') == 'true' # ✅ Converter string para booleano
+
+        profile_photo_file = request.files.get('profile_photo')
+
+        # 1. Atualizar nome
+        if name and name.strip() and user.name != name.strip():
+            user.name = name.strip()
+
+        # 2. Processar alteração de senha
+        if new_password:
+            # ✅ Validar a senha atual antes de prosseguir
+            if not current_password:
+                return jsonify({'error': 'Senha atual é obrigatória para alterar a senha'}), 400
+            
+            current_password_hash = hashlib.sha256(current_password.encode()).hexdigest()
+            if user.password_hash != current_password_hash:
+                return jsonify({'error': 'Senha atual incorreta'}), 400
+            
+            if len(new_password) < 6:
+                return jsonify({'error': 'A nova senha deve ter pelo menos 6 caracteres'}), 400
+            
+            new_password_hash = hashlib.sha256(new_password.encode()).hexdigest()
+            user.password_hash = new_password_hash
+
+        # 3. Processar remoção de foto de perfil
+        if remove_profile_photo:
+            user.profile_photo = None
+            # Adicionar lógica de exclusão do arquivo físico, se aplicável
+            # import os
+            # if user.profile_photo and os.path.exists(os.path.join('uploads/profiles', user.profile_photo)):
+            #     os.remove(os.path.join('uploads/profiles', user.profile_photo))
+            
+        # 4. Processar upload de nova foto
+        if profile_photo_file:
+            # ... (Lógica de validação e salvamento do arquivo, como já está)
+            # Validar tipo de arquivo
+            if not profile_photo_file.content_type.startswith('image/'):
+                return jsonify({'error': 'Apenas arquivos de imagem são permitidos'}), 400
+            
+            # Validar tamanho (5MB)
+            profile_photo_file.seek(0, 2)
+            file_size = profile_photo_file.tell()
+            profile_photo_file.seek(0)
+            if file_size > 5 * 1024 * 1024:
+                return jsonify({'error': 'A imagem deve ter no máximo 5MB'}), 400
+            
+            import time
+            filename = f"profile_{user.id}_{int(time.time())}.jpg"
+            upload_folder = 'uploads/profiles'
+            os.makedirs(upload_folder, exist_ok=True)
+            file_path = os.path.join(upload_folder, filename)
+            profile_photo_file.save(file_path)
+            user.profile_photo = filename
+        
+        user.updated_at = datetime.utcnow()
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Perfil atualizado com sucesso',
+            'user': {
+                'id': user.id,
+                'name': user.name,
+                'email': user.email,
+                'profile_photo': user.profile_photo
+            }
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Erro ao atualizar perfil: {str(e)}")
+        return jsonify({'error': f'Erro ao atualizar perfil: {str(e)}'}), 500    
 @main.route('/auth/register', methods=['POST'])
 def register():
     data = request.json
@@ -101,22 +198,25 @@ def register():
     email = data.get('email')
     password = data.get('password')
     initial_bank = data.get('initialBank', 0)
-    risk_level =  data.get('riskLevel',5)
+    risk_level = data.get('riskLevel', 5)
     
-    # VALIDAÇÃO OBRIGATÓRIA DA BANCA INICIAL
+    # Validação obrigatória da banca inicial
     if not all([name, email, password]):
         return jsonify({'error': 'Nome, email e senha são obrigatórios'}), 400
     
-    if not initial_bank or initial_bank <= 0:
+    # ✅ CORREÇÃO: A banca inicial não deve ser zero ou negativa
+    try:
+        initial_bank_decimal = Decimal(str(initial_bank))
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Valor da banca inicial inválido'}), 400
+    
+    if initial_bank_decimal <= 0:
         return jsonify({'error': 'Banca inicial é obrigatória e deve ser maior que zero'}), 400
     
     if User.query.filter_by(email=email).first():
         return jsonify({'error': 'Email já está registrado'}), 400
     
     try:
-        # Converter para Decimal para garantir precisão
-        initial_bank_decimal = Decimal(str(initial_bank))
-        
         password_hash = hashlib.sha256(password.encode()).hexdigest()
         
         # 1. Criar o usuário
@@ -145,23 +245,21 @@ def register():
         
         db.session.add(initial_transaction)
         
-        # 3. Criar perfil de apostas padrão com a banca inicial
+        # 3. Criar perfil de apostas padrão com base nos dados da requisição
+        # ✅ CORREÇÃO: Usar os dados da requisição (`data`) e não um atributo inexistente (`user.profile_data`).
         betting_profile = BettingProfile(
             user_id=user.id,
-            profile_type=user.profile_data.get('id', 'balanced'),
-            title=user.profile_data.get('title', 'Perfil Padrão'),
-            description=user.profile_data.get('description', ''),
-            risk_level=data.get('riskLevel', 0),
-            initial_balance=Decimal(str(data.get('bankroll', 0))),
-            stop_loss=Decimal(str(data.get('stopLoss', 0))),
-            stop_loss_percentage=Decimal(str(data.get('stopLossPercentage', 0))),  # ✅ adicionar
-            profit_target=Decimal(str(data.get('profitTarget', 0))),
-            features=user.profile_data.get('features', []),
-            color=user.profile_data.get('color', '#FFD700'),
-            icon_name=user.profile_data.get('icon', {}).get('name', 'dice')
+            profile_type='balanced', # Defina um tipo padrão ou use um valor da requisição
+            title='Perfil Padrão',
+            description='Perfil de apostas criado automaticamente.',
+            risk_level=risk_level,
+            initial_balance=initial_bank_decimal,
+            stop_loss=Decimal('0.00'),
+            stop_loss_percentage=Decimal('0.00'),
+            profit_target=Decimal('0.00'),
+            is_active=True # ✅ Novo: garantir que o perfil seja ativo
         )
 
-        
         db.session.add(betting_profile)
         
         # 4. Confirmar todas as operações
@@ -183,11 +281,10 @@ def register():
             }
         }), 201
         
-    except (ValueError, TypeError) as e:
-        db.session.rollback()
-        return jsonify({'error': 'Valor da banca inicial inválido'}), 400
     except Exception as e:
         db.session.rollback()
+        # Isso imprimirá o erro no console do servidor, o que ajuda na depuração
+        print(f"❌ Erro ao registrar usuário: {str(e)}")
         return jsonify({'error': 'Erro interno do servidor'}), 500
 
 @main.route('/auth/login', methods=['POST'])
@@ -1281,5 +1378,5 @@ def get_game_types():
     
     return jsonify({
         'success': True,
-        'data': game_types
+        'data': game_types  
     })

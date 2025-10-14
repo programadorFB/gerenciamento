@@ -1,34 +1,33 @@
 import React, { useMemo } from 'react';
-import { 
-  MdWarning, 
-  MdErrorOutline, 
-  MdInfo, 
-  MdCheckCircle, 
-  MdHelpOutline, 
-  MdEdit 
+import {
+  MdWarning,
+  MdErrorOutline,
+  MdInfo,
+  MdCheckCircle,
+  MdHelpOutline
+  // MdEdit foi removido pois não é mais usado
 } from 'react-icons/md';
 import styles from './StopLossCard.module.css';
 
 const StopLossCard = React.memo(({
   balance,
   initialBalance,
-  onEdit,
+  // onEdit foi removido das props
   formatCurrency,
-  stopLossPercentage = 0 // Recebe a prop para consistência
+  stopLossPercentage = 0,
+  onStopLossChange
 }) => {
   // Garantir que os valores sejam números
   const validInitialBalance = Number(initialBalance) || 0;
   const validBalance = Number(balance) || 0;
 
-  // Cálculo DIRETO do valor do stop loss
+  // Cálculo do valor do stop loss com base na prop
   const stopLossValue = useMemo(() => {
     if (!validInitialBalance || !stopLossPercentage) return 0;
     return validInitialBalance * (stopLossPercentage / 100);
   }, [validInitialBalance, stopLossPercentage]);
 
   // Calcular perda atual (banca inicial - saldo atual)
-  // ESTA É A CONEXÃO PRINCIPAL:
-  // Quando a prop 'balance' muda após uma perda, este valor é recalculado.
   const currentLoss = useMemo(() => {
     if (!validInitialBalance) return 0;
     const loss = validInitialBalance - validBalance;
@@ -55,50 +54,50 @@ const StopLossCard = React.memo(({
     
     switch (status) {
       case 'critical':
-        return { 
-          color: '#F44336', 
-          icon: <MdWarning />, 
-          title: 'STOP LOSS ATINGIDO!', 
+        return {
+          color: '#F44336',
+          icon: <MdWarning />,
+          title: 'STOP LOSS ATINGIDO!',
           message: `Limite de ${stopLossPercentage}% foi ultrapassado (${currentLossPercentage.toFixed(1)}%)`,
           description: 'Pare imediatamente as apostas!'
         };
       case 'high':
-        return { 
-          color: '#FF9800', 
-          icon: <MdErrorOutline />, 
-          title: 'RISCO ALTO', 
+        return {
+          color: '#FF9800',
+          icon: <MdErrorOutline />,
+          title: 'RISCO ALTO',
           message: `Muito próximo do limite (${currentLossPercentage.toFixed(1)}% de ${stopLossPercentage}%)`,
           description: 'Considere parar ou reduzir apostas'
         };
       case 'medium':
-        return { 
-          color: '#FFD700', 
-          icon: <MdInfo />, 
-          title: 'ATENÇÃO', 
+        return {
+          color: '#FFD700',
+          icon: <MdInfo />,
+          title: 'ATENÇÃO',
           message: `Monitorar perdas (${currentLossPercentage.toFixed(1)}% de ${stopLossPercentage}%)`,
           description: 'Mantenha-se atento aos seus limites'
         };
       case 'low':
-        return { 
-          color: '#4CAF50', 
-          icon: <MdCheckCircle />, 
-          title: 'SEGURO', 
+        return {
+          color: '#4CAF50',
+          icon: <MdCheckCircle />,
+          title: 'SEGURO',
           message: `Dentro do limite estabelecido (${currentLossPercentage.toFixed(1)}% de ${stopLossPercentage}%)`,
           description: 'Continue gerenciando seu bankroll'
         };
       default:
-        return { 
-          color: '#9E9E9E', 
-          icon: <MdHelpOutline />, 
-          title: 'NÃO DEFINIDO', 
+        return {
+          color: '#9E9E9E',
+          icon: <MdHelpOutline />,
+          title: 'NÃO DEFINIDO',
           message: 'Configure seu stop loss para proteção',
-          description: 'Clique em editar para configurar'
+          description: 'Use o slider acima para configurar'
         };
     }
   };
 
   const statusInfo = useMemo(() => getStatusInfo(), [
-    stopLossPercentage, 
+    stopLossPercentage,
     currentLossPercentage,
     currentLoss,
     stopLossValue
@@ -111,6 +110,13 @@ const StopLossCard = React.memo(({
     return progress;
   }, [currentLoss, stopLossValue, stopLossPercentage]);
 
+  // Handler que chama a função do componente pai
+  const handleSliderChange = (event) => {
+    if (onStopLossChange) {
+      onStopLossChange(parseFloat(event.target.value));
+    }
+  };
+  
   const cardStyle = {
     '--status-color': statusInfo.color
   };
@@ -130,19 +136,29 @@ const StopLossCard = React.memo(({
               <p className={styles.subtitle}>Stop Loss</p>
             </div>
           </div>
-          <button className={styles.editButton} onClick={onEdit} title="Editar Stop Loss">
-            <MdEdit />
-          </button>
+          {/* O botão de edição foi removido daqui */}
         </header>
 
         <div className={styles.content}>
-          <div className={styles.percentageSection}>
-            <div className={styles.percentageItem}>
+          <div className={styles.sliderSection}>
+             <div className={styles.percentageItem}>
               <span className={styles.percentageLabel}>Limite configurado</span>
               <span className={styles.percentageValue}>
                 {stopLossPercentage > 0 ? `${stopLossPercentage.toFixed(1)}%` : 'N/A'}
               </span>
             </div>
+            <input
+              type="range"
+              min="0"
+              max="10"
+              step="0.1"
+              value={stopLossPercentage}
+              onChange={handleSliderChange}
+              className={styles.slider}
+            />
+          </div>
+
+          <div className={styles.percentageSection}>
             <div className={styles.percentageItem}>
               <span className={styles.percentageLabel}>Perda atual</span>
               <span className={styles.percentageValue}>
@@ -156,7 +172,7 @@ const StopLossCard = React.memo(({
               <div className={styles.progressBar}>
                 <div
                   className={styles.progressFill}
-                  style={{ 
+                  style={{
                     width: `${progressWidth}%`,
                     backgroundColor: statusInfo.color
                   }}
@@ -165,7 +181,7 @@ const StopLossCard = React.memo(({
               <p className={styles.progressText}>
                 {currentLoss >= stopLossValue ? (
                   <span style={{ color: '#F44336', fontWeight: 'bold' }}>
-                    ⚠️ Limite de perda ultrapassado!
+                    ⚠️ StopLoss ultrapassado!
                   </span>
                 ) : (
                   `💰 Restam ${formatCurrency(Math.max(0, stopLossValue - currentLoss))} até o limite`
@@ -176,7 +192,7 @@ const StopLossCard = React.memo(({
 
           <div className={styles.amountSection}>
             <div className={styles.amountItem}>
-              <span className={styles.amountLabel}>Valor Limite de Perda</span>
+              <span className={styles.amountLabel}>Valor StopLoss</span>
               <span className={styles.amountValue}>
                 {stopLossPercentage > 0 ? formatCurrency(stopLossValue) : 'N/A'}
               </span>

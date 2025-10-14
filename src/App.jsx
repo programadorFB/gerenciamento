@@ -18,6 +18,7 @@ import InvestmentProfile from './pages/InvestmentProfile/InvestmentProfile.jsx';
 import TransactionHistoryScreen from './pages/TransactionHistory/TransactionHistoryScreen.jsx';
 import ProfileScreen from './pages/Profile/profileScreen.jsx';
 import ObjectiveList from './components/ObjectivesList.jsx';
+import ObjectivesScreen from './pages/Objectives/ObjectiveScreen.jsx';
 // --- Componentes de Placeholder ---
 const Placeholder = ({ title }) => (
   <div style={{ padding: '50px', color: 'white', height: '100vh' }}>
@@ -71,7 +72,7 @@ function App() {
               
               {/* A rota "/objectives" foi removida porque o TransactionScreen já cuida disso. */}
                <Route path="/objective" element={<ObjectiveList />} /> 
-              
+              <Route path="/objectives" element={<ObjectivesScreen />} />
               <Route path="/investment-profile" element={<InvestmentProfile />} />
               <Route path="/profile" element={<ProfileScreen />} />
               <Route path="/history" element={<TransactionHistoryScreen />} />

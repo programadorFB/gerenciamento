@@ -1,13 +1,9 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFinancial } from '../../contexts/FinancialContext';
 
-// --- Components (adjust paths if needed) ---
-import ObjectiveModal from '../../components/ObjectiveModal';
-import ObjectivesList from '../../components/ObjectivesList';
-
 // --- Icons ---
-import { IoArrowBack, IoCalendar, IoClose, IoAddCircle, IoRemoveCircle, IoTrendingUp, IoTrendingDown, IoCheckmark } from 'react-icons/io5';
+import { IoArrowBack, IoCalendar, IoAddCircle, IoRemoveCircle, IoTrendingUp, IoTrendingDown, IoCheckmark } from 'react-icons/io5';
 
 // --- CSS Module ---
 import styles from './TransactionScreen.module.css';
@@ -22,15 +18,8 @@ const TRANSACTION_TYPES = [
 const getCurrentDate = () => new Date().toISOString().split('T')[0];
 
 // --- Reusable Sub-Components ---
-
 const DatePicker = ({ visible, onClose, onDateSelect, selectedDate }) => {
-  const initialDate = selectedDate ? new Date(selectedDate) : new Date();
-  const [year, setYear] = useState(initialDate.getFullYear());
-  const [month, setMonth] = useState(initialDate.getMonth());
-  
   if (!visible) return null;
-  // Calendar logic can be expanded here if needed. A simple input is used for brevity.
-  // For a full custom calendar, the logic from your original component can be ported here.
   return (
     <div className={styles.datePickerOverlay} onClick={onClose}>
         <div className={styles.datePickerContainer} onClick={e => e.stopPropagation()}>
@@ -59,19 +48,16 @@ const DateInput = ({ value, onDateChange }) => {
 const TransactionScreen = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { addTransaction, addObjective, objectives, updateObjective, deleteObjective } = useFinancial();
+  const { addTransaction } = useFinancial();
 
   const params = new URLSearchParams(location.search);
-  const showObjectives = params.get('showObjectives') === 'true';
   const typeParam = params.get('type');
 
-  const [activeTab, setActiveTab] = useState(showObjectives ? 'objectives' : 'transaction');
   const [transactionType, setTransactionType] = useState(typeParam || 'deposit');
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(getCurrentDate());
   const [loading, setLoading] = useState(false);
   const [isInitialBank, setIsInitialBank] = useState(false);
-  const [objectiveModalVisible, setObjectiveModalVisible] = useState(false);
   
   const isValid = useMemo(() => amount && parseFloat(amount.replace(',', '.')) > 0 && date && transactionType, [amount, date, transactionType]);
 
@@ -97,86 +83,66 @@ const TransactionScreen = () => {
     navigate('/dashboard');
   };
 
-  const renderTransactionForm = () => (
-    <form onSubmit={handleAddTransaction} className={styles.formContainer}>
-      <div className={styles.inputGroup}>
-        <label>Tipo de Transação *</label>
-        <div className={styles.typeGrid}>
-          {TRANSACTION_TYPES.map((type) => (
-            <button
-              key={type.key}
-              type="button"
-              className={`${styles.typeButton} ${transactionType === type.key ? styles.typeButtonActive : ''}`}
-              onClick={() => setTransactionType(type.key)}
-              style={{'--type-color': type.color}}
-            >
-              <div className={styles.typeButtonIcon}>{type.icon}</div>
-              <div className={styles.typeButtonText}>
-                <strong>{type.name}</strong>
-                <span>{type.description}</span>
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className={styles.inputGroup}>
-        <label htmlFor="amount">Valor *</label>
-        <input id="amount" type="text" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="R$ 0,00" className={styles.input} />
-      </div>
-
-      <div className={styles.inputGroup}>
-        <label>Data *</label>
-        <DateInput value={date} onDateChange={setDate} />
-      </div>
-      
-      {transactionType === 'deposit' && (
-        <div className={styles.checkboxContainer} onClick={() => setIsInitialBank(!isInitialBank)}>
-          <div className={`${styles.checkbox} ${isInitialBank ? styles.checkboxActive : ''}`}>
-            {isInitialBank && <IoCheckmark />}
-          </div>
-          <div>
-            <label className={styles.checkboxLabel}>Banca Inicial</label>
-            <p className={styles.checkboxDescription}>Marque se este é um depósito inicial.</p>
-          </div>
-        </div>
-      )}
-
-      <button type="submit" className={styles.submitButton} disabled={!isValid || loading}>
-        {loading ? 'Processando...' : `Processar ${TRANSACTION_TYPES.find(t => t.key === transactionType)?.name}`}
-      </button>
-    </form>
-  );
-
-  const renderObjectivesList = () => (
-    <div className={styles.objectivesContainer}>
-      <button className={styles.addObjectiveButton} onClick={() => setObjectiveModalVisible(true)}>
-        Criar Novo Objetivo
-      </button>
-      <ObjectivesList objectives={objectives} onUpdateObjective={updateObjective} onDeleteObjective={deleteObjective} />
-    </div>
-  );
-
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <button className={styles.backButton} onClick={() => navigate(-1)}>
           <IoArrowBack /> Voltar
         </button>
-        <h1>{activeTab === 'transaction' ? 'Transações' : 'Objetivos'}</h1>
+        <h1>Nova Transação</h1>
         <div className={styles.headerSpacer} />
       </header>
 
-      <div className={styles.tabContainer}>
-        <button className={activeTab === 'transaction' ? styles.activeTab : ''} onClick={() => setActiveTab('transaction')}>Transações</button>
-        <button className={activeTab === 'objectives' ? styles.activeTab : ''} onClick={() => setActiveTab('objectives')}>Objetivos</button>
-      </div>
-
       <main className={styles.content}>
-        {activeTab === 'transaction' ? renderTransactionForm() : renderObjectivesList()}
-      </main>
+        <form onSubmit={handleAddTransaction} className={styles.formContainer}>
+          <div className={styles.inputGroup}>
+            <label>Tipo de Transação *</label>
+            <div className={styles.typeGrid}>
+              {TRANSACTION_TYPES.map((type) => (
+                <button
+                  key={type.key}
+                  type="button"
+                  className={`${styles.typeButton} ${transactionType === type.key ? styles.typeButtonActive : ''}`}
+                  onClick={() => setTransactionType(type.key)}
+                  style={{'--type-color': type.color}}
+                >
+                  <div className={styles.typeButtonIcon}>{type.icon}</div>
+                  <div className={styles.typeButtonText}>
+                    <strong>{type.name}</strong>
+                    <span>{type.description}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
 
-      <ObjectiveModal visible={objectiveModalVisible} onClose={() => setObjectiveModalVisible(false)} onSave={addObjective} />
+          <div className={styles.inputGroup}>
+            <label htmlFor="amount">Valor *</label>
+            <input id="amount" type="text" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="R$ 0,00" className={styles.input} />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label>Data *</label>
+            <DateInput value={date} onDateChange={setDate} />
+          </div>
+          
+          {transactionType === 'deposit' && (
+            <div className={styles.checkboxContainer} onClick={() => setIsInitialBank(!isInitialBank)}>
+              <div className={`${styles.checkbox} ${isInitialBank ? styles.checkboxActive : ''}`}>
+                {isInitialBank && <IoCheckmark />}
+              </div>
+              <div>
+                <label className={styles.checkboxLabel}>Banca Inicial</label>
+                <p className={styles.checkboxDescription}>Marque se este é um depósito inicial.</p>
+              </div>
+            </div>
+          )}
+
+          <button type="submit" className={styles.submitButton} disabled={!isValid || loading}>
+            {loading ? 'Processando...' : `Processar ${TRANSACTION_TYPES.find(t => t.key === transactionType)?.name}`}
+          </button>
+        </form>
+      </main>
     </div>
   );
 };

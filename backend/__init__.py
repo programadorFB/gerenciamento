@@ -1,21 +1,29 @@
-# backend/app/__init__.py
-import logging
-import sys
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from dotenv import load_dotenv
 from flask_cors import CORS
-from config import config
+import os
+import logging
+import sys
 
 db = SQLAlchemy()
+migrate = Migrate()
 
-def create_app(config_name='default'):
+def create_app(config_name=None):
+    load_dotenv()
     app = Flask(__name__)
     
-    app_config = config.get(config_name)
-    app.config.from_object(app_config)
-    
-    # --- CONFIGURAÇÃO DE LOGGING DEFINITIVA PARA A RENDER ---
-    # Isto força todos os logs, especialmente os erros, a aparecerem na consola da Render.
+    # IMPORTAÇÃO CORRIGIDA AQUI: from .config import config
+    if config_name:
+        from .config import config
+        app.config.from_object(config[config_name])
+    else:
+        # Assumindo que você também tem a classe Config definida
+        from .config import Config 
+        app.config.from_object(Config) # Usando a classe base se não houver config_name
+
+    # --- CONFIGURAÇÃO DE LOGGING ---
     if not app.debug:
         app.logger.handlers.clear()
         handler = logging.StreamHandler(sys.stdout)
@@ -26,16 +34,21 @@ def create_app(config_name='default'):
         app.logger.setLevel(logging.INFO)
     # --- FIM DA CONFIGURAÇÃO DE LOGGING ---
 
+    # Aplicar CORS após carregar config para pegar a origem certa
+    origins = app.config.get("CORS_ORIGINS", ["http://localhost:5173"])
+    CORS(app, origins=origins, supports_credentials=True)
+
     db.init_app(app)
-    CORS(app, resources={r"/*": {"origins": app.config.get('CORS_ORIGINS', '*')}})
+    migrate.init_app(app, db)
 
-    from .routes import main as main_blueprint
-    app.register_blueprint(main_blueprint, url_prefix='/')
+    # Registro do Blueprint:
+    from .routes import main
+    app.register_blueprint(main)
 
-    with app.app_context():
-        from . import models
-        db.create_all()
-        app.logger.info("Tabelas do banco de dados verificadas/criadas.")
+    # É melhor remover db.create_all() daqui e usar apenas o Flask-Migrate
+    # No entanto, se quiser mantê-lo para inicialização rápida:
+    # with app.app_context():
+    #     from . import models
+    #     db.create_all()
 
     return app
-

@@ -406,13 +406,16 @@ const InvestmentProfile = () => {
                     <p className={styles.sectionDescription}>
                         Configure a porcentagem máxima de perda permitida. Esta configuração será salva junto com seu perfil.
                     </p>
-                    <StopLossCard
-                        balance={balance}
-                        initialBalance={effectiveInitialBank}
-                        formatCurrency={formatCurrency}
-                        onEdit={() => setStopLossModalVisible(true)}
-                        stopLossPercentage={stopLossPercentage}
-                    />
+<StopLossCard
+    balance={balance}
+    initialBalance={effectiveInitialBank}
+    formatCurrency={formatCurrency}
+    onEdit={() => setStopLossModalVisible(true)} // Esta prop parece não ser usada no StopLossCard que você me mandou
+    stopLossPercentage={stopLossPercentage}
+    
+    // ADICIONE ESTA LINHA:
+    onStopLossChange={setStopLossPercentage} 
+/>
                 </div>
 
                 {saveStatus && (

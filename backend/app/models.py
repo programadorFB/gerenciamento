@@ -16,6 +16,7 @@ class User(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    profile_photo = db.Column(db.String(500), nullable=True)
     
     # Relationships
     betting_profiles = db.relationship('BettingProfile', backref='user', lazy=True, cascade='all, delete-orphan')
