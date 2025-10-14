@@ -3,14 +3,18 @@ from datetime import timedelta
 
 class Config:
     # === DATABASE CONFIGURATION ===
+    # PostgreSQL como padrão para todos os ambientes
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL", 
-        "postgresql://postgres:1234@localhost/betting-tracker"
+        "postgresql://postgres:1234@localhost:5432/betting_tracker"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
         'pool_pre_ping': True,
         'pool_recycle': 300,
+        'pool_size': 20,
+        'max_overflow': 30,
+        'pool_timeout': 30,
     }
     
     # === SECURITY CONFIGURATION ===
@@ -26,7 +30,7 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(days=30)
     
     # === CORS CONFIGURATION ===
-    CORS_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:5173,http://localhost:19006').split(',')
+    CORS_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:5173,http://localhost:19006,https://gerenciamento-1.onrender.com/').split(',')
     
     # === BETTING APP SPECIFIC CONFIGURATION ===
     
@@ -142,10 +146,10 @@ class DevelopmentConfig(Config):
     ENABLE_EXPORT_FEATURES = True
     ENABLE_BETTING_SESSIONS = True
     
-    # Development database (SQLite for easy setup)
+    # PostgreSQL para desenvolvimento
     SQLALCHEMY_DATABASE_URI = os.getenv(
-        'DEV_DATABASE_URL',
-        'sqlite:///betting_app_dev.db'
+        'DATABASE_URL',
+        'postgresql://postgres:1234@localhost:5432/betting_tracker'
     )
 
 class TestingConfig(Config):
@@ -153,8 +157,11 @@ class TestingConfig(Config):
     TESTING = True
     DEBUG = True
     
-    # Use in-memory database for tests
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    # PostgreSQL para testes (com database separado)
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        'TEST_DATABASE_URL',
+        'postgresql://postgres:1234@localhost:5432/betting_tracker_test'
+    )
     
     # Disable external services during testing
     ENABLE_EMAIL_NOTIFICATIONS = False
@@ -194,6 +201,12 @@ class ProductionConfig(Config):
     
     # Production logging
     LOG_LEVEL = 'INFO'
+    
+    # PostgreSQL para produção (usando DATABASE_URL padrão do Heroku/outros serviços)
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        'DATABASE_URL',
+        'postgresql://postgres:1234@localhost:5432/betting_tracker_prod'
+    )
     
     @classmethod
     def init_app(cls, app):

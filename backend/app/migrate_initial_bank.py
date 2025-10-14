@@ -15,7 +15,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 # Configuração do banco de dados
-DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://postgres:1234@localhost/gerenciamento')
+DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://postgres:1234@localhost/betting_tracker')
 
 def get_db_connection():
     """Criar conexão com o banco de dados"""

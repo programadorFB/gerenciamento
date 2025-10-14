@@ -35,7 +35,7 @@ def create_app(config_name=None):
     # --- FIM DA CONFIGURAÇÃO DE LOGGING ---
 
     # Aplicar CORS após carregar config para pegar a origem certa
-    origins = app.config.get("CORS_ORIGINS", ["http://localhost:5173"])
+    origins = app.config.get("CORS_ORIGINS", ["http://localhost:5173","https://gerenciamento-1.onrender.com/"])
     CORS(app, origins=origins, supports_credentials=True)
 
     db.init_app(app)
