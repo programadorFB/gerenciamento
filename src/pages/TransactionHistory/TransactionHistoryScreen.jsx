@@ -265,7 +265,7 @@ const TransactionHistoryScreen = () => {
                     Ganhos
                 </button>
                 <button onClick={() => setFilter('losses')} className={filter === 'losses' ? styles.filterActive : ''}>
-                    Perdas
+                    Loss
                 </button>
             </div>
 

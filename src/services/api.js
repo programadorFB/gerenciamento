@@ -3,9 +3,9 @@ import axios from 'axios';
 
 const getBaseURL = () => {
   if (import.meta.env.DEV) {
-    return 'gerenciamento.sortehub.online';
+    return 'https://gerenciamento.sortehub.online';
   } else {
-    return 'gerenciamento.sortehub.online';
+    return 'https://gerenciamento.sortehub.online';
   }
 };
 

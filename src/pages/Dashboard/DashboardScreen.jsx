@@ -26,7 +26,8 @@ import styles from '../../styles/DashboardScreen.module.css';
 const Dashboard = () => {
     const navigate = useNavigate();
     const { user, isLoading } = useAuth();
-    const { balance, transactions, objectives, refreshData, getRealProfit, getEffectiveInitialBalance } = useFinancial();
+    // --- ALTERAÇÃO 1: Importar 'totalLosses' do contexto ---
+    const { balance, transactions, objectives, refreshData, getRealProfit, getEffectiveInitialBalance, totalLosses } = useFinancial();
     const { bettingProfile } = useBetting(); 
     const { openMenu } = useSideMenu();
 
@@ -53,7 +54,7 @@ const Dashboard = () => {
     const calculateProfitTarget = () => {
         const initialBalance = getEffectiveInitialBalance();
         const riskLevel = bettingProfile?.riskLevel || 5;
-        return initialBalance * (riskLevel / 100);
+        return balance * (riskLevel / 100);
     };
 
     // Calcula o progresso até atingir a meta
@@ -67,19 +68,19 @@ const Dashboard = () => {
     // --- LÓGICA DO STOP LOSS MODIFICADA ---
     const stopLossMonetaryValue = bettingProfile?.stopLoss || 0;
 
+    // --- ALTERAÇÃO 2: A 'perda atual' agora é baseada apenas em 'totalLosses' ---
+    const currentLoss = totalLosses || 0;
+
+    // --- ALTERAÇÃO 3: Simplificar os cálculos para usar a nova 'currentLoss' ---
     const isStopLossTriggered = useMemo(() => {
         if (!stopLossMonetaryValue) return false;
-        const initialBalance = getEffectiveInitialBalance();
-        const currentLoss = Math.max(0, initialBalance - balance);
         return currentLoss >= stopLossMonetaryValue;
-    }, [balance, getEffectiveInitialBalance, stopLossMonetaryValue]);
+    }, [currentLoss, stopLossMonetaryValue]);
 
     const stopLossDistance = useMemo(() => {
         if (!stopLossMonetaryValue) return null;
-        const initialBalance = getEffectiveInitialBalance();
-        const currentLoss = Math.max(0, initialBalance - balance);
         return stopLossMonetaryValue - currentLoss;
-    }, [balance, getEffectiveInitialBalance, stopLossMonetaryValue]);
+    }, [currentLoss, stopLossMonetaryValue]);
 
 
     if (isLoading || !user) {
@@ -191,7 +192,8 @@ const Dashboard = () => {
                                         <div className={styles.riskDistance}>
                                             <span className={styles.distanceLabel}>Margem atual:</span>
                                             <span className={`${styles.distanceValue} ${
-                                                stopLossDistance && stopLossDistance < initialBalance * 0.1 
+                                                // A lógica de 'dangerZone' agora compara a distância com o valor do stoploss
+                                                stopLossDistance && stopLossDistance < stopLossMonetaryValue * 0.1 
                                                     ? styles.dangerZone 
                                                     : ''
                                             }`}>
@@ -299,7 +301,7 @@ const Dashboard = () => {
                         className={`${styles.actionButton} ${styles.losses}`} 
                         onClick={() => navigate('/transaction')}
                     >
-                        <MdTrendingDown /> Perdas
+                        <MdTrendingDown /> Loss
                     </button>
                 </section>
 
