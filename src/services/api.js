@@ -3,9 +3,9 @@ import axios from 'axios';
 
 const getBaseURL = () => {
   if (import.meta.env.DEV) {
-    return 'http://127.0.0.1:5000';
+    return 'gerenciamento.sortehub.online';
   } else {
-    return 'http://127.0.0.1:5000';
+    return 'gerenciamento.sortehub.online';
   }
 };
 
