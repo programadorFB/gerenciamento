@@ -121,20 +121,20 @@ def get_profile_recommendations(risk_level: int) -> Dict[str, any]:
         return {
             'profile_type': 'cautious',
             'title': 'Jogador Cauteloso',
-            'description': 'Apostas seguras com menor risco, focando em preservar o bankroll',
+            'description': 'Apostas seguras com menor risco, focando em preservar a banca',
             'color': '#4CAF50',
             'icon': 'shield-alt',
             'features': [
-                'Apostas externas (vermelho/preto)',
+    
                 'Menor volatilidade',
-                'Gestão rigorosa do bankroll',
+                'Gestão rigorosa da banca',
                 'Sessões mais longas'
             ],
             'recommended_stop_loss_percentage': 10,
             'recommended_profit_target_percentage': 20,
             'max_bet_percentage': 2
         }
-    elif risk_level <= 6:
+    elif risk_level <= 8:
         return {
             'profile_type': 'balanced',
             'title': 'Jogador Equilibrado',
@@ -142,7 +142,7 @@ def get_profile_recommendations(risk_level: int) -> Dict[str, any]:
             'color': '#FFD700',
             'icon': 'balance-scale',
             'features': [
-                'Mix de apostas internas/externas',
+                
                 'Risco calculado',
                 'Estratégias diversificadas',
                 'Flexibilidade nas apostas'
