@@ -158,7 +158,7 @@ const PROFILES = {
     color: '#4CAF50',
     icon: { name: 'shield-alt', color: '#4CAF50' },
     features: [
-      'Apostas externas (vermelho/preto)',
+      
       'Menor volatilidade',
       'Gestão rigorosa de banca',
       'Sessões mais longas'
@@ -173,7 +173,7 @@ const PROFILES = {
     color: '#FFD700',
     icon: { name: 'balance-scale', color: '#FFD700' },
     features: [
-      'Mix de apostas internas/externas',
+      
       'Risco calculado',
       'Estratégias diversificadas',
       'Flexibilidade nas apostas'
