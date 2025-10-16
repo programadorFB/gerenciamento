@@ -32,7 +32,7 @@
   gap: 8px;
   background: none;
   border: none;
-  color: #FFD700;
+  color: #ffd900a8;
   font-size: 16px;
   cursor: pointer;
   transition: transform 0.2s;
@@ -63,8 +63,8 @@
   transition: all 0.3s;
 }
 .tabContainer button.activeTab {
-  color: #FFD700;
-  border-bottom-color: #FFD700;
+  color: #ffd9008c;
+  border-bottom-color: #ffd9007e;
 }
 
 /* --- Conteúdo Principal --- */
@@ -85,7 +85,7 @@
 }
 .inputGroup label {
   font-size: 16px;
-  color: #FFD700;
+  color: #ffd90091;
   font-weight: 600;
 }
 .input {
@@ -100,7 +100,7 @@
 }
 .input:focus {
   outline: none;
-  border-color: #FFD700;
+  border-color: #99840a;
 }
 
 /* --- Seletor de Tipo --- */
@@ -155,7 +155,7 @@
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #FFD700;
+  color: #99840f;
   cursor: pointer;
 }
 .datePickerOverlay {
@@ -247,7 +247,7 @@
 /* --- Botão de Submissão --- */
 .submitButton {
   padding: 18px;
-  background: linear-gradient(45deg, #FFD700, #F0C040);
+  background: linear-gradient(45deg, #a38b01, #c29007);
   border: none;
   border-radius: 12px;
   color: #000;
@@ -265,7 +265,7 @@
 .addObjectiveButton {
   width: 100%;
   padding: 15px;
-  background: #FFD700;
+  background: #b49a04;
   color: #000;
   border: none;
   border-radius: 8px;

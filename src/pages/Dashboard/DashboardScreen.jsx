@@ -22,7 +22,21 @@ import background from '../../assets/fundoLuxo.jpg';
 
 // --- CSS Module ---
 import styles from '../../styles/DashboardScreen.module.css';
-
+// --- (NOVO) Avatares (Copiado de ProfileScreen) ---
+const PREDEFINED_AVATARS = [
+  { id: 'avatar1', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix' },
+  { id: 'avatar2', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka' },
+  { id: 'avatar3', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna' },
+  { id: 'avatar4', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Max' },
+  { id: 'avatar5', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sophie' },
+  { id: 'avatar6', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jack' },
+  { id: 'avatar7', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bella' },
+  { id: 'avatar8', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie' },
+  { id: 'avatar9', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Milo' },
+  { id: 'avatar10', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daisy' },
+  { id: 'avatar11', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver' },
+  { id: 'avatar12', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lily' }
+];
 const Dashboard = () => {
     const navigate = useNavigate();
     const { user, isLoading } = useAuth();
@@ -109,7 +123,21 @@ const Dashboard = () => {
         if (!stopLossMonetaryValue) return null;
         return stopLossMonetaryValue - currentLoss;
     }, [currentLoss, stopLossMonetaryValue]);
-
+    const getAvatarUrl = () => {
+        if (!user?.profile_photo) return null;
+        const avatar = PREDEFINED_AVATARS.find(a => a.id === user.profile_photo);
+        return avatar ? avatar.url : null;
+    };
+    const avatarUrl = getAvatarUrl();
+    const getInitials = () => {
+        if (!user?.name) return 'J';
+        return user.name
+        .split(' ')
+        .map(word => word.charAt(0))
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
+    };
     if (isLoading || !user) {
         return (
             <div className={styles.loadingContainer}>
@@ -131,18 +159,43 @@ const Dashboard = () => {
         <div className={styles.dashboardContainer} style={{ backgroundImage: `url(${background})` }}>
             <div className={styles.overlayGradient} />
             
-            <header className={styles.header}>
+<header className={styles.header}>
                 <button className={styles.menuButton} onClick={openMenu}>
                     <span className={styles.menuIcon}></span>
                 </button>
+                
                 <div className={styles.greetingContainer}>
+                 
+
+                    {/* Saudação (agora ao lado do wrapper) */}
                     <h1 className={styles.greeting}>Olá, {user?.name || 'Jogador'}!</h1>
-                    {bettingProfile?.isInitialized && (
-                        <div className={styles.profileIconBadge} title={bettingProfile.title}>
-                            {getProfileIcon()}
+                
+                    {/* (NOVO) Wrapper para agrupar Avatar e Ícone */}
+                    <div className={styles.profileWrapper}>
+                        {/* Avatar (veio primeiro para ficar embaixo) */}
+                        <div className={styles.profileAvatarContainer}>
+                            {avatarUrl ? (
+                                <img 
+                                    src={avatarUrl} 
+                                    alt="Avatar" 
+                                    className={styles.profileAvatar} 
+                                />
+                            ) : (
+                                <div className={`${styles.profileAvatar} ${styles.profileAvatarPlaceholder}`}>
+                                    <span>{getInitials()}</span>
+                                </div>
+                            )}
                         </div>
-                    )}
+                        
+                        {/* Ícone de Perfil de Risco (movido para cá) */}
+                        {bettingProfile?.isInitialized && (
+                            <div className={styles.profileIconBadge}  title={bettingProfile.title}>
+                                {getProfileIcon()}
+                            </div>
+                        )}
+                    </div>
                 </div>
+                
                 <img src={logo} alt="Logo" className={styles.logoImg} />
             </header>
 
@@ -320,7 +373,7 @@ const Dashboard = () => {
                 </section>
                 
                 {/* Seção Resumo Financeiro - Card Único */}
-                <section className={styles.summarySection}style={{marginLeft:'7px'}}>
+                <section className={styles.summarySection}style={{marginLeft:'75px'}}>
                     <div className={styles.sectionHeader}>
                         <h2 className={styles.sectionTitle} style={{marginLeft:'25px'}}>Resumo Financeiro</h2>
                     </div>

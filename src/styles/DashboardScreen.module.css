@@ -137,11 +137,67 @@ body {
 .greetingContainer {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 10px; /* Isso agora será o espaço entre o avatar e a saudação */
   flex: 1;
   justify-content: center;
 }
+/* Container do Avatar */
+.profileAvatarContainer {
+  flex-shrink: 0; /* Impede que o avatar encolha */
+}
 
+/* Estilo do Avatar (Imagem ou Placeholder) */
+.profileAvatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #555; /* Fundo para o placeholder */
+  border: 2px solid #fdb931; /* Borda dourada para combinar */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 3; /* Garante que fique abaixo do ícone (que tem z-index: 10) */
+}
+
+/* Estilo do Placeholder (quando não há imagem) */
+.profileAvatarPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.profileIconBadge {
+  /* --- MUDANÇAS PRINCIPAIS --- */
+  position: absolute;
+  top: -10px;  /* Puxa o ícone para cima, para fora do avatar */
+  left: 10px;  /* Posiciona no canto esquerdo */
+  z-index: 10; /* Garante que fique por cima do avatar */
+
+  /* --- Estilos existentes mantidos --- */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  font-size: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  
+  /* --- Estilos de layout flex removidos --- */
+  margin-left: 0; 
+  /* remove 'flex-shrink: 0;' se houver */
+  
+  /* Animações (mantidas do seu arquivo) */
+  animation: fadeInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+             subtlePulse 3s ease-in-out infinite 1s;
+}
 /* Ajuste no greeting */
 .greeting {
   font-size: clamp(14px, 3vw, 18px);
@@ -176,9 +232,12 @@ body {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
   background: rgba(0, 0, 0, 0.6);
 }
-
+.profileWrapper {
+  position: relative; /* Essencial para o posicionamento absoluto do ícone */
+  flex-shrink: 0; /* Impede que o grupo encolha */
+}
 .profileIconBadge:active {
-  transform: scale(1.05);
+  transform: scale(1.5);
 }
 
 /* Animação de entrada suave */

@@ -5,6 +5,13 @@ import { MdArrowBack, MdInfoOutline, MdEdit, MdDelete, MdClose, MdEvent, MdAcces
 import { FaPlusCircle, FaMinusCircle, FaReceipt } from 'react-icons/fa';
 import styles from './TransactionHistoryScreen.module.css';
 
+// Cores metálicas
+const METALLIC_COLORS = {
+    gold: '#D4AF37',
+    greenMetal: '#5A8A6A',
+    redMetal: '#A44A4A',
+};
+
 // --- Edit Transaction Modal (Web Version) ---
 const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
     const [editedTransaction, setEditedTransaction] = useState({});
@@ -100,18 +107,18 @@ const TransactionItem = React.memo(({ item, onEdit, onDelete }) => {
             case 'gains':
                 return {
                     isPositive: true,
-                    icon: <FaPlusCircle color="#4CAF50" size={20} />,
-                    color: '#4CAF50',
-                    backgroundColor: '#4CAF5020',
+                    icon: <FaPlusCircle color={METALLIC_COLORS.greenMetal} size={20} />,
+                    color: METALLIC_COLORS.greenMetal,
+                    backgroundColor: 'rgba(90, 138, 106, 0.15)',
                     sign: '+'
                 };
             case 'withdraw':
             case 'losses':
                 return {
                     isPositive: false,
-                    icon: <FaMinusCircle color="#F44336" size={20} />,
-                    color: '#F44336',
-                    backgroundColor: '#F4433620',
+                    icon: <FaMinusCircle color={METALLIC_COLORS.redMetal} size={20} />,
+                    color: METALLIC_COLORS.redMetal,
+                    backgroundColor: 'rgba(164, 74, 74, 0.15)',
                     sign: '-'
                 };
             default:
@@ -120,10 +127,10 @@ const TransactionItem = React.memo(({ item, onEdit, onDelete }) => {
                 return {
                     isPositive,
                     icon: isPositive ? 
-                        <FaPlusCircle color="#4CAF50" size={20} /> : 
-                        <FaMinusCircle color="#F44336" size={20} />,
-                    color: isPositive ? '#4CAF50' : '#F44336',
-                    backgroundColor: isPositive ? '#4CAF5020' : '#F4433620',
+                        <FaPlusCircle color={METALLIC_COLORS.greenMetal} size={20} /> : 
+                        <FaMinusCircle color={METALLIC_COLORS.redMetal} size={20} />,
+                    color: isPositive ? METALLIC_COLORS.greenMetal : METALLIC_COLORS.redMetal,
+                    backgroundColor: isPositive ? 'rgba(90, 138, 106, 0.15)' : 'rgba(164, 74, 74, 0.15)',
                     sign: isPositive ? '+' : '-'
                 };
         }
