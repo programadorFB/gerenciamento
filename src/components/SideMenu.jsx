@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext.jsx';
 import { useSideMenu } from '../contexts/SideMenuContext.jsx';
 
 // Ícones
-import { MdDashboard, MdLogout, MdClose, MdCalculate } from 'react-icons/md';
+import { MdDashboard, MdLogout, MdClose, MdCalculate, MdPlayCircle } from 'react-icons/md';
 import { FaChartLine, FaBullseye, FaUserTie, FaFileExport, FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 import { FiDownload, FiSettings } from 'react-icons/fi';
 
@@ -95,7 +95,7 @@ const SideMenu = () => {
           />
           <div className={styles.separator} />
           <MenuItem
-            icon={<MdCalculate size={24} />}
+            icon={<MdPlayCircle size={24} />}
             text="Estratégia"
             onClick={() => handleNavigation('/strategy')}
             
