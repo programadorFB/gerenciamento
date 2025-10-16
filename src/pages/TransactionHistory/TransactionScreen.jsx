@@ -126,17 +126,7 @@ const TransactionScreen = () => {
             <DateInput value={date} onDateChange={setDate} />
           </div>
           
-          {transactionType === 'deposit' && (
-            <div className={styles.checkboxContainer} onClick={() => setIsInitialBank(!isInitialBank)}>
-              <div className={`${styles.checkbox} ${isInitialBank ? styles.checkboxActive : ''}`}>
-                {isInitialBank && <IoCheckmark />}
-              </div>
-              <div>
-                <label className={styles.checkboxLabel}>Banca Inicial</label>
-                <p className={styles.checkboxDescription}>Marque se este é um depósito inicial.</p>
-              </div>
-            </div>
-          )}
+          {transactionType === 'deposit'}
 
           <button type="submit" className={styles.submitButton} disabled={!isValid || loading}>
             {loading ? 'Processando...' : `Processar ${TRANSACTION_TYPES.find(t => t.key === transactionType)?.name}`}

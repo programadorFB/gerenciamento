@@ -320,7 +320,7 @@ const Dashboard = () => {
                 </section>
                 
                 {/* Seção Resumo Financeiro - Card Único */}
-                <section className={styles.summarySection}>
+                <section className={styles.summarySection}style={{marginLeft:'7px'}}>
                     <div className={styles.sectionHeader}>
                         <h2 className={styles.sectionTitle} style={{marginLeft:'25px'}}>Resumo Financeiro</h2>
                     </div>
@@ -363,7 +363,7 @@ const Dashboard = () => {
                         <div className={styles.summaryRow}>
                             <div className={styles.summaryLabel}>
                                 <MdTrendingDown size={22} color="#FF9800" />
-                                <span>Total de Perdas</span>
+                                <span>Total de loss</span>
                             </div>
                             <p className={`${styles.summaryValue} ${styles.negative}`}>
                                 {formatCurrency(totalLosses)}

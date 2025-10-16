@@ -189,3 +189,43 @@
   color: #888888;
   margin: 0;
 }
+/* Adicione estas regras ao seu Sidemenu.module.css */
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #333;
+}
+
+.closeButton:active {
+  transform: scale(0.95);
+}
+
+/* Para esconder o botão quando o menu está recolhido */
+.collapsed .closeButton {
+  right: 0.5rem;
+}
+
+/* Para telas mobile, você pode querer o botão sempre visível */
+@media (max-width: 768px) {
+  .closeButton {
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+}

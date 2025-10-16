@@ -229,26 +229,55 @@ const InvestmentProfile = () => {
         return initialBank > 0 ? initialBank : balance;
     }, [initialBank, balance]);
 
-    // Estados locais com valores padrão
+// Estados locais com valores padrão
     const [riskValue, setRiskValue] = useState(5);
     const [stopLossPercentage, setStopLossPercentage] = useState(0);
+    
+    // --- ADICIONE ESTE NOVO STATE ---
+    const [isStopLossInitialized, setIsStopLossInitialized] = useState(false); // <-- ADICIONADO
+
     const [isStopLossModalVisible, setStopLossModalVisible] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [saveStatus, setSaveStatus] = useState('');
 
     // Inicializar estados quando o perfil carregar
-    useEffect(() => {
-        if (bettingProfile?.isInitialized) {
-            const currentRisk = bettingProfile.riskLevel || 5;
-            const currentProfile = getProfileDetailsByRisk(currentRisk);
-            
-            setRiskValue(currentRisk);
-            setStopLossPercentage(
-                bettingProfile.stopLossPercentage || currentProfile.recommendedStopLoss
-            );
+// Inicializar estados quando o perfil carregar
+useEffect(() => {
+    // --- CONDIÇÃO MODIFICADA ---
+    if (bettingProfile?.isInitialized && !isStopLossInitialized) { // <-- MODIFICADO
+        const currentRisk = bettingProfile.riskLevel || 5;
+        const currentProfile = getProfileDetailsByRisk(currentRisk);
+        
+        setRiskValue(currentRisk);
+        
+        // CORREÇÃO: Priorizar o valor salvo pelo usuário
+        let stopLoss;
+        
+        // Se o usuário já configurou, use o valor dele
+        if (bettingProfile.stopLossPercentage !== undefined && 
+            bettingProfile.stopLossPercentage !== null) {
+            stopLoss = bettingProfile.stopLossPercentage;
+            console.log('Usando stop loss salvo pelo usuário:', stopLoss);
+        } 
+        // Senão, use o recomendado (mas limitado a 10)
+        else {
+            stopLoss = Math.min(currentProfile.recommendedStopLoss || 5, 10);
+            console.log('Usando stop loss recomendado (limitado):', stopLoss);
         }
-    }, [bettingProfile, getProfileDetailsByRisk]);
+        
+        // Garantir que está na faixa válida (0-10)
+        stopLoss = Math.min(Math.max(stopLoss, 0), 10);
+        
+        setStopLossPercentage(stopLoss);
 
+        // --- MARQUE COMO INICIALIZADO ---
+        setIsStopLossInitialized(true); // <-- ADICIONADO
+    }
+}, [
+    bettingProfile, 
+    getProfileDetailsByRisk, 
+    isStopLossInitialized // <-- ADICIONADO
+]);
     const selectedProfile = useMemo(() => 
         getProfileDetailsByRisk(riskValue), 
     [getProfileDetailsByRisk, riskValue]);
@@ -263,7 +292,7 @@ const InvestmentProfile = () => {
     const handleSaveStopLoss = useCallback((percentage) => {
         setStopLossPercentage(percentage);
         setSaveStatus(`Stop Loss atualizado para ${percentage}% - Salve o perfil para aplicar`);
-        const timer = setTimeout(() => setSaveStatus(''), 3000);
+        const timer = setTimeout(() => setSaveStatus(''));
         return () => clearTimeout(timer);
     }, []);
 

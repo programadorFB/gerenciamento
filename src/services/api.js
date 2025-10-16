@@ -8,7 +8,7 @@ const getBaseURL = () => {
     return 'https://gerenciamento.sortehub.online';
   }
 };
-
+const STATIC_BASE_URL = 'https://gerenciamento.sortehub.online';
 const API_BASE_URL = getBaseURL();
 
 const api = axios.create({

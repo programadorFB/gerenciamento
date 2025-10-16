@@ -456,6 +456,7 @@ def get_betting_profile(current_user_id):
             'features': profile.features,
             'color': profile.color,
             'icon_name': profile.icon_name,
+            'stop_loss_percentage': str(profile.stop_loss_percentage),
             'created_at': profile.created_at.isoformat()
         }
     })

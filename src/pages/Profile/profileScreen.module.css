@@ -105,6 +105,82 @@
   background-color: #D32F2F;
 }
 
+/* --- Avatar Selector Styles (NEW/MODIFIED) --- */
+.avatarSelector {
+  margin-top: 30px;
+  width: 100%;
+  max-width: 400px;
+  padding: 15px;
+  background-color: #1A1A1A;
+  border-radius: 10px;
+  border: 1px solid #333;
+}
+
+.avatarSelectorTitle {
+  font-size: 18px;
+  color: #FFD700;
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.avatarGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  gap: 10px;
+  justify-items: center;
+}
+
+.avatarOption {
+  background: none;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  position: relative;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  overflow: hidden;
+  display: block; /* Ensure it respects width/height */
+}
+
+.avatarOption:hover {
+  transform: scale(1.05);
+}
+
+.avatarOptionSelected {
+  border-color: #FFD700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.avatarOptionImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.avatarCheckmark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #FFD700;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+/* --- End Avatar Selector Styles --- */
+
+
 .section {
   padding: 20px;
   border-bottom: 1px solid #333;
@@ -228,5 +304,15 @@
   
   .title {
     font-size: 18px;
+  }
+  
+  .avatarGrid {
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 8px;
+  }
+  
+  .avatarOption {
+    width: 60px;
+    height: 60px;
   }
 }

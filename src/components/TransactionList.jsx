@@ -111,7 +111,7 @@ const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
                 className={`${styles.typeButton} ${editedTransaction.type === 'losses' ? styles.typeButtonActiveWithdraw : ''}`}
                 onClick={() => handleTypeChange('losses')}
               >
-                <FaMinusCircle /> Perda
+                <FaMinusCircle /> Loss
               </button>
             </div>
             {errors.type && <p className={styles.errorText}>{errors.type}</p>}

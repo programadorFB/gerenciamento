@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext.jsx';
 import { useSideMenu } from '../contexts/SideMenuContext.jsx';
 
 // Ícones
-import { MdDashboard, MdLogout } from 'react-icons/md';
+import { MdDashboard, MdLogout, MdClose } from 'react-icons/md';
 import { FaChartLine, FaBullseye, FaUserTie, FaFileExport, FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 import { FiDownload, FiSettings } from 'react-icons/fi';
 
@@ -27,7 +27,6 @@ const MenuItem = ({ icon, text, onClick, isLogout = false, isNew = false }) => {
 };
 
 const SideMenu = () => {
-  // --- ALTERADO: Adicionado isCollapsed e toggleCollapse do contexto ---
   const { menuVisible, closeMenu, isCollapsed, toggleCollapse } = useSideMenu();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -46,7 +45,6 @@ const SideMenu = () => {
     }
   };
 
-  // --- ALTERADO: Aplica a classe .collapsed baseada no estado isCollapsed ---
   const containerClasses = `${styles.container} ${menuVisible ? styles.visible : ''} ${isCollapsed ? styles.collapsed : ''}`;
 
   return (
@@ -54,6 +52,11 @@ const SideMenu = () => {
       {menuVisible && <div className={styles.overlay} onClick={closeMenu} />}
 
       <aside className={containerClasses}>
+        {/* --- ADICIONADO: Botão de fechar no topo do menu --- */}
+        <button className={styles.closeButton} onClick={closeMenu} title="Fechar menu">
+          <MdClose size={24} />
+        </button>
+
         <div className={styles.profileSection}>
           <h3 className={styles.userName}>{user?.name || 'User'}</h3>
           <p className={styles.userEmail}>{user?.email || 'user@example.com'}</p>
@@ -74,7 +77,6 @@ const SideMenu = () => {
             icon={<FaFileExport size={20} />}
             text="Gerar Relatório"
             onClick={() => handleNavigation('/report')}
-             
           />
           <MenuItem
             icon={<FiDownload size={22} />}
@@ -105,7 +107,6 @@ const SideMenu = () => {
           />
         </nav>
 
-        {/* --- ADICIONADO: Footer com o botão de collapse --- */}
         <footer className={styles.footer}>
           <button className={styles.collapseButton} onClick={toggleCollapse}>
             <div className={styles.menuIcon}>

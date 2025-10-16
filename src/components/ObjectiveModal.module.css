@@ -1,338 +1,546 @@
-/* --- ObjectiveModal.module.css --- */
-
+/* ========================================
+   VARIÁVEIS
+   ======================================== */
 :root {
-  --color-primary: #FFD700;
-  --color-dark-bg: #1a1a1a;
-  --color-dark-bg-modal: rgba(26, 26, 26, 0.98);
-  --color-text-light: #FFFFFF;
-  --color-text-medium: #CCCCCC;
-  --color-text-dark: #888888;
-  --color-error: #F44336;
-  --color-success: #4CAF50;
-  --border-color: rgba(255, 215, 0, 0.2);
-}
-/* Adicione estas classes ao final do seu ObjectiveModal.module.css */
-
-.datePickerNav {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  --gold: #FFD700;
+  --gold-dark: #F0C040;
+  --bg-dark: #1a1a1a;
+  --bg-darker: #0f0f0f;
+  --text-white: #ffffff;
+  --text-gray: #cccccc;
+  --text-light-gray: #888888;
+  --error-red: #F44336;
+  --success-green: #4CAF50;
+  --border-gold: rgba(255, 215, 0, 0.2);
 }
 
-.navButton {
-  background: transparent;
-  border: none;
-  color: var(--color-text-medium);
-  font-size: 1.5rem;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 0 0.5rem;
-}
-
-.navButton:hover {
-  color: var(--color-primary);
-}
-/* --- Modal Base --- */
-.modalOverlay {
+/* ========================================
+   MODAL PRINCIPAL
+   ======================================== */
+.overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.75);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   z-index: 1000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-.modalVisible {
-  opacity: 1;
-  pointer-events: auto;
-}
-.modalContent {
-  width: 100%;
-  max-width: 450px;
-  background-color: var(--color-dark-bg-modal);
-  border-radius: 20px;
-  height: 90vh;
-  max-height: 700px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--color-primary);
-  border: 1px solid var(--border-color);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  transform: scale(0.9);
-  transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-}
-.contentVisible {
-  transform: scale(1);
+  padding: 20px;
 }
 
-/* --- Header --- */
-.header {
+.modal {
+  background: var(--bg-dark);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  border: 1px solid var(--border-gold);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
+              0 0 40px rgba(255, 215, 0, 0.15);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ========================================
+   HEADER DO MODAL
+   ======================================== */
+.modalHeader {
+  display: flex;
   align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid var(--border-color);
-  flex-shrink: 0;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-gold);
 }
-.headerTitle {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: var(--color-primary);
-  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.4);
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold);
+  text-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  margin: 0;
 }
-.cancelButton, .saveButton {
-  padding: 0.5rem 1rem;
-  border-radius: 10px;
-  font-size: 0.9rem;
+
+.btnCancel,
+.btnSave {
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 15px;
   font-weight: 600;
-  border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: none;
 }
-.cancelButton {
-  background-color: rgba(244, 67, 54, 0.2);
-  border-color: rgba(244, 67, 54, 0.4);
-  color: var(--color-error);
+
+.btnCancel {
+  background: rgba(244, 67, 54, 0.15);
+  color: var(--error-red);
+  border: 1px solid rgba(244, 67, 54, 0.4);
 }
-.cancelButton:hover {
-  background-color: rgba(244, 67, 54, 0.4);
+
+.btnCancel:hover {
+  background: rgba(244, 67, 54, 0.25);
 }
-.saveButton {
-  background-color: var(--color-primary);
+
+.btnSave {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
   color: #000;
+  font-weight: 700;
 }
-.saveButton:disabled {
-  background-color: #666;
+
+.btnSave:disabled {
+  background: #444;
   color: #888;
   cursor: not-allowed;
 }
-.saveButton:hover:not(:disabled) {
-  box-shadow: 0 0 10px var(--color-primary);
+
+.btnSave:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
 }
 
-/* --- Content & Form --- */
-.content {
-  flex-grow: 1;
-  padding: 1.5rem;
+/* ========================================
+   BODY DO MODAL
+   ======================================== */
+.modalBody {
+  flex: 1;
   overflow-y: auto;
-  background-color: var(--color-dark-bg);
+  padding: 24px;
+  background: var(--bg-darker);
 }
-.inputContainer {
-  margin-bottom: 1.5rem;
+
+.modalBody::-webkit-scrollbar {
+  width: 6px;
 }
-.label {
+
+.modalBody::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.3);
+  border-radius: 10px;
+}
+
+.modalBody::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 215, 0, 0.5);
+}
+
+/* ========================================
+   CAMPOS DE FORMULÁRIO
+   ======================================== */
+.field {
+  margin-bottom: 54px;
+  margin-left:50px;
+}
+
+.fieldLabel {
   display: block;
-  font-size: 1rem;
-  color: var(--color-primary);
-  margin-bottom: 0.5rem;
+  font-size: 15px;
   font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 10px;
 }
-.input {
-  width: 100%;
-  background-color: var(--color-dark-bg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 1rem;
-  font-size: 1rem;
-  color: var(--color-text-light);
-  box-sizing: border-box;
-}
-.input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 10px var(--color-primary);
-}
-.inputError {
-  border-color: var(--color-error);
-}
-.errorText {
-  color: var(--color-error);
-  font-size: 0.8rem;
+
+.fieldError {
+  color: var(--error-red);
+  font-size: 13px;
   font-weight: 500;
 }
 
-/* --- Date Input & Suggestions --- */
-.dateInputContainer {
-  position: relative;
-}
-.dateInputWrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-.dateInput {
-  cursor: pointer;
-}
-.calendarIcon {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: transparent;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-}
-.dateSuggestions {
-  margin-top: 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.suggestionLabel {
-  font-size: 0.9rem;
-  color: var(--color-text-medium);
-}
-.suggestionButtons {
-  display: flex;
-  gap: 10px;
-}
-.suggestionButton {
-  background-color: rgba(255, 215, 0, 0.1);
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  font-size: 0.8rem;
-  color: var(--color-primary);
-  cursor: pointer;
+.fieldInput {
+  width: 100%;
+  background: var(--bg-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 16px;
+  color: var(--text-white);
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
-/* --- Progress Preview --- */
-.previewContainer {
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 15px;
-  padding: 1rem;
-  margin-top: 1.5rem;
-  border: 1px solid var(--border-color);
+.fieldInput:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
 }
-.previewTitle {
-  font-size: 1rem;
-  color: var(--color-primary);
-  font-weight: bold;
-  margin-bottom: 1rem;
+
+.fieldInput::placeholder {
+  color: var(--text-light-gray);
 }
-.progressBar {
+
+.fieldInputError {
+  border-color: var(--error-red);
+}
+
+/* ========================================
+   DATE PICKER WRAPPER
+   ======================================== */
+.datePickerWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.datePickerInput {
   width: 100%;
-  height: 12px;
-  background-color: rgba(51, 51, 51, 0.8);
-  border-radius: 6px;
-  overflow: hidden;
-  margin-bottom: 0.5rem;
+  background: var(--bg-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 16px;
+  padding-right: 50px;
+  font-size: 16px;
+  color: var(--text-white);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
-.progressFill {
-  height: 100%;
-  border-radius: 6px;
-  background-color: var(--color-success);
+
+.datePickerInput:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
 }
-.progressText {
-  font-size: 0.9rem;
-  color: var(--color-text-light);
+
+.datePickerInput::placeholder {
+  color: var(--text-light-gray);
+}
+
+.calendarIconButton {
+  position: absolute;
+  right: 16px;
+  font-size: 24px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* ========================================
+   CUSTOMIZAÇÃO DO REACT-DATEPICKER
+   ======================================== */
+
+/* Container principal do calendário */
+:global(.react-datepicker) {
+  background: var(--bg-dark) !important;
+  border: 1px solid var(--border-gold) !important;
+  border-radius: 16px !important;
+  font-family: inherit !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 
+              0 0 20px rgba(255, 215, 0, 0.2) !important;
+}
+
+/* Popper (container externo) */
+:global(.react-datepicker-popper) {
+  z-index: 9999 !important;
+}
+
+/* Header do calendário */
+:global(.react-datepicker__header) {
+  background: var(--bg-darker) !important;
+  border-bottom: 1px solid var(--border-gold) !important;
+  border-radius: 16px 16px 0 0 !important;
+  padding-top: 16px !important;
+  padding-bottom: 0 !important;
+}
+
+/* Mês e ano atual */
+:global(.react-datepicker__current-month) {
+  color: var(--gold) !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  margin-bottom: 12px !important;
+  text-transform: capitalize !important;
+}
+
+/* Nomes dos dias da semana */
+:global(.react-datepicker__day-names) {
+  display: flex !important;
+  justify-content: space-around !important;
+  padding: 0 10px !important;
+  margin-bottom: 8px !important;
+}
+
+:global(.react-datepicker__day-name) {
+  color: var(--gold) !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  width: 40px !important;
+  line-height: 40px !important;
+  margin: 0 !important;
+  text-transform: uppercase !important;
+}
+
+/* Container do mês */
+:global(.react-datepicker__month) {
+  margin: 12px !important;
+  padding: 4px !important;
+}
+
+/* Semanas */
+:global(.react-datepicker__week) {
+  display: flex !important;
+  justify-content: space-around !important;
+}
+
+/* Dias individuais */
+:global(.react-datepicker__day) {
+  color: var(--text-white) !important;
+  width: 40px !important;
+  line-height: 40px !important;
+  margin: 4px !important;
+  border-radius: 10px !important;
+  transition: all 0.2s ease !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Hover nos dias */
+:global(.react-datepicker__day:hover) {
+  background: rgba(255, 215, 0, 0.15) !important;
+  border-radius: 10px !important;
+  transform: scale(1.05) !important;
+}
+
+/* Dia selecionado */
+:global(.react-datepicker__day--selected),
+:global(.react-datepicker__day--selected:hover) {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark)) !important;
+  color: #000 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4) !important;
+  transform: scale(1.08) !important;
+}
+
+/* Dia de hoje */
+:global(.react-datepicker__day--today) {
+  border: 2px solid var(--success-green) !important;
+  background: transparent !important;
+  color: var(--success-green) !important;
+  font-weight: 700 !important;
+}
+
+/* Dia de hoje quando hover */
+:global(.react-datepicker__day--today:hover) {
+  background: rgba(76, 175, 80, 0.1) !important;
+}
+
+/* Dia selecionado via teclado */
+:global(.react-datepicker__day--keyboard-selected) {
+  background: rgba(255, 215, 0, 0.1) !important;
+  color: var(--text-white) !important;
+}
+
+/* Dias desabilitados (passados) */
+:global(.react-datepicker__day--disabled) {
+  color: var(--text-light-gray) !important;
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+}
+
+:global(.react-datepicker__day--disabled:hover) {
+  background: transparent !important;
+  transform: none !important;
+}
+
+/* Dias de outros meses */
+:global(.react-datepicker__day--outside-month) {
+  color: var(--text-light-gray) !important;
+  opacity: 0.4 !important;
+}
+
+/* Botões de navegação (setas) */
+:global(.react-datepicker__navigation) {
+  top: 16px !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+}
+
+:global(.react-datepicker__navigation:hover) {
+  background: rgba(255, 215, 0, 0.1) !important;
+}
+
+:global(.react-datepicker__navigation--previous) {
+  left: 16px !important;
+}
+
+:global(.react-datepicker__navigation--next) {
+  right: 16px !important;
+}
+
+:global(.react-datepicker__navigation-icon::before) {
+  border-color: var(--gold) !important;
+  border-width: 2px 2px 0 0 !important;
+  height: 9px !important;
+  width: 9px !important;
+  top: 10px !important;
+}
+
+:global(.react-datepicker__navigation:hover .react-datepicker__navigation-icon::before) {
+  border-color: var(--gold-dark) !important;
+}
+
+/* Remove o triângulo */
+:global(.react-datepicker__triangle) {
+  display: none !important;
+}
+
+/* Container dos meses (quando múltiplos) */
+:global(.react-datepicker__month-container) {
+  float: none !important;
+}
+
+/* ========================================
+   BOTÕES DE DATA RÁPIDA
+   ======================================== */
+.quickDateButtons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.quickDateLabel {
+  font-size: 14px;
+  color: var(--text-gray);
+  font-weight: 500;
+}
+
+.quickDateBtn {
+  background: rgba(255, 215, 0, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--gold);
+  cursor: pointer;
+  transition: all 0.2s ease;
   font-weight: 600;
 }
 
-/* --- DatePicker Modal --- */
-.datePickerOverlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1100;
+.quickDateBtn:hover {
+  background: rgba(255, 215, 0, 0.15);
+  border-color: rgba(255, 215, 0, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(255, 215, 0, 0.2);
 }
-.datePickerContainer {
-  background-color: var(--color-dark-bg);
-  border-radius: 20px;
-  width: 90%;
-  max-width: 350px;
-  padding: 1rem;
-  border: 1px solid var(--border-color);
+
+.quickDateBtn:active {
+  transform: translateY(0);
 }
-.datePickerHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+
+/* ========================================
+   PRÉVIA DE PROGRESSO
+   ======================================== */
+.progressPreview {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-gold);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 8px;
 }
-.datePickerTitle {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: var(--color-primary);
+
+.progressTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 0 0 16px 0;
 }
-.datePickerCloseButton {
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  color: var(--color-text-medium);
-  cursor: pointer;
+
+.progressBarContainer {
+  width: 100%;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 10px;
 }
-.calendarContainer {
-  padding: 0.5rem 0;
+
+.progressBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--success-green), #66BB6A);
+  border-radius: 8px;
+  transition: width 0.4s ease;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
 }
-.calendarHeader {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 0.5rem;
+
+.progressPercentage {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-white);
+  margin: 0;
 }
-.calendarHeaderText {
-  color: var(--color-primary);
-  font-size: 0.8rem;
-  font-weight: bold;
-  text-align: center;
-}
-.calendarGrid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-}
-.calendarDay, .calendarDayEmpty {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  aspect-ratio: 1 / 1;
-  background: transparent;
-  border: none;
-  border-radius: 50%;
-  color: var(--color-text-light);
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-.calendarDay:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-.calendarDayToday {
-  border: 2px solid var(--color-success);
-}
-.calendarDaySelected {
-  background-color: var(--color-primary);
-  color: #000;
-  font-weight: bold;
-}
-.datePickerActions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-  gap: 10px;
-}
-.datePickerTodayButton, .datePickerConfirmButton {
-  flex: 1;
-  padding: 0.7rem;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  border: 1px solid;
-}
-.datePickerTodayButton {
-  background-color: transparent;
-  color: var(--color-success);
-  border-color: var(--color-success);
-}
-.datePickerConfirmButton {
-  background-color: var(--color-primary);
-  color: #000;
-  border-color: var(--color-primary);
+
+/* ========================================
+   RESPONSIVIDADE
+   ======================================== */
+@media (max-width: 500px) {
+  .modal {
+    max-width: 100%;
+    border-radius: 20px;
+  }
+
+  .modalHeader {
+    padding: 16px 20px;
+  }
+
+  .modalTitle {
+    font-size: 18px;
+  }
+
+  .btnCancel,
+  .btnSave {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .modalBody {
+    padding: 20px;
+  }
+
+  .field {
+    margin-bottom: 20px;
+  }
+
+  /* Ajustes do calendário em mobile */
+  :global(.react-datepicker) {
+    font-size: 14px !important;
+  }
+
+  :global(.react-datepicker__day-name),
+  :global(.react-datepicker__day) {
+    width: 36px !important;
+    line-height: 36px !important;
+    margin: 2px !important;
+    font-size: 13px !important;
+  }
+
+  :global(.react-datepicker__current-month) {
+    font-size: 15px !important;
+  }
+
+  .quickDateButtons {
+    gap: 8px;
+  }
+
+  .quickDateBtn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
 }

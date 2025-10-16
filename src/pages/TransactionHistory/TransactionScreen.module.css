@@ -175,31 +175,75 @@
   max-width: 350px;
 }
 
-/* --- Checkbox --- */
+/* Adicione estas classes ao seu TransactionScreen.module.css */
+
+.checkboxGroup {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 .checkboxContainer {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 15px;
+  padding: 16px;
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 12px;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
+
+.checkboxContainer:hover {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.checkboxContainer:active {
+  transform: scale(0.98);
+}
+
 .checkbox {
-  width: 24px;
-  height: 24px;
-  border: 2px solid #555;
-  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s;
+  transition: all 0.2s ease;
+  background: rgba(0, 0, 0, 0.2);
+  color: transparent;
+  font-size: 18px;
 }
-.checkbox.checkboxActive {
-  background-color: #FFD700;
-  border-color: #FFD700;
-}
-.checkbox svg { color: #000; }
-.checkboxLabel { font-weight: 600; cursor: pointer; }
-.checkboxDescription { font-size: 12px; color: #888; margin: 0; cursor: pointer; }
 
+.checkboxActive {
+  background: linear-gradient(135deg, #FFD700, #F0C040);
+  border-color: #FFD700;
+  color: #000;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+.checkboxContent {
+  flex: 1;
+}
+
+.checkboxLabel {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFD700;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.checkboxDescription {
+  font-size: 14px;
+  color: #CCCCCC;
+  margin: 0;
+  line-height: 1.5;
+}
 /* --- Botão de Submissão --- */
 .submitButton {
   padding: 18px;

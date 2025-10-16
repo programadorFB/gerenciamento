@@ -1,46 +1,44 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowBack } from 'react-icons/md';
 import styles from './profileScreen.module.css';
 
+// OBSERVAÇÃO: A constante PREDEFINED_AVATARS foi removida, focando apenas no upload de arquivo.
+
 const ProfileScreen = () => {
   const { user, updateProfile, logout } = useAuth();
   const navigate = useNavigate();
   
-  // State for form fields
   const [name, setName] = useState(user?.name || '');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // State for profile image
-  const [profileImage, setProfileImage] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(user?.profile_photo || null);
-  const initialProfilePhoto = useRef(user?.profile_photo); // Ref para a URL original da foto
-
-  // Ref for the hidden file input
-  const fileInputRef = useRef(null);
+  // State para o arquivo de foto local antes do upload
+  const [profilePhotoFile, setProfilePhotoFile] = useState(null);
   
-  useEffect(() => {
-    // Initialize form with user data
+  // State para a URL de exibição (assumindo que o servidor serve arquivos de /uploads/profiles/)
+const [profilePhotoUrl, setProfilePhotoUrl] = useState(
+    user?.profile_photo ? `${STATIC_BASE_URL}/uploads/profiles/${user.profile_photo}` : null
+);
+  
+  const fileInputRef = useRef(null);
+
+useEffect(() => {
     if (user) {
       setName(user.name || '');
-      // O email não pode ser alterado, então não precisa ser um estado mutável
-      setPreviewUrl(user.profile_photo || null);
-      initialProfilePhoto.current = user.profile_photo;
+      // user.profile_photo contém o nome do arquivo (ex: 'profile_1_16788888.jpg')
+      setProfilePhotoUrl(user.profile_photo ? `${STATIC_BASE_URL}/uploads/profiles/${user.profile_photo}` : null);
     }
-  }, [user]);
-
-  useEffect(() => {
-    // Clean up the object URL when the component unmounts
+    // Limpa a URL temporária de pré-visualização ao desmontar (opcional)
     return () => {
-      if (previewUrl && previewUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(previewUrl);
+      if (profilePhotoUrl && profilePhotoUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(profilePhotoUrl);
       }
     };
-  }, [previewUrl]);
+  }, [user]);
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
@@ -64,40 +62,53 @@ const ProfileScreen = () => {
     setLoading(true);
 
     try {
-      // Create FormData for the request
       const formData = new FormData();
       formData.append('name', name.trim());
       
-      // ✅ CORREÇÃO: Adicionar a lógica para remover a foto de perfil
-      const isImageRemoved = initialProfilePhoto.current && previewUrl === null;
-      if (isImageRemoved) {
+      // 1. ANEXAR FOTO DE PERFIL
+      if (profilePhotoFile) {
+        // Envia o arquivo real no campo 'profile_photo', conforme esperado pelo routes.py
+        formData.append('profile_photo', profilePhotoFile);
+      } 
+      
+      // 2. ANEXAR REMOÇÃO
+      // Condição: Se o usuário tinha uma foto ANTES (user?.profile_photo)
+      // E não selecionou um novo arquivo (profilePhotoFile é null)
+      // E o URL de visualização está limpo (profilePhotoUrl é null), o que significa que ele clicou em "Remover".
+      if (!profilePhotoFile && !profilePhotoUrl && user?.profile_photo) {
+        // Envia o comando de remoção 'remove_profile_photo' para o backend
         formData.append('remove_profile_photo', 'true');
       }
 
-      // Add profile image if selected and is a new file
-      if (profileImage instanceof File) {
-        formData.append('profile_photo', profileImage);
-      }
-      
-      // Add password fields if changing password
+      // Adicionar campos de senha
       if (newPassword) {
         formData.append('current_password', currentPassword);
         formData.append('new_password', newPassword);
       }
       
-      // Call updateProfile from AuthContext
-      const result = await updateProfile(formData);
+const result = await updateProfile(formData);
       
-      if (result.success) {
+      // CORREÇÃO: Verifica se result.success é true E se result.user existe
+      if (result.success && result.user) { 
         alert('Perfil atualizado com sucesso!');
-        // Clear password fields
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
-        // Reset profile image state to prevent re-upload on next save
-        setProfileImage(null);
+        
+        // Acesso seguro ao profile_photo
+        const newProfilePhoto = result.user.profile_photo;
+        
+ if (newProfilePhoto) {
+          // Usa o nome do arquivo retornado pelo backend para formar a URL completa
+          setProfilePhotoUrl(`${STATIC_BASE_URL}/uploads/profiles/${newProfilePhoto}`);
       } else {
-        alert(`Erro: ${result.error || 'Não foi possível atualizar o perfil'}`);
+          setProfilePhotoUrl(null);
+      }
+        setProfilePhotoFile(null);
+        
+      } else {
+        // Se result.success for false ou result.user for undefined, trata como erro
+        alert(`Erro: ${result.error || 'Não foi possível atualizar o perfil. Verifique sua senha atual.'}`);
       }
     } catch (error) {
       alert('Erro ao atualizar perfil. Tente novamente.');
@@ -106,35 +117,23 @@ const ProfileScreen = () => {
       setLoading(false);
     }
   };
-
-  const handleSelectImage = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
     if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        alert('Por favor, selecione apenas arquivos de imagem (JPG, PNG, etc.).');
-        return;
-      }
-      
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('A imagem deve ter no máximo 5MB.');
-        return;
-      }
-      
-      setProfileImage(file); // Store the file object
-      
-      // Create preview URL
-      const objectUrl = URL.createObjectURL(file);
-      setPreviewUrl(objectUrl);
+      setProfilePhotoFile(file);
+      // Cria uma URL temporária para pré-visualização (blob:http://...)
+      setProfilePhotoUrl(URL.createObjectURL(file)); 
     }
   };
 
-  const handleRemoveImage = () => {
+  const handleRemoveAvatar = () => {
     if (window.confirm('Tem certeza que deseja remover sua foto de perfil?')) {
-      setProfileImage(null);
-      setPreviewUrl(null);
-      // O campo 'remove_profile_photo' será adicionado no FormData em handleUpdateProfile
+      // Se houver uma URL temporária (blob), revoga para liberar memória
+      if (profilePhotoUrl && profilePhotoUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(profilePhotoUrl);
+      }
+      setProfilePhotoUrl(null); 
+      setProfilePhotoFile(null);
     }
   };
 
@@ -162,7 +161,7 @@ const ProfileScreen = () => {
       .toUpperCase()
       .slice(0, 2);
   };
-
+  
   return (
     <main className={styles.container}>
       {/* Header with back button */}
@@ -182,53 +181,53 @@ const ProfileScreen = () => {
       <form onSubmit={handleUpdateProfile}>
         <section className={styles.imageSection}>
           <div className={styles.imageContainer}>
-            {previewUrl ? (
+            {profilePhotoUrl ? (
+              // Exibe a foto real (do servidor ou a temporária)
               <img 
-                src={previewUrl} 
-                alt="Profile" 
+                src={profilePhotoUrl} 
+                alt="Foto de Perfil"
                 className={styles.profileImage}
-                onError={(e) => {
-                  // If image fails to load, show placeholder
-                  e.target.style.display = 'none';
-                }}
               />
             ) : (
+              // Placeholder
               <div className={styles.profileImagePlaceholder}>
                 <span>{getInitials()}</span>
               </div>
             )}
           </div>
           
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleSelectImage}
-            style={{ display: 'none' }}
-            disabled={loading}
-          />
-          
           <div className={styles.imageButtons}>
+            {/* Input de arquivo real, escondido */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept="image/*"
+              style={{ display: 'none' }}
+              disabled={loading}
+            />
+            
             <button 
               type="button" 
               className={styles.imageButton} 
-              onClick={() => fileInputRef.current?.click()}
+              // Clica no input de arquivo escondido
+              onClick={() => fileInputRef.current.click()}
               disabled={loading}
             >
-              Alterar Foto
+              Escolher Foto
             </button>
-            {/* ✅ CORREÇÃO: O botão de remover agora é exibido se houver uma foto de perfil original ou um preview URL */}
-            {(initialProfilePhoto.current || previewUrl) && (
+            {(profilePhotoUrl || profilePhotoFile) && (
               <button 
                 type="button" 
                 className={`${styles.imageButton} ${styles.removeButton}`} 
-                onClick={handleRemoveImage}
+                onClick={handleRemoveAvatar}
                 disabled={loading}
               >
-                Remover
+                Remover Foto
               </button>
             )}
           </div>
+
         </section>
 
         <section className={styles.section}>
@@ -330,10 +329,7 @@ const ProfileScreen = () => {
             disabled={loading || !name.trim()}
           >
             {loading ? (
-              <>
-                <span className={styles.loadingSpinner}></span>
-                Atualizando...
-              </>
+              'Atualizando...'
             ) : (
               'Salvar Alterações'
             )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdEmail, MdLock, MdPerson, MdVisibility, MdVisibilityOff } from 'react-icons/md';
 import { FaCoins, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
@@ -21,10 +21,15 @@ const LoginScreen = () => {
 
     const { login, register, isLoading, error, clearError, user } = useAuth();
     const navigate = useNavigate();
+    
+    // Flag para controlar se o redirecionamento deve acontecer
+    const shouldRedirect = useRef(false);
 
-    // ✅ Quando user mudar (autenticado), redireciona automaticamente
+    // ✅ Redireciona apenas se a flag estiver ativa
     useEffect(() => {
-        if (user) navigate('/dashboard');
+        if (user && shouldRedirect.current) {
+            navigate('/dashboard');
+        }
     }, [user, navigate]);
 
     useEffect(() => {
@@ -76,6 +81,9 @@ const LoginScreen = () => {
         clearError();
 
         try {
+            // ✅ Ativa a flag ANTES de fazer login/registro
+            shouldRedirect.current = true;
+            
             if (isLogin) {
                 await login(email.trim().toLowerCase(), password);
             } else {
@@ -83,6 +91,7 @@ const LoginScreen = () => {
                 const bankAmount = parseFloat(initialBank.replace(',', '.'));
                 if (isNaN(bankAmount) || bankAmount <= 0) {
                     alert('Valor da banca inicial inválido.');
+                    shouldRedirect.current = false;
                     return;
                 }
 
@@ -94,10 +103,11 @@ const LoginScreen = () => {
                     riskValue
                 });
             }
-            // ❌ NÃO usamos navigate aqui — o redirecionamento é feito no useEffect acima
+            // O redirecionamento acontece no useEffect quando user mudar
         } catch (err) {
             console.error('Erro no login/cadastro:', err);
             alert('Erro na autenticação. Verifique os dados.');
+            shouldRedirect.current = false;
         }
     };
 
@@ -109,6 +119,7 @@ const LoginScreen = () => {
         setInitialBank('');
         setRiskValue(5);
         clearError();
+        shouldRedirect.current = false;
     };
 
     return (
@@ -191,9 +202,7 @@ const LoginScreen = () => {
                                         required
                                     />
                                 </div>
-                                <small className={styles.helpText}>
-                                    Este valor será registrado como sua banca inicial (is_initial_bank = true)
-                                </small>
+                                
                             </div>
 
                             <div className={styles.inputGroup}>

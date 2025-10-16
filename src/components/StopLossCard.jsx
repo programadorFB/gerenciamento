@@ -108,7 +108,7 @@ const StopLossCard = React.memo(({
           color: '#FFD700',
           icon: <MdInfo />,
           title: 'ATENÇÃO',
-          message: `Monitorar perdas (${currentLossPercentage.toFixed(1)}% de ${stopLossPercentage.toFixed(1)}%)`,
+          message: `Monitorar loss (${currentLossPercentage.toFixed(1)}% de ${stopLossPercentage.toFixed(1)}%)`,
           description: 'Mantenha-se atento aos seus limites'
         };
       case 'low':
@@ -222,7 +222,7 @@ const StopLossCard = React.memo(({
                 <h4 className={styles.sliderTitle} style={{ color: sliderColor }}>
                   {sliderTitle}
                 </h4>
-                <p className={styles.sliderSubtitle}>Configure seu limite de perda</p>
+                <p className={styles.sliderSubtitle}>Configure seu limite de Loss</p>
               </div>
             </div>
             
