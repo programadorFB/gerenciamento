@@ -1,33 +1,27 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
-// 1. Criação do Contexto
 const SideMenuContext = createContext(null);
 
-// 2. Criação do Provedor (Provider)
 export const SideMenuProvider = ({ children }) => {
   const [menuVisible, setMenuVisible] = useState(false);
+  // --- ADICIONADO: Estado para controlar se o menu está recolhido ---
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // Funções para controlar o estado do menu
-  // Usamos useCallback para evitar recriações desnecessárias das funções
-  const toggleMenu = useCallback(() => {
-    setMenuVisible(prev => !prev);
+  const openMenu = useCallback(() => setMenuVisible(true), []);
+  const closeMenu = useCallback(() => setMenuVisible(false), []);
+
+  // --- ADICIONADO: Função para alternar o estado recolhido ---
+  const toggleCollapse = useCallback(() => {
+    setIsCollapsed(prev => !prev);
   }, []);
 
-  const closeMenu = useCallback(() => {
-    setMenuVisible(false);
-  }, []);
-
-  const openMenu = useCallback(() => {
-    setMenuVisible(true);
-  }, []);
-
-  // O valor do contexto não inclui mais 'slideAnim',
-  // pois a animação agora é feita via CSS no componente do menu.
   const value = {
     menuVisible,
-    toggleMenu,
-    closeMenu,
     openMenu,
+    closeMenu,
+    // --- ADICIONADO: Exportando o novo estado e a função ---
+    isCollapsed,
+    toggleCollapse,
   };
 
   return (
@@ -37,7 +31,6 @@ export const SideMenuProvider = ({ children }) => {
   );
 };
 
-// 3. Hook customizado para consumir o contexto
 export const useSideMenu = () => {
   const context = useContext(SideMenuContext);
   if (!context) {

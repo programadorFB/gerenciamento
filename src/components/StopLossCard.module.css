@@ -8,6 +8,23 @@
     color: #e0e0e0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     margin: 1rem 0;
+    transition: all 0.3s ease;
+}
+
+/* Animação quando muda de status */
+.container.statusChange {
+    animation: cardPulse 0.6s ease;
+}
+
+@keyframes cardPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 30px var(--status-color);
+    }
 }
 
 .gradient {
@@ -31,6 +48,24 @@
 .iconWrapper {
     font-size: 28px;
     color: var(--status-color);
+    transition: all 0.3s ease;
+}
+
+/* Animação de pulso no ícone */
+.iconWrapper.iconPulse {
+    animation: iconPulseAnim 0.6s ease;
+}
+
+@keyframes iconPulseAnim {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.2) rotate(-10deg);
+    }
+    75% {
+        transform: scale(1.2) rotate(10deg);
+    }
 }
 
 .title {
@@ -38,6 +73,7 @@
     font-weight: 700;
     color: var(--status-color);
     margin: 0;
+    transition: color 0.3s ease;
 }
 
 .subtitle {
@@ -46,37 +82,16 @@
     margin: 2px 0 0 0;
 }
 
-.editButton {
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--status-color);
-    color: var(--status-color);
-    border-radius: 8px;
-    padding: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-}
-
-.editButton:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
 .content {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
 }
 
-.percentageSection {
-    display: flex;
-    justify-content: space-around;
-    text-align: center;
-}
-
 .percentageItem {
     flex: 1;
+    text-align: center;
+    margin-bottom: 8px;
 }
 
 .percentageLabel {
@@ -90,6 +105,23 @@
     font-size: 1.75rem;
     font-weight: 700;
     color: #fff;
+    transition: all 0.3s ease;
+}
+
+/* Animação do valor da porcentagem */
+.percentageValue.valueAnimating {
+    animation: valueBounce 0.5s ease;
+}
+
+@keyframes valueBounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+        color: var(--slider-color);
+        text-shadow: 0 0 20px var(--slider-color);
+    }
 }
 
 .progressSection {
@@ -97,17 +129,35 @@
 }
 
 .progressBar {
-    height: 8px;
+    height: 12px;
     background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    border-radius: 6px;
     overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .progressFill {
     height: 100%;
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: var(--status-color);
-    transition: width 0.3s ease-in-out;
+    transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    box-shadow: 0 0 10px var(--status-color);
+}
+
+/* Animação de brilho na barra quando crítica */
+.progressFill.progressCritical {
+    animation: progressGlow 1s ease-in-out infinite;
+}
+
+@keyframes progressGlow {
+    0%, 100% {
+        box-shadow: 0 0 10px var(--status-color);
+    }
+    50% {
+        box-shadow: 0 0 20px var(--status-color), 0 0 30px var(--status-color);
+    }
 }
 
 .progressText {
@@ -126,9 +176,100 @@
     font-size: 0.9rem;
 }
 
+/* Animação de slide na mensagem */
+.statusMessage.messageSlide {
+    animation: messageSlideIn 0.5s ease;
+}
+
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.messageText {
+    margin: 0;
+    font-weight: 600;
+}
+
+.descriptionText {
+    margin: 8px 0 0 0;
+    font-size: 0.85rem;
+    color: #a0a0a0;
+}
+
 .criticalText {
   color: #F44336;
   font-weight: bold;
+}
+
+/* Estatísticas Rápidas */
+.statsSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.statCard:hover {
+  background: rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.statIcon {
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.statCard:hover .statIcon {
+  transform: scale(1.1);
+}
+
+.statContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: #a0a0a0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statValue {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.statValue.positive {
+  color: #4CAF50;
+}
+
+.statValue.negative {
+  color: #F44336;
 }
 
 .amountSection {
@@ -145,6 +286,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 4px 0;
+  transition: all 0.3s ease;
+}
+
+.amountItem:hover {
+  padding-left: 4px;
+  background-color: rgba(255, 255, 255, 0.02);
 }
 
 .amountLabel {
@@ -156,13 +303,82 @@
   font-weight: 600;
   font-size: 0.95rem;
   color: #fff;
+  transition: color 0.3s ease;
+}
+
+.amountValue.lossValue {
+  color: #F44336;
+  animation: lossFlash 2s ease-in-out infinite;
+}
+
+@keyframes lossFlash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 /* Estilos do Slider */
 .sliderSection {
   padding: 10px 0;
   margin-bottom: 10px;
-  text-align: center;
+}
+
+.sliderHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border-left: 4px solid var(--slider-color, #9E9E9E);
+}
+
+.sliderIconWrapper {
+  font-size: 32px;
+  transition: all 0.3s ease;
+}
+
+.sliderHeaderText {
+  flex: 1;
+}
+
+.sliderTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.sliderSubtitle {
+  font-size: 0.75rem;
+  color: #a0a0a0;
+  margin: 2px 0 0 0;
+}
+
+.sliderContainer {
+  position: relative;
+  margin-top: 16px;
+}
+
+.sliderTrack {
+  position: absolute;
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.sliderFill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .slider {
@@ -170,11 +386,13 @@
   width: 100%;
   height: 8px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.1);
+  background: transparent;
   outline: none;
-  opacity: 0.8;
+  opacity: 0.9;
   transition: opacity .2s;
-  margin-top: 12px;
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
 }
 
 .slider:hover {
@@ -184,19 +402,47 @@
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: var(--status-color, #4CAF50);
+  background: var(--slider-color, #4CAF50);
   cursor: pointer;
-  border: 2px solid #1c1c1c;
+  border: 3px solid #1c1c1c;
+  box-shadow: 
+    0 0 0 2px rgba(255, 255, 255, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 
+    0 0 0 4px rgba(255, 255, 255, 0.3),
+    0 6px 12px rgba(0, 0, 0, 0.5),
+    0 0 20px var(--slider-color);
+}
+
+.slider::-webkit-slider-thumb:active {
+  transform: scale(1.05);
 }
 
 .slider::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: var(--status-color, #4CAF50);
+  background: var(--slider-color, #4CAF50);
   cursor: pointer;
-  border: 2px solid #1c1c1c;
+  border: 3px solid #1c1c1c;
+  box-shadow: 
+    0 0 0 2px rgba(255, 255, 255, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+}
+
+.slider::-moz-range-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 
+    0 0 0 4px rgba(255, 255, 255, 0.3),
+    0 6px 12px rgba(0, 0, 0, 0.5),
+    0 0 20px var(--slider-color);
 }

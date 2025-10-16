@@ -523,3 +523,120 @@
         margin: 0.5rem 0;
     }
 }
+/* --- Profile Display --- */
+.profileDisplay {
+  background-color: #1a1a1a;
+  margin: 0 20px 30px;
+  padding: 25px;
+  border-radius: 20px;
+  border: 2px solid var(--profile-color);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+}
+.profileDisplayVisible {
+  animation: profile-entry 0.5s forwards ease-out;
+}
+.rouletteWheel {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--profile-color);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 25px;
+  position: relative;
+  box-shadow: 
+    0 0 20px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(0, 0, 0, 0.3),
+    0 0 40px var(--profile-color);
+  transition: transform 0.3s ease;
+}
+
+/* Animação de rotação da roleta */
+.rouletteWheel.spinning {
+  animation: rouletteSpin 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes rouletteSpin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+    box-shadow: 
+      0 0 30px rgba(0, 0, 0, 0.7),
+      inset 0 0 30px rgba(0, 0, 0, 0.5),
+      0 0 60px var(--profile-color);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+/* Marcadores decorativos */
+.rouletteMarkers {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.marker {
+  position: absolute;
+  width: 4px;
+  height: 8px;
+  border-radius: 2px;
+  top: 50%;
+  left: 50%;
+  transform-origin: center;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.rouletteWheel.spinning .marker {
+  opacity: 0.9;
+}
+
+.rouletteCenter {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #000 0%, #1a1a1a 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid var(--profile-color);
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.8),
+    inset 0 2px 10px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.rouletteNumber {
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--profile-color);
+  text-shadow: 
+    0 0 10px var(--profile-color),
+    0 0 20px var(--profile-color),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+  transition: all 0.2s ease;
+}
+
+/* Animação do número durante a contagem */
+.rouletteNumber.numberAnimating {
+  animation: numberPulse 0.1s ease-in-out infinite;
+}
+
+@keyframes numberPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}

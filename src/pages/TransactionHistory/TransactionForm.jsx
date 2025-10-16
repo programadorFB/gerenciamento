@@ -13,7 +13,7 @@ const TRANSACTION_TYPES = [
   { name: 'Depósito', key: 'deposit', icon: <IoAddCircle />, color: '#4CAF50', description: 'Dinheiro adicionado à banca' },
   { name: 'Saque', key: 'withdraw', icon: <IoRemoveCircle />, color: '#F44336', description: 'Dinheiro retirado da banca' },
   { name: 'Ganhos', key: 'gains', icon: <IoTrendingUp />, color: '#FFD700', description: 'Lucros obtidos em operações' },
-  { name: 'Perdas', key: 'losses', icon: <IoTrendingDown />, color: '#FFC107', description: 'Prejuízos em operações' }
+  { name: 'Loss', key: 'losses', icon: <IoTrendingDown />, color: '#FFC107', description: 'Prejuízos em operações' }
 ];
 const getCurrentDate = () => new Date().toISOString().split('T')[0];
 

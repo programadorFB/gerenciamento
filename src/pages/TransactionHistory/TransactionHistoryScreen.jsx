@@ -57,7 +57,7 @@ const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
                             <option value="deposit">Depósito</option>
                             <option value="withdraw">Saque</option>
                             <option value="gains">Ganho</option>
-                            <option value="losses">Perda</option>
+                            <option value="losses">Loss</option>
                         </select>
                     </div>
                     <div className={styles.inputGroup}>
@@ -147,7 +147,7 @@ const TransactionItem = React.memo(({ item, onEdit, onDelete }) => {
             'deposit': 'Depósito',
             'withdraw': 'Saque',
             'gains': 'Ganho',
-            'losses': 'Perda'
+            'losses': 'Loss'
         };
         return labels[type] || type;
     };

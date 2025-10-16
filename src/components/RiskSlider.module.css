@@ -76,25 +76,35 @@
 
 .sliderWrapper {
   position: relative;
-  padding-top: 35px; /* Espaço para o ícone flutuante */
+  padding-top: 50px; /* Espaço para o ícone flutuante */
   margin-bottom: 15px;
 }
 
 .compactSliderWrapper {
-  padding-top: 30px;
+  padding-top: 45px;
 }
 
-/* Ícone flutuante que se move com o knob */
+/* NOVA CLASSE: Âncora para o ícone flutuante que estava faltando */
+.floatingIconAnchor {
+  position: absolute;
+  top: 50px; /* Alinha com o centro vertical do knob */
+  left: 0;
+  pointer-events: none; /* Garante que não interfere com cliques */
+}
+
+/* CLASSE SUBSTITUÍDA: Centraliza o wrapper do ícone dinamicamente */
 .floatingIconWrapper {
   position: absolute;
-  top: -15px;
-  left: -20px;
+  bottom: 0;
+  left: 0;
+  transform: translate(-50%, -100%) translateY(-15px); /* Centraliza horizontalmente e posiciona acima */
   z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
   pointer-events: none;
 }
+
 .iconBubble {
   background-color: rgba(0, 0, 0, 0.9);
   border-radius: 20px;
@@ -136,9 +146,12 @@
   border-radius: 4px;
 }
 
+/* CLASSE MODIFICADA: Knob centralizado corretamente */
 .sliderKnob {
   position: absolute;
   top: -16px;
+  left: 0;
+  transform: translateX(-50%); /* Centraliza o knob pela metade de sua largura */
   width: 40px;
   height: 40px;
   border-radius: 50%;

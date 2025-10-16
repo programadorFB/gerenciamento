@@ -5,29 +5,20 @@ import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx';
 import { SideMenuProvider } from './contexts/SideMenuContext.jsx';
 import { FinancialProvider } from './contexts/FinancialContext.jsx';
-import BettingContext, { BettingProvider } from './contexts/BettingContext.jsx';
+import { BettingProvider } from './contexts/BettingContext.jsx';
+// --- CORREÇÃO: Importação default do ReportScreen (sem chaves) ---
+import ReportScreen from './pages/ReportScreen/ReportScreen.jsx'; 
 
 // --- Layout and Pages ---
 import SideMenu from './components/SideMenu.jsx';
 import LoginScreen from './pages/Login/LoginScreen.jsx';
 import DashboardScreen from './pages/Dashboard/DashboardScreen.jsx';
 import ChartsScreen from './pages/ChartScreen/ChartsScreen.jsx';
-// O nome deste componente no seu import original era TransactionScreen, vou mantê-lo
 import TransactionScreen from './pages/TransactionHistory/TransactionScreen.jsx'; 
 import InvestmentProfile from './pages/InvestmentProfile/InvestmentProfile.jsx';
 import TransactionHistoryScreen from './pages/TransactionHistory/TransactionHistoryScreen.jsx';
 import ProfileScreen from './pages/Profile/profileScreen.jsx';
-import ObjectiveList from './components/ObjectivesList.jsx';
 import ObjectivesScreen from './pages/Objectives/ObjectiveScreen.jsx';
-// --- Componentes de Placeholder ---
-const Placeholder = ({ title }) => (
-  <div style={{ padding: '50px', color: 'white', height: '100vh' }}>
-    <h1>{title}</h1>
-    <p>Página em construção.</p>
-  </div>
-);
-// Não precisamos mais do ObjectivesScreen, pois ele é gerenciado pelo TransactionScreen
-// const ObjectivesScreen = () => <Placeholder title="Objetivos" />;
 
 const AppLayout = () => (
   <div style={{ display: 'flex', minHeight: '100vh' }}>
@@ -55,30 +46,31 @@ const PrivateRoutes = () => {
 function App() {
   return (
     <AuthProvider>
-      <FinancialProvider>  
+      <FinancialProvider>   
         <SideMenuProvider>
         <BettingProvider>
           <Routes>
             <Route path="/login" element={<LoginScreen />} />
 
+            {/* Rotas Privadas */}
             <Route element={<PrivateRoutes />}>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardScreen />} />
               <Route path="/charts" element={<ChartsScreen />} />
-              
-              {/* --- AJUSTE PRINCIPAL AQUI --- */}
-              {/* Esta única rota agora lida com "/transaction" e "/transaction?showObjectives=true" */}
               <Route path="/transaction" element={<TransactionScreen />} />
-              
-              {/* A rota "/objectives" foi removida porque o TransactionScreen já cuida disso. */}
-               <Route path="/objective" element={<ObjectiveList />} /> 
+              <Route path="/report" element={<ReportScreen />} />
               <Route path="/objectives" element={<ObjectivesScreen />} />
               <Route path="/investment-profile" element={<InvestmentProfile />} />
               <Route path="/profile" element={<ProfileScreen />} />
               <Route path="/history" element={<TransactionHistoryScreen />} />
             </Route>
 
-            <Route path="*" element={<Placeholder title="404 - Página Não Encontrada" />} />
+            {/* Rota para páginas não encontradas */}
+            <Route path="*" element={
+              <div style={{ padding: '50px', color: 'white', height: '100vh' }}>
+                <h1>404 - Página Não Encontrada</h1>
+              </div>
+            } />
           </Routes>
         </BettingProvider>
         </SideMenuProvider>

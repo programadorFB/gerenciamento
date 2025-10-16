@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdClose, MdArrowBack, MdCheckCircle } from 'react-icons/md';
-import { FaShieldAlt, FaSave, FaSpinner, FaExclamationTriangle } from 'react-icons/fa';
+import { FaSave, FaSpinner, FaExclamationTriangle } from 'react-icons/fa';
 import StopLossCard from '../../components/StopLossCard';
+import RiskSlider from '../../components/RiskSlider';
 import { useBetting } from '../../contexts/BettingContext';
 import { useFinancial } from '../../contexts/FinancialContext';
 import styles from './InvestmentProfile.module.css';
@@ -25,8 +26,8 @@ const StopLossEditModal = React.memo(({ visible, onClose, onSave, currentPercent
         if (isNaN(numericValue) || numericValue < 0) {
             return 'Por favor, insira um valor válido';
         }
-        if (numericValue >= 100) {
-            return 'A porcentagem deve ser menor que 100%';
+        if (numericValue > 10) {
+            return 'A porcentagem deve ser entre 0% e 10%';
         }
         if (numericValue === 0) {
             return 'O stop loss não pode ser 0%';
@@ -86,15 +87,15 @@ const StopLossEditModal = React.memo(({ visible, onClose, onSave, currentPercent
                         value={inputValue}
                         onChange={handleInputChange}
                         onKeyPress={handleKeyPress}
-                        placeholder="ex: 10"
+                        placeholder="ex: 5"
                         autoFocus
                     />
                     {error && <p className={styles.errorText}>{error}</p>}
                     <div className={styles.percentageTips}>
                         <p className={styles.tipTitle}>Recomendações:</p>
-                        <div className={styles.tipItem}>• <strong>Conservador:</strong> 5-15%</div>
-                        <div className={styles.tipItem}>• <strong>Moderado:</strong> 15-25%</div>
-                        <div className={styles.tipItem}>• <strong>Agressivo:</strong> 25-40%</div>
+                        <div className={styles.tipItem}>• <strong>Conservador:</strong> 1-3%</div>
+                        <div className={styles.tipItem}>• <strong>Moderado:</strong> 4-6%</div>
+                        <div className={styles.tipItem}>• <strong>Agressivo:</strong> 7-10%</div>
                     </div>
                 </div>
                 <div className={styles.modalActions}>
@@ -114,77 +115,11 @@ const StopLossEditModal = React.memo(({ visible, onClose, onSave, currentPercent
     );
 });
 
-// Componente Slider otimizado
-const RiskSlider = React.memo(({ value, onValueChange, selectedProfile }) => {
-    const handleSliderChange = useCallback((event) => {
-        onValueChange(Number(event.target.value));
-    }, [onValueChange]);
-
-    const progress = useMemo(() => (value / 10) * 100, [value]);
-    const trackColor = selectedProfile?.color || '#666';
-
-    const getRiskDescription = useCallback(() => {
-        if (value <= 3) return 'Baixo Risco - Preservação de Capital';
-        if (value <= 6) return 'Risco Moderado - Crescimento Balanceado';
-        return 'Alto Risco - Busca por Retornos Máximos';
-    }, [value]);
-
-    return (
-        <div className={styles.sliderComponent}>
-            <div className={styles.sliderHeader}>
-                <h3 className={styles.sliderTitle}>Nível de Tolerância ao Risco</h3>
-                <div className={styles.currentProfileIndicator}>
-                    <FaShieldAlt style={{ color: trackColor }} />
-                    <span style={{ color: trackColor }}>{selectedProfile?.title}</span>
-                </div>
-            </div>
-            
-            <div className={styles.riskDescription}>
-                <p>{getRiskDescription()}</p>
-            </div>
-
-            <div className={styles.sliderWrapper}>
-                <div className={styles.floatingIcon} style={{ left: `calc(${progress}% - 25px)` }}>
-                    <div className={styles.iconBubble} style={{ borderColor: trackColor }}>
-                        <span>{value}</span>
-                    </div>
-                    <div className={styles.iconArrow} style={{ borderTopColor: trackColor }} />
-                </div>
-                <input
-                    type="range"
-                    min="1"
-                    max="10"
-                    step="1"
-                    value={value}
-                    onChange={handleSliderChange}
-                    className={styles.sliderInput}
-                    style={{ 
-                        '--progress': `${progress}%`, 
-                        '--track-color': trackColor 
-                    }}
-                />
-            </div>
-            <div className={styles.sliderLabels}>
-                <span>
-                    <div className={styles.labelMarker} style={{ backgroundColor: '#4CAF50' }} />
-                    Cauteloso
-                </span>
-                <span>
-                    <div className={styles.labelMarker} style={{ backgroundColor: '#FFD700' }} />
-                    Equilibrado
-                </span>
-                <span>
-                    <div className={styles.labelMarker} style={{ backgroundColor: '#F44336' }} />
-                    Alto Risco
-                </span>
-            </div>
-        </div>
-    );
-});
-
 // Componente de exibição do perfil
 const ProfileDisplay = React.memo(({ selectedProfile, riskValue, stopLossPercentage, initialBank }) => {
     const [isMounted, setIsMounted] = useState(false);
+    const [displayNumber, setDisplayNumber] = useState(0);
+    const [isSpinning, setIsSpinning] = useState(false);
     
     useEffect(() => {
         if (selectedProfile) {
@@ -193,6 +128,38 @@ const ProfileDisplay = React.memo(({ selectedProfile, riskValue, stopLossPercent
             return () => clearTimeout(timer);
         }
     }, [selectedProfile]);
+
+    // Animação da roleta quando o riskValue muda
+    useEffect(() => {
+        setIsSpinning(true);
+        
+        // Animação de contagem dos números
+        const duration = 800; // Duração total da animação
+        const steps = 20; // Quantos números intermediários mostrar
+        const increment = Math.ceil(riskValue / steps);
+        let currentStep = 0;
+        
+        const interval = setInterval(() => {
+            currentStep++;
+            if (currentStep <= steps) {
+                const nextNumber = Math.min(currentStep * increment, riskValue);
+                setDisplayNumber(nextNumber);
+            } else {
+                setDisplayNumber(riskValue);
+                clearInterval(interval);
+            }
+        }, duration / steps);
+        
+        // Para a rotação após a animação
+        const spinTimeout = setTimeout(() => {
+            setIsSpinning(false);
+        }, duration + 200);
+        
+        return () => {
+            clearInterval(interval);
+            clearTimeout(spinTimeout);
+        };
+    }, [riskValue]);
 
     const calculateStopLossAmount = useCallback(() => {
         if (!initialBank || stopLossPercentage <= 0) return 0;
@@ -207,9 +174,24 @@ const ProfileDisplay = React.memo(({ selectedProfile, riskValue, stopLossPercent
             style={{ '--profile-color': selectedProfile.color }}
         >
             <div className={styles.profileHeader}>
-                <div className={styles.rouletteWheel}>
+                <div className={`${styles.rouletteWheel} ${isSpinning ? styles.spinning : ''}`}>
                     <div className={styles.rouletteCenter}>
-                        <span className={styles.rouletteNumber}>{riskValue}</span>
+                        <span className={`${styles.rouletteNumber} ${isSpinning ? styles.numberAnimating : ''}`}>
+                            {displayNumber}
+                        </span>
+                    </div>
+                    {/* Marcadores decorativos ao redor */}
+                    <div className={styles.rouletteMarkers}>
+                        {[...Array(12)].map((_, i) => (
+                            <div 
+                                key={i} 
+                                className={styles.marker}
+                                style={{ 
+                                    transform: `rotate(${i * 30}deg) translateY(-50px)`,
+                                    backgroundColor: selectedProfile.color 
+                                }}
+                            />
+                        ))}
                     </div>
                 </div>
                 <div className={styles.profileText}>
@@ -226,24 +208,6 @@ const ProfileDisplay = React.memo(({ selectedProfile, riskValue, stopLossPercent
                         <span>{feature}</span>
                     </div>
                 ))}
-            </div>
-
-            <div className={styles.currentSettings}>
-                <h4 className={styles.settingsTitle}>Configurações Atuais:</h4>
-                <div className={styles.settingItem}>
-                    <strong>Stop Loss:</strong> 
-                    <span className={styles.settingValue}>{stopLossPercentage}%</span>
-                </div>
-                <div className={styles.settingItem}>
-                    <strong>Valor Limite:</strong> 
-                    <span className={styles.settingValue}>
-                        R$ {calculateStopLossAmount().toFixed(2)}
-                    </span>
-                </div>
-                <div className={styles.settingItem}>
-                    <strong>Meta de Lucro:</strong> 
-                    <span className={styles.settingValue}>{selectedProfile.recommendedProfitTarget}%</span>
-                </div>
             </div>
         </div>
     );
@@ -390,8 +354,9 @@ const InvestmentProfile = () => {
 
                 <RiskSlider 
                     value={riskValue} 
-                    onValueChange={setRiskValue} 
-                    selectedProfile={selectedProfile} 
+                    onValueChange={setRiskValue}
+                    min={1}
+                    max={10}
                 />
 
                 <ProfileDisplay 
@@ -403,19 +368,15 @@ const InvestmentProfile = () => {
 
                 <div className={styles.stopLossSection}>
                     <h3 className={styles.sectionTitle}>Gestão de Risco - Stop Loss</h3>
-                    <p className={styles.sectionDescription}>
-                        Configure a porcentagem máxima de perda permitida. Esta configuração será salva junto com seu perfil.
-                    </p>
-<StopLossCard
-    balance={balance}
-    initialBalance={effectiveInitialBank}
-    formatCurrency={formatCurrency}
-    onEdit={() => setStopLossModalVisible(true)} // Esta prop parece não ser usada no StopLossCard que você me mandou
-    stopLossPercentage={stopLossPercentage}
-    
-    // ADICIONE ESTA LINHA:
-    onStopLossChange={setStopLossPercentage} 
-/>
+                    
+                    <StopLossCard
+                        balance={balance}
+                        initialBalance={effectiveInitialBank}
+                        formatCurrency={formatCurrency}
+                        onEdit={() => setStopLossModalVisible(true)}
+                        stopLossPercentage={stopLossPercentage}
+                        onStopLossChange={setStopLossPercentage}
+                    />
                 </div>
 
                 {saveStatus && (

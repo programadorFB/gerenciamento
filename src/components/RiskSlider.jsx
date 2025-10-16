@@ -1,17 +1,16 @@
-import React, { useMemo, useState, useRef, useEffect } from 'react';
+import React, { useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import { motion, useMotionValue, useTransform, useAnimation } from 'framer-motion';
 import { FaShieldAlt, FaBalanceScale, FaFire } from 'react-icons/fa';
 import styles from './RiskSlider.module.css';
 
-// Configuração centralizada dos perfis (mesma do código refatorado)
-// Substitua o seu array PROFILES vazio por este:
+// Configuração centralizada dos perfis
 const PROFILES = [
   {
     maxValue: 3,
     title: 'Perfil Conservador',
     description: 'Prioriza a segurança e a preservação do capital.',
     icon: 'shield-alt',
-    color: '#39db34ff', // Azul
+    color: '#39db34ff',
     gradient: ['#80ff74ff', '#42db34ff'],
   },
   {
@@ -19,7 +18,7 @@ const PROFILES = [
     title: 'Perfil Moderado',
     description: 'Busca um equilíbrio entre segurança e rentabilidade.',
     icon: 'balance-scale',
-    color: '#f1c40f', // Amarelo
+    color: '#f1c40f',
     gradient: ['#f5de7a', '#f1c40f'],
   },
   {
@@ -27,64 +26,123 @@ const PROFILES = [
     title: 'Perfil Agressivo',
     description: 'Foco em maximizar ganhos, aceitando maior volatilidade.',
     icon: 'fire',
-    color: '#e74c3c', // Vermelho
+    color: '#e74c3c',
     gradient: ['#ff8a80', '#e74c3c'],
   },
 ];
 
+// Função utilitária para encontrar o perfil com base no valor
 const getProfileForValue = (value) => {
   return PROFILES.find((p) => value <= p.maxValue);
 };
 
-const RiskSlider = ({ value, onValueChange, compact = false, containerStyle = {} }) => {
-  const [sliderWidth, setSliderWidth] = useState(0);
-  const knobSize = 40; // O knob é maior na web para facilitar o clique
+// Custom hook para observar o tamanho de um elemento de forma performática.
+const useResizeObserver = (ref) => {
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new ResizeObserver(entries => {
+      if (entries[0]) {
+        setWidth(entries[0].contentRect.width);
+      }
+    });
+
+    observer.observe(element);
+    return () => observer.unobserve(element);
+  }, [ref]);
+  return width;
+};
+
+
+const RiskSlider = ({ 
+  value, 
+  onValueChange, 
+  min = 0, 
+  max = 10, 
+  compact = false, 
+  containerStyle = {} 
+}) => {
   const trackRef = useRef(null);
+  const knobRef = useRef(null);
+  const sliderWidth = useResizeObserver(trackRef);
 
   const controls = useAnimation();
-  const x = useMotionValue((value / 10) * sliderWidth);
+  const x = useMotionValue(0);
+
+  // Função para calcular o valor com base na posição X.
+  const calculateValueFromX = useCallback((newX) => {
+    const knobRadius = 20; // Metade da largura do knob (40px / 2)
+    const effectiveWidth = sliderWidth - (knobRadius * 2);
+    const adjustedX = newX - knobRadius;
+    const boundedX = Math.max(0, Math.min(adjustedX, effectiveWidth));
+    const newValue = Math.round((boundedX / effectiveWidth) * (max - min) + min);
+    return newValue;
+  }, [sliderWidth, min, max]);
   
+  // Função para atualizar a posição X com base no valor recebido via props.
+  const updateXFromValue = useCallback((val) => {
+    if (sliderWidth > 0) {
+      const knobRadius = 20;
+      const effectiveWidth = sliderWidth - (knobRadius * 2);
+      const newX = ((val - min) / (max - min)) * effectiveWidth + knobRadius;
+      x.set(newX);
+    }
+  }, [sliderWidth, min, max, x]);
+
+  // Sincroniza a posição do knob quando o 'value' externo muda
+  useEffect(() => {
+    updateXFromValue(value);
+  }, [value, updateXFromValue]);
+
   // Mapeia a posição X do knob para a largura da barra de preenchimento
   const fillWidth = useTransform(x, [0, sliderWidth], ['0%', '100%']);
   
+  // Calcula o perfil atual com base no valor
   const currentProfile = useMemo(() => getProfileForValue(value), [value]);
   const { color, gradient, icon, title, description } = currentProfile;
 
-  // Atualiza a largura do slider quando o componente é montado/redimensionado
-  useEffect(() => {
-    const updateSliderWidth = () => {
-      if (trackRef.current) {
-        setSliderWidth(trackRef.current.offsetWidth);
-      }
-    };
-    updateSliderWidth();
-    window.addEventListener('resize', updateSliderWidth);
-    return () => window.removeEventListener('resize', updateSliderWidth);
-  }, []);
-
-  // Sincroniza o valor externo com a posição X interna
-  useEffect(() => {
-    if (sliderWidth > 0) {
-      x.set((value / 10) * sliderWidth);
-    }
-  }, [value, sliderWidth, x]);
-  
+  // Função chamada continuamente enquanto o knob é arrastado
   const handleDrag = () => {
-    const newSliderValue = Math.round((x.get() / sliderWidth) * 10);
+    const newSliderValue = calculateValueFromX(x.get());
     if (newSliderValue !== value) {
       onValueChange(newSliderValue);
     }
   };
 
-  const handleDragStart = () => {
-    controls.start({ scale: 1.3, y: -5 });
+  // Função chamada ao soltar o knob
+  const handleDragEnd = () => {
+    const finalValue = calculateValueFromX(x.get());
+    updateXFromValue(finalValue); // Trava o knob na posição exata do valor final
+    controls.start({ scale: 1, y: 0 }); // Retorna o knob ao tamanho normal
   };
 
-  const handleDragEnd = () => {
-    const finalValue = Math.round((x.get() / sliderWidth) * 10);
-    const newX = (finalValue / 10) * sliderWidth;
-    x.set(newX); // Trava na posição final
-    controls.start({ scale: 1, y: 0 });
+  // Função chamada ao começar a arrastar o knob
+  const handleDragStart = () => {
+    controls.start({ scale: 1.3, y: -5 }); // Aumenta o knob para feedback visual
+  };
+
+  // Função que permite clicar na trilha para definir o valor
+  const handleTrackClick = (event) => {
+    if (trackRef.current) {
+        knobRef.current?.focus(); // Foca no knob para acessibilidade
+        const rect = trackRef.current.getBoundingClientRect();
+        const clickX = event.clientX - rect.left;
+        const newValue = calculateValueFromX(clickX);
+        onValueChange(newValue);
+    }
+  };
+
+  // Adiciona navegação por teclado (Setas Direita/Esquerda)
+  const handleKeyDown = (event) => {
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      onValueChange(Math.min(value + 1, max));
+    } else if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      onValueChange(Math.max(value - 1, min));
+    }
   };
   
   return (
@@ -93,26 +151,29 @@ const RiskSlider = ({ value, onValueChange, compact = false, containerStyle = {}
       {!compact && <SliderLabels value={value} />}
 
       <div className={`${styles.sliderWrapper} ${compact ? styles.compactSliderWrapper : ''}`}>
-        {/* Ícone flutuante que acompanha o knob */}
+        {/* Âncora de posicionamento que segue o knob */}
         <motion.div
-          className={styles.floatingIconWrapper}
+          className={styles.floatingIconAnchor}
           style={{ x }}
-          animate={controls}
-          transition={{ type: 'spring', damping: 12, stiffness: 200 }}
         >
-          <div className={styles.iconBubble} style={{ borderColor: color, boxShadow: `0 4px 15px ${color}55` }}>
-            <IconComponent iconName={icon} size={compact ? 14 : 18} />
-            <span className={styles.iconValue} style={{ color }}>{value}</span>
+          {/* O wrapper do ícone agora se centraliza dentro da âncora */}
+          <div className={styles.floatingIconWrapper}>
+            <div className={styles.iconBubble} style={{ borderColor: color, boxShadow: `0 4px 15px ${color}55` }}>
+              <IconComponent iconName={icon} size={compact ? 14 : 18} />
+              <span className={styles.iconValue} style={{ color }}>{value}</span>
+            </div>
+            <div className={styles.iconArrow} style={{ borderTopColor: color }} />
           </div>
-          <div className={styles.iconArrow} style={{ borderTopColor: color }} />
         </motion.div>
 
-        {/* Trilha do slider */}
-        <div ref={trackRef} className={styles.sliderTrack}>
+        {/* Trilha do slider, agora clicável */}
+        <div ref={trackRef} className={styles.sliderTrack} onClick={handleTrackClick}>
+          {/* Preenchimento da trilha */}
           <motion.div className={styles.sliderTrackFill} style={{ width: fillWidth, background: `linear-gradient(to right, ${gradient[0]}, ${gradient[1]})` }} />
           
-          {/* Knob arrastável */}
+          {/* Knob arrastável e acessível */}
           <motion.div
+            ref={knobRef}
             className={styles.sliderKnob}
             style={{ x }}
             drag="x"
@@ -121,15 +182,23 @@ const RiskSlider = ({ value, onValueChange, compact = false, containerStyle = {}
             onDrag={handleDrag}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
+            onKeyDown={handleKeyDown}
             animate={controls}
             transition={{ type: 'spring', damping: 12, stiffness: 200 }}
+            // Atributos de Acessibilidade (a11y)
+            role="slider"
+            aria-valuenow={value}
+            aria-valuemin={min}
+            aria-valuemax={max}
+            aria-label="Seletor de Nível de Risco"
+            tabIndex={0} // Torna o knob focável via teclado
           >
             <div className={styles.knobCenter} style={{ background: color }} />
           </motion.div>
         </div>
       </div>
 
-      <ScaleNumbers value={value} onValueChange={onValueChange} compact={compact} />
+      <ScaleNumbers value={value} onValueChange={onValueChange} min={min} max={max} compact={compact} />
       {compact && <p className={styles.compactDescriptionText}>{description}</p>}
     </div>
   );
@@ -164,9 +233,9 @@ const SliderLabels = ({ value }) => (
   </div>
 );
 
-const ScaleNumbers = ({ value, onValueChange, compact }) => (
+const ScaleNumbers = ({ value, onValueChange, min, max, compact }) => (
   <div className={`${styles.scaleNumbers} ${compact ? styles.compactScaleNumbers : ''}`}>
-    {Array.from({ length: 11 }, (_, i) => (
+    {Array.from({ length: max - min + 1 }, (_, i) => min + i).map(i => (
       <button
         key={i}
         className={`${styles.scaleNumber} ${Math.round(value) === i ? styles.activeScaleNumber : ''} ${compact ? styles.compactScaleNumber : ''}`}

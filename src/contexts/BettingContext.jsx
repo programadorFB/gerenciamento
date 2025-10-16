@@ -154,13 +154,13 @@ const PROFILES = {
   cautious: {
     id: 'cautious',
     title: 'Jogador Cauteloso',
-    description: 'Prefere apostas seguras com menor risco, focando em preservar o bankroll e fazer ganhos consistentes.',
+    description: 'Prefere apostas seguras com menor risco, focando em preservar a banca e fazer ganhos consistentes.',
     color: '#4CAF50',
     icon: { name: 'shield-alt', color: '#4CAF50' },
     features: [
       'Apostas externas (vermelho/preto)',
       'Menor volatilidade',
-      'Gestão rigorosa do bankroll',
+      'Gestão rigorosa de banca',
       'Sessões mais longas'
     ],
     recommendedStopLoss: 10, // 10% recommended for cautious

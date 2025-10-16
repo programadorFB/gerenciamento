@@ -5,14 +5,19 @@ import { useSideMenu } from '../contexts/SideMenuContext.jsx';
 
 // Ícones
 import { MdDashboard, MdLogout } from 'react-icons/md';
-import { FaChartLine, FaBullseye, FaUserTie } from 'react-icons/fa';
+import { FaChartLine, FaBullseye, FaUserTie, FaFileExport, FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 import { FiDownload, FiSettings } from 'react-icons/fi';
 
 // CSS Module
 import styles from './Sidemenu.module.css';
 
-const MenuItem = ({ icon, text, onClick, isLogout = false }) => {
-  const itemClasses = `${styles.menuItem} ${isLogout ? styles.logoutItem : ''}`;
+const MenuItem = ({ icon, text, onClick, isLogout = false, isNew = false }) => {
+  const itemClasses = [
+    styles.menuItem,
+    isLogout ? styles.logoutItem : '',
+    isNew ? styles.newItem : ''
+  ].join(' ').trim();
+
   return (
     <button className={itemClasses} onClick={onClick}>
       <div className={styles.menuIcon}>{icon}</div>
@@ -22,7 +27,8 @@ const MenuItem = ({ icon, text, onClick, isLogout = false }) => {
 };
 
 const SideMenu = () => {
-  const { menuVisible, closeMenu } = useSideMenu();
+  // --- ALTERADO: Adicionado isCollapsed e toggleCollapse do contexto ---
+  const { menuVisible, closeMenu, isCollapsed, toggleCollapse } = useSideMenu();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -40,7 +46,8 @@ const SideMenu = () => {
     }
   };
 
-  const containerClasses = `${styles.container} ${menuVisible ? styles.visible : ''}`;
+  // --- ALTERADO: Aplica a classe .collapsed baseada no estado isCollapsed ---
+  const containerClasses = `${styles.container} ${menuVisible ? styles.visible : ''} ${isCollapsed ? styles.collapsed : ''}`;
 
   return (
     <>
@@ -64,18 +71,20 @@ const SideMenu = () => {
             onClick={() => handleNavigation('/charts')}
           />
           <MenuItem
+            icon={<FaFileExport size={20} />}
+            text="Gerar Relatório"
+            onClick={() => handleNavigation('/report')}
+             
+          />
+          <MenuItem
             icon={<FiDownload size={22} />}
             text="Lançamentos"
-            onClick={() => handleNavigation('/transaction')} // Este já estava correto
+            onClick={() => handleNavigation('/transaction')}
           />
-          {/* --- ALTERAÇÃO PRINCIPAL AQUI ---
-            Agora, ao clicar em "Objetivos", navegamos para a mesma tela de transações,
-            mas passamos um parâmetro na URL para que a aba de objetivos seja aberta por padrão.
-          */}
           <MenuItem
             icon={<FaBullseye size={20} />}
             text="Objetivos"
-            onClick={() => handleNavigation('/objectives')} // Alterado para '/objectives'
+            onClick={() => handleNavigation('/objectives')}
           />
           <MenuItem
             icon={<FaUserTie size={20} />}
@@ -96,7 +105,14 @@ const SideMenu = () => {
           />
         </nav>
 
+        {/* --- ADICIONADO: Footer com o botão de collapse --- */}
         <footer className={styles.footer}>
+          <button className={styles.collapseButton} onClick={toggleCollapse}>
+            <div className={styles.menuIcon}>
+              {isCollapsed ? <FaAngleDoubleRight size={20} /> : <FaAngleDoubleLeft size={20} />}
+            </div>
+            <span className={styles.menuText}>Recolher</span>
+          </button>
           <p className={styles.footerText}>Financial Control v1.0</p>
         </footer>
       </aside>

@@ -17,7 +17,57 @@ body {
 /* ========================================
    CONTAINER PRINCIPAL DO DASHBOARD
    ======================================== */
+/* Estilo para o novo card de resumo unificado */
+.summaryCardUnified {
+  background-color: rgba(10, 20, 30, 0.6);
+  border-radius: 12px;
+  padding: 12px 20px;
+  width: 80%;
+  margin-left: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Espaçamento entre as linhas */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+}
 
+/* Estilo para cada linha do resumo */
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.summaryRow:last-child {
+  border-bottom: none; /* Remove a borda do último item */
+}
+
+/* Estilo para o rótulo (ícone + texto) */
+.summaryLabel {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.95rem;
+  color: #e0e0e0;
+}
+
+/* Estilo para o valor monetário */
+.summaryValue {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Estilos para valores positivos e negativos que você pode já ter */
+.positive {
+  color: #4CAF50;
+}
+
+.negative {
+  color: #F44336;
+}
 .dashboardContainer {
   min-height: 100vh;
   min-width: 100vw;
@@ -33,6 +83,34 @@ body {
   inset: 0;
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 1;
+}
+/* Estilos para informações adicionais */
+.additionalInfo {
+    margin: 8px 0;
+}
+
+.infoRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.infoLabel {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.infoValue {
+    font-size: 13px;
+    font-weight: 600;
+    color: #FF9800;
+}
+
+/* Ajuste para quando o stop loss for atingido */
+.stopLossTriggered .infoValue {
+    color: #F44336;
 }
 
 .header, .scrollView {
@@ -54,6 +132,183 @@ body {
   backdrop-filter: blur(10px);
   gap: clamp(8px, 2vw, 16px);
 }
+
+/* Container da saudação com ícone */
+.greetingContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  justify-content: center;
+}
+
+/* Ajuste no greeting */
+.greeting {
+  font-size: clamp(14px, 3vw, 18px);
+  font-weight: bold;
+  color: #fff;
+  white-space: nowrap;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Badge do ícone de perfil */
+.profileIconBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  font-size: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.profileIconBadge:hover {
+  transform: scale(1.15);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.profileIconBadge:active {
+  transform: scale(1.05);
+}
+
+/* Animação de entrada suave */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.profileIconBadge {
+  animation: fadeInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ========================================
+   RESPONSIVIDADE PARA ÍCONE DE PERFIL
+   ======================================== */
+
+/* Dispositivos Pequenos (Mobile) */
+@media (max-width: 480px) {
+  .greetingContainer {
+    gap: 6px;
+  }
+  
+  .greeting {
+    font-size: 13px;
+  }
+  
+  .profileIconBadge {
+    width: 26px;
+    height: 26px;
+    font-size: 13px;
+    border-width: 1.5px;
+  }
+  
+  .header {
+    padding: 10px;
+    gap: 6px;
+  }
+}
+
+/* Tablets */
+@media (min-width: 481px) and (max-width: 768px) {
+  .greetingContainer {
+    gap: 8px;
+  }
+  
+  .greeting {
+    font-size: 15px;
+  }
+  
+  .profileIconBadge {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+}
+
+/* Tablets Landscape */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .greetingContainer {
+    gap: 10px;
+  }
+  
+  .greeting {
+    font-size: 16px;
+  }
+  
+  .profileIconBadge {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .greetingContainer {
+    gap: 12px;
+  }
+  
+  .greeting {
+    font-size: 18px;
+  }
+  
+  .profileIconBadge {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+}
+
+/* 4K e Ultra Wide */
+@media (min-width: 2561px) {
+  .greetingContainer {
+    gap: 14px;
+  }
+  
+  .greeting {
+    font-size: 20px;
+  }
+  
+  .profileIconBadge {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+}
+
+/* ========================================
+   EFEITO ADICIONAL: PULSO SUTIL
+   (Opcional - adiciona um efeito de pulso discreto)
+   ======================================== */
+
+@keyframes subtlePulse {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 2px 12px rgba(255, 215, 0, 0.2);
+  }
+}
+
+.profileIconBadge {
+  animation: fadeInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+             subtlePulse 3s ease-in-out infinite 1s;}
 
 .menuButton {
   background: none;
@@ -478,7 +733,86 @@ body {
 /* ========================================
    ESTADO VAZIO
    ======================================== */
+/* Estilos para a seção de resumo */
+.summarySection {
+    margin-bottom: 24px;
+}
 
+.summaryCardsContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.summaryCard {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 16px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.summaryCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.summaryCardHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.summaryCardTitle {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summaryCardValue {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+    color: #ffffff;
+}
+
+/* Cores específicas para cada tipo de card */
+.summaryCard.deposit {
+    border-left: 4px solid #4CAF50;
+}
+
+.summaryCard.withdraw {
+    border-left: 4px solid #F44336;
+}
+
+.summaryCard.gains {
+    border-left: 4px solid #FFD700;
+}
+
+.summaryCard.losses {
+    border-left: 4px solid #FFC107;
+}
+
+/* Efeitos de hover com cores */
+.summaryCard.deposit:hover {
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.summaryCard.withdraw:hover {
+    background: rgba(244, 67, 54, 0.1);
+}
+
+.summaryCard.gains:hover {
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.summaryCard.losses:hover {
+    background: rgba(255, 193, 7, 0.1);
+}
 .riskCardEmpty {
   display: flex;
   flex-direction: column;
@@ -525,7 +859,12 @@ body {
   .balanceSection {
     grid-template-columns: 1fr;
   }
-
+  .summaryCardUnified {
+    width: 400px;
+    height: 300px;
+    margin-left: 10px;
+    margin-right: auto;
+  }
   .quickActions {
     grid-template-columns: 1fr 1fr;
   }

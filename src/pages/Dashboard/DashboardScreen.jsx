@@ -14,7 +14,7 @@ import ObjectivesList from '../../components/ObjectivesList';
 
 // --- Icons ---
 import { MdAccountBalanceWallet, MdFlag, MdAdd, MdRemove, MdTrendingUp, MdTrendingDown, MdWarning } from 'react-icons/md';
-import { FaCoins, FaReceipt, FaBullseye, FaShieldAlt, FaChartLine } from 'react-icons/fa';
+import { FaCoins, FaReceipt, FaBullseye, FaShieldAlt, FaChartLine, FaDice, FaFire, FaBalanceScale } from 'react-icons/fa';
 
 // --- Assets ---
 import logo from '../../assets/logo.png';
@@ -26,8 +26,18 @@ import styles from '../../styles/DashboardScreen.module.css';
 const Dashboard = () => {
     const navigate = useNavigate();
     const { user, isLoading } = useAuth();
-    // --- ALTERAÇÃO 1: Importar 'totalLosses' do contexto ---
-    const { balance, transactions, objectives, refreshData, getRealProfit, getEffectiveInitialBalance, totalLosses } = useFinancial();
+    const { 
+        balance, 
+        transactions, 
+        objectives, 
+        refreshData, 
+        getRealProfit, 
+        getEffectiveInitialBalance, 
+        totalLosses,
+        totalDeposits,
+        totalWithdraws,
+        totalGains
+    } = useFinancial();
     const { bettingProfile } = useBetting(); 
     const { openMenu } = useSideMenu();
 
@@ -50,6 +60,28 @@ const Dashboard = () => {
         }).format(amount || 0);
     };
 
+    // Função para obter o ícone do perfil
+    const getProfileIcon = () => {
+        if (!bettingProfile?.isInitialized) return null;
+        
+        const iconName = bettingProfile.iconName || 'dice';
+        const color = bettingProfile.color || '#FFD700';
+        
+        switch(iconName) {
+            case 'shield-alt':
+            case 'shield':
+                return <FaShieldAlt color={color} />;
+            case 'fire':
+                return <FaFire color={color} />;
+            case 'balance-scale':
+            case 'balance':
+                return <FaBalanceScale color={color} />;
+            case 'dice':
+            default:
+                return <FaDice color={color} />;
+        }
+    };
+
     // Calcula a meta de lucro baseada no nível de risco
     const calculateProfitTarget = () => {
         const initialBalance = getEffectiveInitialBalance();
@@ -65,13 +97,9 @@ const Dashboard = () => {
         return Math.min((realProfit / profitTarget) * 100, 100);
     };
 
-    // --- LÓGICA DO STOP LOSS MODIFICADA ---
     const stopLossMonetaryValue = bettingProfile?.stopLoss || 0;
-
-    // --- ALTERAÇÃO 2: A 'perda atual' agora é baseada apenas em 'totalLosses' ---
     const currentLoss = totalLosses || 0;
 
-    // --- ALTERAÇÃO 3: Simplificar os cálculos para usar a nova 'currentLoss' ---
     const isStopLossTriggered = useMemo(() => {
         if (!stopLossMonetaryValue) return false;
         return currentLoss >= stopLossMonetaryValue;
@@ -81,7 +109,6 @@ const Dashboard = () => {
         if (!stopLossMonetaryValue) return null;
         return stopLossMonetaryValue - currentLoss;
     }, [currentLoss, stopLossMonetaryValue]);
-
 
     if (isLoading || !user) {
         return (
@@ -108,11 +135,19 @@ const Dashboard = () => {
                 <button className={styles.menuButton} onClick={openMenu}>
                     <span className={styles.menuIcon}></span>
                 </button>
-                <h1 className={styles.greeting}>Olá, {user?.name || 'Jogador'}!</h1>
+                <div className={styles.greetingContainer}>
+                    <h1 className={styles.greeting}>Olá, {user?.name || 'Jogador'}!</h1>
+                    {bettingProfile?.isInitialized && (
+                        <div className={styles.profileIconBadge} title={bettingProfile.title}>
+                            {getProfileIcon()}
+                        </div>
+                    )}
+                </div>
                 <img src={logo} alt="Logo" className={styles.logoImg} />
             </header>
 
             <main className={styles.scrollView}>
+                
                 {/* Seção de Saldos */}
                 <section className={styles.balanceSection}>
                     <div className={styles.balanceCard}>
@@ -174,13 +209,21 @@ const Dashboard = () => {
                                 <span className={styles.riskCardTitle}>StopLoss</span>
                             </div>
                             
-                            {/* LÓGICA DE EXIBIÇÃO MODIFICADA */}
                             {stopLossMonetaryValue > 0 ? (
                                 <>
                                     <div className={styles.riskCardValue}>
                                         <span className={styles.riskMainValue}>
                                             {formatCurrency(stopLossMonetaryValue)}
                                         </span>
+                                    </div>
+                                    
+                                    <div className={styles.additionalInfo}>
+                                        <div className={styles.infoRow}>
+                                            <span className={styles.infoLabel}>Total de Losses:</span>
+                                            <span className={styles.infoValue}>
+                                                {formatCurrency(currentLoss)}
+                                            </span>
+                                        </div>
                                     </div>
                                     
                                     {isStopLossTriggered ? (
@@ -192,7 +235,6 @@ const Dashboard = () => {
                                         <div className={styles.riskDistance}>
                                             <span className={styles.distanceLabel}>Margem atual:</span>
                                             <span className={`${styles.distanceValue} ${
-                                                // A lógica de 'dangerZone' agora compara a distância com o valor do stoploss
                                                 stopLossDistance && stopLossDistance < stopLossMonetaryValue * 0.1 
                                                     ? styles.dangerZone 
                                                     : ''
@@ -277,29 +319,82 @@ const Dashboard = () => {
                     </div>
                 </section>
                 
+                {/* Seção Resumo Financeiro - Card Único */}
+                <section className={styles.summarySection}>
+                    <div className={styles.sectionHeader}>
+                        <h2 className={styles.sectionTitle} style={{marginLeft:'25px'}}>Resumo Financeiro</h2>
+                    </div>
+                    
+                    <div className={styles.summaryCardUnified}>
+                        {/* Linha de Depósitos */}
+                        <div className={styles.summaryRow}>
+                            <div className={styles.summaryLabel}>
+                                <MdAdd size={22} color="#4CAF50" />
+                                <span>Total Depositado</span>
+                            </div>
+                            <p className={`${styles.summaryValue} ${styles.positive}`}>
+                                {formatCurrency(totalDeposits)}
+                            </p>
+                        </div>
+
+                        {/* Linha de Saques */}
+                        <div className={styles.summaryRow}>
+                            <div className={styles.summaryLabel}>
+                                <MdRemove size={22} color="#F44336" />
+                                <span>Total Sacado</span>
+                            </div>
+                            <p className={`${styles.summaryValue} ${styles.negative}`}>
+                                {formatCurrency(totalWithdraws)}
+                            </p>
+                        </div>
+
+                        {/* Linha de Ganhos (Wins) */}
+                        <div className={styles.summaryRow}>
+                            <div className={styles.summaryLabel}>
+                                <MdTrendingUp size={22} color="#FFD700" />
+                                <span>Total de Ganhos</span>
+                            </div>
+                            <p className={`${styles.summaryValue} ${styles.positive}`}>
+                                {formatCurrency(totalGains)}
+                            </p>
+                        </div>
+
+                        {/* Linha de Perdas (Losses) */}
+                        <div className={styles.summaryRow}>
+                            <div className={styles.summaryLabel}>
+                                <MdTrendingDown size={22} color="#FF9800" />
+                                <span>Total de Perdas</span>
+                            </div>
+                            <p className={`${styles.summaryValue} ${styles.negative}`}>
+                                {formatCurrency(totalLosses)}
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Ações Rápidas */}
                 <section className={styles.quickActions}>
                     <button 
                         className={`${styles.actionButton} ${styles.deposit}`} 
-                        onClick={() => navigate('/transaction')}
+                        onClick={() => navigate('/transaction?type=deposit')}
                     >
                         <MdAdd /> Depósito
                     </button>
                     <button 
                         className={`${styles.actionButton} ${styles.withdraw}`} 
-                        onClick={() => navigate('/transaction')}
+                        onClick={() => navigate('/transaction?type=withdraw')}
                     >
                         <MdRemove /> Saque
                     </button>
                     <button 
                         className={`${styles.actionButton} ${styles.gains}`} 
-                        onClick={() => navigate('/transaction')}
+                        onClick={() => navigate('/transaction?type=gains')}
                     >
                         <MdTrendingUp /> Ganhos
                     </button>
                     <button 
                         className={`${styles.actionButton} ${styles.losses}`} 
-                        onClick={() => navigate('/transaction')}
+                        onClick={() => navigate('/transaction?type=losses')}
                     >
                         <MdTrendingDown /> Loss
                     </button>

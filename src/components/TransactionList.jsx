@@ -225,7 +225,7 @@ const TransactionItem = ({ item, showActions = true }) => {
           iconBgClass: styles.withdrawIconBg,
           amountClass: styles.withdrawColor,
           sign: '-',
-          typeLabel: item.type === 'losses' ? 'Perda' : 'Saque'
+          typeLabel: item.type === 'losses' ? 'Loss' : 'Saque'
         };
       default:
         // Fallback para tipos desconhecidos
