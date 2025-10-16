@@ -12,6 +12,7 @@ import ReportScreen from './pages/ReportScreen/ReportScreen.jsx';
 // --- Layout and Pages ---
 import SideMenu from './components/SideMenu.jsx';
 import LoginScreen from './pages/Login/LoginScreen.jsx';
+import StrategyScreen from './pages/VideoStrategy/StrategyScreen.jsx';
 import DashboardScreen from './pages/Dashboard/DashboardScreen.jsx';
 import ChartsScreen from './pages/ChartScreen/ChartsScreen.jsx';
 import TransactionScreen from './pages/TransactionHistory/TransactionScreen.jsx'; 
@@ -63,6 +64,7 @@ function App() {
               <Route path="/investment-profile" element={<InvestmentProfile />} />
               <Route path="/profile" element={<ProfileScreen />} />
               <Route path="/history" element={<TransactionHistoryScreen />} />
+              <Route path="/strategy" element={<StrategyScreen />} />
             </Route>
 
             {/* Rota para páginas não encontradas */}
