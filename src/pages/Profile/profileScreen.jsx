@@ -1,10 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { MdArrowBack } from 'react-icons/md';
+import { MdArrowBack, MdCheck } from 'react-icons/md';
 import styles from './profileScreen.module.css';
 
-// OBSERVAÇÃO: A constante PREDEFINED_AVATARS foi removida, focando apenas no upload de arquivo.
+// Avatares pré-definidos - você pode substituir pelas URLs reais dos seus avatares
+const PREDEFINED_AVATARS = [
+  { id: 'avatar1', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix' },
+  { id: 'avatar2', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka' },
+  { id: 'avatar3', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna' },
+  { id: 'avatar4', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Max' },
+  { id: 'avatar5', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sophie' },
+  { id: 'avatar6', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jack' },
+  { id: 'avatar7', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bella' },
+  { id: 'avatar8', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie' },
+  { id: 'avatar9', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Milo' },
+  { id: 'avatar10', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daisy' },
+  { id: 'avatar11', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver' },
+  { id: 'avatar12', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lily' }
+];
 
 const ProfileScreen = () => {
   const { user, updateProfile, logout } = useAuth();
@@ -16,34 +30,20 @@ const ProfileScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // State para o arquivo de foto local antes do upload
-  const [profilePhotoFile, setProfilePhotoFile] = useState(null);
-  
-  // State para a URL de exibição (assumindo que o servidor serve arquivos de /uploads/profiles/)
-const [profilePhotoUrl, setProfilePhotoUrl] = useState(
-    user?.profile_photo ? `${STATIC_BASE_URL}/uploads/profiles/${user.profile_photo}` : null
-);
-  
-  const fileInputRef = useRef(null);
+  // Estado para o avatar selecionado (armazena o ID do avatar)
+  const [selectedAvatar, setSelectedAvatar] = useState(user?.profile_photo || null);
 
-useEffect(() => {
+  useEffect(() => {
     if (user) {
       setName(user.name || '');
-      // user.profile_photo contém o nome do arquivo (ex: 'profile_1_16788888.jpg')
-      setProfilePhotoUrl(user.profile_photo ? `${STATIC_BASE_URL}/uploads/profiles/${user.profile_photo}` : null);
+      setSelectedAvatar(user.profile_photo || null);
     }
-    // Limpa a URL temporária de pré-visualização ao desmontar (opcional)
-    return () => {
-      if (profilePhotoUrl && profilePhotoUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(profilePhotoUrl);
-      }
-    };
   }, [user]);
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     
-    // Validation logic
+    // Validação
     if (newPassword && newPassword !== confirmPassword) {
       alert('As novas senhas não coincidem.');
       return;
@@ -62,78 +62,68 @@ useEffect(() => {
     setLoading(true);
 
     try {
-      const formData = new FormData();
-      formData.append('name', name.trim());
+      // Criar objeto com os dados para enviar ao backend
+      const updateData = {
+        name: name.trim()
+      };
       
-      // 1. ANEXAR FOTO DE PERFIL
-      if (profilePhotoFile) {
-        // Envia o arquivo real no campo 'profile_photo', conforme esperado pelo routes.py
-        formData.append('profile_photo', profilePhotoFile);
-      } 
-      
-      // 2. ANEXAR REMOÇÃO
-      // Condição: Se o usuário tinha uma foto ANTES (user?.profile_photo)
-      // E não selecionou um novo arquivo (profilePhotoFile é null)
-      // E o URL de visualização está limpo (profilePhotoUrl é null), o que significa que ele clicou em "Remover".
-      if (!profilePhotoFile && !profilePhotoUrl && user?.profile_photo) {
-        // Envia o comando de remoção 'remove_profile_photo' para o backend
-        formData.append('remove_profile_photo', 'true');
+      // Lógica do avatar:
+      // 1. Se há um avatar selecionado, enviar o ID
+      // 2. Se não há avatar E o usuário tinha antes, marcar para remover
+      if (selectedAvatar) {
+        updateData.profile_photo = selectedAvatar;
+        console.log('✅ Enviando avatar:', selectedAvatar);
+      } else if (user?.profile_photo && !selectedAvatar) {
+        updateData.remove_profile_photo = true;
+        console.log('🗑️ Removendo avatar');
       }
 
-      // Adicionar campos de senha
-      if (newPassword) {
-        formData.append('current_password', currentPassword);
-        formData.append('new_password', newPassword);
+      // Adicionar campos de senha apenas se ambos estiverem preenchidos
+      if (newPassword && currentPassword) {
+        updateData.current_password = currentPassword;
+        updateData.new_password = newPassword;
+        console.log('🔐 Alterando senha');
       }
       
-const result = await updateProfile(formData);
+      console.log('📤 Dados completos enviados:', updateData);
       
-      // CORREÇÃO: Verifica se result.success é true E se result.user existe
-      if (result.success && result.user) { 
+      const result = await updateProfile(updateData);
+      
+      console.log('📥 Resposta do servidor:', result);
+      
+      if (result && result.success) { 
         alert('Perfil atualizado com sucesso!');
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
         
-        // Acesso seguro ao profile_photo
-        const newProfilePhoto = result.user.profile_photo;
-        
- if (newProfilePhoto) {
-          // Usa o nome do arquivo retornado pelo backend para formar a URL completa
-          setProfilePhotoUrl(`${STATIC_BASE_URL}/uploads/profiles/${newProfilePhoto}`);
+        // Atualizar o estado com o avatar retornado
+        if (result.user) {
+          setSelectedAvatar(result.user.profile_photo || null);
+          console.log('✅ Avatar atualizado no estado:', result.user.profile_photo);
+        }
       } else {
-          setProfilePhotoUrl(null);
-      }
-        setProfilePhotoFile(null);
-        
-      } else {
-        // Se result.success for false ou result.user for undefined, trata como erro
-        alert(`Erro: ${result.error || 'Não foi possível atualizar o perfil. Verifique sua senha atual.'}`);
+        const errorMessage = result?.error || result?.message || 'Não foi possível atualizar o perfil.';
+        alert(`Erro: ${errorMessage}`);
+        console.error('❌ Erro detalhado:', result);
       }
     } catch (error) {
-      alert('Erro ao atualizar perfil. Tente novamente.');
-      console.error('Update profile error:', error);
+      const errorMsg = error.response?.data?.error || error.message || 'Erro desconhecido';
+      alert(`Erro ao atualizar perfil: ${errorMsg}`);
+      console.error('❌ Update profile error:', error);
+      console.error('❌ Error details:', error.response?.data || error.message);
     } finally {
       setLoading(false);
     }
   };
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setProfilePhotoFile(file);
-      // Cria uma URL temporária para pré-visualização (blob:http://...)
-      setProfilePhotoUrl(URL.createObjectURL(file)); 
-    }
+
+  const handleSelectAvatar = (avatarId) => {
+    setSelectedAvatar(avatarId);
   };
 
   const handleRemoveAvatar = () => {
     if (window.confirm('Tem certeza que deseja remover sua foto de perfil?')) {
-      // Se houver uma URL temporária (blob), revoga para liberar memória
-      if (profilePhotoUrl && profilePhotoUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(profilePhotoUrl);
-      }
-      setProfilePhotoUrl(null); 
-      setProfilePhotoFile(null);
+      setSelectedAvatar(null);
     }
   };
 
@@ -161,6 +151,13 @@ const result = await updateProfile(formData);
       .toUpperCase()
       .slice(0, 2);
   };
+
+  // Buscar a URL do avatar atual
+  const getCurrentAvatarUrl = () => {
+    if (!selectedAvatar) return null;
+    const avatar = PREDEFINED_AVATARS.find(a => a.id === selectedAvatar);
+    return avatar ? avatar.url : null;
+  };
   
   return (
     <main className={styles.container}>
@@ -181,42 +178,21 @@ const result = await updateProfile(formData);
       <form onSubmit={handleUpdateProfile}>
         <section className={styles.imageSection}>
           <div className={styles.imageContainer}>
-            {profilePhotoUrl ? (
-              // Exibe a foto real (do servidor ou a temporária)
+            {getCurrentAvatarUrl() ? (
               <img 
-                src={profilePhotoUrl} 
+                src={getCurrentAvatarUrl()} 
                 alt="Foto de Perfil"
                 className={styles.profileImage}
               />
             ) : (
-              // Placeholder
               <div className={styles.profileImagePlaceholder}>
                 <span>{getInitials()}</span>
               </div>
             )}
           </div>
           
-          <div className={styles.imageButtons}>
-            {/* Input de arquivo real, escondido */}
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              accept="image/*"
-              style={{ display: 'none' }}
-              disabled={loading}
-            />
-            
-            <button 
-              type="button" 
-              className={styles.imageButton} 
-              // Clica no input de arquivo escondido
-              onClick={() => fileInputRef.current.click()}
-              disabled={loading}
-            >
-              Escolher Foto
-            </button>
-            {(profilePhotoUrl || profilePhotoFile) && (
+          {selectedAvatar && (
+            <div className={styles.imageButtons}>
               <button 
                 type="button" 
                 className={`${styles.imageButton} ${styles.removeButton}`} 
@@ -225,9 +201,37 @@ const result = await updateProfile(formData);
               >
                 Remover Foto
               </button>
-            )}
-          </div>
+            </div>
+          )}
 
+          {/* Seletor de Avatares */}
+          <div className={styles.avatarSelector}>
+            <h3 className={styles.avatarSelectorTitle}>Escolha seu Avatar</h3>
+            <div className={styles.avatarGrid}>
+              {PREDEFINED_AVATARS.map((avatar) => (
+                <button
+                  key={avatar.id}
+                  type="button"
+                  className={`${styles.avatarOption} ${
+                    selectedAvatar === avatar.id ? styles.avatarOptionSelected : ''
+                  }`}
+                  onClick={() => handleSelectAvatar(avatar.id)}
+                  disabled={loading}
+                >
+                  <img 
+                    src={avatar.url} 
+                    alt={`Avatar ${avatar.id}`}
+                    className={styles.avatarOptionImage}
+                  />
+                  {selectedAvatar === avatar.id && (
+                    <div className={styles.avatarCheckmark}>
+                      <MdCheck size={20} />
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
         </section>
 
         <section className={styles.section}>
@@ -328,11 +332,7 @@ const result = await updateProfile(formData);
             className={`${styles.button} ${styles.saveButton}`} 
             disabled={loading || !name.trim()}
           >
-            {loading ? (
-              'Atualizando...'
-            ) : (
-              'Salvar Alterações'
-            )}
+            {loading ? 'Atualizando...' : 'Salvar Alterações'}
           </button>
           
           <button 

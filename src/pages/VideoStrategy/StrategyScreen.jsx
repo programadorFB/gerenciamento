@@ -133,7 +133,7 @@ function StrategyScreen() { // Renomeado de 'Videos' para 'StrategyScreen'
         <div className="header-left">
           <button className="back-button" onClick={handleGoBack}>
             <span className="back-button-icon">←</span>
-            <span className="back-button-text" href="/">Voltar</span>
+            <span className="back-button-text" href="/dashboard">Voltar</span>
           </button>
           
           <div className="logo-premium">

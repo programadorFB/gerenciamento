@@ -107,74 +107,93 @@ def logout(current_user_id):
     except Exception as e:
         return jsonify({'error': 'Erro ao realizar logout'}), 500
 # === AUTHENTICATION ROUTES ===
+# Substitua a rota '/user/profile' no seu routes.py por esta versão:
+
 @main.route('/user/profile', methods=['PUT'])
 @token_required
 def update_user_profile(current_user_id):
+    """
+    Atualiza o perfil do usuário
+    Aceita dados JSON com:
+    - name: nome do usuário
+    - profile_photo: ID do avatar (ex: 'avatar1', 'avatar2')
+    - remove_profile_photo: boolean para remover avatar
+    - current_password: senha atual (opcional)
+    - new_password: nova senha (opcional)
+    """
     try:
         user = User.query.get(current_user_id)
         if not user:
             return jsonify({'error': 'Usuário não encontrado'}), 404
 
-        # Acessar dados do formulário e arquivo
-        name = request.form.get('name')
-        current_password = request.form.get('current_password')
-        new_password = request.form.get('new_password')
-        remove_profile_photo = request.form.get('remove_profile_photo') == 'true' # ✅ Converter string para booleano
+        # Obter dados JSON da requisição
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({'error': 'Nenhum dado fornecido'}), 400
 
-        profile_photo_file = request.files.get('profile_photo')
+        print(f"📥 Dados recebidos: {data}")  # Debug
 
         # 1. Atualizar nome
+        name = data.get('name')
         if name and name.strip() and user.name != name.strip():
             user.name = name.strip()
+            print(f"✅ Nome atualizado para: {user.name}")
 
         # 2. Processar alteração de senha
+        current_password = data.get('current_password')
+        new_password = data.get('new_password')
+        
         if new_password:
-            # ✅ Validar a senha atual antes de prosseguir
+            # Validar a senha atual antes de prosseguir
             if not current_password:
-                return jsonify({'error': 'Senha atual é obrigatória para alterar a senha'}), 400
+                return jsonify({
+                    'success': False,
+                    'error': 'Senha atual é obrigatória para alterar a senha'
+                }), 400
             
             current_password_hash = hashlib.sha256(current_password.encode()).hexdigest()
             if user.password_hash != current_password_hash:
-                return jsonify({'error': 'Senha atual incorreta'}), 400
+                return jsonify({
+                    'success': False,
+                    'error': 'Senha atual incorreta'
+                }), 400
             
             if len(new_password) < 6:
-                return jsonify({'error': 'A nova senha deve ter pelo menos 6 caracteres'}), 400
+                return jsonify({
+                    'success': False,
+                    'error': 'A nova senha deve ter pelo menos 6 caracteres'
+                }), 400
             
             new_password_hash = hashlib.sha256(new_password.encode()).hexdigest()
             user.password_hash = new_password_hash
+            print("✅ Senha atualizada")
 
-        # 3. Processar remoção de foto de perfil
+        # 3. Processar avatar
+        remove_profile_photo = data.get('remove_profile_photo', False)
+        profile_photo_id = data.get('profile_photo')
+
         if remove_profile_photo:
+            # Remover avatar
             user.profile_photo = None
-            # Adicionar lógica de exclusão do arquivo físico, se aplicável
-            # import os
-            # if user.profile_photo and os.path.exists(os.path.join('uploads/profiles', user.profile_photo)):
-            #     os.remove(os.path.join('uploads/profiles', user.profile_photo))
+            print("🗑️ Avatar removido")
             
-        # 4. Processar upload de nova foto
-        if profile_photo_file:
-            # ... (Lógica de validação e salvamento do arquivo, como já está)
-            # Validar tipo de arquivo
-            if not profile_photo_file.content_type.startswith('image/'):
-                return jsonify({'error': 'Apenas arquivos de imagem são permitidos'}), 400
-            
-            # Validar tamanho (5MB)
-            profile_photo_file.seek(0, 2)
-            file_size = profile_photo_file.tell()
-            profile_photo_file.seek(0)
-            if file_size > 5 * 1024 * 1024:
-                return jsonify({'error': 'A imagem deve ter no máximo 5MB'}), 400
-            
-            import time
-            filename = f"profile_{user.id}_{int(time.time())}.jpg"
-            upload_folder = 'uploads/profiles'
-            os.makedirs(upload_folder, exist_ok=True)
-            file_path = os.path.join(upload_folder, filename)
-            profile_photo_file.save(file_path)
-            user.profile_photo = filename
+        elif profile_photo_id:
+            # Definir novo avatar (apenas salva o ID, ex: 'avatar1')
+            # Validação básica do ID
+            if isinstance(profile_photo_id, str) and profile_photo_id.strip():
+                user.profile_photo = profile_photo_id.strip()
+                print(f"✅ Avatar atualizado para: {user.profile_photo}")
+            else:
+                return jsonify({
+                    'success': False,
+                    'error': 'ID de avatar inválido'
+                }), 400
         
         user.updated_at = datetime.utcnow()
         db.session.commit()
+        
+        print(f"✅ Perfil atualizado com sucesso para usuário {user.id}")
         
         return jsonify({
             'success': True,
@@ -189,8 +208,14 @@ def update_user_profile(current_user_id):
         
     except Exception as e:
         db.session.rollback()
-        print(f"Erro ao atualizar perfil: {str(e)}")
-        return jsonify({'error': f'Erro ao atualizar perfil: {str(e)}'}), 500    
+        print(f"❌ Erro ao atualizar perfil: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'error': f'Erro ao atualizar perfil: {str(e)}'
+        }), 500
+        
 @main.route('/auth/register', methods=['POST'])
 def register():
     data = request.json
@@ -223,7 +248,8 @@ def register():
         user = User(
             name=name,
             email=email,
-            password_hash=password_hash
+            password_hash=password_hash,
+            profile_photo=None 
         )
         
         db.session.add(user)
@@ -276,6 +302,7 @@ def register():
                 'id': user.id,
                 'name': user.name,
                 'email': user.email,
+                'profile_photo': user.profile_photo,
                 'initial_bank': str(initial_bank_decimal),
                 'current_balance': str(initial_bank_decimal),
             }
@@ -314,6 +341,7 @@ def login():
             'id': user.id,
             'name': user.name,
             'email': user.email,
+            'profile_photo': user.profile_photo,  # ✅ Adicionar profile_photo
             'initial_bank': str(initial_bank),
             'current_balance': str(current_balance)
         }
