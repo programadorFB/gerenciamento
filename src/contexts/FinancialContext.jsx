@@ -314,6 +314,33 @@ export const FinancialProvider = ({ children }) => {
       }
     }
   }, []);
+  const getBankResetStatus = useCallback(async () => {
+  try {
+    const response = await apiService.getBankResetStatus();
+    if (response.success) {
+      return response;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting bank reset status:', error);
+    return null;
+  }
+}, []);
+
+const forceResetBank = useCallback(async () => {
+  try {
+    const response = await apiService.forceResetBank();
+    if (response.success) {
+      // Recarregar dados após reset
+      await refreshData();
+      return { success: true, resetInfo: response.reset_info };
+    }
+    return { success: false, error: response.error };
+  } catch (error) {
+    console.error('Error forcing bank reset:', error);
+    return { success: false, error: error.message };
+  }
+}, [refreshData]);
 
   const addTransaction = async (transactionData) => {
     try {
@@ -711,6 +738,9 @@ export const FinancialProvider = ({ children }) => {
     refreshing: state.refreshing,
     error: state.error,
     lastUpdated: state.lastUpdated,
+    //Resets
+    getBankResetStatus,
+    forceResetBank,
     
     // Computed values
     totalDeposits,

@@ -18,11 +18,14 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     profile_photo = db.Column(db.String(500), nullable=True)
     
+    # ✅ NOVO CAMPO PARA RESET AUTOMÁTICO
+    last_bank_reset = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    
     # Relationships
     betting_profiles = db.relationship('BettingProfile', backref='user', lazy=True, cascade='all, delete-orphan')
     transactions = db.relationship('Transaction', backref='user', lazy=True, cascade='all, delete-orphan')
     objectives = db.relationship('Objective', backref='user', lazy=True, cascade='all, delete-orphan')
-
+    
 class BettingProfile(db.Model):
     __tablename__ = 'betting_profiles'
     

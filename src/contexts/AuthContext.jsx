@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useCallback, useState } from 'react';
 import apiService from '../services/api';
+import { BankResetNotification } from '../components/ManualResetButtom';
 
 const AuthContext = createContext(null);
 
@@ -86,6 +87,10 @@ const STORAGE_KEYS = {
 // Componente Provedor
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  
+  // ✅ NOVO: State para gerenciar reset de banca
+  const [bankResetInfo, setBankResetInfo] = useState(null);
+  const [showResetNotification, setShowResetNotification] = useState(false);
 
   // --- Funções de Armazenamento ---
   const saveToStorage = (token, user) => {
@@ -136,16 +141,25 @@ export const AuthProvider = ({ children }) => {
 
   // --- Funções de Ação com useCallback ---
 
+  // ✅ ATUALIZADO: Login com detecção de reset
   const login = useCallback(async (email, password) => {
     dispatch({ type: AUTH_ACTIONS.LOGIN_START });
     try {
       const response = await apiService.login(email, password);
       
       if (response && response.token && response.user) {
-        const { token, user } = response;
+        const { token, user, bank_reset } = response;
         apiService.setAuthToken(token);
         saveToStorage(token, user);
         dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: { token, user } });
+        
+        // ✅ NOVO: Verificar se houve reset automático no login
+        if (bank_reset && bank_reset.reset_performed) {
+          console.log('🔄 Reset automático detectado:', bank_reset);
+          setBankResetInfo(bank_reset);
+          setShowResetNotification(true);
+        }
+        
         return { success: true };
       } else {
         const errorMessage = response.error || 'Login falhou. Verifique suas credenciais.';
@@ -231,6 +245,17 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={value}>
       {children}
+      
+      {/* ✅ NOVO: Modal de Notificação de Reset */}
+      {showResetNotification && bankResetInfo && (
+        <BankResetNotification
+          resetInfo={bankResetInfo}
+          onClose={() => {
+            setShowResetNotification(false);
+            setBankResetInfo(null);
+          }}
+        />
+      )}
     </AuthContext.Provider>
   );
 };

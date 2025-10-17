@@ -409,6 +409,62 @@ const apiService = {
   getCategories: () => api.get('/categories'),
   getGameTypes: () => api.get('/game-types'),
   
+  // ========================================
+  // ✅ NOVAS FUNÇÕES DE RESET AUTOMÁTICO
+  // ========================================
+  
+  /**
+   * Busca o status do próximo reset de banca (30 dias)
+   * @returns {Promise<Object>} Status do reset com dias restantes
+   */
+  async getBankResetStatus() {
+    try {
+      const response = await api.get('/user/bank-reset-status');
+      return response;
+    } catch (error) {
+      console.error('Error getting bank reset status:', error);
+      return {
+        success: false,
+        error: error.message || 'Erro ao buscar status de reset'
+      };
+    }
+  },
+
+  /**
+   * Força um reset manual da banca (transforma saldo atual em nova banca inicial)
+   * @returns {Promise<Object>} Informações do reset realizado
+   */
+  async forceResetBank() {
+    try {
+      const response = await api.post('/user/force-bank-reset');
+      return response;
+    } catch (error) {
+      console.error('Error forcing bank reset:', error);
+      return {
+        success: false,
+        error: error.message || 'Erro ao forçar reset de banca'
+      };
+    }
+  },
+
+  /**
+   * Verifica se há reset pendente (para uso interno)
+   * @returns {Promise<boolean>} True se há reset pendente
+   */
+  async hasResetPending() {
+    try {
+      const status = await this.getBankResetStatus();
+      return status.success && status.reset_due === true;
+    } catch (error) {
+      console.error('Error checking reset pending:', error);
+      return false;
+    }
+  },
+
+  // ========================================
+  // FIM DAS FUNÇÕES DE RESET
+  // ========================================
+  
   // Health check
   healthCheck: () => api.get('/health'),
 

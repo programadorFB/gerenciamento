@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowBack, MdCheck } from 'react-icons/md';
+import { FaCoins } from 'react-icons/fa';
 import styles from './profileScreen.module.css';
 
-// Avatares pré-definidos - você pode substituir pelas URLs reais dos seus avatares
+// Avatares pré-definidos
 const PREDEFINED_AVATARS = [
   { id: 'avatar1', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix' },
   { id: 'avatar2', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka' },
@@ -29,21 +30,60 @@ const ProfileScreen = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
-  // Estado para o avatar selecionado (armazena o ID do avatar)
+  const [initialBank, setInitialBank] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(user?.profile_photo || null);
 
+  // ✅ Função para formatar entrada de moeda
+  const formatCurrencyInput = (value) => {
+    let cleaned = value.replace(/[^\d,]/g, '');
+    
+    const commaCount = cleaned.split(',').length - 1;
+    if (commaCount > 1) {
+      cleaned = cleaned.replace(/,+$/, '');
+    }
+    
+    if (cleaned.includes(',')) {
+      const parts = cleaned.split(',');
+      if (parts[1] && parts[1].length > 2) {
+        cleaned = parts[0] + ',' + parts[1].substring(0, 2);
+      }
+    }
+    
+    return cleaned;
+  };
+
+  // ✅ Handler para mudança na banca inicial
+  const handleInitialBankChange = (e) => {
+    const formattedValue = formatCurrencyInput(e.target.value);
+    setInitialBank(formattedValue);
+  };
+
+  // ✅ Inicializar estados com dados do usuário
   useEffect(() => {
     if (user) {
       setName(user.name || '');
       setSelectedAvatar(user.profile_photo || null);
+
+      // Formatar banca inicial (converte 1000.50 → "1000,50")
+      if (user.initial_bank !== null && user.initial_bank !== undefined) {
+        const bankValue = parseFloat(user.initial_bank);
+        if (!isNaN(bankValue)) {
+          const formattedBank = bankValue.toFixed(2).replace('.', ',');
+          setInitialBank(formattedBank);
+        } else {
+          setInitialBank('');
+        }
+      } else {
+        setInitialBank('');
+      }
     }
   }, [user]);
 
+  // ✅ Handler de atualização do perfil
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     
-    // Validação
+    // Validações
     if (newPassword && newPassword !== confirmPassword) {
       alert('As novas senhas não coincidem.');
       return;
@@ -59,17 +99,28 @@ const ProfileScreen = () => {
       return;
     }
 
+    // ✅ Validar banca inicial
+    if (!initialBank || initialBank.trim() === '') {
+      alert('A banca inicial é obrigatória.');
+      return;
+    }
+
+    const bankAmount = parseFloat(initialBank.replace(',', '.'));
+    if (isNaN(bankAmount) || bankAmount <= 0) {
+      alert('O valor da banca inicial deve ser maior que zero.');
+      return;
+    }
+
     setLoading(true);
 
     try {
       // Criar objeto com os dados para enviar ao backend
       const updateData = {
-        name: name.trim()
+        name: name.trim(),
+        initial_bank: bankAmount // ✅ Enviar banca inicial
       };
       
-      // Lógica do avatar:
-      // 1. Se há um avatar selecionado, enviar o ID
-      // 2. Se não há avatar E o usuário tinha antes, marcar para remover
+      // Lógica do avatar
       if (selectedAvatar) {
         updateData.profile_photo = selectedAvatar;
         console.log('✅ Enviando avatar:', selectedAvatar);
@@ -78,14 +129,14 @@ const ProfileScreen = () => {
         console.log('🗑️ Removendo avatar');
       }
 
-      // Adicionar campos de senha apenas se ambos estiverem preenchidos
+      // Adicionar campos de senha se preenchidos
       if (newPassword && currentPassword) {
         updateData.current_password = currentPassword;
         updateData.new_password = newPassword;
-        console.log('🔐 Alterando senha');
+        console.log('🔒 Alterando senha');
       }
       
-      console.log('📤 Dados completos enviados:', updateData);
+      console.log('📤 Dados enviados:', updateData);
       
       const result = await updateProfile(updateData);
       
@@ -97,10 +148,20 @@ const ProfileScreen = () => {
         setNewPassword('');
         setConfirmPassword('');
         
-        // Atualizar o estado com o avatar retornado
+        // Atualizar estados com dados retornados
         if (result.user) {
           setSelectedAvatar(result.user.profile_photo || null);
-          console.log('✅ Avatar atualizado no estado:', result.user.profile_photo);
+          
+          // ✅ Atualizar banca inicial se retornada
+          if (result.user.initial_bank !== null && result.user.initial_bank !== undefined) {
+            const updatedBank = parseFloat(result.user.initial_bank);
+            if (!isNaN(updatedBank)) {
+              const formattedBank = updatedBank.toFixed(2).replace('.', ',');
+              setInitialBank(formattedBank);
+            }
+          }
+          
+          console.log('✅ Estados atualizados');
         }
       } else {
         const errorMessage = result?.error || result?.message || 'Não foi possível atualizar o perfil.';
@@ -111,7 +172,6 @@ const ProfileScreen = () => {
       const errorMsg = error.response?.data?.error || error.message || 'Erro desconhecido';
       alert(`Erro ao atualizar perfil: ${errorMsg}`);
       console.error('❌ Update profile error:', error);
-      console.error('❌ Error details:', error.response?.data || error.message);
     } finally {
       setLoading(false);
     }
@@ -152,7 +212,6 @@ const ProfileScreen = () => {
       .slice(0, 2);
   };
 
-  // Buscar a URL do avatar atual
   const getCurrentAvatarUrl = () => {
     if (!selectedAvatar) return null;
     const avatar = PREDEFINED_AVATARS.find(a => a.id === selectedAvatar);
@@ -161,7 +220,6 @@ const ProfileScreen = () => {
   
   return (
     <main className={styles.container}>
-      {/* Header with back button */}
       <header className={styles.header}>
         <button 
           type="button" 
@@ -204,7 +262,6 @@ const ProfileScreen = () => {
             </div>
           )}
 
-          {/* Seletor de Avatares */}
           <div className={styles.avatarSelector}>
             <h3 className={styles.avatarSelectorTitle}>Escolha seu Avatar</h3>
             <div className={styles.avatarGrid}>
@@ -234,8 +291,10 @@ const ProfileScreen = () => {
           </div>
         </section>
 
+        {/* ✅ SEÇÃO DE INFORMAÇÕES PESSOAIS COM BANCA INICIAL */}
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Informações Pessoais</h2>
+          
           <div className={styles.inputContainer}>
             <label htmlFor="name" className={styles.label}>
               Nome Completo *
@@ -252,6 +311,33 @@ const ProfileScreen = () => {
             />
           </div>
           
+          {/* ✅ CAMPO DE BANCA INICIAL */}
+          <div className={styles.inputContainer}>
+            <label htmlFor="initialBank" className={styles.label}>
+              <FaCoins className={styles.labelIcon} /> Banca Inicial *
+            </label>
+            <div className={styles.currencyInputWrapper}>
+              <span className={styles.currencySymbol}>R$</span>
+              <input
+                id="initialBank"
+                type="text"
+                inputMode="decimal"
+                className={styles.currencyInput}
+                value={initialBank}
+                onChange={handleInitialBankChange}
+                placeholder="1000,00"
+                required
+                disabled={loading}
+              />
+            </div>
+            <p className={styles.helperText}>
+              💡 Este valor serve como base para cálculos de ROI e objetivos. Altere apenas se necessário.
+            </p>
+            <p className={styles.warningText}>
+              ⚠️ Ao alterar a banca inicial, o sistema criará uma transação de ajuste automática.
+            </p>
+          </div>
+
           <div className={styles.inputContainer}>
             <label htmlFor="email" className={styles.label}>
               Endereço de Email
@@ -330,7 +416,7 @@ const ProfileScreen = () => {
           <button 
             type="submit" 
             className={`${styles.button} ${styles.saveButton}`} 
-            disabled={loading || !name.trim()}
+            disabled={loading || !name.trim() || !initialBank.trim()}
           >
             {loading ? 'Atualizando...' : 'Salvar Alterações'}
           </button>

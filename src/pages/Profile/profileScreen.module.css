@@ -316,3 +316,89 @@
     height: 60px;
   }
 }
+/* ========================================
+   CAMPO DE BANCA INICIAL (CURRENCY INPUT)
+   ======================================== */
+
+.labelIcon {
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.currencyInputWrapper {
+  display: flex;
+  align-items: center;
+  background-color: #1A1A1A;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 0;
+  transition: border-color 0.2s ease;
+  overflow: hidden;
+}
+
+.currencyInputWrapper:focus-within {
+  border-color: #FFD700;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+}
+
+.currencySymbol {
+  padding: 15px 0 15px 15px;
+  font-size: 16px;
+  color: #FFD700;
+  font-weight: 700;
+  background-color: transparent;
+  border-right: 1px solid #333;
+  padding-right: 12px;
+}
+
+.currencyInput {
+  flex: 1;
+  background-color: transparent;
+  border: none;
+  padding: 15px 15px 15px 12px;
+  font-size: 16px;
+  color: #fff;
+  font-weight: 600;
+  outline: none;
+}
+
+.currencyInput::placeholder {
+  color: #666;
+  font-weight: 400;
+}
+
+.currencyInput:disabled {
+  color: #888;
+  cursor: not-allowed;
+}
+
+/* Warning Text */
+.warningText {
+  font-size: 13px;
+  color: #FFA726;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: rgba(255, 167, 38, 0.1);
+  border-left: 3px solid #FFA726;
+  border-radius: 4px;
+  line-height: 1.4;
+}
+
+/* Responsive adjustments for currency input */
+@media (max-width: 480px) {
+  .currencySymbol {
+    padding: 12px 0 12px 12px;
+    padding-right: 10px;
+    font-size: 14px;
+  }
+
+  .currencyInput {
+    padding: 12px 12px 12px 10px;
+    font-size: 15px;
+  }
+
+  .warningText {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}
