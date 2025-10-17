@@ -168,17 +168,17 @@ const Dashboard = () => {
                  
 
                     {/* Saudação (agora ao lado do wrapper) */}
-                    <h1 className={styles.greeting}>Olá, {user?.name || 'Jogador'}!</h1>
+                    <h1 className={styles.greeting}>Olá, {user?.name || 'Jogador'}!<img src={logo} alt="Logo" className={styles.logoImg}  /></h1>
                 
-                    {/* (NOVO) Wrapper para agrupar Avatar e Ícone */}
+                    
                     <div className={styles.profileWrapper}>
                         {/* Avatar (veio primeiro para ficar embaixo) */}
                         <div className={styles.profileAvatarContainer}>
                             {avatarUrl ? (
                                 <img 
-                                    src={avatarUrl} 
-                                    alt="Avatar" 
-                                    className={styles.profileAvatar} 
+                                src={avatarUrl} 
+                                alt="Avatar" 
+                                className={styles.profileAvatar} 
                                 />
                             ) : (
                                 <div className={`${styles.profileAvatar} ${styles.profileAvatarPlaceholder}`}>
@@ -196,7 +196,6 @@ const Dashboard = () => {
                     </div>
                 </div>
                 
-                <img src={logo} alt="Logo" className={styles.logoImg} />
             </header>
 
             <main className={styles.scrollView}>
@@ -373,9 +372,9 @@ const Dashboard = () => {
                 </section>
                 
                 {/* Seção Resumo Financeiro - Card Único */}
-                <section className={styles.summarySection}style={{marginLeft:'75px'}}>
+                <section className={styles.summarySection}>
                     <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle} style={{marginLeft:'25px'}}>Resumo Financeiro</h2>
+                        <h2 className={styles.sectionTitle} >Resumo Financeiro</h2>
                     </div>
                     
                     <div className={styles.summaryCardUnified}>

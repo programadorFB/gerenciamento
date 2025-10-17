@@ -127,8 +127,8 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: clamp(12px, 3vw, 20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(238, 222, 0, 0.8);
+
   backdrop-filter: blur(10px);
   gap: clamp(8px, 2vw, 16px);
 }
@@ -148,8 +148,8 @@ body {
 
 /* Estilo do Avatar (Imagem ou Placeholder) */
 .profileAvatar {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
   background-color: #555; /* Fundo para o placeholder */
@@ -970,6 +970,8 @@ body {
 /* Estilos para a seção de resumo */
 .summarySection {
     margin-bottom: 24px;
+    margin-left: 75px;
+
 }
 
 .summaryCardsContainer {
@@ -1160,7 +1162,11 @@ body {
     font-size: 10px;
     padding: 8px;
   }
-
+  .summarySection {
+    margin-bottom: 16px;
+    max-width: 420;
+    margin-left: 10px;
+  }
   .progressInfo {
     flex-direction: column;
     gap: 8px;
