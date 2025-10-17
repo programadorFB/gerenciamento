@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdEmail, MdLock, MdPerson, MdVisibility, MdVisibilityOff } from 'react-icons/md';
+import { MdEmail, MdLock, MdPerson, MdVisibility, MdVisibilityOff, MdClose } from 'react-icons/md';
 import { FaCoins, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
 
 import { useAuth } from '../../contexts/AuthContext';
@@ -18,8 +18,15 @@ const LoginScreen = () => {
     const [initialBank, setInitialBank] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [riskValue, setRiskValue] = useState(5);
+    
+    // Estados para reset de senha
+    const [showResetModal, setShowResetModal] = useState(false);
+    const [resetEmail, setResetEmail] = useState('');
+    const [resetLoading, setResetLoading] = useState(false);
+    const [resetSuccess, setResetSuccess] = useState(false);
+    const [resetError, setResetError] = useState('');
 
-    const { login, register, isLoading, error, clearError, user } = useAuth();
+    const { login, register, resetPassword, isLoading, error, clearError, user } = useAuth();
     const navigate = useNavigate();
     
     // Flag para controlar se o redirecionamento deve acontecer
@@ -122,6 +129,42 @@ const LoginScreen = () => {
         shouldRedirect.current = false;
     };
 
+    const handleForgotPassword = () => {
+        setShowResetModal(true);
+        setResetEmail('');
+        setResetSuccess(false);
+        setResetError('');
+    };
+
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
+        
+        if (!resetEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(resetEmail)) {
+            setResetError('Por favor, insira um email válido.');
+            return;
+        }
+
+        setResetLoading(true);
+        setResetError('');
+
+        try {
+            await resetPassword(resetEmail.trim().toLowerCase());
+            setResetSuccess(true);
+        } catch (err) {
+            console.error('Erro ao enviar email de recuperação:', err);
+            setResetError('Erro ao enviar email. Verifique se o email está correto.');
+        } finally {
+            setResetLoading(false);
+        }
+    };
+
+    const closeResetModal = () => {
+        setShowResetModal(false);
+        setResetEmail('');
+        setResetSuccess(false);
+        setResetError('');
+    };
+
     return (
         <div className={styles.container} style={{ backgroundImage: `url(${background})` }}>
             <div className={styles.overlayGradient} />
@@ -184,6 +227,15 @@ const LoginScreen = () => {
                                 {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
                             </button>
                         </div>
+                        {isLogin && (
+                            <button 
+                                type="button"
+                                onClick={handleForgotPassword}
+                                className={styles.forgotPassword}
+                            >
+                                Esqueceu a senha?
+                            </button>
+                        )}
                     </div>
 
                     {!isLogin && (
@@ -202,7 +254,6 @@ const LoginScreen = () => {
                                         required
                                     />
                                 </div>
-                                
                             </div>
 
                             <div className={styles.inputGroup}>
@@ -235,6 +286,72 @@ const LoginScreen = () => {
                     <span>{isLogin ? 'Cadastre-se' : 'Faça Login'}</span>
                 </button>
             </main>
+
+            {/* Modal de Reset de Senha */}
+            {showResetModal && (
+                <div className={styles.modalOverlay} onClick={closeResetModal}>
+                    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                        <button 
+                            className={styles.closeButton}
+                            onClick={closeResetModal}
+                        >
+                            <MdClose />
+                        </button>
+                        
+                        <div className={styles.modalHeader}>
+                            <h2>Recuperar Senha</h2>
+                            <p>Digite seu email para receber o link de recuperação</p>
+                        </div>
+
+                        {resetSuccess ? (
+                            <div className={styles.successMessage}>
+                                <div className={styles.successIcon}>✓</div>
+                                <h3>Email Enviado!</h3>
+                                <p>Verifique sua caixa de entrada e siga as instruções para redefinir sua senha.</p>
+                                <button 
+                                    onClick={closeResetModal}
+                                    className={styles.okButton}
+                                >
+                                    OK
+                                </button>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleResetPassword} className={styles.resetForm}>
+                                {resetError && (
+                                    <div className={styles.errorContainer}>
+                                        {resetError}
+                                    </div>
+                                )}
+                                
+                                <div className={styles.inputGroup}>
+                                    <label htmlFor="resetEmail">
+                                        <MdEmail /> Email
+                                    </label>
+                                    <input
+                                        id="resetEmail"
+                                        type="email"
+                                        value={resetEmail}
+                                        onChange={(e) => setResetEmail(e.target.value)}
+                                        placeholder="seu@email.com"
+                                        required
+                                        autoFocus
+                                    />
+                                </div>
+
+                                <button 
+                                    type="submit"
+                                    className={styles.submitButton}
+                                    disabled={resetLoading}
+                                >
+                                    <div className={styles.goldGradient}>
+                                        {resetLoading ? 'Enviando...' : 'Enviar Link de Recuperação'}
+                                    </div>
+                                </button>
+                            </form>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

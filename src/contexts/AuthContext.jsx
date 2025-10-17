@@ -232,6 +232,23 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: AUTH_ACTIONS.CLEAR_ERROR });
   }, []);
   
+  // --- ADICIONADO ---
+  // Função para solicitar a recuperação de senha
+  const resetPassword = useCallback(async (email) => {
+    try {
+      // Assumindo que seu apiService tem um método 'resetPassword'
+      const response = await apiService.resetPassword(email);
+      // Se a API for bem-sucedida, a Promise resolve.
+      return { success: true, data: response };
+    } catch (error) {
+      // Se a API falhar, ela lançará um erro que será capturado 
+      // pelo bloco try/catch no LoginScreen.jsx
+      const errorMessage = error.response?.data?.error || error.message || 'Erro ao enviar email de recuperação.';
+      throw new Error(errorMessage);
+    }
+  }, []);
+  // --- FIM DA ADIÇÃO ---
+
   // Valor que será provido para os componentes filhos
   const value = {
     ...state,
@@ -240,6 +257,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateProfile,
     clearError,
+    resetPassword, // --- ADICIONADO ---
   };
 
   return (

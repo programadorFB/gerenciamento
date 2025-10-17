@@ -175,7 +175,17 @@ const apiService = {
       tokenManager.clearToken();
     }
   },
-
+  async resetPassword(email) {
+    try {
+      // Confirme se '/auth/reset-password' é o endpoint correto da sua API
+      const response = await api.post('/auth/reset-password', { email });
+      return response; // O interceptor já trata 'response.data'
+    } catch (error) {
+      // O interceptor já transforma o erro, mas para manter
+      // a consistência com login/register, retornamos um objeto de erro
+      return { success: false, error: error.message };
+    }
+  },
   // User profile management
   async getUserProfile() {
     try {
