@@ -11,6 +11,7 @@ import ReportScreen from './pages/ReportScreen/ReportScreen.jsx';
 
 // --- Layout and Pages ---
 import SideMenu from './components/SideMenu.jsx';
+import BottomMenu from './components/BottomMenu.jsx'; // ✅ NOVO: Import do Bottom Menu
 import LoginScreen from './pages/Login/LoginScreen.jsx';
 import StrategyScreen from './pages/VideoStrategy/StrategyScreen.jsx';
 import DashboardScreen from './pages/Dashboard/DashboardScreen.jsx';
@@ -22,11 +23,19 @@ import ProfileScreen from './pages/Profile/profileScreen.jsx';
 import ObjectivesScreen from './pages/Objectives/ObjectiveScreen.jsx';
 
 const AppLayout = () => (
-  <div style={{ display: 'flex', minHeight: '100vh' }}>
+  <div style={{ display: 'flex', minHeight: '100vh', position: 'relative' }}>
     <SideMenu />
-    <main style={{ flex: 1, backgroundColor: '#121212', overflowY: 'auto' }}>
+    <main style={{ 
+      flex: 1, 
+      backgroundColor: '#121212', 
+      overflowY: 'auto',
+      paddingBottom: '80px' // ✅ ESPAÇO para o Bottom Menu não cobrir conteúdo
+    }}>
       <Outlet />
     </main>
+    
+    {/* ✅ NOVO: Bottom Menu fixo na parte inferior */}
+    <BottomMenu />
   </div>
 );
 

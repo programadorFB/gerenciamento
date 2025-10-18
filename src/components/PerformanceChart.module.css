@@ -1,0 +1,366 @@
+.chartContainer {
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(45, 45, 45, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.chartHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.chartTitle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #FFD700;
+}
+
+.chartTitle svg {
+    font-size: 24px;
+}
+
+.chartTitle h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* Indicador AO VIVO */
+.liveIndicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: rgba(244, 67, 54, 0.2);
+    border: 1px solid #F44336;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #F44336;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.liveDot {
+    width: 8px;
+    height: 8px;
+    background: #F44336;
+    border-radius: 50%;
+    animation: livePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(0.8);
+    }
+}
+
+.dateFilters {
+    display: flex;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px;
+    border-radius: 10px;
+}
+
+.filterButton {
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #999;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.filterButton:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.filterButton.active {
+    background: linear-gradient(45deg, #FFD700, #F0C040);
+    color: #000;
+    font-weight: 600;
+}
+
+/* Estatísticas do Período */
+.statsRow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.statCard {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.statLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #999;
+    font-weight: 500;
+}
+
+.statLabel svg {
+    font-size: 16px;
+}
+
+.statValueGains,
+.statValueLosses,
+.statValueNet,
+.statValueBalance {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.statValueGains {
+    color: #4CAF50;
+}
+
+.statValueLosses {
+    color: #F44336;
+}
+
+.statValueBalance {
+    color: #FFD700;
+}
+
+.statValueNet.positive {
+    color: #4CAF50;
+}
+
+.statValueNet.negative {
+    color: #F44336;
+}
+
+.statAvg {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Gráfico */
+.chartWrapper {
+    margin-top: 20px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+}
+
+/* Tooltip Customizado */
+.customTooltip {
+    background: rgba(26, 26, 26, 0.98);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    min-width: 200px;
+}
+
+.tooltipDate {
+    font-size: 13px;
+    color: #FFD700;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+    text-align: center;
+}
+
+.tooltipRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.tooltipLabelGains,
+.tooltipLabelLosses,
+.tooltipLabelNet,
+.tooltipLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #ddd;
+}
+
+.tooltipLabelGains svg {
+    color: #4CAF50;
+}
+
+.tooltipLabelLosses svg {
+    color: #F44336;
+}
+
+.tooltipLabel svg {
+    color: #FFD700;
+}
+
+.tooltipValueGains {
+    font-weight: 600;
+    color: #4CAF50;
+    font-size: 14px;
+}
+
+.tooltipValueLosses {
+    font-weight: 600;
+    color: #F44336;
+    font-size: 14px;
+}
+
+.tooltipValueBalance {
+    font-weight: 700;
+    color: #FFD700;
+    font-size: 16px;
+}
+
+.tooltipValueNet {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.tooltipValueNet.positive {
+    color: #4CAF50;
+}
+
+.tooltipValueNet.negative {
+    color: #F44336;
+}
+
+.tooltipInfo {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.tooltipInfo small {
+    color: #999;
+    font-size: 11px;
+}
+
+.tooltipDivider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 10px 0;
+}
+
+/* Estado Vazio */
+.emptyChart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #999;
+    text-align: center;
+}
+
+.emptyChart svg {
+    color: rgba(255, 215, 0, 0.3);
+    margin-bottom: 16px;
+}
+
+.emptyChart p {
+    font-size: 16px;
+    margin: 0 0 8px 0;
+    color: #ddd;
+}
+
+.emptyChart small {
+    font-size: 13px;
+    color: #666;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .chartContainer {
+        padding: 16px;
+    }
+
+    .chartHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dateFilters {
+        width: 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .dateFilters::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filterButton {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .statsRow {
+        grid-template-columns: 1fr;
+    }
+
+    .chartWrapper {
+        padding: 8px;
+    }
+
+    .chartTitle h3 {
+        font-size: 18px;
+    }
+
+    .statValueGains,
+    .statValueLosses,
+    .statValueNet {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .customTooltip {
+        min-width: 160px;
+        padding: 12px;
+    }
+
+    .tooltipDate {
+        font-size: 12px;
+    }
+
+    .tooltipRow {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        margin-bottom: 10px;
+    }
+
+    .tooltipValueGains,
+    .tooltipValueLosses,
+    .tooltipValueNet {
+        font-size: 13px;
+    }
+}

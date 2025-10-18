@@ -5,20 +5,22 @@ import { MdArrowBack, MdCheck } from 'react-icons/md';
 import { FaCoins } from 'react-icons/fa';
 import styles from './profileScreen.module.css';
 
-// Avatares pré-definidos
+// Importar avatares locais
+import avatar1 from '../../assets/avatares/1.png';
+import avatar2 from '../../assets/avatares/2.png';
+import avatar3 from '../../assets/avatares/3.png';
+import avatar4 from '../../assets/avatares/4.png';
+import avatar5 from '../../assets/avatares/5.png';
+import avatar6 from '../../assets/avatares/6.png';
+
+// Avatares pré-definidos com imagens locais
 const PREDEFINED_AVATARS = [
-  { id: 'avatar1', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix' },
-  { id: 'avatar2', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka' },
-  { id: 'avatar3', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna' },
-  { id: 'avatar4', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Max' },
-  { id: 'avatar5', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sophie' },
-  { id: 'avatar6', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jack' },
-  { id: 'avatar7', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bella' },
-  { id: 'avatar8', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie' },
-  { id: 'avatar9', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Milo' },
-  { id: 'avatar10', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daisy' },
-  { id: 'avatar11', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver' },
-  { id: 'avatar12', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lily' }
+  { id: 'avatar1', url: avatar1, name: 'Avatar 1' },
+  { id: 'avatar2', url: avatar2, name: 'Avatar 2' },
+  { id: 'avatar3', url: avatar3, name: 'Avatar 3' },
+  { id: 'avatar4', url: avatar4, name: 'Avatar 4' },
+  { id: 'avatar5', url: avatar5, name: 'Avatar 5' },
+  { id: 'avatar6', url: avatar6, name: 'Avatar 6' }
 ];
 
 const ProfileScreen = () => {
@@ -32,6 +34,7 @@ const ProfileScreen = () => {
   const [loading, setLoading] = useState(false);
   const [initialBank, setInitialBank] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(user?.profile_photo || null);
+  const [errorDetails, setErrorDetails] = useState(null);
 
   // ✅ Função para formatar entrada de moeda
   const formatCurrencyInput = (value) => {
@@ -60,6 +63,8 @@ const ProfileScreen = () => {
 
   // ✅ Inicializar estados com dados do usuário
   useEffect(() => {
+    console.log('🔵 User data loaded:', user);
+    
     if (user) {
       setName(user.name || '');
       setSelectedAvatar(user.profile_photo || null);
@@ -70,6 +75,7 @@ const ProfileScreen = () => {
         if (!isNaN(bankValue)) {
           const formattedBank = bankValue.toFixed(2).replace('.', ',');
           setInitialBank(formattedBank);
+          console.log('💰 Initial bank loaded:', formattedBank);
         } else {
           setInitialBank('');
         }
@@ -82,6 +88,9 @@ const ProfileScreen = () => {
   // ✅ Handler de atualização do perfil
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
+    setErrorDetails(null);
+    
+    console.log('🚀 Starting profile update...');
     
     // Validações
     if (newPassword && newPassword !== confirmPassword) {
@@ -117,30 +126,31 @@ const ProfileScreen = () => {
       // Criar objeto com os dados para enviar ao backend
       const updateData = {
         name: name.trim(),
-        initial_bank: bankAmount // ✅ Enviar banca inicial
+        initial_bank: bankAmount
       };
       
       // Lógica do avatar
       if (selectedAvatar) {
         updateData.profile_photo = selectedAvatar;
-        console.log('✅ Enviando avatar:', selectedAvatar);
+        console.log('✅ Sending avatar:', selectedAvatar);
       } else if (user?.profile_photo && !selectedAvatar) {
         updateData.remove_profile_photo = true;
-        console.log('🗑️ Removendo avatar');
+        console.log('🗑️ Removing avatar');
       }
 
       // Adicionar campos de senha se preenchidos
       if (newPassword && currentPassword) {
         updateData.current_password = currentPassword;
         updateData.new_password = newPassword;
-        console.log('🔒 Alterando senha');
+        console.log('🔑 Changing password');
       }
       
-      console.log('📤 Dados enviados:', updateData);
+      console.log('📤 Data to send:', JSON.stringify(updateData, null, 2));
+      console.log('📡 Calling updateProfile function...');
       
       const result = await updateProfile(updateData);
       
-      console.log('📥 Resposta do servidor:', result);
+      console.log('📥 Server response:', JSON.stringify(result, null, 2));
       
       if (result && result.success) { 
         alert('Perfil atualizado com sucesso!');
@@ -161,28 +171,62 @@ const ProfileScreen = () => {
             }
           }
           
-          console.log('✅ Estados atualizados');
+          console.log('✅ States updated successfully');
         }
       } else {
         const errorMessage = result?.error || result?.message || 'Não foi possível atualizar o perfil.';
         alert(`Erro: ${errorMessage}`);
-        console.error('❌ Erro detalhado:', result);
+        console.error('❌ Error details:', result);
+        setErrorDetails(result);
       }
     } catch (error) {
-      const errorMsg = error.response?.data?.error || error.message || 'Erro desconhecido';
-      alert(`Erro ao atualizar perfil: ${errorMsg}`);
-      console.error('❌ Update profile error:', error);
+      console.error('❌ COMPLETE ERROR OBJECT:', error);
+      console.error('❌ Error name:', error.name);
+      console.error('❌ Error message:', error.message);
+      console.error('❌ Error stack:', error.stack);
+      
+      if (error.response) {
+        console.error('❌ Response data:', error.response.data);
+        console.error('❌ Response status:', error.response.status);
+        console.error('❌ Response headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('❌ Request was made but no response:', error.request);
+      }
+      
+      let errorMsg = 'Erro ao atualizar perfil';
+      
+      if (error.message === 'Network Error') {
+        errorMsg = 'Erro de conexão. Verifique:\n\n' +
+                   '1. Se o servidor backend está rodando\n' +
+                   '2. Se a URL da API está correta\n' +
+                   '3. Se há problemas de CORS\n' +
+                   '4. Sua conexão com a internet';
+      } else if (error.response?.data?.error) {
+        errorMsg = error.response.data.error;
+      } else if (error.message) {
+        errorMsg = error.message;
+      }
+      
+      alert(`${errorMsg}`);
+      setErrorDetails({
+        name: error.name,
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
     } finally {
       setLoading(false);
     }
   };
 
   const handleSelectAvatar = (avatarId) => {
+    console.log('🖼️ Avatar selected:', avatarId);
     setSelectedAvatar(avatarId);
   };
 
   const handleRemoveAvatar = () => {
     if (window.confirm('Tem certeza que deseja remover sua foto de perfil?')) {
+      console.log('🗑️ Avatar removed');
       setSelectedAvatar(null);
     }
   };
@@ -233,6 +277,25 @@ const ProfileScreen = () => {
         <div className={styles.headerSpacer}></div>
       </header>
 
+      {/* Debug Info - Remover em produção */}
+      {errorDetails && (
+        <div style={{
+          margin: '20px',
+          padding: '15px',
+          backgroundColor: '#330000',
+          border: '1px solid #ff0000',
+          borderRadius: '8px',
+          color: '#ff6666',
+          fontSize: '12px',
+          fontFamily: 'monospace'
+        }}>
+          <strong>Debug Info:</strong>
+          <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+            {JSON.stringify(errorDetails, null, 2)}
+          </pre>
+        </div>
+      )}
+
       <form onSubmit={handleUpdateProfile}>
         <section className={styles.imageSection}>
           <div className={styles.imageContainer}>
@@ -274,10 +337,11 @@ const ProfileScreen = () => {
                   }`}
                   onClick={() => handleSelectAvatar(avatar.id)}
                   disabled={loading}
+                  title={avatar.name}
                 >
                   <img 
                     src={avatar.url} 
-                    alt={`Avatar ${avatar.id}`}
+                    alt={avatar.name}
                     className={styles.avatarOptionImage}
                   />
                   {selectedAvatar === avatar.id && (
@@ -291,7 +355,6 @@ const ProfileScreen = () => {
           </div>
         </section>
 
-        {/* ✅ SEÇÃO DE INFORMAÇÕES PESSOAIS COM BANCA INICIAL */}
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Informações Pessoais</h2>
           
@@ -311,7 +374,6 @@ const ProfileScreen = () => {
             />
           </div>
           
-          {/* ✅ CAMPO DE BANCA INICIAL */}
           <div className={styles.inputContainer}>
             <label htmlFor="initialBank" className={styles.label}>
               <FaCoins className={styles.labelIcon} /> Banca Inicial *

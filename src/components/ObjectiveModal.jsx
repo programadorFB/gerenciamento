@@ -193,17 +193,7 @@ const ObjectiveModal = ({ visible, onClose, objective = null }) => {
             />
           </div>
 
-          {/* Valor Atual */}
-          <div className={styles.field}>
-            <label className={styles.fieldLabel}>Valor Atual</label>
-            <input
-              type="text"
-              value={formData.currentAmount}
-              onChange={(e) => handleInputChange('currentAmount', e.target.value)}
-              placeholder="0,00"
-              className={styles.fieldInput}
-            />
-          </div>
+
 
           {/* Data Meta com DatePicker */}
           <div className={styles.field}>

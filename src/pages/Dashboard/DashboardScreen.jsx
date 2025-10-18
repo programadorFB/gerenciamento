@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useCallback } from 'react';
+
+import React, { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // --- Contexts ---
@@ -11,32 +12,56 @@ import { useSideMenu } from '../../contexts/SideMenuContext';
 import SideMenu from '../../components/SideMenu';
 import TransactionList from '../../components/TransactionList';
 import ObjectivesList from '../../components/ObjectivesList';
+import PerformanceChart from '../../components/PerformanceChart';
 
 // --- Icons ---
-import { MdAccountBalanceWallet, MdFlag, MdAdd, MdRemove, MdTrendingUp, MdTrendingDown, MdWarning } from 'react-icons/md';
-import { FaCoins, FaReceipt, FaBullseye, FaShieldAlt, FaChartLine, FaDice, FaFire, FaBalanceScale } from 'react-icons/fa';
+import { 
+    MdAccountBalanceWallet, 
+    MdFlag, 
+    MdAdd, 
+    MdRemove, 
+    MdTrendingUp, 
+    MdTrendingDown, 
+    MdWarning,
+    MdRefresh 
+} from 'react-icons/md';
+import { 
+    FaCoins, 
+    FaReceipt, 
+    FaBullseye, 
+    FaShieldAlt, 
+    FaChartLine, 
+    FaDice, 
+    FaFire, 
+    FaBalanceScale,
+    FaCalendarDay 
+} from 'react-icons/fa';
 
 // --- Assets ---
 import logo from '../../assets/logo.png';
 import background from '../../assets/fundoLuxo.jpg';
 
+// --- Avatares Locais ---
+import avatar1 from '../../assets/avatares/1.png';
+import avatar2 from '../../assets/avatares/2.png';
+import avatar3 from '../../assets/avatares/3.png';
+import avatar4 from '../../assets/avatares/4.png';
+import avatar5 from '../../assets/avatares/5.png';
+import avatar6 from '../../assets/avatares/6.png';
+
 // --- CSS Module ---
 import styles from '../../styles/DashboardScreen.module.css';
-// --- (NOVO) Avatares (Copiado de ProfileScreen) ---
+
+// --- Avatares ---
 const PREDEFINED_AVATARS = [
-  { id: 'avatar1', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix' },
-  { id: 'avatar2', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka' },
-  { id: 'avatar3', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna' },
-  { id: 'avatar4', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Max' },
-  { id: 'avatar5', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sophie' },
-  { id: 'avatar6', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jack' },
-  { id: 'avatar7', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bella' },
-  { id: 'avatar8', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie' },
-  { id: 'avatar9', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Milo' },
-  { id: 'avatar10', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daisy' },
-  { id: 'avatar11', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver' },
-  { id: 'avatar12', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lily' }
+    { id: 'avatar1', url: avatar1, name: 'Avatar 1' },
+    { id: 'avatar2', url: avatar2, name: 'Avatar 2' },
+    { id: 'avatar3', url: avatar3, name: 'Avatar 3' },
+    { id: 'avatar4', url: avatar4, name: 'Avatar 4' },
+    { id: 'avatar5', url: avatar5, name: 'Avatar 5' },
+    { id: 'avatar6', url: avatar6, name: 'Avatar 6' }
 ];
+
 const Dashboard = () => {
     const navigate = useNavigate();
     const { user, isLoading } = useAuth();
@@ -50,7 +75,10 @@ const Dashboard = () => {
         totalLosses,
         totalDeposits,
         totalWithdraws,
-        totalGains
+        totalGains,
+        dailyGains,
+        dailyLosses,
+        lastResetDate
     } = useFinancial();
     const { bettingProfile } = useBetting(); 
     const { openMenu } = useSideMenu();
@@ -74,7 +102,17 @@ const Dashboard = () => {
         }).format(amount || 0);
     };
 
-    // Função para obter o ícone do perfil
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('pt-BR', { 
+            day: '2-digit', 
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
     const getProfileIcon = () => {
         if (!bettingProfile?.isInitialized) return null;
         
@@ -96,48 +134,47 @@ const Dashboard = () => {
         }
     };
 
-    // Calcula a meta de lucro baseada no nível de risco
     const calculateProfitTarget = () => {
-        const initialBalance = getEffectiveInitialBalance();
         const riskLevel = bettingProfile?.riskLevel || 5;
         return balance * (riskLevel / 100);
     };
 
-    // Calcula o progresso até atingir a meta
-    const calculateProfitProgress = () => {
-        const realProfit = getRealProfit();
+    const calculateDailyProfitProgress = () => {
         const profitTarget = calculateProfitTarget();
         if (profitTarget <= 0) return 0;
-        return Math.min((realProfit / profitTarget) * 100, 100);
+        return Math.min((dailyGains / profitTarget) * 100, 100);
     };
 
     const stopLossMonetaryValue = bettingProfile?.stopLoss || 0;
-    const currentLoss = totalLosses || 0;
 
     const isStopLossTriggered = useMemo(() => {
         if (!stopLossMonetaryValue) return false;
-        return currentLoss >= stopLossMonetaryValue;
-    }, [currentLoss, stopLossMonetaryValue]);
+        return dailyLosses >= stopLossMonetaryValue;
+    }, [dailyLosses, stopLossMonetaryValue]);
 
     const stopLossDistance = useMemo(() => {
         if (!stopLossMonetaryValue) return null;
-        return stopLossMonetaryValue - currentLoss;
-    }, [currentLoss, stopLossMonetaryValue]);
+        return stopLossMonetaryValue - dailyLosses;
+    }, [dailyLosses, stopLossMonetaryValue]);
+
     const getAvatarUrl = () => {
         if (!user?.profile_photo) return null;
         const avatar = PREDEFINED_AVATARS.find(a => a.id === user.profile_photo);
         return avatar ? avatar.url : null;
     };
+
     const avatarUrl = getAvatarUrl();
+
     const getInitials = () => {
         if (!user?.name) return 'J';
         return user.name
-        .split(' ')
-        .map(word => word.charAt(0))
-        .join('')
-        .toUpperCase()
-        .slice(0, 2);
+            .split(' ')
+            .map(word => word.charAt(0))
+            .join('')
+            .toUpperCase()
+            .slice(0, 2);
     };
+
     if (isLoading || !user) {
         return (
             <div className={styles.loadingContainer}>
@@ -150,7 +187,7 @@ const Dashboard = () => {
     const overallProfit = balance - initialBalance;
     const realProfit = getRealProfit();
     const profitTarget = calculateProfitTarget();
-    const profitProgress = calculateProfitProgress();
+    const dailyProfitProgress = calculateDailyProfitProgress();
     
     const recentTransactions = transactions.slice(-5).reverse();
     const incompleteObjectives = objectives.filter(obj => obj.current_amount < obj.target_amount);
@@ -159,26 +196,24 @@ const Dashboard = () => {
         <div className={styles.dashboardContainer} style={{ backgroundImage: `url(${background})` }}>
             <div className={styles.overlayGradient} />
             
-<header className={styles.header}>
+            <header className={styles.header}>
                 <button className={styles.menuButton} onClick={openMenu}>
                     <span className={styles.menuIcon}></span>
                 </button>
                 
                 <div className={styles.greetingContainer}>
-                 
-
-                    {/* Saudação (agora ao lado do wrapper) */}
-                    <h1 className={styles.greeting}>Olá, {user?.name || 'Jogador'}!<img src={logo} alt="Logo" className={styles.logoImg}  /></h1>
-                
+                    <h1 className={styles.greeting}>
+                        Olá, {user?.name || 'Jogador'}!
+                        <img src={logo} alt="Logo" className={styles.logoImg} />
+                    </h1>
                     
                     <div className={styles.profileWrapper}>
-                        {/* Avatar (veio primeiro para ficar embaixo) */}
                         <div className={styles.profileAvatarContainer}>
                             {avatarUrl ? (
                                 <img 
-                                src={avatarUrl} 
-                                alt="Avatar" 
-                                className={styles.profileAvatar} 
+                                    src={avatarUrl} 
+                                    alt="Avatar" 
+                                    className={styles.profileAvatar} 
                                 />
                             ) : (
                                 <div className={`${styles.profileAvatar} ${styles.profileAvatarPlaceholder}`}>
@@ -187,19 +222,19 @@ const Dashboard = () => {
                             )}
                         </div>
                         
-                        {/* Ícone de Perfil de Risco (movido para cá) */}
                         {bettingProfile?.isInitialized && (
-                            <div className={styles.profileIconBadge}  title={bettingProfile.title}>
+                            <div className={styles.profileIconBadge} title={bettingProfile.title}>
                                 {getProfileIcon()}
                             </div>
                         )}
                     </div>
                 </div>
-                
             </header>
 
             <main className={styles.scrollView}>
                 
+                
+
                 {/* Seção de Saldos */}
                 <section className={styles.balanceSection}>
                     <div className={styles.balanceCard}>
@@ -236,10 +271,10 @@ const Dashboard = () => {
                     </div>
                 </section>
 
-                {/* Nova Seção: Gestão de Risco */}
+                {/* Gestão de Risco com valores DIÁRIOS */}
                 <section className={styles.riskManagementSection}>
                     <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>Gestão de Risco</h2>
+                        <h2 className={styles.sectionTitle}>Gestão de Risco (Diária)</h2>
                         <button 
                             className={styles.seeAllButton} 
                             onClick={() => navigate('/investment-profile')}
@@ -249,73 +284,13 @@ const Dashboard = () => {
                     </div>
 
                     <div className={styles.riskCardsContainer}>
-                        {/* Card Stop Loss Simplificado */}
-                        <div className={`${styles.riskCard} ${isStopLossTriggered ? styles.stopLossTriggered : ''}`}>
-                            <div className={styles.riskCardHeader}>
-                                <div className={styles.riskIconWrapper}>
-                                    <FaShieldAlt 
-                                        size={18} 
-                                        color={isStopLossTriggered ? '#F44336' : '#FF9800'} 
-                                    />
-                                </div>
-                                <span className={styles.riskCardTitle}>StopLoss</span>
-                            </div>
-                            
-                            {stopLossMonetaryValue > 0 ? (
-                                <>
-                                    <div className={styles.riskCardValue}>
-                                        <span className={styles.riskMainValue}>
-                                            {formatCurrency(stopLossMonetaryValue)}
-                                        </span>
-                                    </div>
-                                    
-                                    <div className={styles.additionalInfo}>
-                                        <div className={styles.infoRow}>
-                                            <span className={styles.infoLabel}>Total de Losses:</span>
-                                            <span className={styles.infoValue}>
-                                                {formatCurrency(currentLoss)}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    
-                                    {isStopLossTriggered ? (
-                                        <div className={styles.alertBanner}>
-                                            <MdWarning size={16} />
-                                            <span>Limite Atingido!</span>
-                                        </div>
-                                    ) : (
-                                        <div className={styles.riskDistance}>
-                                            <span className={styles.distanceLabel}>Margem atual:</span>
-                                            <span className={`${styles.distanceValue} ${
-                                                stopLossDistance && stopLossDistance < stopLossMonetaryValue * 0.1 
-                                                    ? styles.dangerZone 
-                                                    : ''
-                                            }`}>
-                                                {formatCurrency(stopLossDistance)}
-                                            </span>
-                                        </div>
-                                    )}
-                                </>
-                            ) : (
-                                <div className={styles.riskCardEmpty}>
-                                    <p>Não configurado</p>
-                                    <button 
-                                        className={styles.configureButton}
-                                        onClick={() => navigate('/investment-profile')}
-                                    >
-                                        Configurar agora
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Card Meta de Lucro */}
+                        {/* Card Meta de Lucro DIÁRIA */}
                         <div className={styles.riskCard}>
                             <div className={styles.riskCardHeader}>
                                 <div className={styles.riskIconWrapper}>
                                     <FaChartLine size={18} color="#4CAF50" />
                                 </div>
-                                <span className={styles.riskCardTitle}>Meta de Lucro</span>
+                                <span className={styles.riskCardTitle}>Win Diário</span>
                             </div>
                             
                             {bettingProfile?.riskLevel && bettingProfile.riskLevel > 0 ? (
@@ -334,25 +309,25 @@ const Dashboard = () => {
                                             <div 
                                                 className={styles.progressBarFill}
                                                 style={{ 
-                                                    width: `${profitProgress}%`,
-                                                    backgroundColor: profitProgress >= 100 ? '#4CAF50' : '#fdb931'
+                                                    width: `${dailyProfitProgress}%`,
+                                                    backgroundColor: dailyProfitProgress >= 100 ? '#4CAF50' : '#fdb931'
                                                 }}
                                             />
                                         </div>
                                         <div className={styles.progressInfo}>
                                             <span className={styles.progressCurrent}>
-                                                {formatCurrency(realProfit)}
+                                                {formatCurrency(dailyGains)}
                                             </span>
                                             <span className={styles.progressPercent}>
-                                                {profitProgress.toFixed(1)}%
+                                                {dailyProfitProgress.toFixed(1)}%
                                             </span>
                                         </div>
                                     </div>
                                     
-                                    {profitProgress >= 100 && (
+                                    {dailyProfitProgress >= 100 && (
                                         <div className={styles.successBanner}>
                                             <MdFlag size={16} />
-                                            <span>Meta Alcançada! 🎉</span>
+                                            <span>Meta do Dia Alcançada! 🎉</span>
                                         </div>
                                     )}
                                 </>
@@ -368,17 +343,88 @@ const Dashboard = () => {
                                 </div>
                             )}
                         </div>
+
+                        {/* Card Stop Loss DIÁRIO */}
+                        <div className={`${styles.riskCard} ${isStopLossTriggered ? styles.stopLossTriggered : ''}`}>
+                            <div className={styles.riskCardHeader}>
+                                <div className={styles.riskIconWrapper}>
+                                    <FaShieldAlt 
+                                        size={18} 
+                                        color={isStopLossTriggered ? '#F44336' : '#FF9800'} 
+                                    />
+                                </div>
+                                <span className={styles.riskCardTitle}>StopLoss Diário</span>
+                            </div>
+                            
+                            {stopLossMonetaryValue > 0 ? (
+                                <>
+                                    <div className={styles.riskCardValue}>
+                                        <span className={styles.riskMainValue}>
+                                            {formatCurrency(stopLossMonetaryValue)}
+                                        </span>
+                                        <span className={styles.riskPercentage}>
+                                            Limite de perda
+                                        </span>
+                                    </div>
+                                    
+                                    <div className={styles.progressBarContainer}>
+                                        <div className={styles.progressBar}>
+                                            <div 
+                                                className={styles.progressBarFill}
+                                                style={{ 
+                                                    width: `${Math.min((dailyLosses / stopLossMonetaryValue) * 100, 100)}%`,
+                                                    backgroundColor: isStopLossTriggered 
+                                                        ? '#F44336' 
+                                                        : (dailyLosses / stopLossMonetaryValue) >= 0.8 
+                                                            ? '#FF9800' 
+                                                            : '#FDD835'
+                                                }}
+                                            />
+                                        </div>
+                                        <div className={styles.progressInfo}>
+                                            <span className={styles.progressCurrent}>
+                                                {formatCurrency(dailyLosses)}
+                                            </span>
+                                            <span className={styles.progressPercent}>
+                                                {((dailyLosses / stopLossMonetaryValue) * 100).toFixed(1)}%
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    {isStopLossTriggered ? (
+                                        <div className={styles.alertBanner}>
+                                            <MdWarning size={16} />
+                                            <span>Limite do Dia Atingido!</span>
+                                        </div>
+                                    ) : stopLossDistance && stopLossDistance < stopLossMonetaryValue * 0.2 ? (
+                                        <div className={styles.warningBanner}>
+                                            <MdWarning size={16} />
+                                            <span>Atenção! Faltam {formatCurrency(stopLossDistance)}</span>
+                                        </div>
+                                    ) : null}
+                                </>
+                            ) : (
+                                <div className={styles.riskCardEmpty}>
+                                    <p>Não configurado</p>
+                                    <button 
+                                        className={styles.configureButton}
+                                        onClick={() => navigate('/investment-profile')}
+                                    >
+                                        Configurar agora
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </section>
                 
-                {/* Seção Resumo Financeiro - Card Único */}
+                {/* Seção Resumo Financeiro - TOTAIS GERAIS */}
                 <section className={styles.summarySection}>
                     <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle} >Resumo Financeiro</h2>
+                        <h2 className={styles.sectionTitle}>Resumo Financeiro (Total)</h2>
                     </div>
                     
                     <div className={styles.summaryCardUnified}>
-                        {/* Linha de Depósitos */}
                         <div className={styles.summaryRow}>
                             <div className={styles.summaryLabel}>
                                 <MdAdd size={22} color="#4CAF50" />
@@ -389,7 +435,6 @@ const Dashboard = () => {
                             </p>
                         </div>
 
-                        {/* Linha de Saques */}
                         <div className={styles.summaryRow}>
                             <div className={styles.summaryLabel}>
                                 <MdRemove size={22} color="#F44336" />
@@ -400,7 +445,6 @@ const Dashboard = () => {
                             </p>
                         </div>
 
-                        {/* Linha de Ganhos (Wins) */}
                         <div className={styles.summaryRow}>
                             <div className={styles.summaryLabel}>
                                 <MdTrendingUp size={22} color="#FFD700" />
@@ -411,11 +455,10 @@ const Dashboard = () => {
                             </p>
                         </div>
 
-                        {/* Linha de Perdas (Losses) */}
                         <div className={styles.summaryRow}>
                             <div className={styles.summaryLabel}>
                                 <MdTrendingDown size={22} color="#FF9800" />
-                                <span>Total de loss</span>
+                                <span>Total de Loss</span>
                             </div>
                             <p className={`${styles.summaryValue} ${styles.negative}`}>
                                 {formatCurrency(totalLosses)}
@@ -423,6 +466,13 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </section>
+
+                {/* Gráfico de Performance */}
+                <PerformanceChart 
+                    transactions={transactions}
+                    currentBalance={balance}
+                    initialBalance={initialBalance}
+                />
 
                 {/* Ações Rápidas */}
                 <section className={styles.quickActions}>
@@ -465,7 +515,7 @@ const Dashboard = () => {
                     </div>
                     {recentTransactions.length > 0 ? (
                        <TransactionList 
-                            transactions={transactions}
+                            transactions={recentTransactions}
                             emptyMessage="Nenhuma transação encontrada"
                             />
                     ) : (
@@ -477,7 +527,7 @@ const Dashboard = () => {
                 </section>
 
                 {/* Objetivos Ativos */}
-                <section className={styles.objectivesList}>
+                {/* <section className={styles.objectivesList}>
                     <div className={styles.sectionHeader}>
                         <h2 className={styles.sectionTitle}>Objetivos Ativos</h2>
                         <button 
@@ -495,7 +545,7 @@ const Dashboard = () => {
                             <p>Nenhum objetivo ativo.</p>
                         </div>
                     )}
-                </section>
+                </section> */}
             </main>
 
             <SideMenu />

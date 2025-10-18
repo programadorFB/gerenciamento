@@ -338,3 +338,75 @@
   background-color: #FFD700;
   color: #000;
 }
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  padding-left: 30px;
+  min-height: 20px;
+  flex-shrink: 0;
+}
+
+.checkboxInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkboxCheckmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.checkboxContainer:hover .checkboxCheckmark {
+  background-color: rgba(255, 215, 0, 0.1);
+  border-color: #FFD700;
+}
+
+.checkboxInput:checked ~ .checkboxCheckmark {
+  background-color: #4CAF50;
+  border-color: #4CAF50;
+}
+
+.checkboxCheckmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 5px;
+  top: 1px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkboxInput:checked ~ .checkboxCheckmark:after {
+  display: block;
+}
+
+.completedBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: rgba(76, 175, 80, 0.2);
+  border-radius: 50%;
+  flex-shrink: 0;}

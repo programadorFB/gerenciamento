@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { MdClose, MdEdit, MdDelete, MdInfoOutline, MdEvent, MdCheckCircle } from 'react-icons/md';
 import { FaBullseye, FaTrophy } from 'react-icons/fa';
@@ -140,7 +141,7 @@ const ObjectiveItem = ({ item, currentBalance, onUpdateObjective, onDeleteObject
 
   // ✅ MUDANÇA: Progresso baseado no saldo atual
   const progress = Math.min((currentBalance / item.target_amount) * 100, 100);
-  const isCompleted = progress >= 100;
+  const isCompleted = progress >= 100 || item.status === 'completed';
   const daysRemaining = getDaysRemaining(item.target_date);
   
   const handleEdit = (e) => {
@@ -158,12 +159,13 @@ const ObjectiveItem = ({ item, currentBalance, onUpdateObjective, onDeleteObject
     }
   };
 
-  // ✅ NOVO: Handler para marcar como concluído
-  const handleComplete = async (e) => {
+  // ✅ MUDANÇA: Handler para checkbox de conclusão
+  const handleCheckboxChange = async (e) => {
     e.stopPropagation();
-    setShowActions(false);
-    if (window.confirm(`Marcar objetivo "${item.title}" como concluído?`)) {
-      await onCompleteObjective(item.id);
+    if (item.status !== 'completed') {
+      if (window.confirm(`Marcar objetivo "${item.title}" como concluído?`)) {
+        await onCompleteObjective(item.id);
+      }
     }
   };
   
@@ -188,7 +190,29 @@ const ObjectiveItem = ({ item, currentBalance, onUpdateObjective, onDeleteObject
       <div className={`${styles.objectiveItem} ${isDeleting ? styles.isDeleting : ''} ${item.status === 'completed' ? styles.completedItem : ''}`} onClick={() => setShowActions(!showActions)}>
         <div className={styles.objectiveHeader}>
           <h3 className={styles.objectiveTitle}>{item.title}</h3>
-          <span className={styles.objectiveProgress}>{progress.toFixed(1)}%</span>
+          <div className={styles.headerRight}>
+            <span className={styles.objectiveProgress}>{progress.toFixed(1)}%</span>
+            
+            {/* ✅ MUDANÇA: Checkbox para marcar como concluído */}
+            {isCompleted && item.status !== 'completed' && (
+              <label className={styles.checkboxContainer}>
+                <input
+                  type="checkbox"
+                  checked={false}
+                  onChange={handleCheckboxChange}
+                  className={styles.checkboxInput}
+                  onClick={(e) => e.stopPropagation()}
+                />
+                <span className={styles.checkboxCheckmark}></span>
+              </label>
+            )}
+            
+            {item.status === 'completed' && (
+              <div className={styles.completedBadge}>
+                <MdCheckCircle size={20} color="#4CAF50" />
+              </div>
+            )}
+          </div>
         </div>
         <div className={styles.contentWrapper}>
           <div className={styles.donutContainer}>
@@ -233,13 +257,8 @@ const ObjectiveItem = ({ item, currentBalance, onUpdateObjective, onDeleteObject
           </div>
         </div>
 
-        {/* ✅ MUDANÇA: Adicionar botão de concluir quando progress >= 100 e status não é completed */}
+        {/* ✅ MUDANÇA: Removido o botão de concluir da área de ações */}
         <div className={`${styles.actionButtonsContainer} ${showActions ? styles.actionsVisible : ''}`}>
-          {isCompleted && item.status !== 'completed' && (
-            <button onClick={handleComplete} className={styles.completeButton}>
-              <MdCheckCircle /> Concluir
-            </button>
-          )}
           <button onClick={handleEdit}>
             <MdEdit /> Editar
           </button>

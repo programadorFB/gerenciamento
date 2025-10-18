@@ -6,7 +6,6 @@ const FinancialContext = createContext();
 
 // Action types
 const FINANCIAL_ACTIONS = {
-  
   SET_BALANCE: 'SET_BALANCE',
   SET_LOADING: 'SET_LOADING',
   SET_REFRESHING: 'SET_REFRESHING',
@@ -22,12 +21,16 @@ const FINANCIAL_ACTIONS = {
   SET_ERROR: 'SET_ERROR',
   CLEAR_ERROR: 'CLEAR_ERROR',
   RESET_DATA: 'RESET_DATA',
+  // ✅ NOVOS: Para reset diário
+  SET_DAILY_VALUES: 'SET_DAILY_VALUES',
+  RESET_DAILY_VALUES: 'RESET_DAILY_VALUES',
+  SET_LAST_RESET_DATE: 'SET_LAST_RESET_DATE',
 };
 
 // Initial state
 const initialState = {
   transactions: [],
-    balance: {
+  balance: {
     current: 0,
     initial: 0,
   },
@@ -43,6 +46,10 @@ const initialState = {
   refreshing: false,
   error: null,
   lastUpdated: null,
+  // ✅ NOVOS: Valores diários
+  dailyGains: 0,
+  dailyLosses: 0,
+  lastResetDate: null,
 };
 
 // Reducer
@@ -148,6 +155,27 @@ const financialReducer = (state, action) => {
     case FINANCIAL_ACTIONS.RESET_DATA:
       return initialState;
 
+    // ✅ NOVOS CASES
+    case FINANCIAL_ACTIONS.SET_DAILY_VALUES:
+      return {
+        ...state,
+        dailyGains: action.payload.gains,
+        dailyLosses: action.payload.losses,
+      };
+
+    case FINANCIAL_ACTIONS.RESET_DAILY_VALUES:
+      return {
+        ...state,
+        dailyGains: 0,
+        dailyLosses: 0,
+      };
+
+    case FINANCIAL_ACTIONS.SET_LAST_RESET_DATE:
+      return {
+        ...state,
+        lastResetDate: action.payload,
+      };
+
     default:
       return state;
   }
@@ -159,6 +187,10 @@ const CACHE_KEYS = {
   BALANCE: 'cached_balance',
   OBJECTIVES: 'cached_objectives',
   LAST_SYNC: 'last_sync_time',
+  // ✅ NOVOS
+  DAILY_GAINS: 'daily_gains',
+  DAILY_LOSSES: 'daily_losses',
+  LAST_RESET_DATE: 'last_reset_date',
 };
 
 // Função auxiliar para normalizar transações
@@ -168,7 +200,6 @@ const normalizeTransaction = (transaction) => {
   return {
     ...transaction,
     amount: Math.abs(amount),
-    // Garante que o tipo seja sempre um dos quatro suportados
     type: ['deposit', 'withdraw', 'gains', 'losses'].includes(transaction.type) 
       ? transaction.type 
       : (amount >= 0 ? 'deposit' : 'withdraw')
@@ -178,6 +209,145 @@ const normalizeTransaction = (transaction) => {
 export const FinancialProvider = ({ children }) => {
   const [state, dispatch] = useReducer(financialReducer, initialState);
   const { isAuthenticated, user } = useAuth();
+
+  // ✅ NOVA FUNÇÃO: Verificar se é um novo dia
+  const isNewDay = useCallback(() => {
+    if (!state.lastResetDate) return true;
+    
+    const today = new Date();
+    const lastReset = new Date(state.lastResetDate);
+    
+    return (
+      today.getDate() !== lastReset.getDate() ||
+      today.getMonth() !== lastReset.getMonth() ||
+      today.getFullYear() !== lastReset.getFullYear()
+    );
+  }, [state.lastResetDate]);
+
+  // ✅ NOVA FUNÇÃO: Salvar histórico diário (opcional)
+  const saveDailyHistory = useCallback(async (userId, data) => {
+    try {
+      const historyKey = `dailyHistory_${userId}`;
+      const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+      
+      history.push({
+        date: data.date,
+        gains: data.gains,
+        losses: data.losses,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Manter apenas últimos 90 dias
+      const last90Days = history.slice(-90);
+      localStorage.setItem(historyKey, JSON.stringify(last90Days));
+      
+      console.log('📊 Histórico diário salvo:', data);
+    } catch (error) {
+      console.error('Erro ao salvar histórico diário:', error);
+    }
+  }, []);
+
+  // ✅ NOVA FUNÇÃO: Resetar valores diários
+  const resetDailyValues = useCallback(async () => {
+    if (!user?.id) return;
+
+    try {
+      const today = new Date().toISOString();
+      
+      // Salvar histórico do dia anterior
+      if (state.lastResetDate) {
+        await saveDailyHistory(user.id, {
+          date: state.lastResetDate,
+          gains: state.dailyGains,
+          losses: state.dailyLosses
+        });
+      }
+
+      // Resetar valores no estado
+      dispatch({
+        type: FINANCIAL_ACTIONS.RESET_DAILY_VALUES
+      });
+
+      dispatch({
+        type: FINANCIAL_ACTIONS.SET_LAST_RESET_DATE,
+        payload: today
+      });
+
+      // Salvar no localStorage
+      localStorage.setItem(`${CACHE_KEYS.LAST_RESET_DATE}_${user.id}`, today);
+      localStorage.setItem(`${CACHE_KEYS.DAILY_GAINS}_${user.id}`, '0');
+      localStorage.setItem(`${CACHE_KEYS.DAILY_LOSSES}_${user.id}`, '0');
+
+      console.log('✅ Valores diários resetados:', { date: today });
+    } catch (error) {
+      console.error('Erro ao resetar valores diários:', error);
+    }
+  }, [user, state.dailyGains, state.dailyLosses, state.lastResetDate, saveDailyHistory]);
+
+  // ✅ NOVA FUNÇÃO: Calcular totais diários das transações
+  const calculateDailyTotals = useCallback((transactionsList) => {
+    if (!user?.id) return { gains: 0, losses: 0 };
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let dayGains = 0;
+    let dayLosses = 0;
+
+    transactionsList.forEach(transaction => {
+      const transactionDate = new Date(transaction.created_at || transaction.date);
+      transactionDate.setHours(0, 0, 0, 0);
+
+      // Apenas transações de hoje
+      if (transactionDate.getTime() === today.getTime()) {
+        const amount = parseFloat(transaction.amount) || 0;
+        
+        if (transaction.type === 'gains') {
+          dayGains += amount;
+        } else if (transaction.type === 'losses') {
+          dayLosses += amount;
+        }
+      }
+    });
+
+    return { gains: dayGains, losses: dayLosses };
+  }, [user]);
+
+  // ✅ EFEITO: Carregar valores diários do localStorage e verificar reset
+  useEffect(() => {
+    if (!user?.id) return;
+
+    // Carregar valores salvos
+    const savedLastReset = localStorage.getItem(`${CACHE_KEYS.LAST_RESET_DATE}_${user.id}`);
+    const savedDailyGains = parseFloat(localStorage.getItem(`${CACHE_KEYS.DAILY_GAINS}_${user.id}`) || '0');
+    const savedDailyLosses = parseFloat(localStorage.getItem(`${CACHE_KEYS.DAILY_LOSSES}_${user.id}`) || '0');
+
+    if (savedLastReset) {
+      dispatch({
+        type: FINANCIAL_ACTIONS.SET_LAST_RESET_DATE,
+        payload: savedLastReset
+      });
+
+      dispatch({
+        type: FINANCIAL_ACTIONS.SET_DAILY_VALUES,
+        payload: { gains: savedDailyGains, losses: savedDailyLosses }
+      });
+    }
+
+    // Verificar se precisa resetar
+    if (isNewDay()) {
+      resetDailyValues();
+    }
+
+    // Configurar verificação periódica (a cada 1 minuto)
+    const checkInterval = setInterval(() => {
+      if (isNewDay()) {
+        resetDailyValues();
+      }
+    }, 60000);
+
+    return () => clearInterval(checkInterval);
+  }, [user, isNewDay, resetDailyValues]);
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -272,14 +442,25 @@ export const FinancialProvider = ({ children }) => {
           payload: normalizedTransactions,
         });
         saveToCache(CACHE_KEYS.TRANSACTIONS, normalizedTransactions);
+
+        // ✅ NOVO: Calcular e atualizar valores diários
+        const dailyTotals = calculateDailyTotals(normalizedTransactions);
+        dispatch({
+          type: FINANCIAL_ACTIONS.SET_DAILY_VALUES,
+          payload: dailyTotals
+        });
+
+        // Salvar valores diários no localStorage
+        if (user?.id) {
+          localStorage.setItem(`${CACHE_KEYS.DAILY_GAINS}_${user.id}`, dailyTotals.gains.toString());
+          localStorage.setItem(`${CACHE_KEYS.DAILY_LOSSES}_${user.id}`, dailyTotals.losses.toString());
+        }
       }
 
       if (balanceResponse.success) {
-        // 1. Captura ambos os valores da API
         const currentBalance = parseFloat(balanceResponse.balance);
         const initialBalanceValue = parseFloat(balanceResponse.initial_bank);
 
-        // 2. Despacha ambos para o reducer
         dispatch({
           type: FINANCIAL_ACTIONS.SET_BALANCE,
           payload: {
@@ -288,7 +469,6 @@ export const FinancialProvider = ({ children }) => {
           },
         });
 
-        // 3. Salva no cache (opcionalmente pode salvar o objeto todo)
         saveToCache(CACHE_KEYS.BALANCE, currentBalance.toString());
       }
 
@@ -313,34 +493,40 @@ export const FinancialProvider = ({ children }) => {
         dispatch({ type: FINANCIAL_ACTIONS.SET_REFRESHING, payload: false });
       }
     }
-  }, []);
-  const getBankResetStatus = useCallback(async () => {
-  try {
-    const response = await apiService.getBankResetStatus();
-    if (response.success) {
-      return response;
-    }
-    return null;
-  } catch (error) {
-    console.error('Error getting bank reset status:', error);
-    return null;
-  }
-}, []);
+  }, [calculateDailyTotals, user]);
 
-const forceResetBank = useCallback(async () => {
-  try {
-    const response = await apiService.forceResetBank();
-    if (response.success) {
-      // Recarregar dados após reset
-      await refreshData();
-      return { success: true, resetInfo: response.reset_info };
+  const getBankResetStatus = useCallback(async () => {
+    try {
+      const response = await apiService.getBankResetStatus();
+      if (response.success) {
+        return response;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error getting bank reset status:', error);
+      return null;
     }
-    return { success: false, error: response.error };
-  } catch (error) {
-    console.error('Error forcing bank reset:', error);
-    return { success: false, error: error.message };
-  }
-}, [refreshData]);
+  }, []);
+
+  const forceResetBank = useCallback(async () => {
+    try {
+      const response = await apiService.forceResetBank();
+      if (response.success) {
+        await refreshData();
+        return { success: true, resetInfo: response.reset_info };
+      }
+      return { success: false, error: response.error };
+    } catch (error) {
+      console.error('Error forcing bank reset:', error);
+      return { success: false, error: error.message };
+    }
+  }, [refreshData]);
+
+  // ✅ NOVA FUNÇÃO: Reset manual dos valores diários
+  const manualResetDaily = useCallback(async () => {
+    await resetDailyValues();
+    await refreshData();
+  }, [resetDailyValues, refreshData]);
 
   const addTransaction = async (transactionData) => {
     try {
@@ -375,6 +561,9 @@ const forceResetBank = useCallback(async () => {
         const updatedTransactions = [normalizedTransaction, ...currentState.transactions];
         saveToCache(CACHE_KEYS.TRANSACTIONS, updatedTransactions);
         saveToCache(CACHE_KEYS.BALANCE, newBalance.toString());
+
+        // ✅ NOVO: Atualizar valores diários após adicionar transação
+        await refreshData();
         
         return { success: true, data: normalizedTransaction };
       } else {
@@ -399,7 +588,6 @@ const forceResetBank = useCallback(async () => {
           payload: normalizedTransaction,
         });
 
-        // Recálcula o saldo após atualização
         await refreshData();
         
         return { success: true, data: normalizedTransaction };
@@ -422,7 +610,6 @@ const forceResetBank = useCallback(async () => {
           payload: transactionId,
         });
         
-        // Recálcula o saldo após exclusão
         await refreshData();
         
         return { success: true };
@@ -622,7 +809,6 @@ const forceResetBank = useCallback(async () => {
 
   const initialBankBalance = (() => {
     try {
-      // Busca todas as transações de banca inicial
       const initialTransactions = state.transactions.filter(tx => tx.is_initial_bank === true);
       
       if (initialTransactions.length === 0) return 0;
@@ -645,15 +831,14 @@ const forceResetBank = useCallback(async () => {
     }
   })();
 
-
   const getEffectiveInitialBalance = () => {
     return state.balance.initial || 0;
   };
-// Também modifique a função initialBankBalance para ser mais precisa:
+
   const getOperationalProfit = () => {
     try {
       const effectiveInitial = getEffectiveInitialBalance();
-      const profit = state.balanceInitial - effectiveInitial;
+      const profit = state.balance.current - effectiveInitial;
       return isNaN(profit) ? 0 : profit;
     } catch (error) {
       console.error('Error calculating operational profit:', error);
@@ -690,7 +875,6 @@ const forceResetBank = useCallback(async () => {
         const amount = tx.amount && !isNaN(parseFloat(tx.amount)) ? parseFloat(tx.amount) : 0;
         
         if (tx.type === 'deposit') monthlyData[monthKey].deposits += amount;
-        else if (tx.type === 'initial-deposit') monthlyData[monthKey].initialBalance += amount;
         else if (tx.type === 'withdraw') monthlyData[monthKey].withdraws += amount;
         else if (tx.type === 'gains') monthlyData[monthKey].gains += amount;
         else if (tx.type === 'losses') monthlyData[monthKey].losses += amount;
@@ -738,9 +922,16 @@ const forceResetBank = useCallback(async () => {
     refreshing: state.refreshing,
     error: state.error,
     lastUpdated: state.lastUpdated,
-    //Resets
+    
+    // ✅ NOVOS: Valores diários
+    dailyGains: state.dailyGains,
+    dailyLosses: state.dailyLosses,
+    lastResetDate: state.lastResetDate,
+    
+    // Resets
     getBankResetStatus,
     forceResetBank,
+    manualResetDaily, // ✅ NOVO
     
     // Computed values
     totalDeposits,
