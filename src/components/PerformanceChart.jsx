@@ -5,8 +5,7 @@ import { FaChartLine, FaCoins } from 'react-icons/fa';
 import styles from './PerformanceChart.module.css';
 
 const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
-    const [dateFilter, setDateFilter] = useState('7days'); // realtime, 7days, 30days, 90days, all
-    const [realtimeData, setRealtimeData] = useState([]);
+    const [dateFilter, setDateFilter] = useState('7days');
 
     // Formatar moeda
     const formatCurrency = (value) => {
@@ -15,104 +14,6 @@ const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
             currency: 'BRL'
         }).format(value);
     };
-
-    // Atualização em tempo real (a cada 10 segundos)
-    React.useEffect(() => {
-        if (dateFilter === 'realtime') {
-            const interval = setInterval(() => {
-                // Força recálculo dos dados
-                setRealtimeData(prev => [...prev]);
-            }, 10000); // Atualiza a cada 10 segundos
-
-            return () => clearInterval(interval);
-        }
-    }, [dateFilter]);
-
-    // Processar dados em tempo real (por hora)
-    const processRealtimeData = React.useCallback((transactions, startDate, endDate) => {
-        const todayTransactions = transactions
-            .filter(tx => {
-                const txDate = new Date(tx.created_at || tx.date);
-                return txDate >= startDate && txDate <= endDate;
-            })
-            .sort((a, b) => new Date(a.created_at || a.date) - new Date(b.created_at || b.date));
-
-        // Usar saldo atual e voltar
-        let currentBal = currentBalance || 0;
-        
-        console.log('🔴 Tempo Real - Saldo Atual:', currentBal);
-
-        // Se não há transações hoje, mostrar apenas o saldo atual
-        if (todayTransactions.length === 0) {
-            const now = new Date();
-            return [{
-                date: `${now.getHours().toString().padStart(2, '0')}:00`,
-                balance: currentBal,
-                dateFormatted: `${now.getHours().toString().padStart(2, '0')}:00`,
-                transactionCount: 0,
-                isRealtime: true
-            }];
-        }
-
-        // Agrupar por hora
-        const dataByHour = {};
-
-        todayTransactions.forEach(tx => {
-            const txDate = new Date(tx.created_at || tx.date);
-            const hourKey = `${txDate.getHours().toString().padStart(2, '0')}:00`;
-
-            if (!dataByHour[hourKey]) {
-                dataByHour[hourKey] = {
-                    hour: hourKey,
-                    transactions: []
-                };
-            }
-
-            dataByHour[hourKey].transactions.push(tx);
-        });
-
-        // Calcular saldo no início do dia subtraindo transações de hoje
-        let balanceAtStartOfDay = currentBal;
-        todayTransactions.forEach(tx => {
-            const amount = parseFloat(tx.amount) || 0;
-            if (tx.type === 'deposit' || tx.type === 'gains') {
-                balanceAtStartOfDay -= amount;
-            } else if (tx.type === 'withdraw' || tx.type === 'losses') {
-                balanceAtStartOfDay += amount;
-            }
-        });
-
-        console.log('🔴 Saldo início do dia:', balanceAtStartOfDay);
-
-        // Processar de frente para trás
-        let runningBalance = balanceAtStartOfDay;
-        const sortedHours = Object.keys(dataByHour).sort();
-
-        const chartData = sortedHours.map(hourKey => {
-            const hourData = dataByHour[hourKey];
-            
-            hourData.transactions.forEach(tx => {
-                const amount = parseFloat(tx.amount) || 0;
-                if (tx.type === 'deposit' || tx.type === 'gains') {
-                    runningBalance += amount;
-                } else if (tx.type === 'withdraw' || tx.type === 'losses') {
-                    runningBalance -= amount;
-                }
-            });
-
-            return {
-                date: hourKey,
-                balance: runningBalance,
-                dateFormatted: hourKey,
-                transactionCount: hourData.transactions.length,
-                isRealtime: true
-            };
-        });
-
-        console.log('🔴 Saldo final tempo real:', chartData[chartData.length - 1]?.balance);
-
-        return chartData;
-    }, [initialBalance, currentBalance]);
 
     // Processar TODAS as transações (modo ALL)
     const processAllTransactions = React.useCallback((transactions) => {
@@ -168,10 +69,9 @@ const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
         return chartData;
     }, [initialBalance]);
 
-    // Função para calcular saldo ao longo do tempo
+    // Função para calcular saldo ao longo do tempo com precisão diária
     const processChartData = useMemo(() => {
         if (!transactions || transactions.length === 0) {
-            // Se não há transações, mostrar apenas o saldo atual
             console.log('📊 Gráfico: Sem transações, usando saldo atual:', currentBalance);
             return [{
                 date: new Date().toISOString().split('T')[0],
@@ -189,12 +89,6 @@ const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
         
         // Determinar data inicial baseada no filtro
         switch (dateFilter) {
-            case 'realtime':
-                // Apenas transações de hoje, agrupadas por hora
-                startDate.setHours(0, 0, 0, 0);
-                console.log('📊 Modo Tempo Real - Saldo Atual:', currentBalance);
-                return processRealtimeData(transactions, startDate, today);
-                
             case '7days':
                 startDate.setDate(today.getDate() - 7);
                 break;
@@ -205,7 +99,6 @@ const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
                 startDate.setDate(today.getDate() - 90);
                 break;
             case 'all':
-                // Começar da banca inicial e processar TODAS as transações
                 console.log('📊 Modo ALL - Banca Inicial:', initialBalance, 'Saldo Atual:', currentBalance);
                 return processAllTransactions(transactions);
             default:
@@ -225,7 +118,6 @@ const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
         console.log('📊 Transações filtradas:', filteredTransactions.length);
 
         if (filteredTransactions.length === 0) {
-            // Se não há transações no período, mostrar apenas o saldo atual
             console.log('📊 Sem transações no período, usando saldo atual:', currentBalance);
             return [{
                 date: startDate.toISOString().split('T')[0],
@@ -238,10 +130,6 @@ const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
             }];
         }
 
-        // USAR O SALDO ATUAL e VOLTAR para calcular
-        // Em vez de começar da banca inicial e ir para frente,
-        // vamos usar o saldo atual e calcular retroativamente
-        
         // Agrupar transações por data
         const dataByDate = {};
         
@@ -259,56 +147,29 @@ const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
             dataByDate[dateKey].transactions.push(tx);
         });
 
-        // Calcular o saldo do último dia até o primeiro
+        // Calcular saldo inicial do período subtraindo transações do período do saldo atual
         const sortedDates = Object.keys(dataByDate).sort();
         let runningBalance = currentBalance || 0;
 
-        console.log('📊 Saldo inicial (atual):', runningBalance);
-
-        // Processar de trás para frente para ter certeza que termina no saldo atual
-        for (let i = sortedDates.length - 1; i >= 0; i--) {
-            const dateKey = sortedDates[i];
-            const dayData = dataByDate[dateKey];
-            
-            // Somar transações do dia
-            let dayTotal = 0;
-            dayData.transactions.forEach(tx => {
-                const amount = parseFloat(tx.amount) || 0;
-                if (tx.type === 'deposit' || tx.type === 'gains') {
-                    dayTotal += amount;
-                } else if (tx.type === 'withdraw' || tx.type === 'losses') {
-                    dayTotal -= amount;
-                }
-            });
-
-            // Se é o último dia, o saldo já é o atual
-            if (i === sortedDates.length - 1) {
-                dataByDate[dateKey].balance = runningBalance;
-            } else {
-                // Para dias anteriores, subtrair as transações dos dias seguintes
-                dataByDate[dateKey].balance = runningBalance;
-            }
-            
-            // Voltar o saldo para o dia anterior
-            if (i > 0) {
-                runningBalance -= dayTotal;
-            }
-        }
-
-        console.log('📊 Saldo no início do período:', runningBalance);
-
-        // Agora recalcular de frente para trás com o saldo inicial correto
-        runningBalance = dataByDate[sortedDates[0]].balance - dataByDate[sortedDates[0]].transactions.reduce((sum, tx) => {
+        // Calcular total de mudanças no período
+        let periodTotal = 0;
+        filteredTransactions.forEach(tx => {
             const amount = parseFloat(tx.amount) || 0;
             if (tx.type === 'deposit' || tx.type === 'gains') {
-                return sum + amount;
+                periodTotal += amount;
             } else if (tx.type === 'withdraw' || tx.type === 'losses') {
-                return sum - amount;
+                periodTotal -= amount;
             }
-            return sum;
-        }, 0);
+        });
 
-        // Processar corretamente de frente para trás
+        // Saldo no início do período = saldo atual - total de mudanças do período
+        const startBalance = runningBalance - periodTotal;
+        runningBalance = startBalance;
+
+        console.log('📊 Saldo início do período:', startBalance);
+        console.log('📊 Total de mudanças no período:', periodTotal);
+
+        // Processar de frente para trás
         const chartData = sortedDates.map(dateKey => {
             const dayData = dataByDate[dateKey];
             
@@ -336,7 +197,7 @@ const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
         console.log('📊 Dados do gráfico:', chartData);
 
         return chartData;
-    }, [transactions, dateFilter, realtimeData, processRealtimeData, processAllTransactions, currentBalance, initialBalance]);
+    }, [transactions, dateFilter, processAllTransactions, currentBalance, initialBalance]);
 
     // Calcular estatísticas do período
     const periodStats = useMemo(() => {
@@ -374,12 +235,11 @@ const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
     const CustomTooltip = ({ active, payload }) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
-            const isRealtime = data.isRealtime;
             
             return (
                 <div className={styles.customTooltip}>
                     <p className={styles.tooltipDate}>
-                        {isRealtime ? `${data.dateFormatted}` : data.dateFormatted}
+                        {data.dateFormatted}
                     </p>
                     <div className={styles.tooltipRow}>
                         <span className={styles.tooltipLabel}>
@@ -392,8 +252,7 @@ const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
                     {data.transactionCount > 0 && (
                         <div className={styles.tooltipInfo}>
                             <small>
-                                {data.transactionCount} transação(ões) 
-                                {isRealtime ? ' nesta hora' : ' neste dia'}
+                                {data.transactionCount} transação(ões) neste dia
                             </small>
                         </div>
                     )}
@@ -410,21 +269,9 @@ const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
                 <div className={styles.chartTitle}>
                     <FaChartLine />
                     <h3>Performance</h3>
-                    {dateFilter === 'realtime' && (
-                        <span className={styles.liveIndicator}>
-                            <span className={styles.liveDot}></span>
-                            AO VIVO
-                        </span>
-                    )}
                 </div>
                 
                 <div className={styles.dateFilters}>
-                    <button
-                        className={`${styles.filterButton} ${dateFilter === 'realtime' ? styles.active : ''}`}
-                        onClick={() => setDateFilter('realtime')}
-                    >
-                        🔴 Tempo Real
-                    </button>
                     <button
                         className={`${styles.filterButton} ${dateFilter === '7days' ? styles.active : ''}`}
                         onClick={() => setDateFilter('7days')}
@@ -462,25 +309,25 @@ const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
                         {formatCurrency(periodStats.startBalance)}
                     </span>
                     <span className={styles.statAvg}>
-                        {dateFilter === 'realtime' ? 'Início do dia' : 'Início do período'}
+                        Início do período
                     </span>
                 </div>
 
                 <div className={styles.statCard}>
                     <span className={styles.statLabel}>
-                        <FaCoins /> Saldo {dateFilter === 'realtime' ? 'Atual' : 'Final'}
+                        <FaCoins /> Saldo Final
                     </span>
                     <span className={styles.statValueBalance}>
                         {formatCurrency(periodStats.endBalance)}
                     </span>
                     <span className={styles.statAvg}>
-                        {dateFilter === 'realtime' ? 'Agora' : 'Final do período'}
+                        Final do período
                     </span>
                 </div>
 
                 <div className={styles.statCard}>
                     <span className={styles.statLabel}>
-                        <MdTrendingUp /> Variação {dateFilter === 'realtime' ? 'Hoje' : ''}
+                        <MdTrendingUp /> Variação
                     </span>
                     <span className={`${styles.statValueNet} ${
                         periodStats.variation >= 0 ? styles.positive : styles.negative

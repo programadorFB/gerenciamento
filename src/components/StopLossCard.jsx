@@ -7,7 +7,8 @@ import {
   MdHelpOutline,
   MdShield,
   MdLocalFireDepartment,
-  MdDangerous
+  MdDangerous,
+  MdBalance
 } from 'react-icons/md';
 import styles from './StopLossCard.module.css';
 
@@ -60,9 +61,9 @@ const StopLossCard = React.memo(({
   const getSliderIcon = () => {
     if (stopLossPercentage === 0) return <MdHelpOutline />;
     if (stopLossPercentage <= 3) return <MdShield />; // Escudo - proteção baixa/moderada
-    if (stopLossPercentage <= 6) return <MdInfo />; // Info - atenção moderada
+    if (stopLossPercentage <= 6) return <MdBalance />; // Info - atenção moderada
     if (stopLossPercentage <= 8) return <MdLocalFireDepartment />; // Fogo - aquecendo
-    return <MdDangerous />; // Perigo - muito alto
+    return <MdLocalFireDepartment />; // Perigo - muito alto
   };
 
   // Obter título baseado no valor do stop loss
@@ -73,7 +74,7 @@ const StopLossCard = React.memo(({
     if (stopLossPercentage <= 8) return 'PROTEÇÃO ARRISCADA';
     return 'PROTEÇÃO MUITO ARRISCADA';
   };
-
+  
   // Verificar status do stop loss (baseado na perda atual vs limite)
   const getRiskStatus = () => {
     if (stopLossPercentage <= 0 || stopLossValue <= 0) return 'undefined';
@@ -191,7 +192,9 @@ const StopLossCard = React.memo(({
   const cardStyle = {
     '--status-color': statusInfo.color,
     '--slider-color': sliderColor,
-    '--progress-width': `${progressWidth}%`
+    '--border-color': sliderColor,
+    '--progress-width': `${progressWidth}%`,
+    
   };
 
   return (
@@ -210,7 +213,7 @@ const StopLossCard = React.memo(({
             </div>
           </div>
         </header>
-
+      
         <div className={styles.content}>
           <div className={styles.sliderSection}>
             <div className={styles.sliderHeader}>
@@ -233,29 +236,42 @@ const StopLossCard = React.memo(({
                 {stopLossPercentage > 0 ? `${displayPercentage.toFixed(1)}%` : 'N/A'}
               </span>
             </div>
-            <div className={styles.sliderContainer}>
-              <input
-                type="range"
-                min="0"
-                max="10"
-                step="1"
-                value={stopLossPercentage}
-                onChange={handleSliderChange}
-                className={styles.slider}
-              />
-              <div className={styles.sliderTrack}>
-                <div 
-                  className={styles.sliderFill} 
-                  style={{ 
-                    width: `${(stopLossPercentage / 10) * 100}%`,
-                    background: sliderColor,
-                    boxShadow: `0 0 15px ${sliderColor}`
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+<div className={styles.sliderContainer}>
+  <input
+    type="range"
+    min="0"
+    max="10"
+    step="1"
+    value={stopLossPercentage}
+    onChange={handleSliderChange}
+    className={styles.slider}
+  />
 
+  <div className={styles.sliderTrack}>
+    <div 
+      className={styles.sliderFill} 
+      style={{ 
+        width: `${(stopLossPercentage / 10) * 100}%`,
+        background: sliderColor,
+        boxShadow: `0 0 15px ${sliderColor}`
+      }}
+    />
+
+    {/* RÉGUA SOMENTE COM NÚMEROS CLICÁVEIS */}
+    <div className={styles.numberRuler}>
+      {[...Array(11)].map((_, i) => (
+        <span
+          key={i}
+          className={`${styles.numberMark} ${i === Math.round(stopLossPercentage) ? styles.activeNumber : ''}`}
+          onClick={() => onStopLossChange(i)}
+        >
+          {i}
+        </span>
+      ))}
+    </div>
+  </div>
+</div>
+          </div>
           {/* Barra de progresso visual */}
           <div className={styles.progressSection}>
             <div className={styles.progressBar}>
@@ -285,8 +301,11 @@ const StopLossCard = React.memo(({
           </div>
         </div>
       </div>
+                  
     </div>
-  );
+  
+);
+  
 });
 
 StopLossCard.displayName = 'StopLossCard';

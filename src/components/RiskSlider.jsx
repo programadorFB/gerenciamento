@@ -33,8 +33,15 @@ const PROFILES = [
 
 // Função utilitária para encontrar o perfil com base no valor
 const getProfileForValue = (value) => {
-  return PROFILES.find((p) => value <= p.maxValue);
+  if (value <= 3) {
+    return PROFILES[0]; // Conservador
+  } else if (value <= 6) {
+    return PROFILES[1]; // Moderado
+  } else {
+    return PROFILES[2]; // Agressivo
+  }
 };
+
 
 // Custom hook para observar o tamanho de um elemento de forma performática.
 const useResizeObserver = (ref) => {

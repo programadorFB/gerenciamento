@@ -424,6 +424,33 @@ const Dashboard = () => {
                         <h2 className={styles.sectionTitle}>Resumo Financeiro (Total)</h2>
                     </div>
                     
+                {/* Ações Rápidas */}
+                <section className={styles.quickActions}>
+                    <button 
+                        className={`${styles.actionButton} ${styles.deposit}`} 
+                        onClick={() => navigate('/transaction?type=deposit')}
+                    >
+                        <MdAdd /> Depósito
+                    </button>
+                    <button 
+                        className={`${styles.actionButton} ${styles.withdraw}`} 
+                        onClick={() => navigate('/transaction?type=withdraw')}
+                    >
+                        <MdRemove /> Saque
+                    </button>
+                    <button 
+                        className={`${styles.actionButton} ${styles.gains}`} 
+                        onClick={() => navigate('/transaction?type=gains')}
+                    >
+                        <MdTrendingUp /> Ganhos
+                    </button>
+                    <button 
+                        className={`${styles.actionButton} ${styles.losses}`} 
+                        onClick={() => navigate('/transaction?type=losses')}
+                    >
+                        <MdTrendingDown /> Loss
+                    </button>
+                </section>
                     <div className={styles.summaryCardUnified}>
                         <div className={styles.summaryRow}>
                             <div className={styles.summaryLabel}>
@@ -474,33 +501,6 @@ const Dashboard = () => {
                     initialBalance={initialBalance}
                 />
 
-                {/* Ações Rápidas */}
-                <section className={styles.quickActions}>
-                    <button 
-                        className={`${styles.actionButton} ${styles.deposit}`} 
-                        onClick={() => navigate('/transaction?type=deposit')}
-                    >
-                        <MdAdd /> Depósito
-                    </button>
-                    <button 
-                        className={`${styles.actionButton} ${styles.withdraw}`} 
-                        onClick={() => navigate('/transaction?type=withdraw')}
-                    >
-                        <MdRemove /> Saque
-                    </button>
-                    <button 
-                        className={`${styles.actionButton} ${styles.gains}`} 
-                        onClick={() => navigate('/transaction?type=gains')}
-                    >
-                        <MdTrendingUp /> Ganhos
-                    </button>
-                    <button 
-                        className={`${styles.actionButton} ${styles.losses}`} 
-                        onClick={() => navigate('/transaction?type=losses')}
-                    >
-                        <MdTrendingDown /> Loss
-                    </button>
-                </section>
 
                 {/* Transações Recentes */}
                 <section className={styles.transactionsList}>

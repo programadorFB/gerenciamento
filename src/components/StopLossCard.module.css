@@ -1,15 +1,37 @@
-/* src/components/StopLossCard/StopLossCard.module.css */
-
 .container {
-    border-radius: 16px;
-    overflow: hidden;
-    background-color: rgba(var(--status-color, 158, 158, 158), 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #e0e0e0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    margin: 1rem 0;
-    transition: all 0.3s ease;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: rgba(30, 30, 30, 0.6);
+  border: 2px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5),
+              0 0 25px rgba(var(--border-color-rgb, 255, 255, 255), 0.15);
+  color: #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin: 1rem 0;
+  transition: all 0.4s ease;
 }
+
+/* Efeito de brilho dinâmico nas bordas */
+.container:hover {
+  box-shadow: 0 0 20px var(--border-color),
+              0 0 40px var(--border-color);
+  transform: scale(1.01);
+}
+
+/* Pulso leve quando muda o stop loss */
+.container.statusChange {
+  animation: cardPulse 0.6s ease;
+}
+
+@keyframes cardPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px var(--border-color);
+  }
+  50% {
+    box-shadow: 0 0 40px var(--border-color);
+  }
+}
+
 
 /* Animação quando muda de status */
 .container.statusChange {
@@ -445,4 +467,44 @@
     0 0 0 4px rgba(255, 255, 255, 0.3),
     0 6px 12px rgba(0, 0, 0, 0.5),
     0 0 20px var(--slider-color);
+}
+
+/* ===== RÉGUA COM NÚMEROS ===== */
+.numberRuler {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 0 2px;
+  user-select: none;
+}
+
+.numberMark {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.numberMark:hover {
+  color: var(--slider-color);
+  text-shadow: 0 0 10px var(--slider-color);
+  transform: scale(1.2);
+}
+
+.activeNumber {
+  color: var(--slider-color);
+  text-shadow: 0 0 12px var(--slider-color);
+  font-weight: 700;
+  transform: scale(1.25);
+}
+
+.sliderContainer {
+  position: relative;
+  margin-top: 16px;
+  padding-bottom: 32px; /* espaço para números */
 }

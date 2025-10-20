@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 // Ícones
 import { FaCoins, FaUserTie, FaChessKnight, FaDice, FaChartLine, FaBullseye } from 'react-icons/fa';
-import { FiDownload } from 'react-icons/fi';
+import { FiDownload, FiHome } from 'react-icons/fi';
 
 // CSS Module
 import styles from './BottomMenu.module.css';
@@ -19,6 +19,13 @@ const BottomMenu = () => {
       icon: <FiDownload size={20} />,
       label: 'Lançamentos',
       path: '/transaction',
+      color: '#FFD700'
+    },
+    {
+      id: 'dashboard',
+      icon: <FiHome size={20} />,
+      label: 'Tela Inicial',
+      path: '/dashboard',
       color: '#FFD700'
     },
     {
