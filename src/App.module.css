@@ -1,31 +1,36 @@
-/* Estilos Originais + Migrados do App.jsx */
-#root {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-  background-color: #1a1a1a; /* Adicionado para consistência */
-  color: white; /* Adicionado para consistência */
+/* Windows XP Theme - App.module.css */
+@import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
+
+* {
+  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
 }
 
-/* --- Componentes de UI e Telas --- */
+#root {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background: linear-gradient(180deg, #5A7FBF 0%, #B8D4F1 100%);
+  min-height: 100vh;
+}
 
+/* --- XP Window Styles --- */
 .loadingScreen {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #1a1a1a;
-  color: white;
-  font-family: sans-serif;
+  background: linear-gradient(180deg, #5A7FBF 0%, #B8D4F1 100%);
+  color: #003399;
+  font-family: 'Tahoma', sans-serif;
 }
 
 .spinner {
   width: 50px;
   height: 50px;
-  border: 5px solid rgba(255, 255, 255, 0.2);
-  border-left-color: #61dafb;
+  border: 5px solid rgba(0, 51, 153, 0.2);
+  border-left-color: #0054E3;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 20px;
@@ -33,65 +38,110 @@
 
 .appContent {
   padding: 2rem;
-  background-color: #1a1a1a;
-  color: white;
+  background: linear-gradient(180deg, #5A7FBF 0%, #B8D4F1 100%);
   min-height: 100vh;
-  text-align: left; /* Ajustado para conteúdo de dashboard */
+  overflow-x: hidden;
+  text-align: left;
 }
 
-.loginForm {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding: 30px;
-  background-color: #252525;
-  border-radius: 8px;
-  width: 300px;
-}
-
-.input {
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #555;
-  background-color: #333;
-  color: white;
-}
-
+/* XP Button Style */
 .button {
-  padding: 10px;
-  border-radius: 4px;
-  border: none;
-  background-color: #61dafb;
-  color: black;
+  padding: 6px 20px;
+  border-radius: 3px;
+  border: 1px solid #003C74;
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 50%, #E0DED0 100%);
+  color: #000000;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s;
+  font-weight: normal;
+  font-size: 11px;
+  font-family: 'Tahoma', sans-serif;
+  transition: all 0.1s;
+  box-shadow: 
+    1px 1px 0px rgba(255,255,255,0.9) inset,
+    -1px -1px 0px rgba(0,0,0,0.2) inset;
+  text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+}
+
+.button:hover {
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 50%, #EAE8DC 100%);
+  border-color: #0054E3;
+}
+
+.button:active {
+  background: linear-gradient(180deg, #C1D2EE 0%, #BFCCE0 50%, #A5B5D0 100%);
+  box-shadow: 
+    -1px -1px 0px rgba(255,255,255,0.5) inset,
+    1px 1px 2px rgba(0,0,0,0.3) inset;
 }
 
 .button:disabled {
-  background-color: #555;
+  background: linear-gradient(180deg, #E0E0E0 0%, #D0D0D0 100%);
+  color: #808080;
   cursor: not-allowed;
+  border-color: #999999;
 }
 
-.button:hover:not(:disabled) {
-    background-color: #88eeff;
+/* XP Input Style */
+.input {
+  padding: 4px 6px;
+  border: 1px solid #7F9DB9;
+  background-color: #FFFFFF;
+  color: #000000;
+  font-size: 11px;
+  font-family: 'Tahoma', sans-serif;
+  box-shadow: 
+    -1px -1px 0px rgba(255,255,255,0.8) inset,
+    1px 1px 2px rgba(0,0,0,0.1) inset;
+}
+
+.input:focus {
+  outline: 1px solid #0054E3;
+  outline-offset: -1px;
+}
+
+/* XP Form Style */
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: linear-gradient(180deg, #ECE9D8 0%, #D6D3CE 100%);
+  border: 1px solid #0054E3;
+  border-radius: 0;
+  width: 320px;
+  box-shadow: 
+    0 0 0 1px rgba(255,255,255,0.8),
+    2px 2px 8px rgba(0,0,0,0.3);
 }
 
 .errorText {
-  color: #ff4d4d;
+  color: #FF0000;
   text-align: center;
+  font-size: 11px;
+  background-color: #FFE5E5;
+  padding: 8px;
+  border: 1px solid #FF0000;
 }
 
+/* XP Dashboard Header */
 .dashboardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  border-bottom: 1px solid #444;
-  padding-bottom: 15px;
+  margin-bottom: 20px;
+  padding: 8px 12px;
+  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+  border: 1px solid #003C74;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 
+    0 1px 0 rgba(255,255,255,0.3) inset,
+    0 2px 4px rgba(0,0,0,0.2);
+  color: #FFFFFF;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
-/* --- Animações --- */
+/* --- Animations --- */
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -101,39 +151,191 @@
   }
 }
 
-/* --- Estilos do template original (mantidos para referência) --- */
+/* --- XP Logo Styles --- */
 .logo {
   height: 6em;
   padding: 1.5em;
-  will-change: filter;
+  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
   transition: filter 300ms;
 }
+
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 8px #0054E3);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
+/* XP Card/Panel Style */
 .card {
-  padding: 2em;
+  padding: 16px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #0054E3;
+  box-shadow: 
+    0 0 0 1px rgba(255,255,255,0.8),
+    2px 2px 8px rgba(0,0,0,0.2);
+  margin-bottom: 12px;
+}
+
+/* XP Taskbar-like element */
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: linear-gradient(180deg, #245EDC 0%, #1941A5 100%);
+  border-top: 2px solid #5A7FBF;
+  box-shadow: 0 -1px 0 rgba(0,0,0,0.3);
+  z-index: 9999;
+}
+
+/* XP Start Button Style */
+.startButton {
+  height: 30px;
+  padding: 0 20px 0 6px;
+  background: linear-gradient(180deg, #3FA037 0%, #2E7D2E 100%);
+  border: 1px solid #1A5A1A;
+  border-radius: 0 12px 12px 0;
+  color: #FFFFFF;
+  font-weight: bold;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.startButton:hover {
+  background: linear-gradient(180deg, #50C048 0%, #3A9837 100%);
+}
+
+.startButton:active {
+  background: linear-gradient(180deg, #2E7D2E 0%, #245E24 100%);
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.4);
+}
+
+/* XP Window Title Bar */
+.windowTitleBar {
+  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+  padding: 4px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #003C74;
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.windowControls {
+  display: flex;
+  gap: 2px;
+}
+
+.windowButton {
+  width: 21px;
+  height: 21px;
+  border: 1px solid #003C74;
+  background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 100%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #000000;
+  font-weight: bold;
+}
+
+.windowButton:hover {
+  background: linear-gradient(180deg, #FFF8DC 0%, #D4E1F5 100%);
+}
+
+.windowButton:active {
+  background: linear-gradient(180deg, #7F9DB9 0%, #6B8CAF 100%);
+}
+
+/* XP Scrollbar */
+::-webkit-scrollbar {
+  width: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ECE9D8;
+  border: 1px solid #ABABAB;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 50%, #7F9DB9 100%);
+  border: 1px solid #003C74;
+  box-shadow: 1px 1px 0px rgba(255,255,255,0.5) inset;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #FFF8DC 0%, #D4E1F5 50%, #8FADC5 100%);
+}
+
+::-webkit-scrollbar-button {
+  height: 16px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 100%);
+  border: 1px solid #003C74;
+}
+
+/* XP Desktop Icons */
+.desktopIcon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: all 0.1s;
+}
+
+.desktopIcon:hover {
+  background: rgba(0, 84, 227, 0.2);
+  border: 1px solid rgba(0, 84, 227, 0.5);
+}
+
+.desktopIcon:active {
+  background: rgba(0, 84, 227, 0.4);
+}
+
+.desktopIconText {
+  color: #FFFFFF;
+  font-size: 11px;
+  text-shadow: 
+    1px 1px 2px rgba(0,0,0,0.8),
+    -1px -1px 2px rgba(0,0,0,0.8);
+  text-align: center;
+}
+
+/* XP Status Bar */
+.statusBar {
+  height: 22px;
+  background: linear-gradient(180deg, #ECE9D8 0%, #D6D3CE 100%);
+  border-top: 1px solid #FFFFFF;
+  border-bottom: 1px solid #808080;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 11px;
+  color: #000000;
+  gap: 12px;
+}
+
+.statusBarPanel {
+  border-left: 1px solid #808080;
+  border-top: 1px solid #808080;
+  border-right: 1px solid #FFFFFF;
+  border-bottom: 1px solid #FFFFFF;
+  padding: 2px 8px;
+  background: #F0F0F0;
 }
 
 .read-the-docs {
-  color: #888;
+  color: #0054E3;
+  text-decoration: underline;
 }

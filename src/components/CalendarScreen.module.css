@@ -1,0 +1,341 @@
+/* ========================================
+   Tema XP (Branco, Azul, Cinza)
+   CalendarScreen.module.css
+   ======================================== */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-width: 100vw;
+  background-color: #D6D3CE; /* Fundo Cinza XP */
+  color: #000;
+  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
+}
+
+/* --- Cabeçalho (Barra de Título XP) --- */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+  border-bottom: none;
+  box-shadow: 0 1px 0 rgba(255,252,255,0.3) inset;
+}
+
+.backButton,
+.navButton {
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #7F9DB9;
+  border-radius: 3px;
+  color: #000;
+  cursor: pointer;
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+}
+.backButton:hover,
+.navButton:hover {
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+}
+
+/* ✅ NOVO: Estilos para separar os botões de Ano */
+.yearButton {
+  /* Os ícones diferentes já ajudam na distinção */
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Seleciona o PRIMEIRO botão dentro de 'headerControls' 
+  QUE TAMBÉM TENHA a classe 'yearButton' (Ano Anterior)
+*/
+.headerControls > .yearButton:first-child {
+  margin-right: 5px; /* Adiciona espaço extra entre [<< Ano] e [< Mês] */
+                   /* O 'gap: 10px' + 'margin-right: 5px' = 15px de espaço total */
+}
+
+/* Seleciona o ÚLTIMO botão dentro de 'headerControls' 
+  QUE TAMBÉM TENHA a classe 'yearButton' (Próximo Ano)
+*/
+.headerControls > .yearButton:last-child {
+  margin-left: 5px; /* Adiciona espaço extra entre [Mês >] e [Ano >>] */
+                  /* O 'gap: 10px' + 'margin-left: 5px' = 15px de espaço total */
+}
+/* ============================================ */
+
+
+.monthTitle {
+  font-size: 11px;
+  font-weight: bold;
+  color: #FFFFFF;
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  min-width: 150px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* --- Grid do Calendário (Estilo Tabela XP) --- */
+.calendarGrid {
+  width: 100%;
+  border-collapse: collapse;
+  background: #FFFFFF;
+  border: 1px solid #7F9DB9;
+}
+
+.dayHeader {
+  background: #ECE9D8;
+  border: 1px solid #7F9DB9;
+  padding: 8px;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  color: #003399;
+}
+
+.dayCell {
+  width: 14.28%;
+  height: 100px;
+  border: 1px solid #7F9DB9;
+  padding: 4px;
+  vertical-align: top;
+  text-align: right;
+  position: relative; /* Importante para o resumo */
+  transition: background-color 0.1s ease;
+}
+
+.dayNumber {
+  font-size: 11px;
+  font-weight: bold;
+  color: #000;
+}
+
+/* Dia de outro mês (cinza) */
+.otherMonth {
+  background-color: #ECE9D8;
+  cursor: default;
+}
+.otherMonth .dayNumber {
+  color: #888;
+  font-weight: normal;
+}
+
+/* Dia de hoje (borda vermelha) */
+.today .dayNumber {
+  color: #BF0000;
+  border: 1px solid #BF0000;
+  padding: 2px;
+  border-radius: 2px;
+  background: #FFF0F0;
+}
+
+/* Dia com dados */
+.dayWithData {
+  background-color: #F0F8FF;
+  cursor: pointer;
+}
+.dayWithData:hover {
+  background-color: #C1D2EE; /* Azul claro */
+}
+
+/* ⛔ REMOVIDO: .transactionMarker */
+
+/* ✅ NOVO: Resumo de Ganhos/Perdas no Grid */
+.daySummary {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  right: 4px;
+  display: flex;
+  flex-direction: column;
+  font-size: 10px;
+  text-align: left;
+  line-height: 1.2;
+}
+.summaryGain {
+  color: #006400; /* Verde Escuro */
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.summaryLoss {
+  color: #BF0000; /* Vermelho XP */
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* ========================================
+   MODAL (Janela XP)
+   ======================================== */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 84, 227, 0.3); /* Overlay Azul */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  backdrop-filter: blur(2px);
+}
+
+.modalContainer {
+  background: #ECE9D8;
+  border-radius: 8px 8px 0 0;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #0054E3;
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  border-bottom: none;
+  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.modalTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.closeButton {
+  padding: 0;
+  width: 21px;
+  height: 21px;
+  border-radius: 0;
+  background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 100%);
+  border: 1px solid #003C74;
+  cursor: pointer;
+  color: #000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.closeButton:hover {
+  background: #F5F3E8;
+}
+
+/* ✅ NOVO: Seção de Anotações */
+.notesSection {
+  padding: 10px;
+  padding-bottom: 0;
+  background: #ECE9D8;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.notesTitle {
+  font-size: 11px;
+  font-weight: bold;
+  color: #000;
+  margin: 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #7F9DB9;
+}
+.notesTextarea {
+  width: 100%;
+  padding: 8px;
+  font-family: 'Tahoma', sans-serif;
+  font-size: 11px;
+  background: #FFFFFF;
+  border: 1px solid #7F9DB9;
+  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3);
+  resize: vertical;
+  min-height: 60px;
+}
+.saveNoteButton {
+  /* Estilo botão XP */
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #7F9DB9;
+  border-radius: 3px;
+  color: #000;
+  cursor: pointer;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: bold;
+  align-self: flex-start; /* Alinha à esquerda */
+}
+.saveNoteButton:hover {
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+}
+.saveNoteButton:disabled {
+  background: #ECE9D8;
+  color: #7F9DB9;
+  cursor: not-allowed;
+}
+
+
+.modalContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px; /* Reduzido o padding superior */
+  background: #FFFFFF;
+  border: 1px solid #7F9DB9;
+  margin: 10px;
+  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Scrollbar XP */
+.modalContent::-webkit-scrollbar { width: 16px; }
+.modalContent::-webkit-scrollbar-track { background: #ECE9D8; border: 1px solid #7F9DB9; }
+.modalContent::-webkit-scrollbar-thumb { background: #BFCCE0; border: 1px solid #7F9DB9; }
+.modalContent::-webkit-scrollbar-thumb:hover { background: #7F9DB9; }
+
+.modalActions {
+  padding: 10px;
+  background: #ECE9D8;
+  border-top: 1px solid #7F9DB9;
+  display: flex;
+  justify-content: flex-end; /* Alinha o botão à direita */
+  gap: 10px;
+}
+
+.addTransactionButton {
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #7F9DB9;
+  border-radius: 3px;
+  color: #000;
+  cursor: pointer;
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  gap: 5px;
+}
+
+.addTransactionButton:hover {
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+}

@@ -42,13 +42,13 @@ const BottomMenu = () => {
       path: '/investment-profile',
       color: '#4CAF50'
     },
-    {
-      id: 'strategy',
-      icon: <FaChessKnight size={20} />,
-      label: 'Estratégia',
-      path: '/strategy',
-      color: '#2196F3'
-    }
+    // {
+    //   id: 'strategy',
+    //   icon: <FaChessKnight size={20} />,
+    //   label: 'Estratégia',
+    //   path: '/strategy',
+    //   color: '#2196F3'
+    // }
   ];
 
   const handleNavigation = (path, id) => {

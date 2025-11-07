@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdEmail, MdLock, MdPerson, MdVisibility, MdVisibilityOff, MdClose } from 'react-icons/md';
-import { FaCoins, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
+// import { MdEmail, MdLock, MdPerson, MdVisibility, MdVisibilityOff, MdClose } from 'react-icons/md'; // ⛔ Removido
+// import { FaCoins, FaSignInAlt, FaUserPlus } from 'react-icons/fa'; // ⛔ Removido
 
 import { useAuth } from '../../contexts/AuthContext';
 import RiskSlider from '../../components/RiskSlider';
 
-import background from '../../assets/fundoLuxo.jpg';
-import logo from '../../assets/logo.png';
+// import background from '../../assets/fundoLuxo.jpg'; // ⛔ Removido (Fundo agora vem do CSS)
+import logo from '../../assets/logo.png'; // ✅ Mantido (Usado no .logo)
 import styles from './LoginScreen.module.css';
 
 const LoginScreen = () => {
@@ -29,10 +29,8 @@ const LoginScreen = () => {
     const { login, register, resetPassword, isLoading, error, clearError, user } = useAuth();
     const navigate = useNavigate();
     
-    // Flag para controlar se o redirecionamento deve acontecer
     const shouldRedirect = useRef(false);
 
-    // ✅ Redireciona apenas se a flag estiver ativa
     useEffect(() => {
         if (user && shouldRedirect.current) {
             navigate('/dashboard');
@@ -54,16 +52,13 @@ const LoginScreen = () => {
     };
 
     const formatCurrencyInput = (value) => {
-        // Remove tudo que não é número, ponto ou vírgula
         let cleaned = value.replace(/[^\d,]/g, '');
         
-        // Permite apenas uma vírgula
         const commaCount = cleaned.split(',').length - 1;
         if (commaCount > 1) {
             cleaned = cleaned.replace(/,+$/, '');
         }
         
-        // Limita a 2 casas decimais após a vírgula
         if (cleaned.includes(',')) {
             const parts = cleaned.split(',');
             if (parts[1].length > 2) {
@@ -88,13 +83,11 @@ const LoginScreen = () => {
         clearError();
 
         try {
-            // ✅ Ativa a flag ANTES de fazer login/registro
             shouldRedirect.current = true;
             
             if (isLogin) {
                 await login(email.trim().toLowerCase(), password);
             } else {
-                // Converte o valor para número e formata para 2 casas decimais
                 const bankAmount = parseFloat(initialBank.replace(',', '.'));
                 if (isNaN(bankAmount) || bankAmount <= 0) {
                     alert('Valor da banca inicial inválido.');
@@ -110,7 +103,6 @@ const LoginScreen = () => {
                     riskValue
                 });
             }
-            // O redirecionamento acontece no useEffect quando user mudar
         } catch (err) {
             console.error('Erro no login/cadastro:', err);
             alert('Erro na autenticação. Verifique os dados.');
@@ -166,7 +158,8 @@ const LoginScreen = () => {
     };
 
     return (
-        <div className={styles.container} style={{ backgroundImage: `url(${background})` }}>
+        // 👇 O style inline foi removido. O .container do CSS cuida do fundo 'Bliss'.
+        <div className={styles.container}> 
             <div className={styles.overlayGradient} />
             <main className={styles.scrollContainer}>
                 <div className={styles.header}>
@@ -182,7 +175,8 @@ const LoginScreen = () => {
                 <form className={styles.form} onSubmit={handleSubmit}>
                     {!isLogin && (
                         <div className={styles.inputGroup}>
-                            <label htmlFor="name"><MdPerson /> Nome Completo</label>
+                            {/* 👇 Ícone removido do label */}
+                            <label htmlFor="name">Nome Completo</label>
                             <input
                                 id="name"
                                 type="text"
@@ -196,7 +190,8 @@ const LoginScreen = () => {
                     )}
 
                     <div className={styles.inputGroup}>
-                        <label htmlFor="email"><MdEmail /> Email</label>
+                        {/* 👇 Ícone removido do label */}
+                        <label htmlFor="email">Email</label>
                         <input
                             id="email"
                             type="email"
@@ -208,7 +203,8 @@ const LoginScreen = () => {
                     </div>
 
                     <div className={styles.inputGroup}>
-                        <label htmlFor="password"><MdLock /> Senha</label>
+                        {/* 👇 Ícone removido do label */}
+                        <label htmlFor="password">Senha</label>
                         <div className={styles.passwordWrapper}>
                             <input
                                 id="password"
@@ -224,7 +220,8 @@ const LoginScreen = () => {
                                 onClick={() => setShowPassword(!showPassword)}
                                 className={styles.passwordToggle}
                             >
-                                {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
+                                {/* 👇 Ícone substituído por texto/símbolo simples */}
+                                {showPassword ? 'ABC' : '***'}
                             </button>
                         </div>
                         {isLogin && (
@@ -241,7 +238,8 @@ const LoginScreen = () => {
                     {!isLogin && (
                         <>
                             <div className={styles.inputGroup}>
-                                <label htmlFor="initialBank"><FaCoins /> Banca Inicial</label>
+                                {/* 👇 Ícone removido do label */}
+                                <label htmlFor="initialBank">Banca Inicial</label>
                                 <div className={styles.currencyInputWrapper}>
                                     <span>R$</span>
                                     <input
@@ -258,6 +256,8 @@ const LoginScreen = () => {
 
                             <div className={styles.inputGroup}>
                                 <label>Perfil de Investimento</label>
+                                {/* O RiskSlider é mantido, assumindo que ele tem sua própria
+                                    estilização ou que você o estilizará no padrão XP. */}
                                 <RiskSlider value={riskValue} onValueChange={setRiskValue} />
                                 <small className={styles.helpText}>
                                     Defina seu nível de risco para metas de lucro automáticas
@@ -272,11 +272,12 @@ const LoginScreen = () => {
                         disabled={isLoading || !validateForm()}
                     >
                         <div className={styles.goldGradient}>
+                            {/* 👇 Ícones removidos do botão */}
                             {isLoading
                                 ? 'Carregando...'
                                 : isLogin
-                                    ? <><FaSignInAlt /> Entrar</>
-                                    : <><FaUserPlus /> Criar Conta</>}
+                                    ? 'Entrar'
+                                    : 'Criar Conta'}
                         </div>
                     </button>
                 </form>
@@ -295,7 +296,8 @@ const LoginScreen = () => {
                             className={styles.closeButton}
                             onClick={closeResetModal}
                         >
-                            <MdClose />
+                            {/* 👇 Ícone substituído por um 'X' simples, estilizado pelo CSS */}
+                            X
                         </button>
                         
                         <div className={styles.modalHeader}>
@@ -324,8 +326,9 @@ const LoginScreen = () => {
                                 )}
                                 
                                 <div className={styles.inputGroup}>
+                                    {/* 👇 Ícone removido do label */}
                                     <label htmlFor="resetEmail">
-                                        <MdEmail /> Email
+                                        Email
                                     </label>
                                     <input
                                         id="resetEmail"
@@ -352,6 +355,8 @@ const LoginScreen = () => {
                     </div>
                 </div>
             )}
+            
+
         </div>
     );
 };

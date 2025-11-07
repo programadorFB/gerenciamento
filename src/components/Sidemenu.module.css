@@ -1,14 +1,9 @@
-/* Animação para novos itens */
-@keyframes pulse-glow {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
-  }
-  50% {
-    transform: scale(1.02);
-    box-shadow: 0 0 15px 5px rgba(255, 215, 0, 0.5);
-  }
-}
+/* ========================================
+   Tema XP (Branco, Azul, Cinza)
+   Sidemenu.module.css
+   ======================================== */
+
+/* REMOVIDO: @keyframes pulse-glow */
 
 .container {
   position: fixed;
@@ -16,127 +11,147 @@
   left: 0;
   bottom: 0;
   width: 280px;
-  background-color: rgba(26, 26, 26, 0.7);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px); /* Suporte para Safari */
+  /* Fundo dividido: Azul (Menu Iniciar) à esquerda, Cinza à direita */
+  background: #ECE9D8; /* Fundo cinza padrão */
   z-index: 1000;
-  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.25);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
   transform: translateX(-100%);
-  /* --- ALTERADO: Adicionado 'width' na transição --- */
   transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+  border-right: 1px solid #7F9DB9;
+  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
+  backdrop-filter: none; /* Removido blur */
 }
 
 .container.visible {
   transform: translateX(0);
 }
 
-/* --- ADICIONADO: Estilos para o estado recolhido --- */
+/* --- ADICIONADO: Painel azul esquerdo (Estilo Menu Iniciar) --- */
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%; /* Ocupa tudo quando recolhido */
+  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+  z-index: -1;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Quando expandido, o painel azul ocupa só uma parte */
+.container:not(.collapsed)::before {
+  width: 280px;
+}
+/* --- Fim do painel azul --- */
+
+
+/* --- Estado Recolhido (Estilo Barra de Ferramentas) --- */
 .container.collapsed {
-  width: 88px;
+  width: 60px; /* Largura de barra de ferramentas */
 }
-
 .container.collapsed .profileSection {
-  padding: 40px 10px;
+  padding: 10px;
+  height: 60px; /* Altura fixa */
 }
-
 .container.collapsed .userName,
 .container.collapsed .userEmail,
 .container.collapsed .menuText,
 .container.collapsed .footerText {
   display: none;
 }
-
 .container.collapsed .menuItem {
   justify-content: center;
   padding: 15px 0;
+  margin: 4px 5px;
+  width: calc(100% - 10px);
 }
-
 .container.collapsed .menuIcon {
   margin-right: 0;
 }
+/* REMOVIDO: .separator (não necessário no XP) */
 
-.container.collapsed .separator {
-  margin: 15px 10px;
-}
-/* --- Fim dos estilos do estado recolhido --- */
 
+/* --- Seção de Perfil (Topo do Menu Iniciar) --- */
 .profileSection {
-  text-align: center;
-  padding: 40px 20px;
-  border-bottom: 1px solid #333333;
-  /* --- ADICIONADO: Transição para o padding --- */
+  text-align: left;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   transition: padding 0.3s ease-in-out;
+  background: linear-gradient(180deg, #0078D7 0%, #0054E3 100%);
 }
-
-/* --- ADICIONADO: Botão de Collapse --- */
-.collapseButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: #ccc;
-  border: none;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px; /* Espaço antes do texto do footer */
-  width: 100%;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.collapseButton:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.container.collapsed .collapseButton .menuText {
-  display: none; /* Esconde o texto "Recolher" no botão */
-}
-/* --- Fim do estilo do botão --- */
-
 .userName {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
   color: #FFFFFF;
   margin: 0 0 5px 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
 }
-
 .userEmail {
-  font-size: 14px;
-  color: #CCCCCC;
+  font-size: 11px;
+  color: #FFFFFF;
   margin: 0;
+  opacity: 0.8;
 }
 
+/* --- Botão Fechar (Estilo Janela XP) --- */
+.closeButton {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 100%);
+  border: 1px solid #003C74;
+  color: #000;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  transition: none;
+  z-index: 10;
+  width: 21px;
+  height: 21px;
+}
+.closeButton:hover {
+  background: linear-gradient(180deg, #FFF8DC 0%, #D4E1F5 100%);
+  color: #000;
+}
+.container.collapsed .closeButton {
+  right: 4px;
+}
+
+/* --- Itens de Menu (Estilo Menu Iniciar) --- */
 .menuItems {
   flex-grow: 1;
-  padding-top: 20px;
+  padding-top: 10px;
 }
-
 .menuItem {
   display: flex;
   align-items: center;
-  padding: 15px 20px;
-  margin: 4px 10px;
-  border-radius: 12px;
+  padding: 10px 20px;
+  margin: 2px 10px;
+  border-radius: 4px;
   background-color: transparent;
-  color: #FFFFFF;
+  color: #FFFFFF; /* Texto Branco */
   border: 1px solid transparent;
   width: calc(100% - 20px);
   cursor: pointer;
   text-align: left;
-  font-size: 16px;
-  font-weight: 500;
-  transition: background-color 0.2s ease, transform 0.15s ease, justify-content 0.3s ease-in-out;
+  font-size: 11px;
+  font-weight: bold;
+  transition: background-color 0.1s ease, transform 0.1s ease, justify-content 0.3s ease-in-out;
 }
 
 .menuItem:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #0065F0; /* Azul mais claro (hover) */
+  border: 1px solid #008FE5;
 }
-
 .menuItem:active {
-  transform: scale(0.97);
-  background-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1);
+  background-color: #0040B0; /* Azul mais escuro (pressionado) */
 }
 
 .menuIcon {
@@ -145,87 +160,80 @@
   justify-content: center;
   align-items: center;
   margin-right: 15px;
-  /* --- ADICIONADO: Transição para a margem --- */
   transition: margin-right 0.3s ease-in-out;
+  font-size: 18px; /* Ícones um pouco menores */
+  color: #FFFFFF;
 }
 
 .menuText {
   flex-grow: 1;
+  color: #FFFFFF;
 }
 
-/* Estilos para o item de Logout */
+/* Estilos para o item de Logout (Botão Cinza no Fundo) */
 .logoutItem {
-  color: #FF6B6B;
+  background: #ECE9D8; /* Fundo Cinza */
+  color: #000; /* Texto Preto */
+  border: 1px solid #7F9DB9;
 }
-
 .logoutItem .menuIcon {
-  color: #FF6B6B;
+  color: #BF0000; /* Ícone Vermelho (alerta) */
+}
+.logoutItem .menuText {
+  color: #000;
+}
+.logoutItem:hover {
+  background: #F5F3E8;
 }
 
-/* Estilos para o item "Novo" */
-.newItem {
-  border-color: rgba(255, 215, 0, 0.5);
-  background-color: rgba(255, 215, 0, 0.1);
-  color: #FFD700;
-  animation: pulse-glow 2.5s infinite ease-in-out;
-}
+/* REMOVIDO: .newItem, .separator */
 
-.separator {
-  height: 1px;
-  background-color: rgba(51, 51, 51, 0.8);
-  margin: 15px 20px;
-   /* --- ADICIONADO: Transição para a margem --- */
-  transition: margin 0.3s ease-in-out;
-}
-
+/* --- Footer (Barra Cinza Inferior) --- */
 .footer {
-  padding: 20px;
-  border-top: 1px solid #333333;
+  padding: 10px;
+  border-top: 1px solid #7F9DB9;
   text-align: center;
+  background: #ECE9D8; /* Fundo Cinza */
 }
-
 .footerText {
-  font-size: 12px;
-  color: #888888;
+  font-size: 11px;
+  color: #333;
   margin: 0;
 }
-/* Adicione estas regras ao seu Sidemenu.module.css */
 
-.closeButton {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: transparent;
-  border: none;
-  color: #666;
-  cursor: pointer;
-  padding: 0.5rem;
+/* Botão Recolher (Estilo Botão Cinza) */
+.collapseButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-  z-index: 10;
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #7F9DB9;
+  border-radius: 3px;
+  color: #000;
+  padding: 6px;
+  margin-bottom: 10px; 
+  width: 100%;
+  cursor: pointer;
+  transition: none;
 }
-
-.closeButton:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: #333;
+.collapseButton:hover {
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
 }
-
-.closeButton:active {
-  transform: scale(0.95);
+.collapseButton .menuIcon {
+  margin: 0;
+  color: #0054E3; /* Ícone da seta azul */
 }
-
-/* Para esconder o botão quando o menu está recolhido */
-.collapsed .closeButton {
-  right: 0.5rem;
+.container.collapsed .collapseButton .menuText {
+  display: none; 
 }
-
-/* Para telas mobile, você pode querer o botão sempre visível */
-@media (max-width: 768px) {
-  .closeButton {
-    top: 0.75rem;
-    right: 0.75rem;
-  }
+.container.collapsed .collapseButton {
+  background: #ECE9D8;
+  border: none;
+}
+.container:not(.collapsed) .collapseButton .menuText {
+  display: block;
+  flex-grow: 0;
+  margin-left: 10px;
+  font-size: 11px;
+  font-weight: bold;
 }

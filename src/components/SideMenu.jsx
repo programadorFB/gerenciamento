@@ -93,13 +93,13 @@ const SideMenu = () => {
             text="Perfil de Investimento"
             onClick={() => handleNavigation('/investment-profile')}
           />
-          <div className={styles.separator} />
+          {/* <div className={styles.separator} />
           <MenuItem
             icon={<MdPlayCircle size={24} />}
             text="Estratégia"
             onClick={() => handleNavigation('/strategy')}
             
-          />
+          /> */}
           <MenuItem
             icon={<FiSettings size={22} />}
             text="Configurações de Perfil"

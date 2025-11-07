@@ -1,6 +1,11 @@
+/* ========================================
+   Tema XP (Branco, Azul, Cinza)
+   TransactionScreen.module.css
+   ======================================== */
+
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .container {
@@ -8,64 +13,51 @@
   flex-direction: column;
   min-height: 100vh;
   min-width: 100vw;
-  background-color: #000;
-  color: #fff;
-  animation: fadeIn 0.5s ease-out;
+  background-color: #D6D3CE; /* Fundo Cinza XP */
+  color: #000000;
+  animation: fadeIn 0.3s ease-out;
+  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
 }
 
-/* --- Header --- */
+/* --- Header (Barra de Título XP) --- */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 50px 20px 20px;
-  background-color: #111;
+  padding: 6px 12px;
+  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset;
 }
 .header h1 {
-  font-size: 20px;
-  color: #FFD700;
+  font-size: 11px;
+  font-weight: bold;
+  color: #FFFFFF;
   margin: 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 .backButton {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: none;
-  border: none;
-  color: #ffd900a8;
-  font-size: 16px;
+  /* Botão Cinza Padrão XP */
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #7F9DB9;
+  border-radius: 3px;
+  color: #000000;
+  font-size: 11px;
+  font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s;
+  padding: 4px 10px;
+  transition: none;
 }
 .backButton:active {
-  transform: scale(0.95);
+  transform: none;
 }
 .headerSpacer {
-  width: 80px; /* Balance the header */
+  width: 80px; 
 }
 
-/* --- Abas --- */
-.tabContainer {
-  display: flex;
-  background-color: #111;
-  padding: 0 20px;
-}
-.tabContainer button {
-  flex: 1;
-  padding: 15px;
-  background: none;
-  border: none;
-  border-bottom: 3px solid transparent;
-  color: #888;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-.tabContainer button.activeTab {
-  color: #ffd9008c;
-  border-bottom-color: #ffd9007e;
-}
+/* REMOVIDO: .tabContainer, .tabContainer button, .tabContainer button.activeTab */
 
 /* --- Conteúdo Principal --- */
 .content {
@@ -73,10 +65,13 @@
   padding: 20px;
   overflow-y: auto;
 }
-.formContainer, .objectivesContainer {
+.formContainer {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
+  background: #ECE9D8;
+  border: 1px solid #7F9DB9;
+  padding: 20px;
 }
 .inputGroup {
   display: flex;
@@ -84,193 +79,204 @@
   gap: 8px;
 }
 .inputGroup label {
-  font-size: 16px;
-  color: #ffd90091;
-  font-weight: 600;
+  font-size: 11px;
+  color: #000000;
+  font-weight: bold;
 }
+/* Input Padrão XP */
 .input {
   width: 100%;
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 15px;
-  color: #fff;
-  font-size: 16px;
+  background: #FFFFFF;
+  border: 1px solid #7F9DB9;
+  border-radius: 0;
+  padding: 4px 6px;
+  font-size: 11px;
+  color: #000000;
   box-sizing: border-box;
+  box-shadow: 
+      -1px -1px 0px rgba(255,255,255,0.8) inset,
+      1px 1px 2px rgba(0,0,0,0.1) inset;
 }
 .input:focus {
-  outline: none;
-  border-color: #99840a;
+  outline: 1px solid #0054E3;
+  outline-offset: -1px;
+  background: #FFFEF9;
 }
 
-/* --- Seletor de Tipo --- */
+/* --- Seletor de Tipo (Estilo Radio Button XP) --- */
 .typeGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 .typeButton {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-left: 4px solid var(--type-color);
+  background: #ECE9D8;
+  border: 1px solid #7F9DB9;
+  border-left: 1px solid #7F9DB9; /* Borda normal */
   border-radius: 8px;
   padding: 15px;
   cursor: pointer;
-  transition: all 0.3s;
-  color: #fff;
+  transition: none;
+  color: #000;
   text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 .typeButton:hover {
-  background-color: #222;
+  background-color: #F5F3E8;
 }
+/* Estilo "selecionado" */
 .typeButton.typeButtonActive {
-  background-color: var(--type-color);
-  color: #000;
+  background-color: #C1D2EE; /* Fundo azul claro */
+  border-color: #003399;
 }
 .typeButtonIcon {
-  font-size: 28px;
-  margin-bottom: 8px;
-  color: var(--type-color);
+  font-size: 24px;
+  margin-bottom: 0;
+  color: var(--type-color); /* Mantém cor do ícone */
 }
 .typeButton.typeButtonActive .typeButtonIcon {
-  color: #000;
+  color: var(--type-color); 
 }
 .typeButtonText {
   display: flex;
   flex-direction: column;
 }
 .typeButtonText span {
-  font-size: 12px;
-  opacity: 0.7;
+  font-size: 11px;
+  opacity: 0.8;
 }
 
-/* --- Date Picker --- */
+/* --- Date Picker (Estilo XP) --- */
 .dateInputContainer {
   position: relative;
 }
 .calendarIcon {
   position: absolute;
-  right: 15px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #99840f;
+  background: #ECE9D8;
+  border: 1px solid #7F9DB9;
+  padding: 2px;
+  color: #0054E3; /* Azul */
   cursor: pointer;
 }
 .datePickerOverlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(0, 84, 227, 0.3); /* Overlay Azul */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 100;
+  backdrop-filter: blur(2px);
 }
 .datePickerContainer {
-  background: #1e1e1e;
-  padding: 20px;
-  border-radius: 15px;
+  background: #ECE9D8;
+  padding: 0;
+  border-radius: 8px 8px 0 0;
+  border: 2px solid #0054E3;
   width: 90%;
   max-width: 350px;
 }
-
-/* Adicione estas classes ao seu TransactionScreen.module.css */
-
-.checkboxGroup {
-  margin-top: 20px;
-  margin-bottom: 20px;
+/* Header do Modal */
+.datePickerContainer h3 {
+  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+  color: #FFFFFF;
+  padding: 4px 8px;
+  font-size: 11px;
+  margin: 0;
+  font-weight: bold;
+}
+/* Input de data e botão */
+.datePickerContainer input[type="date"] {
+  width: calc(100% - 40px);
+  margin: 20px;
+  padding: 5px;
+  border: 1px solid #7F9DB9;
+}
+.datePickerContainer button {
+  /* Botão Cinza Padrão */
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #7F9DB9;
+  border-radius: 3px;
+  color: #000000;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 6px 16px;
+  margin: 0 20px 20px 20px;
 }
 
+
+/* --- Checkbox (Estilo XP) --- */
 .checkboxContainer {
   display: flex;
-  align-items: flex-start;
-  gap: 15px;
-  padding: 16px;
-  background: rgba(255, 215, 0, 0.05);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  border-radius: 12px;
+  align-items: center; /* Alinha verticalmente */
+  gap: 10px;
+  padding: 10px;
+  background: #ECE9D8;
+  border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
-
 .checkboxContainer:hover {
-  background: rgba(255, 215, 0, 0.1);
-  border-color: rgba(255, 215, 0, 0.3);
+  background: #F5F3E8;
 }
 
-.checkboxContainer:active {
-  transform: scale(0.98);
-}
-
+/* Caixa de seleção simulada do XP */
 .checkbox {
-  width: 28px;
-  height: 28px;
-  min-width: 28px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
+  width: 13px;
+  height: 13px;
+  min-width: 13px;
+  border: 1px solid #7F9DB9;
+  background: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
-  background: rgba(0, 0, 0, 0.2);
-  color: transparent;
-  font-size: 18px;
+  transition: none;
+  color: #0054E3; /* Cor do check (azul) */
+  font-size: 16px;
 }
-
 .checkboxActive {
-  background: linear-gradient(135deg, #FFD700, #F0C040);
-  border-color: #FFD700;
-  color: #000;
-  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
-}
-
-.checkboxContent {
-  flex: 1;
+  background: #FFFFFF;
 }
 
 .checkboxLabel {
   display: block;
-  font-size: 16px;
+  font-size: 11px;
   font-weight: 700;
-  color: #FFD700;
-  margin-bottom: 6px;
+  color: #000;
+  margin: 0;
   cursor: pointer;
 }
-
 .checkboxDescription {
-  font-size: 14px;
-  color: #CCCCCC;
+  font-size: 11px;
+  color: #333;
   margin: 0;
   line-height: 1.5;
 }
-/* --- Botão de Submissão --- */
+
+/* --- Botão de Submissão (Azul XP) --- */
 .submitButton {
-  padding: 18px;
-  background: linear-gradient(45deg, #a38b01, #c29007);
-  border: none;
-  border-radius: 12px;
-  color: #000;
-  font-size: 18px;
+  padding: 8px 16px;
+  border: 1px solid #003C74;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
+  color: #FFFFFF;
+  font-size: 11px;
   font-weight: bold;
   cursor: pointer;
   margin-top: 20px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  box-shadow: 1px 1px 0px rgba(255,255,255,0.8) inset;
 }
 .submitButton:disabled {
-  opacity: 0.5;
+  background: linear-gradient(180deg, #999999 0%, #808080 100%);
+  color: #CCCCCC;
+  opacity: 1;
   cursor: not-allowed;
 }
 
-/* --- Objetivos --- */
-.addObjectiveButton {
-  width: 100%;
-  padding: 15px;
-  background: #b49a04;
-  color: #000;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-bottom: 20px;
-}
+/* REMOVIDO: .addObjectiveButton (não pertence a este formulário) */

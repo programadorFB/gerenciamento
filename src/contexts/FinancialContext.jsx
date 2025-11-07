@@ -21,10 +21,13 @@ const FINANCIAL_ACTIONS = {
   SET_ERROR: 'SET_ERROR',
   CLEAR_ERROR: 'CLEAR_ERROR',
   RESET_DATA: 'RESET_DATA',
-  // ✅ NOVOS: Para reset diário
+  // Para reset diário
   SET_DAILY_VALUES: 'SET_DAILY_VALUES',
   RESET_DAILY_VALUES: 'RESET_DAILY_VALUES',
   SET_LAST_RESET_DATE: 'SET_LAST_RESET_DATE',
+  // ✅ NOVO: Para anotações diárias
+  SET_DAILY_NOTES: 'SET_DAILY_NOTES',
+  UPDATE_DAILY_NOTE: 'UPDATE_DAILY_NOTE',
 };
 
 // Initial state
@@ -46,10 +49,12 @@ const initialState = {
   refreshing: false,
   error: null,
   lastUpdated: null,
-  // ✅ NOVOS: Valores diários
+  // Valores diários
   dailyGains: 0,
   dailyLosses: 0,
   lastResetDate: null,
+  // ✅ NOVO: Anotações diárias
+  dailyNotes: {}, // (ex: {'2025-11-10': 'Nota de hoje...'})
 };
 
 // Reducer
@@ -153,9 +158,10 @@ const financialReducer = (state, action) => {
       };
 
     case FINANCIAL_ACTIONS.RESET_DATA:
+      // ✅ ATUALIZADO: Reseta o initialState completo (incluindo dailyNotes)
       return initialState;
 
-    // ✅ NOVOS CASES
+    // Cases de valores diários
     case FINANCIAL_ACTIONS.SET_DAILY_VALUES:
       return {
         ...state,
@@ -176,6 +182,22 @@ const financialReducer = (state, action) => {
         lastResetDate: action.payload,
       };
 
+    // ✅ NOVOS CASES (Anotações)
+    case FINANCIAL_ACTIONS.SET_DAILY_NOTES:
+      return {
+        ...state,
+        dailyNotes: action.payload,
+      };
+
+    case FINANCIAL_ACTIONS.UPDATE_DAILY_NOTE:
+      return {
+        ...state,
+        dailyNotes: {
+          ...state.dailyNotes,
+          [action.payload.dateKey]: action.payload.noteText,
+        },
+      };
+
     default:
       return state;
   }
@@ -187,10 +209,12 @@ const CACHE_KEYS = {
   BALANCE: 'cached_balance',
   OBJECTIVES: 'cached_objectives',
   LAST_SYNC: 'last_sync_time',
-  // ✅ NOVOS
+  // Diários
   DAILY_GAINS: 'daily_gains',
   DAILY_LOSSES: 'daily_losses',
   LAST_RESET_DATE: 'last_reset_date',
+  // ✅ NOVO
+  DAILY_NOTES: 'daily_notes',
 };
 
 // Função auxiliar para normalizar transações
@@ -210,7 +234,7 @@ export const FinancialProvider = ({ children }) => {
   const [state, dispatch] = useReducer(financialReducer, initialState);
   const { isAuthenticated, user } = useAuth();
 
-  // ✅ NOVA FUNÇÃO: Verificar se é um novo dia
+  // Função: Verificar se é um novo dia
   const isNewDay = useCallback(() => {
     if (!state.lastResetDate) return true;
     
@@ -224,7 +248,7 @@ export const FinancialProvider = ({ children }) => {
     );
   }, [state.lastResetDate]);
 
-  // ✅ NOVA FUNÇÃO: Salvar histórico diário (opcional)
+  // Função: Salvar histórico diário (opcional)
   const saveDailyHistory = useCallback(async (userId, data) => {
     try {
       const historyKey = `dailyHistory_${userId}`;
@@ -247,7 +271,7 @@ export const FinancialProvider = ({ children }) => {
     }
   }, []);
 
-  // ✅ NOVA FUNÇÃO: Resetar valores diários
+  // Função: Resetar valores diários
   const resetDailyValues = useCallback(async () => {
     if (!user?.id) return;
 
@@ -284,7 +308,7 @@ export const FinancialProvider = ({ children }) => {
     }
   }, [user, state.dailyGains, state.dailyLosses, state.lastResetDate, saveDailyHistory]);
 
-  // ✅ NOVA FUNÇÃO: Calcular totais diários das transações
+  // Função: Calcular totais diários das transações
   const calculateDailyTotals = useCallback((transactionsList) => {
     if (!user?.id) return { gains: 0, losses: 0 };
 
@@ -295,7 +319,9 @@ export const FinancialProvider = ({ children }) => {
     let dayLosses = 0;
 
     transactionsList.forEach(transaction => {
-      const transactionDate = new Date(transaction.created_at || transaction.date);
+      // ✅ ATUALIZADO: Usar 'transaction.date' se 'created_at' não existir
+      const txDateStr = transaction.date || transaction.created_at;
+      const transactionDate = new Date(txDateStr);
       transactionDate.setHours(0, 0, 0, 0);
 
       // Apenas transações de hoje
@@ -313,7 +339,7 @@ export const FinancialProvider = ({ children }) => {
     return { gains: dayGains, losses: dayLosses };
   }, [user]);
 
-  // ✅ EFEITO: Carregar valores diários do localStorage e verificar reset
+  // EFEITO: Carregar valores diários (Ganhos, Perdas E ANOTAÇÕES) e verificar reset
   useEffect(() => {
     if (!user?.id) return;
 
@@ -334,6 +360,22 @@ export const FinancialProvider = ({ children }) => {
       });
     }
 
+    // ✅ NOVO: Carregar anotações diárias
+    const savedDailyNotes = localStorage.getItem(`${CACHE_KEYS.DAILY_NOTES}_${user.id}`);
+    if (savedDailyNotes) {
+      try {
+        dispatch({
+          type: FINANCIAL_ACTIONS.SET_DAILY_NOTES,
+          payload: JSON.parse(savedDailyNotes),
+        });
+      } catch (e) {
+        console.error('Erro ao carregar anotações do localStorage:', e);
+        // Se corrompido, remove
+        localStorage.removeItem(`${CACHE_KEYS.DAILY_NOTES}_${user.id}`);
+      }
+    }
+
+
     // Verificar se precisa resetar
     if (isNewDay()) {
       resetDailyValues();
@@ -349,6 +391,7 @@ export const FinancialProvider = ({ children }) => {
     return () => clearInterval(checkInterval);
   }, [user, isNewDay, resetDailyValues]);
 
+  // Efeito de Autenticação
   useEffect(() => {
     if (isAuthenticated && user) {
       loadInitialData();
@@ -373,10 +416,15 @@ export const FinancialProvider = ({ children }) => {
       }
 
       if (cachedBalance) {
-        dispatch({
-          type: FINANCIAL_ACTIONS.SET_BALANCE,
-          payload: parseFloat(cachedBalance),
-        });
+         // Ajustado para o objeto de balance
+         const parsedBalance = JSON.parse(cachedBalance);
+         dispatch({
+           type: FINANCIAL_ACTIONS.SET_BALANCE,
+           payload: {
+             current: parseFloat(parsedBalance.current) || 0,
+             initial: parseFloat(parsedBalance.initial) || 0,
+           }
+         });
       }
 
       if (cachedObjectives) {
@@ -400,6 +448,8 @@ export const FinancialProvider = ({ children }) => {
 
   const clearCache = () => {
     try {
+      // NOTA: Esta implementação (como no original) NÃO limpa chaves
+      // com sufixo _${user.id}.
       Object.values(CACHE_KEYS).forEach(key => localStorage.removeItem(key));
     } catch (error) {
       console.error('Error clearing cache:', error);
@@ -443,7 +493,7 @@ export const FinancialProvider = ({ children }) => {
         });
         saveToCache(CACHE_KEYS.TRANSACTIONS, normalizedTransactions);
 
-        // ✅ NOVO: Calcular e atualizar valores diários
+        // Calcular e atualizar valores diários
         const dailyTotals = calculateDailyTotals(normalizedTransactions);
         dispatch({
           type: FINANCIAL_ACTIONS.SET_DAILY_VALUES,
@@ -460,16 +510,18 @@ export const FinancialProvider = ({ children }) => {
       if (balanceResponse.success) {
         const currentBalance = parseFloat(balanceResponse.balance);
         const initialBalanceValue = parseFloat(balanceResponse.initial_bank);
+        const balancePayload = {
+          current: currentBalance,
+          initial: initialBalanceValue,
+        };
 
         dispatch({
           type: FINANCIAL_ACTIONS.SET_BALANCE,
-          payload: {
-            current: currentBalance,
-            initial: initialBalanceValue,
-          },
+          payload: balancePayload,
         });
 
-        saveToCache(CACHE_KEYS.BALANCE, currentBalance.toString());
+        // ✅ ATUALIZADO: Salvar o objeto de balance no cache
+        saveToCache(CACHE_KEYS.BALANCE, balancePayload);
       }
 
       if (objectivesResponse.success) {
@@ -522,7 +574,7 @@ export const FinancialProvider = ({ children }) => {
     }
   }, [refreshData]);
 
-  // ✅ NOVA FUNÇÃO: Reset manual dos valores diários
+  // Reset manual dos valores diários
   const manualResetDaily = useCallback(async () => {
     await resetDailyValues();
     await refreshData();
@@ -530,7 +582,6 @@ export const FinancialProvider = ({ children }) => {
 
   const addTransaction = async (transactionData) => {
     try {
-      const currentState = state;
       const normalizedData = normalizeTransaction(transactionData);
       const response = await apiService.createTransaction(normalizedData);
       
@@ -542,27 +593,7 @@ export const FinancialProvider = ({ children }) => {
           payload: normalizedTransaction,
         });
         
-        let newBalance;
-        const transactionAmount = parseFloat(normalizedTransaction.amount);
-
-        if (normalizedTransaction.type === 'deposit' || normalizedTransaction.type === 'gains') {
-          newBalance = currentState.balance + transactionAmount;
-        } else if (normalizedTransaction.type === 'withdraw' || normalizedTransaction.type === 'losses') {
-          newBalance = currentState.balance - transactionAmount;
-        } else {
-          newBalance = currentState.balance;
-        }
-
-        dispatch({
-          type: FINANCIAL_ACTIONS.SET_BALANCE,
-          payload: newBalance,
-        });
-        
-        const updatedTransactions = [normalizedTransaction, ...currentState.transactions];
-        saveToCache(CACHE_KEYS.TRANSACTIONS, updatedTransactions);
-        saveToCache(CACHE_KEYS.BALANCE, newBalance.toString());
-
-        // ✅ NOVO: Atualizar valores diários após adicionar transação
+        // Atualizar valores diários após adicionar transação
         await refreshData();
         
         return { success: true, data: normalizedTransaction };
@@ -684,6 +715,42 @@ export const FinancialProvider = ({ children }) => {
       return { success: false, error: error.message };
     }
   };
+
+  // ✅ NOVA FUNÇÃO: Salvar Anotação Diária
+  const saveDailyNote = useCallback(async (dateKey, noteText) => {
+    if (!user?.id) {
+      console.error("Usuário não autenticado. Não é possível salvar a nota.");
+      return;
+    }
+    
+    try {
+      // 1. Atualizar o estado local (para resposta rápida da UI)
+      dispatch({
+        type: FINANCIAL_ACTIONS.UPDATE_DAILY_NOTE,
+        payload: { dateKey, noteText },
+      });
+      
+      // 2. Preparar dados para o localStorage
+      // (Usamos o estado do reducer 'state.dailyNotes' para garantir que estamos
+      // atualizando o objeto mais recente, mas o 'dispatch' acima ainda não
+      // atualizou 'state.dailyNotes' neste render, então construímos manualmente)
+      const updatedNotes = {
+        ...state.dailyNotes,
+        [dateKey]: noteText,
+      };
+
+      // 3. Salvar no localStorage
+      localStorage.setItem(
+        `${CACHE_KEYS.DAILY_NOTES}_${user.id}`,
+        JSON.stringify(updatedNotes)
+      );
+
+    } catch (error) {
+      console.error('Erro ao salvar anotação diária:', error);
+      // (Opcional: reverter o estado se o localStorage falhar)
+    }
+  }, [user, state.dailyNotes]);
+
 
   const loadAnalytics = async () => {
     try {
@@ -807,7 +874,8 @@ export const FinancialProvider = ({ children }) => {
     }
   })();
 
-  const initialBankBalance = (() => {
+  // Esta função parece redundante agora que o balance.initial vem da API
+  const initialBankBalance_DEPRECATED = (() => {
     try {
       const initialTransactions = state.transactions.filter(tx => tx.is_initial_bank === true);
       
@@ -915,7 +983,7 @@ export const FinancialProvider = ({ children }) => {
     // State
     transactions: state.transactions,
     balance: state.balance.current,
-    initialBankBalance: state.balance.initial,
+    initialBankBalance: state.balance.initial, // Usar este
     objectives: state.objectives,
     analytics: state.analytics,
     loading: state.loading,
@@ -923,22 +991,25 @@ export const FinancialProvider = ({ children }) => {
     error: state.error,
     lastUpdated: state.lastUpdated,
     
-    // ✅ NOVOS: Valores diários
+    // Valores diários
     dailyGains: state.dailyGains,
     dailyLosses: state.dailyLosses,
     lastResetDate: state.lastResetDate,
     
+    // ✅ NOVO: Anotações
+    dailyNotes: state.dailyNotes,
+    
     // Resets
     getBankResetStatus,
     forceResetBank,
-    manualResetDaily, // ✅ NOVO
+    manualResetDaily,
     
     // Computed values
     totalDeposits,
     totalWithdraws,
     totalGains,
     totalLosses,
-    initialBankBalance,
+    // initialBankBalance, (Removido para evitar confusão com o da API)
     getRealProfit,
     getOperationalBalance,
     
@@ -952,6 +1023,7 @@ export const FinancialProvider = ({ children }) => {
     deleteObjective,
     loadAnalytics,
     clearError,
+    saveDailyNote, // ✅ NOVO
     
     // Helper functions
     getEffectiveInitialBalance,

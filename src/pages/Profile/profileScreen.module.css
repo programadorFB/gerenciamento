@@ -1,50 +1,70 @@
+/* ========================================
+   Tema XP (Branco, Azul, Cinza)
+   ======================================== */
+
 .container {
-  background-color: #000;
-  color: #fff;
+  background-color: #D6D3CE; /* Fundo Cinza XP */
+  color: #000000; /* Texto Preto */
   min-height: 100vh;
   min-width: 100vw;
+  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
 }
 
-/* Header Styles */
+/* --- Header (Barra de Título XP) --- */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid #333;
-  background-color: #000;
+  padding: 6px 12px;
+  border-bottom: none;
+  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset;
 }
 
 .backButton {
-  background: none;
-  border: none;
-  color: #FFD700;
+  /* Botão Cinza Padrão */
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #7F9DB9;
+  border-radius: 3px;
+  color: #000;
   cursor: pointer;
-  padding: 8px;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+.backButton:hover {
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+}
 
 .title {
-  font-size: 20px;
+  font-size: 11px;
   font-weight: bold;
-  color: #FFD700;
+  color: #FFFFFF;
   margin: 0;
   text-align: center;
   flex: 1;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
 .headerSpacer {
-  width: 40px; /* Same as back button for balance */
+  width: 40px; 
+}
+
+/* --- Seções (Estilo Group Box) --- */
+.imageSection,
+.section {
+  padding: 20px;
+  margin: 20px;
+  background: #ECE9D8;
+  border: 1px solid #7F9DB9;
 }
 
 .imageSection {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 30px 20px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #7F9DB9; /* Mantido para separar da seção de avatar */
 }
 
 .imageContainer {
@@ -55,7 +75,7 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  border: 4px solid #FFD700;
+  border: 2px solid #7F9DB9; /* Borda Cinza */
   object-fit: cover;
 }
 
@@ -63,7 +83,7 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background-color: #FFD700;
+  background-color: #7F9DB9; /* Fundo Cinza-Azul */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -72,7 +92,7 @@
 .profileImagePlaceholder span {
   font-size: 48px;
   font-weight: bold;
-  color: #000;
+  color: #FFFFFF; /* Texto Branco */
 }
 
 .imageButtons {
@@ -80,45 +100,40 @@
   gap: 10px;
 }
 
-.imageButton {
-  background-color: #FFD700;
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
+/* Botão Cinza XP */
+.imageButton,
+.removeButton {
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #7F9DB9;
+  border-radius: 3px;
+  padding: 6px 16px;
   cursor: pointer;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 11px;
   color: #000;
-  transition: background-color 0.2s ease;
+  transition: none;
 }
-
-.imageButton:hover {
-  background-color: #E6C200;
-}
-
-.removeButton {
-  background-color: #F44336;
-  color: #fff;
-}
-
+.imageButton:hover,
 .removeButton:hover {
-  background-color: #D32F2F;
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
 }
+/* REMOVIDO: .removeButton (vermelho), agora usa o estilo cinza padrão */
 
-/* --- Avatar Selector Styles (NEW/MODIFIED) --- */
+
+/* --- Avatar Selector (Nested Group Box) --- */
 .avatarSelector {
   margin-top: 30px;
   width: 100%;
   max-width: 400px;
   padding: 15px;
-  background-color: #1A1A1A;
-  border-radius: 10px;
-  border: 1px solid #333;
+  background-color: #FFFFFF; /* Fundo branco */
+  border-radius: 0;
+  border: 1px solid #C0C0C0; /* Borda cinza mais clara */
 }
 
 .avatarSelectorTitle {
-  font-size: 18px;
-  color: #FFD700;
+  font-size: 14px;
+  color: #003399; /* Azul escuro */
   margin-top: 0;
   margin-bottom: 15px;
   text-align: center;
@@ -134,7 +149,7 @@
 
 .avatarOption {
   background: none;
-  border: 2px solid transparent;
+  border: 2px solid #C0C0C0; /* Borda cinza */
   padding: 0;
   cursor: pointer;
   width: 70px;
@@ -143,7 +158,7 @@
   position: relative;
   transition: transform 0.2s ease, border-color 0.2s ease;
   overflow: hidden;
-  display: block; /* Ensure it respects width/height */
+  display: block;
 }
 
 .avatarOption:hover {
@@ -151,8 +166,8 @@
 }
 
 .avatarOptionSelected {
-  border-color: #FFD700;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  border-color: #0054E3; /* Borda Azul */
+  box-shadow: none;
 }
 
 .avatarOptionImage {
@@ -171,8 +186,8 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #FFD700;
-  color: #000;
+  background-color: #0054E3; /* Azul */
+  color: #FFFFFF; /* Branco */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -181,15 +196,10 @@
 /* --- End Avatar Selector Styles --- */
 
 
-.section {
-  padding: 20px;
-  border-bottom: 1px solid #333;
-}
-
 .sectionTitle {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
-  color: #FFD700;
+  color: #003399; /* Azul escuro */
   margin-bottom: 20px;
 }
 
@@ -199,44 +209,44 @@
 
 .label {
   display: block;
-  font-size: 16px;
-  color: #FFD700;
-  margin-bottom: 8px;
+  font-size: 11px;
+  color: #000000; /* Preto */
+  margin-bottom: 6px;
   font-weight: 600;
 }
 
+/* Input Padrão XP */
 .input {
   width: 100%;
-  background-color: #1A1A1A;
-  border: 1px solid #333;
-  border-radius: 10px;
-  padding: 15px;
-  font-size: 16px;
-  color: #fff;
+  background: #FFFFFF;
+  border: 1px solid #7F9DB9;
+  border-radius: 0;
+  padding: 4px 6px;
+  font-size: 11px;
+  color: #000000;
   box-sizing: border-box;
-  transition: border-color 0.2s ease;
+  box-shadow: 
+      -1px -1px 0px rgba(255,255,255,0.8) inset,
+      1px 1px 2px rgba(0,0,0,0.1) inset;
 }
 
 .input:focus {
-  outline: none;
-  border-color: #FFD700;
+  outline: 1px solid #0054E3;
+  outline-offset: -1px;
+  background: #FFFEF9;
 }
 
-.input:disabled {
-  background-color: #0A0A0A;
-  color: #888;
-  cursor: not-allowed;
-}
-
+.input:disabled,
 .disabledInput {
-  background-color: #0A0A0A;
-  color: #888;
+  background-color: #ECE9D8;
+  color: #7F9DB9;
   cursor: not-allowed;
+  border-color: #C0C0C0;
 }
 
 .helperText {
-  font-size: 12px;
-  color: #888;
+  font-size: 11px;
+  color: #333333;
   margin-top: 5px;
 }
 
@@ -248,42 +258,125 @@
 }
 
 .button {
-  padding: 15px;
-  border-radius: 10px;
-  border: none;
-  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 3px;
+  font-size: 11px;
   font-weight: bold;
   cursor: pointer;
   width: 100%;
-  transition: all 0.2s ease;
+  transition: none;
 }
 
 .button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
-
 .button:not(:disabled):hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: none;
+  box-shadow: none;
 }
 
+/* Botão Salvar (Azul) */
 .saveButton {
-  background-color: #FFD700;
+  border: 1px solid #003C74;
+  background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
+  color: #FFFFFF;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  box-shadow: 1px 1px 0px rgba(255,255,255,0.8) inset;
+}
+.saveButton:not(:disabled):hover {
+  background: linear-gradient(180deg, #008FE5 0%, #0065F0 50%, #0050C5 100%);
+}
+.saveButton:disabled {
+  background: linear-gradient(180deg, #999999 0%, #808080 100%);
+  color: #CCCCCC;
+}
+
+/* Botão Logout (Cinza) */
+.logoutButton {
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #7F9DB9;
   color: #000;
 }
-
-.saveButton:not(:disabled):hover {
-  background-color: #E6C200;
+.logoutButton:not(:disabled):hover {
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
 }
 
-.logoutButton {
-  background-color: #F44336;
-  color: #fff;
+/* ========================================
+   CAMPO DE BANCA INICIAL (CURRENCY INPUT)
+   ======================================== */
+
+.labelIcon {
+  margin-right: 6px;
+  vertical-align: middle;
+  color: #0054E3; /* Azul */
 }
 
-.logoutButton:hover {
-  background-color: #D32F2F;
+.currencyInputWrapper {
+  display: flex;
+  align-items: center;
+  background-color: #FFFFFF;
+  border: 1px solid #7F9DB9;
+  border-radius: 0;
+  padding: 0;
+  transition: none;
+  overflow: hidden;
+  box-shadow: 
+      -1px -1px 0px rgba(255,255,255,0.8) inset,
+      1px 1px 2px rgba(0,0,0,0.1) inset;
+}
+
+.currencyInputWrapper:focus-within {
+  border-color: #7F9DB9;
+  box-shadow: -1px -1px 0px rgba(255,255,255,0.8) inset,
+              1px 1px 2px rgba(0,0,0,0.1) inset;
+}
+/* O foco será no input interno */
+.currencyInput:focus {
+  outline: 1px solid #0054E3;
+  outline-offset: -1px;
+}
+
+.currencySymbol {
+  padding: 4px 8px;
+  font-size: 11px;
+  color: #003399; /* Azul escuro */
+  font-weight: 700;
+  background-color: #ECE9D8; /* Fundo cinza */
+  border-right: 1px solid #7F9DB9;
+}
+
+.currencyInput {
+  flex: 1;
+  background-color: transparent;
+  border: none;
+  padding: 4px 6px;
+  font-size: 11px;
+  color: #000;
+  font-weight: 600;
+  outline: none;
+}
+
+.currencyInput::placeholder {
+  color: #666;
+  font-weight: 400;
+}
+
+.currencyInput:disabled {
+  color: #888;
+  cursor: not-allowed;
+}
+
+/* Warning Text (Estilo Info Azul) */
+.warningText {
+  font-size: 11px;
+  color: #003399; /* Azul escuro */
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #E0E8F5; /* Azul claro */
+  border: 1px solid #0054E3; /* Borda Azul */
+  border-radius: 4px;
+  line-height: 1.4;
 }
 
 /* Responsive adjustments */
@@ -299,11 +392,11 @@
   }
   
   .header {
-    padding: 12px 16px;
+    padding: 6px 10px;
   }
   
   .title {
-    font-size: 18px;
+    font-size: 11px;
   }
   
   .avatarGrid {
@@ -314,91 +407,5 @@
   .avatarOption {
     width: 60px;
     height: 60px;
-  }
-}
-/* ========================================
-   CAMPO DE BANCA INICIAL (CURRENCY INPUT)
-   ======================================== */
-
-.labelIcon {
-  margin-right: 6px;
-  vertical-align: middle;
-}
-
-.currencyInputWrapper {
-  display: flex;
-  align-items: center;
-  background-color: #1A1A1A;
-  border: 1px solid #333;
-  border-radius: 10px;
-  padding: 0;
-  transition: border-color 0.2s ease;
-  overflow: hidden;
-}
-
-.currencyInputWrapper:focus-within {
-  border-color: #FFD700;
-  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
-}
-
-.currencySymbol {
-  padding: 15px 0 15px 15px;
-  font-size: 16px;
-  color: #FFD700;
-  font-weight: 700;
-  background-color: transparent;
-  border-right: 1px solid #333;
-  padding-right: 12px;
-}
-
-.currencyInput {
-  flex: 1;
-  background-color: transparent;
-  border: none;
-  padding: 15px 15px 15px 12px;
-  font-size: 16px;
-  color: #fff;
-  font-weight: 600;
-  outline: none;
-}
-
-.currencyInput::placeholder {
-  color: #666;
-  font-weight: 400;
-}
-
-.currencyInput:disabled {
-  color: #888;
-  cursor: not-allowed;
-}
-
-/* Warning Text */
-.warningText {
-  font-size: 13px;
-  color: #FFA726;
-  margin-top: 8px;
-  padding: 8px 12px;
-  background-color: rgba(255, 167, 38, 0.1);
-  border-left: 3px solid #FFA726;
-  border-radius: 4px;
-  line-height: 1.4;
-}
-
-/* Responsive adjustments for currency input */
-@media (max-width: 480px) {
-  .currencySymbol {
-    padding: 12px 0 12px 12px;
-    padding-right: 10px;
-    font-size: 14px;
-  }
-
-  .currencyInput {
-    padding: 12px 12px 12px 10px;
-    font-size: 15px;
-  }
-
-  .warningText {
-    font-size: 12px;
-    padding: 6px 10px;
   }
 }

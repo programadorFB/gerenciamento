@@ -1,52 +1,58 @@
+/* ========================================
+   Tema XP (Branco, Azul, Cinza)
+   ======================================== */
+
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes profile-entry {
-  from {
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
+/* REMOVIDO: @keyframes profile-entry */
 
 /* --- Container Principal --- */
 .container {
-  background-color: #000;
-  color: #ccc;
+  background-color: #D6D3CE; /* Fundo Cinza XP */
+  color: #000000; /* Texto Preto */
   min-height: 100vh;
   min-width: 100vw;
   display: flex;
   flex-direction: column;
+  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
 }
+
+/* --- Header (Barra de Título XP) --- */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 50px 20px 20px;
-  background-color: rgba(0,0,0,0.9);
-  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  padding: 6px 12px;
+  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+  border-bottom: none;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset;
 }
 .headerTitle {
-  font-size: 20px;
+  font-size: 11px;
   font-weight: bold;
-  color: #FFD700;
+  color: #FFFFFF;
   margin: 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 .backButton {
-  background: rgba(255, 215, 0, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  color: #FFD700;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 100%);
+  border: 1px solid #003C74;
+  color: #000000;
+  border-radius: 0;
+  width: 21px;
+  height: 21px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  padding: 0;
 }
-.headerRight { width: 40px; color: #FFD700; text-align: center; }
+.backButton:hover {
+  background: linear-gradient(180deg, #FFF8DC 0%, #D4E1F5 100%);
+}
+.headerRight { 
+  width: 21px; 
+}
 
 .scrollView {
   flex-grow: 1;
@@ -54,307 +60,150 @@
   padding-bottom: 40px;
 }
 .introduction {
-  padding: 30px 20px;
+  padding: 20px 20px;
   text-align: center;
 }
 .introTitle {
-  font-size: 28px;
+  font-size: 20px;
   font-weight: bold;
-  color: #FFD700;
-  margin: 0 0 15px;
+  color: #003399; /* Azul escuro */
+  margin: 0 0 10px;
 }
 .introDescription {
-  font-size: 16px;
+  font-size: 12px;
   line-height: 1.5;
+  color: #000000;
 }
 
-/* --- Risk Slider Component --- */
+/* --- Risk Slider Component (Group Box XP) --- */
 .sliderComponent {
-  background-color: rgba(26, 26, 26, 0.8);
+  background-color: #ECE9D8;
   margin: 0 20px 30px;
-  padding: 30px 20px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 0;
+  border: 1px solid #7F9DB9; /* Borda cinza-azul */
 }
-.sliderHeader { text-align: center; margin-bottom: 20px; }
-.sliderTitle { font-size: 18px; font-weight: bold; color: #FFD700; margin-bottom: 15px; }
+.sliderHeader { 
+  text-align: center; 
+  margin-bottom: 20px; 
+}
+.sliderTitle { 
+  font-size: 14px; 
+  font-weight: bold; 
+  color: #0054E3; /* Azul */
+  margin-bottom: 15px; 
+}
 .currentProfileIndicator {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: #FFFFFF;
     padding: 8px 15px;
-    border-radius: 20px;
+    border-radius: 0;
+    border: 1px solid #7F9DB9;
 }
-.sliderWrapper { position: relative; padding-top: 40px; }
-
-/* Floating Icon over Slider */
-.floatingIcon {
-  position: absolute;
-  top: -10px;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: left 0.2s;
-}
-.iconBubble {
-  background-color: #000;
-  border: 2px solid;
-  border-radius: 20px;
-  padding: 8px 12px;
-  font-weight: bold;
-}
-.iconArrow {
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 8px solid;
+.sliderWrapper { 
+  position: relative; 
+  padding-top: 10px; 
 }
 
-/* --- Input Range (Slider) Styling --- */
+/* REMOVIDO: .floatingIcon, .iconBubble, .iconArrow (Não se encaixa no XP) */
+
+/* --- Input Range (Slider) Styling XP --- */
 .sliderInput {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 8px;
-  background: #333;
-  border-radius: 4px;
+  height: 6px;
+  background: #C0C0C0; /* Fundo do trilho cinza */
+  border-radius: 0;
+  border: 1px solid #7F9DB9;
   outline: none;
   cursor: pointer;
 }
 /* Track styling */
 .sliderInput::-webkit-slider-runnable-track {
   width: 100%;
-  height: 8px;
-  background: linear-gradient(to right, var(--track-color) 0%, var(--track-color) var(--progress), #333 var(--progress), #333 100%);
-  border-radius: 4px;
+  height: 100%;
+  /* O gradiente é usado para a parte preenchida */
+  background: linear-gradient(to right, #0054E3 0%, #0054E3 var(--progress), #C0C0C0 var(--progress), #C0C0C0 100%);
 }
 /* Thumb (knob) styling */
 .sliderInput::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 24px;
-  height: 24px;
-  background: var(--track-color);
-  border-radius: 50%;
-  border: 4px solid #000;
-  margin-top: -8px; /* Center thumb on track */
+  width: 12px;
+  height: 20px;
+  background: linear-gradient(180deg, #0078D7 0%, #0054E3 100%);
+  border-radius: 0;
+  border: 1px solid #003C74;
+  margin-top: -8px; /* Centralizar no trilho */
 }
 
 .sliderLabels {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  color: #666;
+  font-size: 11px;
+  color: #000000;
   padding: 10px 0;
 }
 
-/* --- Profile Display --- */
+/* --- Profile Display (Painel XP) --- */
 .profileDisplay {
-  background-color: #1a1a1a;
+  background-color: #FFFFFF; /* Fundo branco */
   margin: 0 20px 30px;
-  padding: 25px;
-  border-radius: 20px;
-  border: 2px solid var(--profile-color);
+  padding: 20px;
+  border-radius: 8px;
+  border: 2px solid #0054E3 !important; /* Azul */
   text-align: center;
-  opacity: 0;
-  transform: translateY(30px) scale(0.95);
+  opacity: 1; /* Simplificado */
+  transform: none; /* Simplificado */
+  animation: none;
 }
 .profileDisplayVisible {
-  animation: profile-entry 0.5s forwards ease-out;
+  animation: none;
 }
+
+/* Roleta simplificada */
 .rouletteWheel {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  border: 4px solid var(--profile-color);
-  background: #1a1a1a;
+  border: 2px solid #7F9DB9; /* Borda cinza */
+  background: #ECE9D8; /* Fundo cinza */
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 auto 25px;
+  margin: 0 auto 20px;
   position: relative;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  animation: none; /* Rotação removida para simplicidade */
+}
+.rouletteWheel.spinning {
+  animation: spin 1s; /* Animação de giro simples */
+}
+.rouletteMarkers {
+  /* Removido para simplicidade */
 }
 .rouletteCenter {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  background: #000;
+  background: #FFFFFF;
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 2px solid #0054E3; /* Azul */
+  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3);
 }
 .rouletteNumber {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
-  color: var(--profile-color);
+  color: #0054E3 !important; /* Azul */
+  text-shadow: none;
 }
-.profileTitle { font-size: 24px; font-weight: bold; color: var(--profile-color); margin-bottom: 10px; }
-.profileDescription { line-height: 1.5; margin-bottom: 20px; }
-.featuresContainer {
-  background-color: rgba(255, 255, 255, 0.02);
-  border-radius: 15px;
-  padding: 15px;
-  text-align: left;
-}
-.featuresTitle { font-size: 16px; color: var(--profile-color); font-weight: bold; margin-bottom: 12px; text-align: center; }
-.featureItem { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-
-/* --- StopLossCard Mock --- */
-.stopLossCard {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 15px;
-  padding: 20px;
-  cursor: pointer;
-}
-
-/* --- Action Buttons --- */
-.actionButtons { padding: 0 20px 20px; }
-.mainSaveButton {
-  width: 100%;
-  padding: 18px;
-  border-radius: 15px;
-  background-color: var(--profile-color);
-  color: #000;
-  font-size: 18px;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-.criticalText {
-  color: #F44336;
-  font-weight: bold;
-}
-
-.amountSection {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.amountItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 0;
-}
-
-.amountLabel {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.amountValue {
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-.spinner { animation: spin 1s linear infinite; }
-.riskWarning {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid var(--profile-color);
-  background-color: color-mix(in srgb, var(--profile-color) 10%, transparent);
-  color: var(--profile-color);
-  border-radius: 12px;
-  padding: 15px;
-  margin: 20px;
-}
-
-/* --- Modal Styles --- */
-.modalOverlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 0.3s;
-  z-index: 100;
-}
-.modalContainer {
-  width: 90%;
-  max-width: 400px;
-  background: #1E1E1E;
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  border-radius: 15px;
-}
-.modalHeader { display: flex; justify-content: space-between; padding: 20px; border-bottom: 1px solid rgba(255, 215, 0, 0.2); }
-.modalTitle { font-size: 18px; font-weight: bold; color: #FFD700; margin: 0; }
-.modalCloseButton { background: none; border: none; color: #fff; cursor: pointer; }
-.modalContent { padding: 20px; }
-.inputLabel { display: block; margin-bottom: 8px; }
-.modalInput {
-  width: 100%;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid #555;
-  border-radius: 10px;
-  padding: 15px;
-  color: #fff;
-  font-size: 18px;
-  box-sizing: border-box;
-}
-.errorText { color: #F44336; margin-top: 8px; font-size: 12px; }
-.modalActions {
-  display: flex;
-  justify-content: flex-end;
-  padding: 20px;
-  border-top: 1px solid rgba(255, 215, 0, 0.2);
-  gap: 10px;
-}
-.cancelButton, .saveButton {
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-}
-.cancelButton { background: #333; color: #ccc; }
-.saveButton { background: #FFD700; color: #000; }
-/* Adicione estas classes ao seu CSS existente */
-
-.loadingContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem;
-    color: white;
-    text-align: center;
-}
-
-.loadingSpinner {
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
-    font-size: 2rem;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.riskDescription {
-    text-align: center;
-    margin: 1rem 0;
-    padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    border-left: 3px solid var(--profile-color, #FFD700);
-}
-
-.riskDescription p {
-    margin: 0;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+.rouletteNumber.numberAnimating {
+  animation: none;
 }
 
 .profileHeader {
@@ -363,151 +212,329 @@
     gap: 1.5rem;
     margin-bottom: 1.5rem;
 }
-
 .profileText {
     flex: 1;
+    text-align: left;
 }
 
-.labelMarker {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
+.profileTitle { 
+  font-size: 16px; 
+  font-weight: bold; 
+  color: #003399 !important; /* Azul escuro */
+  margin-bottom: 10px; 
+  text-align: center;
+}
+.profileDescription { 
+  line-height: 1.5; 
+  margin-bottom: 20px; 
+  color: #000000;
+  font-size: 12px;
+  text-align: center;
+}
+.featuresContainer {
+  background-color: #ECE9D8;
+  border-radius: 4px;
+  padding: 15px;
+  text-align: left;
+  border: 1px solid #C0C0C0;
+}
+.featuresTitle { 
+  font-size: 12px; 
+  color: #000000 !important; 
+  font-weight: bold; 
+  margin-bottom: 12px; 
+  text-align: center; 
+}
+.featureItem { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  margin-bottom: 8px; 
+  font-size: 12px;
+}
+.featureItem svg {
+  color: #0054E3 !important; /* Azul */
 }
 
-.percentageTips {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    border-left: 3px solid #FFD700;
+/* --- StopLossCard Mock --- */
+.stopLossCard {
+  background: #FFFFFF;
+  border: 1px solid #7F9DB9;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
 }
-
-.tipTitle {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: #FFD700;
-}
-
-.tipItem {
-    font-size: 0.875rem;
-    margin: 0.25rem 0;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.recommendations {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.recommendationsTitle {
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: var(--profile-color, #FFD700);
-}
-
-.recommendationItem {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0;
-    font-size: 0.875rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.recommendationItem:last-child {
-    border-bottom: none;
-}
-
 .stopLossSection {
     padding: 0 20px;
     margin: 2rem 0;
 }
-
 .sectionTitle {
-    font-size: 1.1rem;
+    font-size: 16px;
     font-weight: 600;
     margin-bottom: 1rem;
-    color: #FFD700;
+    color: #003399; /* Azul escuro */
     text-align: center;
 }
+
+/* --- Action Buttons (XP) --- */
+.actionButtons { 
+  display: flex;
+  gap: 1rem;
+  padding: 0 20px;
+  margin: 2rem 0;
+}
+
+/* Botão Azul (Primário) */
+.mainSaveButton {
+  flex: 1;
+  width: 100%;
+  padding: 8px 16px;
+  border-radius: 3px;
+  border: 1px solid #003C74;
+  background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  box-shadow: 1px 1px 0px rgba(255,255,255,0.8) inset;
+}
+.mainSaveButton:hover:not(:disabled) {
+  background: linear-gradient(180deg, #008FE5 0%, #0065F0 50%, #0050C5 100%);
+}
+.mainSaveButton:disabled {
+  background: linear-gradient(180deg, #999999 0%, #808080 100%);
+  cursor: not-allowed;
+  color: #CCCCCC;
+}
+
+/* Botão Cinza (Secundário) */
+.secondaryButton {
+  flex: 1;
+  padding: 8px 16px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #7F9DB9;
+  border-radius: 3px;
+  color: #000000;
+  font-weight: bold;
+  font-size: 11px;
+  cursor: pointer;
+  transition: none;
+}
+.secondaryButton:hover:not(:disabled) {
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+  transform: none;
+}
+.secondaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spinner { animation: spin 1s linear infinite; }
+
+/* --- Status e Alertas (Estilo Info XP) --- */
+.riskWarning {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #0054E3 !important;
+  background-color: #E0E8F5; /* Azul claro */
+  color: #003399 !important; /* Azul escuro */
+  border-radius: 8px;
+  padding: 15px;
+  margin: 20px;
+}
+.warningContent { flex: 1; }
+.warningContent p { margin: 0; line-height: 1.4; font-size: 11px; }
 
 .statusMessage {
-    padding: 1rem;
-    margin: 1rem 20px;
-    border-radius: 8px;
-    text-align: center;
-    font-weight: 500;
-    animation: slideIn 0.3s ease;
+  padding: 1rem;
+  margin: 1rem 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 11px;
+  animation: slideIn 0.3s ease;
+  /* Todas as mensagens usam o estilo azul "Info" */
+  background: #E0E8F5;
+  border: 1px solid #0054E3;
+  color: #003399;
+}
+.statusMessage.success, .statusMessage.error, .statusMessage.info {
+  background: #E0E8F5;
+  border: 1px solid #0054E3;
+  color: #003399;
 }
 
-.statusMessage.success {
-    background: rgba(76, 175, 80, 0.2);
-    border: 1px solid #4CAF50;
-    color: #4CAF50;
+
+/* --- Modal Styles (Janela XP) --- */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 84, 227, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s;
+  z-index: 100;
+  backdrop-filter: blur(2px);
+}
+.modalContainer {
+  width: 90%;
+  max-width: 400px;
+  background: #ECE9D8; /* Fundo cinza */
+  border: 2px solid #0054E3; /* Borda azul */
+  border-radius: 8px 8px 0 0; /* Arredondado em cima */
+  box-shadow: 4px 4px 12px rgba(0,0,0,0.4);
+}
+.modalHeader { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  padding: 4px 8px; 
+  /* Barra de título azul */
+  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+  border-bottom: none; 
+}
+.modalTitle { 
+  font-size: 11px; 
+  font-weight: bold; 
+  color: #FFFFFF; 
+  margin: 0; 
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+.modalCloseButton { 
+  background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 100%);
+  border: 1px solid #003C74;
+  color: #000; 
+  cursor: pointer; 
+  width: 21px;
+  height: 21px;
+  border-radius: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modalCloseButton:hover {
+  background: linear-gradient(180deg, #FFF8DC 0%, #D4E1F5 100%);
 }
 
-.statusMessage.error {
-    background: rgba(244, 67, 54, 0.2);
-    border: 1px solid #F44336;
-    color: #F44336;
+.modalContent { 
+  padding: 20px; 
+  background: #ECE9D8;
+}
+.inputLabel { 
+  display: block; 
+  margin-bottom: 8px; 
+  font-size: 11px;
+  font-weight: bold;
+}
+.modalInput {
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid #7F9DB9;
+  border-radius: 0;
+  padding: 6px;
+  color: #000;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+.modalInput:focus {
+  outline: 1px solid #0054E3;
+  background: #FFFFFF;
+}
+.errorText { 
+  color: #BF0000; /* Erro mantido vermelho para inputs */
+  margin-top: 8px; 
+  font-size: 11px; 
+}
+.modalInput.inputError {
+  border-color: #BF0000;
 }
 
-.actionButtons {
+.percentageTips {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #FFFFFF;
+  border-radius: 0;
+  border: 1px solid #7F9DB9;
+}
+.tipTitle {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #003399; /* Azul */
+  font-size: 11px;
+}
+.tipItem {
+  font-size: 11px;
+  margin: 0.25rem 0;
+  color: #000000;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px;
+  border-top: 1px solid #7F9DB9;
+  gap: 10px;
+  background: #ECE9D8;
+}
+.cancelButton, .saveButton {
+  padding: 6px 16px;
+  border-radius: 3px;
+  border: 1px solid #7F9DB9;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 11px;
+}
+/* Botão Cinza */
+.cancelButton { 
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%); 
+  color: #000; 
+}
+.cancelButton:hover {
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+}
+/* Botão Azul */
+.saveButton { 
+  background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
+  color: #FFFFFF; 
+  border-color: #003C74;
+}
+.saveButton:hover {
+  background: linear-gradient(180deg, #008FE5 0%, #0065F0 50%, #0050C5 100%);
+}
+.saveButton:disabled {
+  background: linear-gradient(180deg, #999999 0%, #808080 100%);
+  cursor: not-allowed;
+  color: #CCCCCC;
+}
+
+/* --- Loading --- */
+.loadingContainer {
     display: flex;
-    gap: 1rem;
-    padding: 0 20px;
-    margin: 2rem 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: #000000;
+    text-align: center;
+    min-height: 100vh;
+    background: #D6D3CE;
+}
+.loadingSpinner {
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    color: #0054E3; /* Azul */
 }
 
-.secondaryButton {
-    flex: 1;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.secondaryButton:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
-}
-
-.secondaryButton:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.warningContent {
-    flex: 1;
-}
-
-.warningContent p {
-    margin: 0;
-    line-height: 1.4;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsividade */
+/* --- Responsividade --- */
 @media (max-width: 768px) {
     .profileHeader {
         flex-direction: column;
@@ -518,125 +545,4 @@
     .actionButtons {
         flex-direction: column;
     }
-    
-    .riskDescription {
-        margin: 0.5rem 0;
-    }
-}
-/* --- Profile Display --- */
-.profileDisplay {
-  background-color: #1a1a1a;
-  margin: 0 20px 30px;
-  padding: 25px;
-  border-radius: 20px;
-  border: 2px solid var(--profile-color);
-  text-align: center;
-  opacity: 0;
-  transform: translateY(30px) scale(0.95);
-}
-.profileDisplayVisible {
-  animation: profile-entry 0.5s forwards ease-out;
-}
-.rouletteWheel {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 4px solid var(--profile-color);
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto 25px;
-  position: relative;
-  box-shadow: 
-    0 0 20px rgba(0, 0, 0, 0.5),
-    inset 0 0 20px rgba(0, 0, 0, 0.3),
-    0 0 40px var(--profile-color);
-  transition: transform 0.3s ease;
-}
-
-/* Animação de rotação da roleta */
-.rouletteWheel.spinning {
-  animation: rouletteSpin 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-@keyframes rouletteSpin {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-  50% {
-    transform: rotate(180deg) scale(1.1);
-    box-shadow: 
-      0 0 30px rgba(0, 0, 0, 0.7),
-      inset 0 0 30px rgba(0, 0, 0, 0.5),
-      0 0 60px var(--profile-color);
-  }
-  100% {
-    transform: rotate(360deg) scale(1);
-  }
-}
-
-/* Marcadores decorativos */
-.rouletteMarkers {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-}
-
-.marker {
-  position: absolute;
-  width: 4px;
-  height: 8px;
-  border-radius: 2px;
-  top: 50%;
-  left: 50%;
-  transform-origin: center;
-  opacity: 0.6;
-  transition: opacity 0.3s ease;
-}
-
-.rouletteWheel.spinning .marker {
-  opacity: 0.9;
-}
-
-.rouletteCenter {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #000 0%, #1a1a1a 100%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid var(--profile-color);
-  box-shadow: 
-    0 4px 15px rgba(0, 0, 0, 0.8),
-    inset 0 2px 10px rgba(0, 0, 0, 0.5);
-  z-index: 2;
-}
-
-.rouletteNumber {
-  font-size: 32px;
-  font-weight: bold;
-  color: var(--profile-color);
-  text-shadow: 
-    0 0 10px var(--profile-color),
-    0 0 20px var(--profile-color),
-    0 2px 4px rgba(0, 0, 0, 0.8);
-  transition: all 0.2s ease;
-}
-
-/* Animação do número durante a contagem */
-.rouletteNumber.numberAnimating {
-  animation: numberPulse 0.1s ease-in-out infinite;
-}
-
-@keyframes numberPulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
 }

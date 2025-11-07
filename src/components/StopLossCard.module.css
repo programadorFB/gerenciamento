@@ -1,472 +1,267 @@
+/* ========================================
+   Tema XP (Branco, Azul, Cinza)
+   StopLossCard.module.css
+   ======================================== */
+
+/* Container (Estilo Fieldset/Group Box XP) */
 .container {
-  border-radius: 16px;
-  overflow: hidden;
-  background-color: rgba(30, 30, 30, 0.6);
-  border: 2px solid var(--border-color, rgba(255, 255, 255, 0.1));
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5),
-              0 0 25px rgba(var(--border-color-rgb, 255, 255, 255), 0.15);
-  color: #e0e0e0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  border-radius: 0;
+  overflow: visible; /* Fieldset precisa disso */
+  background-color: #ECE9D8; /* Fundo Cinza */
+  border: 1px solid #7F9DB9; /* Borda Cinza-Azul */
+  box-shadow: none;
+  color: #000000;
+  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
   margin: 1rem 0;
-  transition: all 0.4s ease;
+  padding: 10px;
+  transition: none;
 }
 
-/* Efeito de brilho dinâmico nas bordas */
-.container:hover {
-  box-shadow: 0 0 20px var(--border-color),
-              0 0 40px var(--border-color);
-  transform: scale(1.01);
-}
+/* REMOVIDO: .container:hover, .container.statusChange, @keyframes cardPulse */
 
-/* Pulso leve quando muda o stop loss */
-.container.statusChange {
-  animation: cardPulse 0.6s ease;
-}
+/* REMOVIDO: .gradient (agora é o próprio fieldset) */
 
-@keyframes cardPulse {
-  0%, 100% {
-    box-shadow: 0 0 20px var(--border-color);
-  }
-  50% {
-    box-shadow: 0 0 40px var(--border-color);
-  }
-}
-
-
-/* Animação quando muda de status */
-.container.statusChange {
-    animation: cardPulse 0.6s ease;
-}
-
-@keyframes cardPulse {
-    0%, 100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 rgba(255, 255, 255, 0);
-    }
-    50% {
-        transform: scale(1.02);
-        box-shadow: 0 0 30px var(--status-color);
-    }
-}
-
-.gradient {
-    padding: 24px;
-    background-image: linear-gradient(145deg, rgba(38, 38, 38, 0.9), rgba(28, 28, 28, 0.9));
-}
-
+/* Header (Agora é a <legend> do fieldset) */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0; /* A <legend> cuida disso */
+  padding: 0 10px; /* Espaçamento da <legend> */
+  width: auto; /* Necessário para <legend> */
 }
 
 .headerLeft {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .iconWrapper {
-    font-size: 28px;
-    color: var(--status-color);
-    transition: all 0.3s ease;
+  font-size: 16px;
+  color: var(--status-color);
+  transition: none;
 }
-
-/* Animação de pulso no ícone */
-.iconWrapper.iconPulse {
-    animation: iconPulseAnim 0.6s ease;
-}
-
-@keyframes iconPulseAnim {
-    0%, 100% {
-        transform: scale(1) rotate(0deg);
-    }
-    25% {
-        transform: scale(1.2) rotate(-10deg);
-    }
-    75% {
-        transform: scale(1.2) rotate(10deg);
-    }
-}
+/* REMOVIDO: .iconWrapper.iconPulse, @keyframes iconPulseAnim */
 
 .title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--status-color);
-    margin: 0;
-    transition: color 0.3s ease;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--status-color);
+  margin: 0;
+  transition: none;
 }
+/* REMOVIDO: .subtitle (combinado no título ou removido do JSX) */
 
-.subtitle {
-    font-size: 0.8rem;
-    color: #a0a0a0;
-    margin: 2px 0 0 0;
-}
 
 .content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 10px; /* Espaço após a <legend> */
 }
 
 .percentageItem {
-    flex: 1;
-    text-align: center;
-    margin-bottom: 8px;
+  flex: 1;
+  text-align: center;
+  margin-bottom: 8px;
 }
 
 .percentageLabel {
-    font-size: 0.8rem;
-    color: #a0a0a0;
-    display: block;
-    margin-bottom: 4px;
+  font-size: 11px;
+  color: #333;
+  display: block;
+  margin-bottom: 4px;
 }
 
 .percentageValue {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #fff;
-    transition: all 0.3s ease;
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  transition: none;
 }
+/* REMOVIDO: .percentageValue.valueAnimating, @keyframes valueBounce */
 
-/* Animação do valor da porcentagem */
-.percentageValue.valueAnimating {
-    animation: valueBounce 0.5s ease;
-}
-
-@keyframes valueBounce {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.15);
-        color: var(--slider-color);
-        text-shadow: 0 0 20px var(--slider-color);
-    }
-}
-
+/* Barra de Progresso XP */
 .progressSection {
-    margin-top: 8px;
+  margin-top: 8px;
 }
-
 .progressBar {
-    height: 12px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    overflow: hidden;
-    position: relative;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  height: 16px; /* Altura padrão XP */
+  background-color: #FFFFFF;
+  border-radius: 0;
+  overflow: hidden;
+  position: relative;
+  box-shadow: none;
+  border: 1px solid #7F9DB9;
 }
-
 .progressFill {
-    height: 100%;
-    border-radius: 6px;
-    background-color: var(--status-color);
-    transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    position: relative;
-    box-shadow: 0 0 10px var(--status-color);
+  height: 100%;
+  border-radius: 0;
+  background-color: var(--status-color, #0054E3); /* Cor de status (azul) */
+  transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  box-shadow: none;
 }
-
-/* Animação de brilho na barra quando crítica */
-.progressFill.progressCritical {
-    animation: progressGlow 1s ease-in-out infinite;
-}
-
-@keyframes progressGlow {
-    0%, 100% {
-        box-shadow: 0 0 10px var(--status-color);
-    }
-    50% {
-        box-shadow: 0 0 20px var(--status-color), 0 0 30px var(--status-color);
-    }
-}
+/* REMOVIDO: .progressFill.progressCritical, @keyframes progressGlow */
 
 .progressText {
-    font-size: 0.75rem;
-    color: #a0a0a0;
-    text-align: center;
-    margin-top: 8px;
+  font-size: 11px;
+  color: #333;
+  text-align: center;
+  margin-top: 8px;
 }
 
+/* Mensagem de Status (Estilo Info XP) */
 .statusMessage {
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 12px;
-    border-radius: 8px;
-    border-left: 4px solid var(--status-color);
-    text-align: center;
-    font-size: 0.9rem;
+  background-color: #E0E8F5; /* Fundo Info Azul */
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid var(--status-color, #0054E3);
+  text-align: center;
+  font-size: 12px;
 }
-
-/* Animação de slide na mensagem */
-.statusMessage.messageSlide {
-    animation: messageSlideIn 0.5s ease;
-}
-
-@keyframes messageSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/* REMOVIDO: .statusMessage.messageSlide, @keyframes messageSlideIn */
 
 .messageText {
-    margin: 0;
-    font-weight: 600;
+  margin: 0;
+  font-weight: 600;
+  color: #000;
 }
-
 .descriptionText {
-    margin: 8px 0 0 0;
-    font-size: 0.85rem;
-    color: #a0a0a0;
+  margin: 8px 0 0 0;
+  font-size: 11px;
+  color: #333;
 }
-
 .criticalText {
-  color: #F44336;
+  color: #BF0000; /* Vermelho */
   font-weight: bold;
 }
 
-/* Estatísticas Rápidas */
-.statsSection {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-  padding: 16px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
+/* REMOVIDO: .statsSection, .statCard, .statIcon, .statContent, .statLabel, .statValue (Não estão no JSX) */
 
-.statCard {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.statCard:hover {
-  background: rgba(0, 0, 0, 0.3);
-  transform: translateY(-2px);
-}
-
-.statIcon {
-  font-size: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s ease;
-}
-
-.statCard:hover .statIcon {
-  transform: scale(1.1);
-}
-
-.statContent {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.statLabel {
-  font-size: 0.75rem;
-  color: #a0a0a0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.statValue {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #fff;
-}
-
-.statValue.positive {
-  color: #4CAF50;
-}
-
-.statValue.negative {
-  color: #F44336;
-}
-
+/* Seção de Valores */
 .amountSection {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-top: 16px;
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #C0C0C0;
 }
-
 .amountItem {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 4px 0;
-  transition: all 0.3s ease;
+  transition: none;
 }
-
 .amountItem:hover {
-  padding-left: 4px;
-  background-color: rgba(255, 255, 255, 0.02);
+  padding-left: 0;
+  background-color: transparent;
 }
-
 .amountLabel {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  color: #333;
 }
-
 .amountValue {
   font-weight: 600;
-  font-size: 0.95rem;
-  color: #fff;
-  transition: color 0.3s ease;
+  font-size: 12px;
+  color: #000;
+  transition: none;
 }
-
 .amountValue.lossValue {
-  color: #F44336;
-  animation: lossFlash 2s ease-in-out infinite;
+  color: #BF0000; /* Vermelho */
+  animation: none;
 }
+/* REMOVIDO: @keyframes lossFlash */
 
-@keyframes lossFlash {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
 
-/* Estilos do Slider */
+/* Estilos do Slider (XP) */
 .sliderSection {
   padding: 10px 0;
   margin-bottom: 10px;
 }
-
 .sliderHeader {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 16px;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  border-left: 4px solid var(--slider-color, #9E9E9E);
+  padding: 10px;
+  background: #FFFFFF; /* Fundo branco */
+  border-radius: 4px;
+  border: 1px solid #7F9DB9;
 }
-
 .sliderIconWrapper {
-  font-size: 32px;
-  transition: all 0.3s ease;
+  font-size: 24px;
+  color: var(--slider-color, #7F9DB9);
 }
-
 .sliderHeaderText {
   flex: 1;
 }
-
 .sliderTitle {
-  font-size: 0.95rem;
+  font-size: 12px;
   font-weight: 700;
   margin: 0;
-  transition: color 0.3s ease;
+  color: #000;
 }
-
 .sliderSubtitle {
-  font-size: 0.75rem;
-  color: #a0a0a0;
+  font-size: 11px;
+  color: #333;
   margin: 2px 0 0 0;
 }
-
 .sliderContainer {
   position: relative;
   margin-top: 16px;
+  padding-bottom: 32px; /* espaço para números */
 }
 
-.sliderTrack {
-  position: absolute;
-  width: 100%;
-  height: 8px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.1);
-  pointer-events: none;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.sliderFill {
-  height: 100%;
-  border-radius: 5px;
-  transition: width 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
-}
+/* REMOVIDO: .sliderTrack, .sliderFill (Input range faz tudo) */
 
 .slider {
   -webkit-appearance: none;
+  appearance: none;
   width: 100%;
-  height: 8px;
-  border-radius: 5px;
-  background: transparent;
+  height: 6px;
+  background: #C0C0C0; /* Trilho Cinza */
+  border-radius: 0;
+  border: 1px solid #7F9DB9;
   outline: none;
-  opacity: 0.9;
-  transition: opacity .2s;
+  opacity: 1;
+  transition: none;
   position: relative;
   z-index: 2;
   cursor: pointer;
 }
 
-.slider:hover {
-  opacity: 1;
-}
-
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--slider-color, #4CAF50);
+  width: 12px;
+  height: 20px;
+  background: var(--slider-color, #0054E3); /* Azul (ou cor dinâmica) */
   cursor: pointer;
-  border: 3px solid #1c1c1c;
-  box-shadow: 
-    0 0 0 2px rgba(255, 255, 255, 0.2),
-    0 4px 8px rgba(0, 0, 0, 0.4);
-  transition: all 0.2s ease;
+  border: 1px solid #003C74;
+  box-shadow: none;
+  transition: none;
 }
-
 .slider::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
-  box-shadow: 
-    0 0 0 4px rgba(255, 255, 255, 0.3),
-    0 6px 12px rgba(0, 0, 0, 0.5),
-    0 0 20px var(--slider-color);
-}
-
-.slider::-webkit-slider-thumb:active {
-  transform: scale(1.05);
+  transform: none;
+  box-shadow: none;
 }
 
 .slider::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--slider-color, #4CAF50);
+  width: 12px;
+  height: 20px;
+  background: var(--slider-color, #0054E3);
   cursor: pointer;
-  border: 3px solid #1c1c1c;
-  box-shadow: 
-    0 0 0 2px rgba(255, 255, 255, 0.2),
-    0 4px 8px rgba(0, 0, 0, 0.4);
-  transition: all 0.2s ease;
+  border: 1px solid #003C74;
+  box-shadow: none;
+  transition: none;
 }
-
 .slider::-moz-range-thumb:hover {
-  transform: scale(1.15);
-  box-shadow: 
-    0 0 0 4px rgba(255, 255, 255, 0.3),
-    0 6px 12px rgba(0, 0, 0, 0.5),
-    0 0 20px var(--slider-color);
+  transform: none;
+  box-shadow: none;
 }
 
 /* ===== RÉGUA COM NÚMEROS ===== */
@@ -481,30 +276,21 @@
   padding: 0 2px;
   user-select: none;
 }
-
 .numberMark {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  color: #333;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: none;
   cursor: pointer;
 }
-
 .numberMark:hover {
-  color: var(--slider-color);
-  text-shadow: 0 0 10px var(--slider-color);
-  transform: scale(1.2);
+  color: #000;
+  text-shadow: none;
+  transform: none;
 }
-
 .activeNumber {
-  color: var(--slider-color);
-  text-shadow: 0 0 12px var(--slider-color);
+  color: var(--slider-color, #003399);
+  text-shadow: none;
   font-weight: 700;
-  transform: scale(1.25);
-}
-
-.sliderContainer {
-  position: relative;
-  margin-top: 16px;
-  padding-bottom: 32px; /* espaço para números */
+  transform: none;
 }

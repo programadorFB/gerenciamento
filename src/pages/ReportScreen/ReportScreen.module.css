@@ -1,466 +1,185 @@
+/* ========================================
+   Tema XP (Branco, Azul, Cinza)
+   ======================================== */
+
 /* Estilo geral do container */
 .container {
-  background-color: #121212;
-  color: #e0e0e0;
-  padding: 30px 40px;
+  background-color: #D6D3CE; /* Fundo Cinza XP */
+  color: #000000; /* Texto Preto */
+  padding: 0; /* O padding será por seção */
   min-height: 100vh;
   min-width: 100vw;
   box-sizing: border-box;
+  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
 }
 
-/* Cabeçalho com botão e título */
+/* Cabeçalho (Barra de Título XP) */
 .header {
   display: flex;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #333;
-  padding-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 0;
+  border-bottom: none;
+  padding: 6px 12px;
+  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset;
 }
 
-/* Botão de Voltar */
+/* Botão de Voltar (Cinza XP) */
 .backButton {
-  background: transparent;
-  border: 2px solid #d4af37;
-  color: #d4af37;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #7F9DB9;
+  border-radius: 3px;
+  color: #000;
+  width: auto; /* Tamanho automático */
+  height: auto;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: none;
 }
 
 .backButton:hover {
-  background-color: #d4af37;
-  color: #121212;
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+  color: #000;
 }
 
-/* Título Principal */
+/* Título Principal (Texto da Barra de Título) */
 .title {
-  font-size: 2.2rem;
-  color: #ffd700;
+  font-size: 11px;
+  font-weight: bold;
+  color: #FFFFFF;
   margin: 0;
-  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
 /* Texto de Descrição */
 .description {
-  font-size: 1.1rem;
-  margin-bottom: 2.5rem;
+  font-size: 12px;
+  margin-bottom: 1.5rem;
   max-width: 700px;
-  line-height: 1.6;
-  color: #aaa;
-}
-
-/* Container para o botão de download */
-.actionsContainer {
-  margin-bottom: 3rem;
-}
-
-/* Botão de Download */
-.downloadButton {
-  display: inline-block;
-  padding: 14px 28px;
-  background-color: #ffd700;
-  color: #121212;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1rem;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.downloadButton:hover {
-  transform: scale(1.05);
-}
-
-/* Estilo para o texto de carregamento */
-.loadingText {
-  display: inline-block;
-  padding: 14px 28px;
-  background-color: #444;
-  color: #999;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-/* Seção do visualizador de PDF */
-.viewerSection {
-  margin-top: 2rem;
-}
-
-.viewerTitle {
-  font-size: 1.5rem;
-  color: #e0e0e0;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #333;
-  padding-bottom: 10px;
-}
-
-.viewerWrapper {
-  border: 1px solid #333;
-  border-radius: 8px;
-  overflow: hidden;
-  height: 700px;
-}
-/* Estilo geral do container */
-.container {
-  background-color: #121212;
-  color: #e0e0e0;
-  padding: 30px 40px;
-  min-height: 100vh;
-  min-width: 100vw;
-  box-sizing: border-box;
-}
-
-/* Cabeçalho com botão e título */
-.header {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #333;
-  padding-bottom: 20px;
-}
-
-/* Botão de Voltar */
-.backButton {
-  background: transparent;
-  border: 2px solid #d4af37;
-  color: #d4af37;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.backButton:hover {
-  background-color: #d4af37;
-  color: #121212;
-}
-
-/* Título Principal */
-.title {
-  font-size: 2.2rem;
-  color: #ffd700;
-  margin: 0;
-  font-weight: 600;
-}
-
-/* Texto de Descrição */
-.description {
-  font-size: 1.1rem;
-  margin-bottom: 2.5rem;
-  max-width: 700px;
-  line-height: 1.6;
-  color: #aaa;
+  line-height: 1.5;
+  color: #000000;
+  padding: 20px 20px 0 20px;
 }
 
 /* Container para os botões de download */
 .actionsContainer {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   display: flex;
   gap: 15px;
   flex-wrap: wrap;
+  padding: 0 20px;
 }
 
-/* Botão Excel */
-.excelButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 28px;
-  background-color: #217346;
-  color: #ffffff;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1rem;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.excelButton:hover {
-  transform: scale(1.05);
-  background-color: #1a5c37;
-}
-
-/* Botão PDF */
+/* Botão Base (para ambos) */
+.excelButton,
 .pdfButton {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 28px;
-  background-color: #ffd700;
-  color: #121212;
-  border-radius: 8px;
+  padding: 8px 16px;
+  border-radius: 3px;
   text-decoration: none;
   font-weight: bold;
-  font-size: 1rem;
-  border: none;
+  font-size: 11px;
+  border: 1px solid;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: none;
+}
+.excelButton:hover,
+.pdfButton:hover {
+  transform: none;
 }
 
-.pdfButton:hover {
-  transform: scale(1.05);
+/* Botão Excel (Cinza Secundário) */
+.excelButton {
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border-color: #7F9DB9;
+  color: #000000;
 }
+.excelButton:hover {
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+}
+
+/* Botão PDF (Azul Primário) */
+.pdfButton {
+  background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
+  border-color: #003C74;
+  color: #FFFFFF;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  box-shadow: 1px 1px 0px rgba(255,255,255,0.8) inset;
+}
+.pdfButton:hover {
+  background: linear-gradient(180deg, #008FE5 0%, #0065F0 50%, #0050C5 100%);
+}
+
 
 /* Estilo para o texto de carregamento */
 .loadingText {
   display: inline-block;
-  padding: 14px 28px;
-  background-color: #444;
-  color: #999;
-  border-radius: 8px;
+  padding: 8px 16px;
+  background-color: #ECE9D8;
+  color: #7F9DB9;
+  border-radius: 3px;
+  border: 1px solid #C0C0C0;
   text-decoration: none;
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 11px;
 }
 
-/* Seção do visualizador de PDF */
+/* Seção do visualizador de PDF (Group Box) */
 .viewerSection {
-  margin-top: 2rem;
+  margin: 0 20px 20px 20px;
+  padding: 20px;
+  background: #ECE9D8;
+  border: 1px solid #7F9DB9;
 }
 
 .viewerTitle {
-  font-size: 1.5rem;
-  color: #e0e0e0;
+  font-size: 14px;
+  color: #003399; /* Azul escuro */
   margin-bottom: 1rem;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #C0C0C0;
   padding-bottom: 10px;
+  font-weight: bold;
 }
 
 .viewerWrapper {
-  border: 1px solid #333;
-  border-radius: 8px;
+  border: 1px solid #7F9DB9; /* Borda cinza */
+  border-radius: 0;
   overflow: hidden;
   height: 700px;
+  background: #FFFFFF; /* Fundo branco */
+  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3);
 }
 
 /* Responsividade para telas menores */
 @media (max-width: 768px) {
   .container {
-    padding: 20px;
+    padding: 0;
   }
-
-  .title {
-    font-size: 1.8rem;
+  
+  .description {
+    padding: 16px 16px 0 16px;
   }
-
+  
   .actionsContainer {
+    padding: 0 16px;
     flex-direction: column;
   }
-
+  
   .excelButton,
   .pdfButton {
     width: 100%;
     justify-content: center;
   }
-
-  .viewerWrapper {
-    height: 500px;
-  }
-}
-/* Estilo geral do container */
-.container {
-  background-color: #121212;
-  color: #e0e0e0;
-  padding: 30px 40px;
-  min-height: 100vh;
-  min-width: 100vw;
-  box-sizing: border-box;
-}
-
-/* Cabeçalho com botão e título */
-.header {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #333;
-  padding-bottom: 20px;
-}
-
-/* Botão de Voltar */
-.backButton {
-  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
-  border: none;
-  color: #121212;
-  border-radius: 12px;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-  position: relative;
-  overflow: hidden;
-}
-
-.backButton::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #f4d03f 0%, #ffd700 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.backButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
-}
-
-.backButton:hover::before {
-  opacity: 1;
-}
-
-.backButton:active {
-  transform: translateY(0px);
-  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.4);
-}
-
-.backButton svg {
-  position: relative;
-  z-index: 1;
-}
-
-/* Título Principal */
-.title {
-  font-size: 2.2rem;
-  color: #ffd700;
-  margin: 0;
-  font-weight: 600;
-}
-
-/* Texto de Descrição */
-.description {
-  font-size: 1.1rem;
-  margin-bottom: 2.5rem;
-  max-width: 700px;
-  line-height: 1.6;
-  color: #aaa;
-}
-
-/* Container para os botões de download */
-.actionsContainer {
-  margin-bottom: 3rem;
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-/* Botão Excel */
-.excelButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 28px;
-  background-color: #217346;
-  color: #ffffff;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1rem;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.excelButton:hover {
-  transform: scale(1.05);
-  background-color: #1a5c37;
-}
-
-/* Botão PDF */
-.pdfButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 28px;
-  background-color: #ffd700;
-  color: #121212;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1rem;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.pdfButton:hover {
-  transform: scale(1.05);
-}
-
-/* Estilo para o texto de carregamento */
-.loadingText {
-  display: inline-block;
-  padding: 14px 28px;
-  background-color: #444;
-  color: #999;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-/* Seção do visualizador de PDF */
-.viewerSection {
-  margin-top: 2rem;
-}
-
-.viewerTitle {
-  font-size: 1.5rem;
-  color: #e0e0e0;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #333;
-  padding-bottom: 10px;
-}
-
-.viewerWrapper {
-  border: 1px solid #333;
-  border-radius: 8px;
-  overflow: hidden;
-  height: 700px;
-}
-
-/* Responsividade para telas menores */
-@media (max-width: 768px) {
-  .container {
-    padding: 20px;
-  }
-
-  .title {
-    font-size: 1.8rem;
-  }
-
-  .actionsContainer {
-    flex-direction: column;
-  }
-
-  .excelButton,
-  .pdfButton {
-    width: 100%;
-    justify-content: center;
+  
+  .viewerSection {
+    margin: 0 16px 16px 16px;
+    padding: 16px;
   }
 
   .viewerWrapper {

@@ -52,10 +52,16 @@ const TransactionScreen = () => {
 
   const params = new URLSearchParams(location.search);
   const typeParam = params.get('type');
+  
+  // ✅ NOVO: Ler o parâmetro 'defaultDate' da URL
+  const dateParam = params.get('defaultDate');
 
   const [transactionType, setTransactionType] = useState(typeParam || 'deposit');
   const [amount, setAmount] = useState('');
-  const [date, setDate] = useState(getCurrentDate());
+  
+  // ✅ ATUALIZADO: Usar dateParam se existir, senão usar a data atual
+  const [date, setDate] = useState(dateParam || getCurrentDate());
+  
   const [loading, setLoading] = useState(false);
   const [isInitialBank, setIsInitialBank] = useState(false);
   

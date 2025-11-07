@@ -1,9 +1,16 @@
+/* ========================================
+   Tema XP (Branco, Azul, Cinza)
+   PerformanceChart.module.css
+   ======================================== */
+
+/* Container (Estilo Group Box XP) */
 .chartContainer {
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(45, 45, 45, 0.95) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 24px;
+    background: #ECE9D8; /* Fundo Cinza XP */
+    border: 1px solid #7F9DB9; /* Borda Cinza-Azul */
+    border-radius: 0;
+    padding: 20px;
     margin-bottom: 24px;
+    font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
 }
 
 .chartHeader {
@@ -19,52 +26,55 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    color: #FFD700;
+    color: #003399; /* Azul Escuro */
 }
 
 .chartTitle svg {
-    font-size: 24px;
+    font-size: 20px;
+    color: #0054E3; /* Azul */
 }
 
 .chartTitle h3 {
     margin: 0;
-    font-size: 20px;
+    font-size: 14px;
     font-weight: 600;
 }
 
 .dateFilters {
     display: flex;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 4px;
-    border-radius: 10px;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
 }
 
+/* Botão de Filtro (Estilo Botão Cinza XP) */
 .filterButton {
-    padding: 8px 16px;
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    color: #999;
-    font-size: 14px;
+    padding: 6px 16px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+    border: 1px solid #7F9DB9;
+    border-radius: 3px;
+    color: #000;
+    font-size: 11px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: none;
     white-space: nowrap;
 }
 
 .filterButton:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+    color: #000;
 }
 
 .filterButton.active {
-    background: linear-gradient(45deg, #FFD700, #F0C040);
+    background: #C1D2EE; /* Fundo Azul "Pressionado" */
     color: #000;
     font-weight: 600;
+    border-color: #003399;
 }
 
-/* Estatísticas do Período */
+/* Estatísticas (Painéis Brancos XP) */
 .statsRow {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -73,9 +83,9 @@
 }
 
 .statCard {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    background: #FFFFFF;
+    border: 1px solid #C0C0C0; /* Borda cinza clara */
+    border-radius: 4px;
     padding: 16px;
     display: flex;
     flex-direction: column;
@@ -86,117 +96,122 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
-    color: #999;
+    font-size: 11px;
+    color: #333;
     font-weight: 500;
 }
 
 .statLabel svg {
-    font-size: 16px;
+    font-size: 14px;
+    color: #0054E3 !important; /* Força ícones azuis */
 }
 
 .statValueGains,
 .statValueLosses,
 .statValueNet,
 .statValueBalance {
-    font-size: 22px;
+    font-size: 18px;
     font-weight: bold;
 }
 
 .statValueGains {
-    color: #4CAF50;
+    color: #0054E3; /* Verde -> Azul */
 }
 
 .statValueLosses {
-    color: #F44336;
+    color: #333333; /* Vermelho -> Cinza Escuro */
 }
 
 .statValueBalance {
-    color: #FFD700;
+    color: #003399; /* Dourado -> Azul Escuro */
 }
 
 .statValueNet.positive {
-    color: #4CAF50;
+    color: #0054E3; /* Verde -> Azul */
 }
 
 .statValueNet.negative {
-    color: #F44336;
+    color: #333333; /* Vermelho -> Cinza Escuro */
 }
 
 .statAvg {
-    font-size: 12px;
+    font-size: 11px;
     color: #666;
 }
 
 .statAvg.positive {
-    color: #4CAF50;
+    color: #0054E3; /* Verde -> Azul */
 }
 
 .statAvg.negative {
-    color: #F44336;
+    color: #333333; /* Vermelho -> Cinza Escuro */
 }
 
-/* Gráfico */
+/* Gráfico (Wrapper Estilo Controle XP) */
 .chartWrapper {
     margin-top: 20px;
-    padding: 16px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
+    padding: 10px;
+    background: #FFFFFF; /* Fundo Branco */
+    border-radius: 0;
+    border: 1px solid #7F9DB9; /* Borda de controle */
+    box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3); /* Sombra interna */
 }
 
-/* Tooltip Customizado */
+/* Tooltip Customizado (Estilo XP) */
 .customTooltip {
-    background: rgba(26, 26, 26, 0.98);
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    min-width: 200px;
+    background: #FFFFFF;
+    border: 1px solid #000000; /* Borda Preta */
+    border-radius: 2px;
+    padding: 8px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    min-width: 180px;
 }
 
 .tooltipDate {
-    font-size: 13px;
-    color: #FFD700;
+    font-size: 11px;
+    color: #000;
     font-weight: 600;
-    margin: 0 0 12px 0;
+    margin: 0 0 8px 0;
     text-align: center;
+    border-bottom: 1px solid #C0C0C0;
+    padding-bottom: 5px;
 }
 
 .tooltipRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 }
 
 .tooltipLabel {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 13px;
-    color: #ddd;
+    font-size: 11px;
+    color: #000;
 }
 
 .tooltipLabel svg {
-    color: #FFD700;
+    color: #0054E3 !important; /* Força ícone azul */
 }
 
 .tooltipValueBalance {
     font-weight: 700;
-    color: #FFD700;
-    font-size: 16px;
+    color: #000;
+    font-size: 12px;
 }
 
 .tooltipInfo {
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 1px dotted #C0C0C0;
     text-align: center;
 }
 
 .tooltipInfo small {
-    color: #999;
-    font-size: 11px;
+    color: #333;
+    font-size: 10px;
 }
 
 /* Estado Vazio */
@@ -205,25 +220,26 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 60px 20px;
-    color: #999;
+    padding: 40px 20px;
+    color: #333;
     text-align: center;
 }
 
 .emptyChart svg {
-    color: rgba(255, 215, 0, 0.3);
+    color: #7F9DB9; /* Cinza-Azul */
     margin-bottom: 16px;
 }
 
 .emptyChart p {
-    font-size: 16px;
+    font-size: 12px;
     margin: 0 0 8px 0;
-    color: #ddd;
+    color: #000;
+    font-weight: bold;
 }
 
 .emptyChart small {
-    font-size: 13px;
-    color: #666;
+    font-size: 11px;
+    color: #333;
 }
 
 /* Responsividade */
@@ -249,8 +265,8 @@
     }
 
     .filterButton {
-        padding: 8px 12px;
-        font-size: 13px;
+        padding: 6px 12px;
+        font-size: 11px;
     }
 
     .statsRow {
@@ -262,35 +278,35 @@
     }
 
     .chartTitle h3 {
-        font-size: 18px;
+        font-size: 14px;
     }
 
     .statValueGains,
     .statValueLosses,
     .statValueNet,
     .statValueBalance {
-        font-size: 20px;
+        font-size: 16px;
     }
 }
 
 @media (max-width: 480px) {
     .customTooltip {
-        min-width: 160px;
-        padding: 12px;
+        min-width: 150px;
+        padding: 6px;
     }
 
     .tooltipDate {
-        font-size: 12px;
+        font-size: 11px;
     }
 
     .tooltipRow {
         flex-direction: column;
         align-items: flex-start;
         gap: 4px;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
 
     .tooltipValueBalance {
-        font-size: 14px;
+        font-size: 12px;
     }
 }

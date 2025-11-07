@@ -1,3 +1,5 @@
+/* Windows XP Classic Theme (3-Color: White, Blue, Gray) - LoginScreen.module.css */
+
 @keyframes spin {
     from {
         transform: rotateY(0deg);
@@ -7,24 +9,26 @@
     }
 }
 
+/* * REMOVIDO: @keyframes blissWave
+ * A animação do fundo "Bliss" foi removida.
+ */
+
+/* MODIFICADO: Fundo agora é cinza sólido "Windows Classic" */
 .container {
     min-height: 100vh;
     min-width: 100vw;
-    background-size: cover;
-    background-position: center;
+    background: #D6D3CE; /* Fundo cinza clássico */
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
-    color: #fff;
+    font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
 }
 
-.overlayGradient {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-}
+/* * REMOVIDO: .container::before (Efeito de nuvem)
+ * REMOVIDO: .overlayGradient (Sobreposição escura)
+ */
 
 .scrollContainer {
     position: relative;
@@ -32,83 +36,131 @@
     width: 100%;
     max-width: 450px;
     max-height: 95vh;
-    overflow-y:auto;
+    overflow-y: auto;
+    /* Cores da barra de rolagem (Cinza/Azul-acinzentado) */
     scrollbar-width: thin;
-    scrollbar-color: transparent;
+    scrollbar-color: #7F9DB9 #ECE9D8;
     padding: 20px;
 }
 
+/* Estilo de janela XP para Login (Branco/Cinza/Azul) */
 .header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+    padding: 20px;
+    border: 2px solid #0054E3;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 
+        0 0 0 1px rgba(255,255,255,0.8),
+        2px 2px 8px rgba(0,0,0,0.3);
 }
 
 .logoContainer {
     margin-bottom: 20px;
+    padding: 15px;
+    /* Fundo azul sutil */
+    background: radial-gradient(circle, rgba(0,84,227,0.1) 0%, transparent 70%);
+    border-radius: 50%;
 }
 
 .logo {
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
     animation: spin 4s linear infinite;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
 }
 
 .header h1 {
-    font-size: 32px;
+    font-size: 24px;
     font-weight: bold;
-    color: #fff;
-    text-shadow: 0 3px 8px rgba(255, 223, 0, 0.8);
+    color: #003399; /* Azul */
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
     margin: 0 0 8px;
+    font-family: 'Tahoma', sans-serif;
 }
 
 .header p {
-    font-size: 18px;
-    color: #ddd;
+    font-size: 14px;
+    color: #000000; /* Cinza (Preto) */
     margin: 0;
+    font-family: 'Tahoma', sans-serif;
 }
 
+/* MODIFICADO: Caixa de Erro (agora estilo "Informação" Azul) */
 .errorContainer {
-    background: rgba(244, 67, 54, 0.15);
-    border: 1px solid #F44336;
-    border-radius: 12px;
-    padding: 15px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%); /* Branco/Cinza */
+    border: 2px solid #0054E3; /* Azul */
+    border-radius: 0;
+    padding: 12px;
     margin-bottom: 20px;
-    color: #F44336;
-    font-weight: 500;
+    color: #003399; /* Texto Azul */
+    font-weight: normal;
+    font-size: 11px;
+    box-shadow: 
+        0 0 0 1px rgba(0,84,227,0.3),
+        2px 2px 4px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* MODIFICADO: Ícone de "Informação" (Azul) */
+.errorContainer::before {
+    content: '(i)'; /* Símbolo de informação estilo XP */
+    font-size: 24px;
+    color: #0054E3;
+    font-weight: bold;
+    font-family: 'monospace';
 }
 
 .form {
     width: 100%;
+    background: linear-gradient(180deg, #ECE9D8 0%, #D6D3CE 100%); /* Cinza */
+    padding: 20px;
+    border: 2px solid #0054E3; /* Azul */
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 
+        0 0 0 1px rgba(255,255,255,0.8),
+        2px 2px 8px rgba(0,0,0,0.3);
 }
 
 .inputGroup {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .inputGroup label {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 16px;
-    color: #FFD700;
-    margin-bottom: 8px;
-    font-weight: 600;
+    gap: 6px;
+    font-size: 11px;
+    color: #000000; /* Cinza (Preto) */
+    margin-bottom: 4px;
+    font-weight: bold;
+    font-family: 'Tahoma', sans-serif;
 }
 
 .inputGroup input {
     width: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    padding: 15px;
-    font-size: 16px;
-    color: #fff;
+    background: #FFFFFF; /* Branco */
+    border: 1px solid #7F9DB9; /* Cinza/Azul */
+    border-radius: 0;
+    padding: 4px 6px;
+    font-size: 11px;
+    color: #000000; /* Cinza (Preto) */
     box-sizing: border-box;
+    font-family: 'Tahoma', sans-serif;
+    box-shadow: 
+        -1px -1px 0px rgba(255,255,255,0.8) inset,
+        1px 1px 2px rgba(0,0,0,0.1) inset;
 }
 
+/* MODIFICADO: Foco do input agora é branco puro */
 .inputGroup input:focus {
-    outline: none;
-    border-color: #FFD700;
+    outline: 1px solid #0054E3; /* Azul */
+    outline-offset: -1px;
+    background: #FFFFFF; /* Branco */
 }
 
 .passwordWrapper, .currencyInputWrapper {
@@ -119,99 +171,136 @@
 
 .currencyInputWrapper span {
     position: absolute;
-    left: 15px;
-    font-size: 16px;
-    color: #FFD700;
+    left: 8px;
+    font-size: 11px;
+    color: #003399; /* Azul */
     font-weight: bold;
+    font-family: 'Tahoma', sans-serif;
 }
 
 .currencyInputWrapper input {
-    padding-left: 45px;
+    padding-left: 35px;
 }
 
+/* Botão de toggle (Branco/Cinza) */
 .passwordToggle {
     position: absolute;
-    right: 15px;
-    background: none;
-    border: none;
-    color: #999;
+    right: 4px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+    border: 1px solid #7F9DB9;
+    color: #000000;
     cursor: pointer;
-    font-size: 20px;
+    font-size: 16px;
+    padding: 2px 6px;
+    box-shadow: 1px 1px 0px rgba(255,255,255,0.5) inset;
+}
+
+.passwordToggle:hover {
+    background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+}
+
+.passwordToggle:active {
+    background: linear-gradient(180deg, #C1D2EE 0%, #BFCCE0 100%);
 }
 
 .forgotPassword {
-    margin-top: 8px;
+    margin-top: 6px;
     background: none;
     border: none;
-    color: #FFD700;
-    font-size: 14px;
+    color: #0054E3; /* Azul */
+    font-size: 11px;
     cursor: pointer;
     text-align: right;
     width: 100%;
     padding: 0;
     text-decoration: underline;
-    transition: opacity 0.2s;
+    transition: color 0.2s;
+    font-family: 'Tahoma', sans-serif;
 }
 
 .forgotPassword:hover {
-    opacity: 0.8;
+    color: #003399; /* Azul */
 }
 
+/* Botão principal (Azul/Branco) */
 .submitButton {
     width: 100%;
-    border: none;
-    border-radius: 12px;
+    border: 1px solid #003C74; /* Azul */
+    border-radius: 3px;
     padding: 0;
-    margin-top: 30px;
+    margin-top: 20px;
     cursor: pointer;
     overflow: hidden;
-    box-shadow: 0 6px 12px rgba(255, 215, 0, 0.4);
+    box-shadow: 
+        1px 1px 0px rgba(255,255,255,0.8) inset,
+        -1px -1px 0px rgba(0,0,0,0.2) inset,
+        0 2px 4px rgba(0,0,0,0.2);
 }
 
 .goldGradient {
-    padding: 18px;
-    background: linear-gradient(45deg, #FFD700, #F0C040);
-    color: #000;
-    font-size: 18px;
+    padding: 8px 16px;
+    background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%); /* Gradiente Azul */
+    color: #FFFFFF; /* Branco */
+    font-size: 11px;
     font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    font-family: 'Tahoma', sans-serif;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
+.submitButton:hover .goldGradient {
+    background: linear-gradient(180deg, #008FE5 0%, #0065F0 50%, #0050C5 100%); /* Azul */
+}
+
+.submitButton:active .goldGradient {
+    background: linear-gradient(180deg, #0040B0 0%, #003399 50%, #002875 100%); /* Azul */
+    box-shadow: inset 1px 1px 3px rgba(0,0,0,0.4);
+}
+
+/* Estado desabilitado (Cinza) */
 .submitButton:disabled .goldGradient {
-    opacity: 0.7;
+    background: linear-gradient(180deg, #999999 0%, #808080 100%);
     cursor: not-allowed;
+    color: #CCCCCC;
 }
 
 .toggleButton {
-    margin-top: 30px;
+    margin-top: 20px;
     background: none;
     border: none;
-    color: #ddd;
-    font-size: 16px;
+    color: #000000; /* Cinza (Preto) */
+    font-size: 11px;
     width: 100%;
     cursor: pointer;
     text-align: center;
+    font-family: 'Tahoma', sans-serif;
 }
 
 .toggleButton span {
-    color: #FFD700;
+    color: #0054E3; /* Azul */
     font-weight: bold;
+    text-decoration: underline;
 }
 
-/* Modal Styles */
+.toggleButton:hover span {
+    color: #003399; /* Azul */
+}
+
+/* Modal (Fundo Azul transparente) */
 .modalOverlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 84, 227, 0.3); /* Azul */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
     padding: 20px;
     animation: fadeIn 0.2s ease;
+    backdrop-filter: blur(2px);
 }
 
 @keyframes fadeIn {
@@ -224,20 +313,22 @@
 }
 
 .modalContent {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    border-radius: 16px;
-    padding: 40px 30px;
+    background: linear-gradient(180deg, #ECE9D8 0%, #D6D3CE 100%); /* Cinza */
+    border: 2px solid #0054E3; /* Azul */
+    border-radius: 8px 8px 0 0;
+    padding: 0;
     max-width: 450px;
     width: 100%;
     position: relative;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 
+        0 0 0 1px rgba(255,255,255,0.8),
+        4px 4px 12px rgba(0,0,0,0.4);
     animation: slideUp 0.3s ease;
 }
 
 @keyframes slideUp {
     from {
-        transform: translateY(20px);
+        transform: translateY(30px);
         opacity: 0;
     }
     to {
@@ -246,114 +337,179 @@
     }
 }
 
+/* Barra de título do Modal (Azul/Branco) */
+.modalContent::before {
+    content: 'Password Reset';
+    display: block;
+    background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+    padding: 4px 8px;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 6px 6px 0 0;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    font-family: 'Tahoma', sans-serif;
+}
+
 .closeButton {
     position: absolute;
-    top: 15px;
-    right: 15px;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
+    top: 4px;
+    right: 4px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 100%); /* Branco/Cinza-Azul */
+    border: 1px solid #003C74; /* Azul */
+    border-radius: 0;
+    width: 21px;
+    height: 21px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #fff;
-    font-size: 24px;
-    transition: all 0.2s;
+    color: #000000; /* Cinza (Preto) */
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.1s;
+    box-shadow: 1px 1px 0px rgba(255,255,255,0.5) inset;
+    z-index: 10;
 }
 
 .closeButton:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(90deg);
+    background: linear-gradient(180deg, #FFF8DC 0%, #D4E1F5 100%);
+}
+
+.closeButton:active {
+    background: linear-gradient(180deg, #7F9DB9 0%, #6B8CAF 100%);
 }
 
 .modalHeader {
     text-align: center;
-    margin-bottom: 30px;
+    padding: 20px;
+    background: #FFFFFF; /* Branco */
+    margin: 0;
 }
 
 .modalHeader h2 {
-    font-size: 28px;
-    color: #FFD700;
+    font-size: 16px;
+    color: #003399; /* Azul */
     margin: 0 0 10px;
-    text-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+    font-weight: bold;
+    font-family: 'Tahoma', sans-serif;
 }
 
 .modalHeader p {
-    font-size: 16px;
-    color: #ddd;
+    font-size: 11px;
+    color: #000000; /* Cinza (Preto) */
     margin: 0;
+    font-family: 'Tahoma', sans-serif;
 }
 
 .resetForm {
     width: 100%;
+    padding: 20px;
 }
 
+/* Mensagem de sucesso (Branco) */
 .successMessage {
     text-align: center;
-    padding: 20px 0;
+    padding: 30px 20px;
+    background: #FFFFFF;
 }
 
+/* MODIFICADO: Ícone de Sucesso (agora Azul) */
 .successIcon {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #4CAF50, #45a049);
+    width: 64px;
+    height: 64px;
+    border-radius: 0;
+    background: linear-gradient(180deg, #0078D7 0%, #0054E3 100%); /* Gradiente Azul */
     color: white;
-    font-size: 48px;
+    font-size: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 20px;
     animation: scaleIn 0.4s ease;
+    border: 2px solid #003C74; /* Azul Escuro */
+    box-shadow: 
+        0 0 0 1px rgba(255,255,255,0.5),
+        2px 2px 6px rgba(0,0,0,0.3);
 }
 
 @keyframes scaleIn {
-    from {
+    0% {
         transform: scale(0);
     }
-    to {
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
         transform: scale(1);
     }
 }
 
 .successMessage h3 {
-    font-size: 24px;
-    color: #4CAF50;
+    font-size: 16px;
+    color: #003399; /* Azul */
     margin: 0 0 15px;
+    font-weight: bold;
+    font-family: 'Tahoma', sans-serif;
 }
 
 .successMessage p {
-    font-size: 16px;
-    color: #ddd;
+    font-size: 11px;
+    color: #000000; /* Cinza (Preto) */
     line-height: 1.5;
     margin: 0 0 25px;
+    font-family: 'Tahoma', sans-serif;
 }
 
+/* Botão OK (Azul/Branco) */
 .okButton {
     width: 100%;
-    border: none;
-    border-radius: 12px;
+    border: 1px solid #003C74;
+    border-radius: 3px;
     padding: 0;
     cursor: pointer;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    box-shadow: 
+        1px 1px 0px rgba(255,255,255,0.8) inset,
+        -1px -1px 0px rgba(0,0,0,0.2) inset,
+        0 2px 4px rgba(0,0,0,0.2);
 }
 
-.okButton .goldGradient,
-.okButton::before {
-    padding: 15px;
-    background: linear-gradient(45deg, #4CAF50, #45a049);
-    color: white;
-    font-size: 16px;
+.okButton .goldGradient {
+    padding: 8px 16px;
+    background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
+    color: #FFFFFF;
+    font-size: 11px;
     font-weight: bold;
+    font-family: 'Tahoma', sans-serif;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.okButton:hover .goldGradient {
+    background: linear-gradient(180deg, #008FE5 0%, #0065F0 50%, #0050C5 100%);
+}
+
+.okButton:active .goldGradient {
+    background: linear-gradient(180deg, #0040B0 0%, #003399 50%, #002875 100%);
 }
 
 .helpText {
     display: block;
     margin-top: 6px;
-    font-size: 14px;
-    color: #999;
+    font-size: 10px;
+    color: #666666; /* Cinza */
+    font-family: 'Tahoma', sans-serif;
+    font-style: italic;
+}
+
+/* * REMOVIDO: .xpOrb (Start Orb)
+ * Removido pois era verde e não se encaixava na paleta de 3 cores.
+ */
+
+/* Estilo de fonte padrão (Cinza/Preto) */
+body {
+    font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }

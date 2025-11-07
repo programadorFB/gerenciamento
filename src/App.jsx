@@ -22,6 +22,9 @@ import TransactionHistoryScreen from './pages/TransactionHistory/TransactionHist
 import ProfileScreen from './pages/Profile/profileScreen.jsx';
 import ObjectivesScreen from './pages/Objectives/ObjectiveScreen.jsx';
 
+// ✅ NOVO: Importação da tela de Calendário
+import CalendarScreen from './components/CalendarScreen.jsx'; // Ajuste o caminho se necessário
+
 const AppLayout = () => (
   <div style={{ display: 'flex', minHeight: '100vh', position: 'relative' }}>
     <SideMenu />
@@ -74,6 +77,9 @@ function App() {
               <Route path="/profile" element={<ProfileScreen />} />
               <Route path="/history" element={<TransactionHistoryScreen />} />
               <Route path="/strategy" element={<StrategyScreen />} />
+
+              {/* ✅ NOVO: Rota para a tela de Calendário */}
+              <Route path="/calendar" element={<CalendarScreen />} />
             </Route>
 
             {/* Rota para páginas não encontradas */}

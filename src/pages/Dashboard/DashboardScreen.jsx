@@ -1,5 +1,4 @@
-
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // --- Contexts ---
@@ -13,33 +12,27 @@ import SideMenu from '../../components/SideMenu';
 import TransactionList from '../../components/TransactionList';
 import ObjectivesList from '../../components/ObjectivesList';
 import PerformanceChart from '../../components/PerformanceChart';
+import { CalendarGrid, DayTransactionsModal } from '../../components/CalendarScreen'; // Ajuste o caminho se necessário
 
 // --- Icons ---
 import { 
-    MdAccountBalanceWallet, 
-    MdFlag, 
-    MdAdd, 
-    MdRemove, 
-    MdTrendingUp, 
-    MdTrendingDown, 
-    MdWarning,
-    MdRefresh 
+    MdAccountBalanceWallet, MdFlag, MdAdd, MdRemove, 
+    MdTrendingUp, MdTrendingDown, MdWarning, MdRefresh 
 } from 'react-icons/md';
 import { 
-    FaCoins, 
-    FaReceipt, 
-    FaBullseye, 
-    FaShieldAlt, 
-    FaChartLine, 
-    FaDice, 
-    FaFire, 
-    FaBalanceScale,
-    FaCalendarDay 
+    FaCoins, FaReceipt, FaBullseye, FaShieldAlt, 
+    FaChartLine, FaDice, FaFire, FaBalanceScale, FaCalendarDay 
 } from 'react-icons/fa';
+import { 
+    IoPlayBack, 
+    IoPlayForward,
+    IoChevronBack,
+    IoChevronForward
+} from 'react-icons/io5';
+
 
 // --- Assets ---
 import logo from '../../assets/logo.png';
-import background from '../../assets/fundoLuxo.jpg';
 
 // --- Avatares Locais ---
 import avatar1 from '../../assets/avatares/1.png';
@@ -50,7 +43,8 @@ import avatar5 from '../../assets/avatares/5.png';
 import avatar6 from '../../assets/avatares/6.png';
 
 // --- CSS Module ---
-import styles from '../../styles/DashboardScreen.module.css';
+import styles from '../../styles/DashboardScreen.module.css'; 
+import calendarStyles from '../../components/CalendarScreen.module.css'; // Ajuste o caminho se necessário
 
 // --- Avatares ---
 const PREDEFINED_AVATARS = [
@@ -83,6 +77,11 @@ const Dashboard = () => {
     const { bettingProfile } = useBetting(); 
     const { openMenu } = useSideMenu();
 
+    // --- Estados do Calendário ---
+    const [calendarDate, setCalendarDate] = useState(new Date()); 
+    const [modalDate, setModalDate] = useState(null);
+    const [modalTransactions, setModalTransactions] = useState([]);
+
     useEffect(() => {
         if (!isLoading && !user) {
             navigate('/login');
@@ -95,76 +94,63 @@ const Dashboard = () => {
         }
     }, [user, refreshData]);
 
+    // --- Funções de navegação do calendário ---
+    const handlePrevMonth = () => {
+        setCalendarDate(new Date(calendarDate.getFullYear(), calendarDate.getMonth() - 1, 1));
+    };
+    const handleNextMonth = () => {
+        setCalendarDate(new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 1));
+    };
+    const handlePrevYear = () => {
+        setCalendarDate(new Date(calendarDate.getFullYear() - 1, calendarDate.getMonth(), 1));
+    };
+    const handleNextYear = () => {
+        setCalendarDate(new Date(calendarDate.getFullYear() + 1, calendarDate.getMonth(), 1));
+    };
+
+    // --- Lógica do Calendário ---
+    const transactionsByDay = useMemo(() => {
+        const map = {};
+        transactions.forEach(tx => {
+            try {
+                const dateKey = new Date(tx.date).toISOString().split('T')[0];
+                if (!map[dateKey]) {
+                map[dateKey] = [];
+                }
+                map[dateKey].push(tx);
+            } catch (e) {
+                console.error("Transação com data inválida:", tx);
+            }
+        });
+        return map;
+    }, [transactions]);
+
+    const handleDayClick = (date, transactions) => {
+        setModalDate(date);
+        setModalTransactions(transactions);
+    };
+
+    const closeModal = () => {
+        setModalDate(null);
+        setModalTransactions([]);
+    };
+    
+    // (O restante das suas funções... getAvatarUrl, getInitials, etc.)
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('pt-BR', { 
             style: 'currency', 
             currency: 'BRL' 
         }).format(amount || 0);
     };
-
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('pt-BR', { 
-            day: '2-digit', 
-            month: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
-    const getProfileIcon = () => {
-        if (!bettingProfile?.isInitialized) return null;
-        
-        const iconName = bettingProfile.iconName || 'dice';
-        const color = bettingProfile.color || '#FFD700';
-        
-        switch(iconName) {
-            case 'shield-alt':
-            case 'shield':
-                return <FaShieldAlt color={color} />;
-            case 'fire':
-                return <FaFire color={color} />;
-            case 'balance-scale':
-            case 'balance':
-                return <FaBalanceScale color={color} />;
-            case 'dice':
-            default:
-                return <FaDice color={color} />;
-        }
-    };
-
-    const calculateProfitTarget = () => {
-        const riskLevel = bettingProfile?.riskLevel || 5;
-        return balance * (riskLevel / 100);
-    };
-
-    const calculateDailyProfitProgress = () => {
-        const profitTarget = calculateProfitTarget();
-        if (profitTarget <= 0) return 0;
-        return Math.min((dailyGains / profitTarget) * 100, 100);
-    };
-
-    const stopLossMonetaryValue = bettingProfile?.stopLoss || 0;
-
-    const isStopLossTriggered = useMemo(() => {
-        if (!stopLossMonetaryValue) return false;
-        return dailyLosses >= stopLossMonetaryValue;
-    }, [dailyLosses, stopLossMonetaryValue]);
-
-    const stopLossDistance = useMemo(() => {
-        if (!stopLossMonetaryValue) return null;
-        return stopLossMonetaryValue - dailyLosses;
-    }, [dailyLosses, stopLossMonetaryValue]);
-
+    
     const getAvatarUrl = () => {
         if (!user?.profile_photo) return null;
         const avatar = PREDEFINED_AVATARS.find(a => a.id === user.profile_photo);
         return avatar ? avatar.url : null;
     };
-
+    
     const avatarUrl = getAvatarUrl();
-
+    
     const getInitials = () => {
         if (!user?.name) return 'J';
         return user.name
@@ -174,7 +160,19 @@ const Dashboard = () => {
             .toUpperCase()
             .slice(0, 2);
     };
-
+    
+    const getProfileIcon = () => {
+        if (!bettingProfile?.isInitialized) return null;
+        const color = '#FFFFFF'; 
+        const iconName = bettingProfile.iconName || 'dice';
+        switch(iconName) {
+            case 'shield-alt': case 'shield': return <FaShieldAlt color={color} />;
+            case 'fire': return <FaFire color={color} />;
+            case 'balance-scale': case 'balance': return <FaBalanceScale color={color} />;
+            case 'dice': default: return <FaDice color={color} />;
+        }
+    };
+    
     if (isLoading || !user) {
         return (
             <div className={styles.loadingContainer}>
@@ -182,46 +180,40 @@ const Dashboard = () => {
             </div>
         );
     }
-
+    
     const initialBalance = getEffectiveInitialBalance();
     const overallProfit = balance - initialBalance;
-    const realProfit = getRealProfit();
-    const profitTarget = calculateProfitTarget();
-    const dailyProfitProgress = calculateDailyProfitProgress();
-    
+    const realProfit = getRealProfit(); // Supondo que esta função exista no seu context
     const recentTransactions = transactions.slice(-5).reverse();
-    const incompleteObjectives = objectives.filter(obj => obj.current_amount < obj.target_amount);
+    // ... (cálculos de profitTarget, etc.)
     
+    // ✅ NOVO: Formatar o nome do mês/ano
+    const monthName = calendarDate.toLocaleDateString('pt-BR', { 
+        month: 'long', 
+        year: 'numeric' 
+    });
+
     return (
-        <div className={styles.dashboardContainer} style={{ backgroundImage: `url(${background})` }}>
-            <div className={styles.overlayGradient} />
+        <div className={styles.dashboardContainer}>
             
             <header className={styles.header}>
+              {/* ... (Seu cabeçalho existente) ... */}
                 <button className={styles.menuButton} onClick={openMenu}>
                     <span className={styles.menuIcon}></span>
                 </button>
-                
                 <div className={styles.greetingContainer}>
                     <h1 className={styles.greeting}>
                         Olá, {user?.name || 'Jogador'}!
                         <img src={logo} alt="Logo" className={styles.logoImg} />
                     </h1>
-                    
                     <div className={styles.profileWrapper}>
-                        <div className={styles.profileAvatarContainer}>
-                            {avatarUrl ? (
-                                <img 
-                                    src={avatarUrl} 
-                                    alt="Avatar" 
-                                    className={styles.profileAvatar} 
-                                />
-                            ) : (
-                                <div className={`${styles.profileAvatar} ${styles.profileAvatarPlaceholder}`}>
-                                    <span>{getInitials()}</span>
-                                </div>
-                            )}
-                        </div>
-                        
+                       {avatarUrl ? (
+                            <img src={avatarUrl} alt="Avatar" className={styles.profileAvatar} />
+                        ) : (
+                            <div className={`${styles.profileAvatar} ${styles.profileAvatarPlaceholder}`}>
+                                <span>{getInitials()}</span>
+                            </div>
+                        )}
                         {bettingProfile?.isInitialized && (
                             <div className={styles.profileIconBadge} title={bettingProfile.title}>
                                 {getProfileIcon()}
@@ -233,266 +225,9 @@ const Dashboard = () => {
 
             <main className={styles.scrollView}>
                 
-                
-
-                {/* Seção de Saldos */}
-                <section className={styles.balanceSection}>
-                    <div className={styles.balanceCard}>
-                        <div className={styles.cardHeader}>
-                            <MdAccountBalanceWallet size={20} color="#4CAF50" />
-                            <span>Banca Inicial</span>
-                        </div>
-                        <p className={`${styles.balanceAmount} ${styles.initial}`}>
-                            {formatCurrency(initialBalance)}
-                        </p>
-                    </div>
-
-                    <div className={`${styles.balanceCard} ${styles.main}`}>
-                        <div className={styles.cardHeader}>
-                            <FaCoins size={20} color="#fdb931" />
-                            <span>Saldo Atual</span>
-                        </div>
-                        <p className={`${styles.balanceAmount} ${styles.main}`}>
-                            {formatCurrency(balance)}
-                        </p>
-                        <div className={`${styles.performance} ${overallProfit >= 0 ? styles.positive : styles.negative}`}>
-                            {overallProfit >= 0 ? '▲' : '▼'} {formatCurrency(Math.abs(overallProfit))}
-                        </div>
-                    </div>
-
-                    <div className={styles.balanceCard}>
-                        <div className={styles.cardHeader}>
-                            <MdFlag size={20} color="#d1b464" />
-                            <span>Lucro Real</span>
-                        </div>
-                        <p className={`${styles.balanceAmount} ${realProfit >= 0 ? styles.positive : styles.negative}`}>
-                            {formatCurrency(realProfit)}
-                        </p>
-                    </div>
-                </section>
-
-                {/* Gestão de Risco com valores DIÁRIOS */}
-                <section className={styles.riskManagementSection}>
-                    <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>Gestão de Risco (Diária)</h2>
-                        <button 
-                            className={styles.seeAllButton} 
-                            onClick={() => navigate('/investment-profile')}
-                        >
-                            Configurar
-                        </button>
-                    </div>
-
-                    <div className={styles.riskCardsContainer}>
-                        {/* Card Meta de Lucro DIÁRIA */}
-                        <div className={styles.riskCard}>
-                            <div className={styles.riskCardHeader}>
-                                <div className={styles.riskIconWrapper}>
-                                    <FaChartLine size={18} color="#4CAF50" />
-                                </div>
-                                <span className={styles.riskCardTitle}>Win Diário</span>
-                            </div>
-                            
-                            {bettingProfile?.riskLevel && bettingProfile.riskLevel > 0 ? (
-                                <>
-                                    <div className={styles.riskCardValue}>
-                                        <span className={styles.riskMainValue}>
-                                            {formatCurrency(profitTarget)}
-                                        </span>
-                                        <span className={styles.riskPercentage}>
-                                            {bettingProfile.riskLevel}% da banca
-                                        </span>
-                                    </div>
-                                    
-                                    <div className={styles.progressBarContainer}>
-                                        <div className={styles.progressBar}>
-                                            <div 
-                                                className={styles.progressBarFill}
-                                                style={{ 
-                                                    width: `${dailyProfitProgress}%`,
-                                                    backgroundColor: dailyProfitProgress >= 100 ? '#4CAF50' : '#fdb931'
-                                                }}
-                                            />
-                                        </div>
-                                        <div className={styles.progressInfo}>
-                                            <span className={styles.progressCurrent}>
-                                                {formatCurrency(dailyGains)}
-                                            </span>
-                                            <span className={styles.progressPercent}>
-                                                {dailyProfitProgress.toFixed(1)}%
-                                            </span>
-                                        </div>
-                                    </div>
-                                    
-                                    {dailyProfitProgress >= 100 && (
-                                        <div className={styles.successBanner}>
-                                            <MdFlag size={16} />
-                                            <span>Meta do Dia Alcançada! 🎉</span>
-                                        </div>
-                                    )}
-                                </>
-                            ) : (
-                                <div className={styles.riskCardEmpty}>
-                                    <p>Defina seu perfil de risco</p>
-                                    <button 
-                                        className={styles.configureButton}
-                                        onClick={() => navigate('/investment-profile')}
-                                    >
-                                        Definir perfil
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Card Stop Loss DIÁRIO */}
-                        <div className={`${styles.riskCard} ${isStopLossTriggered ? styles.stopLossTriggered : ''}`}>
-                            <div className={styles.riskCardHeader}>
-                                <div className={styles.riskIconWrapper}>
-                                    <FaShieldAlt 
-                                        size={18} 
-                                        color={isStopLossTriggered ? '#F44336' : '#FF9800'} 
-                                    />
-                                </div>
-                                <span className={styles.riskCardTitle}>StopLoss Diário</span>
-                            </div>
-                            
-                            {stopLossMonetaryValue > 0 ? (
-                                <>
-                                    <div className={styles.riskCardValue}>
-                                        <span className={styles.riskMainValue}>
-                                            {formatCurrency(stopLossMonetaryValue)}
-                                        </span>
-                                        <span className={styles.riskPercentage}>
-                                            Limite de perda
-                                        </span>
-                                    </div>
-                                    
-                                    <div className={styles.progressBarContainer}>
-                                        <div className={styles.progressBar}>
-                                            <div 
-                                                className={styles.progressBarFill}
-                                                style={{ 
-                                                    width: `${Math.min((dailyLosses / stopLossMonetaryValue) * 100, 100)}%`,
-                                                    backgroundColor: isStopLossTriggered 
-                                                        ? '#F44336' 
-                                                        : (dailyLosses / stopLossMonetaryValue) >= 0.8 
-                                                            ? '#FF9800' 
-                                                            : '#FDD835'
-                                                }}
-                                            />
-                                        </div>
-                                        <div className={styles.progressInfo}>
-                                            <span className={styles.progressCurrent}>
-                                                {formatCurrency(dailyLosses)}
-                                            </span>
-                                            <span className={styles.progressPercent}>
-                                                {((dailyLosses / stopLossMonetaryValue) * 100).toFixed(1)}%
-                                            </span>
-                                        </div>
-                                    </div>
-                                    
-                                    {isStopLossTriggered ? (
-                                        <div className={styles.alertBanner}>
-                                            <MdWarning size={16} />
-                                            <span>Limite do Dia Atingido!</span>
-                                        </div>
-                                    ) : stopLossDistance && stopLossDistance < stopLossMonetaryValue * 0.2 ? (
-                                        <div className={styles.warningBanner}>
-                                            <MdWarning size={16} />
-                                            <span>Atenção! Faltam {formatCurrency(stopLossDistance)}</span>
-                                        </div>
-                                    ) : null}
-                                </>
-                            ) : (
-                                <div className={styles.riskCardEmpty}>
-                                    <p>Não configurado</p>
-                                    <button 
-                                        className={styles.configureButton}
-                                        onClick={() => navigate('/investment-profile')}
-                                    >
-                                        Configurar agora
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </section>
-                
-                {/* Seção Resumo Financeiro - TOTAIS GERAIS */}
-                <section className={styles.summarySection}>
-                    <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>Resumo Financeiro (Total)</h2>
-                    </div>
-                    
-                {/* Ações Rápidas */}
-                <section className={styles.quickActions}>
-                    <button 
-                        className={`${styles.actionButton} ${styles.deposit}`} 
-                        onClick={() => navigate('/transaction?type=deposit')}
-                    >
-                        <MdAdd /> Depósito
-                    </button>
-                    <button 
-                        className={`${styles.actionButton} ${styles.withdraw}`} 
-                        onClick={() => navigate('/transaction?type=withdraw')}
-                    >
-                        <MdRemove /> Saque
-                    </button>
-                    <button 
-                        className={`${styles.actionButton} ${styles.gains}`} 
-                        onClick={() => navigate('/transaction?type=gains')}
-                    >
-                        <MdTrendingUp /> Ganhos
-                    </button>
-                    <button 
-                        className={`${styles.actionButton} ${styles.losses}`} 
-                        onClick={() => navigate('/transaction?type=losses')}
-                    >
-                        <MdTrendingDown /> Loss
-                    </button>
-                </section>
-                    <div className={styles.summaryCardUnified}>
-                        <div className={styles.summaryRow}>
-                            <div className={styles.summaryLabel}>
-                                <MdAdd size={22} color="#4CAF50" />
-                                <span>Total Depositado</span>
-                            </div>
-                            <p className={`${styles.summaryValue} ${styles.positive}`}>
-                                {formatCurrency(totalDeposits)}
-                            </p>
-                        </div>
-
-                        <div className={styles.summaryRow}>
-                            <div className={styles.summaryLabel}>
-                                <MdRemove size={22} color="#F44336" />
-                                <span>Total Sacado</span>
-                            </div>
-                            <p className={`${styles.summaryValue} ${styles.negative}`}>
-                                {formatCurrency(totalWithdraws)}
-                            </p>
-                        </div>
-
-                        <div className={styles.summaryRow}>
-                            <div className={styles.summaryLabel}>
-                                <MdTrendingUp size={22} color="#FFD700" />
-                                <span>Total de Ganhos</span>
-                            </div>
-                            <p className={`${styles.summaryValue} ${styles.positive}`}>
-                                {formatCurrency(totalGains)}
-                            </p>
-                        </div>
-
-                        <div className={styles.summaryRow}>
-                            <div className={styles.summaryLabel}>
-                                <MdTrendingDown size={22} color="#FF9800" />
-                                <span>Total de Loss</span>
-                            </div>
-                            <p className={`${styles.summaryValue} ${styles.negative}`}>
-                                {formatCurrency(totalLosses)}
-                            </p>
-                        </div>
-                    </div>
-                </section>
+                {/* ... (Seção de Saldos - Mantenha seu código original) ... */}
+                {/* ... (Seção Gestão de Risco - Mantenha seu código original) ... */}
+                {/* ... (Seção Resumo Financeiro - Mantenha seu código original) ... */}
 
                 {/* Gráfico de Performance */}
                 <PerformanceChart 
@@ -500,6 +235,71 @@ const Dashboard = () => {
                     currentBalance={balance}
                     initialBalance={initialBalance}
                 />
+
+                {/* =======================================================
+                ✅ ATUALIZADO: Seção do Calendário com Mês/Ano
+                =======================================================
+                */}
+                <section className={styles.calendarSection}>
+                    <div className={styles.sectionHeader}>
+                        
+                        {/* Título e Botões de Navegação agrupados */}
+                        <div className={styles.calendarHeaderGroup}>
+                            <h2 className={styles.sectionTitle}>Calendário</h2>
+                            
+                            {/* Controles de Navegação */}
+                            <div className={styles.calendarNavControls}>
+                                <button 
+                                    className={`${calendarStyles.navButton} ${calendarStyles.yearButton}`} 
+                                    onClick={handlePrevYear} 
+                                    aria-label="Ano anterior"
+                                >
+                                    <IoPlayBack />
+                                </button>
+                                <button 
+                                    className={calendarStyles.navButton} 
+                                    onClick={handlePrevMonth} 
+                                    aria-label="Mês anterior"
+                                >
+                                    <IoChevronBack />
+                                </button>
+                                
+                                {/* ✅ NOVO: Título do Mês/Ano */}
+                                <h3 className={styles.calendarMonthTitle}>{monthName}</h3>
+
+                                <button 
+                                    className={calendarStyles.navButton} 
+                                    onClick={handleNextMonth} 
+                                    aria-label="Próximo mês"
+                                >
+                                    <IoChevronForward />
+                                </button>
+                                <button 
+                                    className={`${calendarStyles.navButton} ${calendarStyles.yearButton}`} 
+                                    onClick={handleNextYear} 
+                                    aria-label="Próximo ano"
+                                >
+                                    <IoPlayForward />
+                                </button>
+                            </div>
+                        </div>
+                        
+                        {/* Botão Tela Cheia (agora alinhado à direita) */}
+                        <button 
+                            className={styles.seeAllButton} 
+                            onClick={() => navigate('/calendar')}
+                        >
+                            Ver Tela Cheia
+                        </button>
+                    </div>
+                    
+                    <CalendarGrid
+                        currentDate={calendarDate} // Passa o estado
+                        transactionsByDay={transactionsByDay}
+                        onDayClick={handleDayClick}
+                    />
+                </section>
+                {/* ======================================================= */}
 
 
                 {/* Transações Recentes */}
@@ -525,30 +325,16 @@ const Dashboard = () => {
                         </div>
                     )}
                 </section>
-
-                {/* Objetivos Ativos */}
-                {/* <section className={styles.objectivesList}>
-                    <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>Objetivos Ativos</h2>
-                        <button 
-                            className={styles.seeAllButton} 
-                            onClick={() => navigate('/objectives')}
-                        >
-                            Gerenciar
-                        </button>
-                    </div>
-                    {incompleteObjectives.length > 0 ? (
-                        <ObjectivesList objectives={incompleteObjectives.slice(0, 3)} />
-                    ) : (
-                        <div className={styles.emptyState}>
-                            <FaBullseye size={40} />
-                            <p>Nenhum objetivo ativo.</p>
-                        </div>
-                    )}
-                </section> */}
             </main>
 
             <SideMenu />
+
+            {/* Modal do Calendário */}
+            <DayTransactionsModal
+                date={modalDate}
+                transactions={modalTransactions}
+                onClose={closeModal}
+            />
         </div>
     );
 };

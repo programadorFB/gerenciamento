@@ -1,37 +1,43 @@
-/* RiskSlider.module.css */
+/* ========================================
+   Tema XP (Branco, Azul, Cinza)
+   RiskSlider.module.css
+   ======================================== */
+
 .sliderContainer {
-  padding: 30px 20px;
-  background-color: rgba(26, 26, 26, 0.8);
-  margin: 30px 20px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
+  padding: 20px;
+  background-color: #ECE9D8; /* Fundo Cinza XP */
+  margin: 20px;
+  border-radius: 0;
+  border: 1px solid #7F9DB9; /* Borda Group Box */
+  box-shadow: none;
+  backdrop-filter: none;
+  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
 }
 
 .compactContainer {
-  padding: 20px 15px;
+  padding: 15px;
   margin: 20px 0;
-  background-color: rgba(26, 26, 26, 0.6);
+  background-color: #ECE9D8;
+  border: 1px solid #7F9DB9;
 }
 
 .sliderHeader, .compactHeader {
-  text-align: center;
+  text-align: left; /* Alinhamento clássico */
   margin-bottom: 20px;
 }
 
 .sliderTitle, .compactTitle {
   font-weight: bold;
-  color: #FFD700;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  color: #003399; /* Azul Escuro */
+  text-shadow: none;
 }
 
 .sliderTitle {
-  font-size: 1.2rem;
+  font-size: 14px;
   margin-bottom: 15px;
 }
 .compactTitle {
-  font-size: 1rem;
+  font-size: 12px;
   margin-bottom: 8px;
 }
 
@@ -39,23 +45,34 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 8px 15px;
-  border-radius: 20px;
+  background-color: #FFFFFF;
+  border: 1px solid #7F9DB9;
+  padding: 6px 10px;
+  border-radius: 4px;
   font-weight: 600;
 }
 .compactProfileDisplay {
-  padding: 6px 10px;
-  border-radius: 15px;
-  font-size: 0.9rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
 }
+
+/* Força os ícones e textos do perfil a serem azuis, sobrescrevendo o JSX */
+.currentProfileIndicator span[style*="color"],
+.compactProfileDisplay span[style*="color"] {
+  color: #003399 !important;
+}
+.currentProfileIndicator svg,
+.compactProfileDisplay svg {
+  color: #0054E3 !important;
+}
+
 
 .sliderLabels {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
-  padding: 0 10px;
+  padding: 0;
 }
 .labelContainer {
   display: flex;
@@ -65,13 +82,20 @@
   flex: 1;
 }
 .sliderLabel {
-  font-size: 0.8rem;
-  color: #666;
+  font-size: 11px;
+  color: #333;
   font-weight: 600;
-  transition: color 0.3s ease;
+  transition: none;
 }
 .activeLabel {
-  color: #FFD700;
+  color: #003399; /* Azul Escuro */
+}
+/* Força as cores dos ícones das labels */
+.sliderLabels svg {
+  color: #7F9DB9 !important; /* Cinza-Azul Inativo */
+}
+.activeLabel svg {
+  color: #0054E3 !important; /* Azul Ativo */
 }
 
 .sliderWrapper {
@@ -79,25 +103,22 @@
   padding-top: 50px; /* Espaço para o ícone flutuante */
   margin-bottom: 15px;
 }
-
 .compactSliderWrapper {
   padding-top: 45px;
 }
 
-/* NOVA CLASSE: Âncora para o ícone flutuante que estava faltando */
 .floatingIconAnchor {
   position: absolute;
-  top: 50px; /* Alinha com o centro vertical do knob */
+  top: 50px; 
   left: 0;
-  pointer-events: none; /* Garante que não interfere com cliques */
+  pointer-events: none;
 }
 
-/* CLASSE SUBSTITUÍDA: Centraliza o wrapper do ícone dinamicamente */
 .floatingIconWrapper {
   position: absolute;
   bottom: 0;
   left: 0;
-  transform: translate(-50%, -100%) translateY(-15px); /* Centraliza horizontalmente e posiciona acima */
+  transform: translate(-50%, -100%) translateY(-15px); 
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -105,22 +126,31 @@
   pointer-events: none;
 }
 
+/* Estilo Tooltip XP */
 .iconBubble {
-  background-color: rgba(0, 0, 0, 0.9);
-  border-radius: 20px;
-  padding: 8px 12px;
-  border-width: 2px;
+  background-color: #FFFFFF !important; /* Fundo branco (sobrescreve JSX) */
+  border-radius: 2px;
+  padding: 4px 8px;
+  border-width: 1px;
   border-style: solid;
+  border-color: #000000 !important; /* Borda preta (sobrescreve JSX) */
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 50px;
+  min-width: 40px;
 }
 .iconValue {
-  font-size: 0.8rem;
+  font-size: 11px;
   font-weight: bold;
   margin-left: 5px;
+  color: #000000 !important; /* Texto preto (sobrescreve JSX) */
 }
+/* Ícone dentro do Tooltip */
+.iconBubble svg {
+  color: #0054E3 !important; /* Ícone azul (sobrescreve JSX) */
+}
+
 .iconArrow {
   width: 0;
   height: 0;
@@ -128,30 +158,34 @@
   border-right: 6px solid transparent;
   border-top-width: 8px;
   border-top-style: solid;
-  margin-top: -1px;
+  border-top-color: #000000 !important; /* Seta preta (sobrescreve JSX) */
+  margin-top: 0px; /* Ajuste fino */
 }
 
+/* Trilho do Slider (Trackbar) */
 .sliderTrack {
-  height: 8px;
-  background-color: rgba(51, 51, 51, 0.8);
-  border-radius: 4px;
+  height: 6px;
+  background-color: #C0C0C0; /* Trilho Cinza */
+  border: 1px solid #7F9DB9;
+  border-radius: 0;
   position: relative;
-  cursor: grab;
+  cursor: pointer;
 }
 .sliderTrack:active {
-  cursor: grabbing;
+  cursor: pointer;
 }
 .sliderTrackFill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 0;
+  background: #0054E3 !important; /* Azul (sobrescreve gradiente do JSX) */
 }
 
-/* CLASSE MODIFICADA: Knob centralizado corretamente */
+/* Polegar (Knob) do Slider */
 .sliderKnob {
   position: absolute;
-  top: -16px;
+  top: -16px; /* (40px - 8px) / 2 */
   left: 0;
-  transform: translateX(-50%); /* Centraliza o knob pela metade de sua largura */
+  transform: translateX(-50%); 
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -159,16 +193,18 @@
   justify-content: center;
   align-items: center;
   z-index: 5;
-  background-color: transparent; /* O knob em si é invisível, apenas para arrastar */
+  background-color: transparent; 
 }
 .knobCenter {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 3px solid rgba(255, 255, 255, 0.5);
-  pointer-events: none; /* Permite que o cursor seja visto através dele */
+  width: 12px;
+  height: 20px; /* Retângulo do XP */
+  border-radius: 0;
+  border: 1px solid #003C74; /* Borda Azul Escura */
+  background: #0054E3 !important; /* Azul (sobrescreve JSX) */
+  pointer-events: none; 
 }
 
+/* Números da Escala */
 .scaleNumbers {
   display: flex;
   justify-content: space-between;
@@ -179,34 +215,34 @@
   margin-top: 5px;
 }
 .scaleNumber {
-  font-size: 0.8rem;
-  color: #666;
+  font-size: 11px;
+  color: #333;
   font-weight: 600;
   background: none;
   border: none;
   cursor: pointer;
   padding: 5px;
   border-radius: 5px;
-  transition: color 0.2s ease, font-size 0.2s ease;
+  transition: none;
 }
 .compactScaleNumber {
-  font-size: 0.7rem;
+  font-size: 10px;
 }
 .scaleNumber:hover {
-  color: #FFD700;
+  color: #000;
 }
 .activeScaleNumber {
-  color: #FFD700;
-  font-size: 1rem;
+  color: #003399; /* Azul Escuro */
+  font-size: 12px;
   font-weight: bold;
 }
 
 .compactDescriptionText {
-  font-size: 0.8rem;
-  color: #ccc;
+  font-size: 11px;
+  color: #333;
   text-align: center;
   line-height: 1.4;
   margin-top: 15px;
   padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #C0C0C0;
 }
