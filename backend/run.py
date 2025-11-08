@@ -315,7 +315,7 @@ def seed_data(count):
                 stop_loss=Decimal(str(random.randint(100, 500))),
                 profit_target=Decimal(str(random.randint(200, 1000))),
                 features=[f'Feature {j+1}' for j in range(3)],
-                color='#FFD700' if profile_type == 'balanced' else '#4CAF50' if profile_type == 'cautious' else '#F44336',
+                color='#2f00ffff' if profile_type == 'balanced' else '#4CAF50' if profile_type == 'cautious' else '#F44336',
                 icon_name='balance-scale' if profile_type == 'balanced' else 'shield-alt' if profile_type == 'cautious' else 'fire'
             )
             db.session.add(profile)

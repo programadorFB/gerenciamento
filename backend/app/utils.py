@@ -68,7 +68,7 @@ def assess_risk_level(current_balance: Decimal, initial_balance: Decimal, stop_l
             'level': 'undefined',
             'status': 'No stop loss defined',
             'distance_percentage': None,
-            'color': '#FFD700'
+            'color': '#2f00ffff'
         }
     
     distance_from_stop_loss = current_balance - stop_loss
@@ -93,7 +93,7 @@ def assess_risk_level(current_balance: Decimal, initial_balance: Decimal, stop_l
             'level': 'medium',
             'status': 'MEDIUM RISK',
             'distance_percentage': float(distance_percentage),
-            'color': '#FFD700'
+            'color': '#2f00ffff'
         }
     else:
         return {
@@ -139,7 +139,7 @@ def get_profile_recommendations(risk_level: int) -> Dict[str, any]:
             'profile_type': 'balanced',
             'title': 'Jogador Equilibrado',
             'description': 'Equilíbrio entre risco e recompensa com estratégias diversificadas',
-            'color': '#FFD700',
+            'color': '#2f00ffff',
             'icon': 'balance-scale',
             'features': [
                 

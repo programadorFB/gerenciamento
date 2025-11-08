@@ -251,7 +251,7 @@ def create_missing_profiles(session):
                     :user_id, 'balanced', 'Perfil Padrão', 
                     'Perfil criado automaticamente na migração', 5,
                     :initial_balance, :stop_loss, :profit_target, 
-                    :features, '#FFD700', 'dice', TRUE, 
+                    :features, '#2f00ffff', 'dice', TRUE, 
                     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
                 )
             """), {

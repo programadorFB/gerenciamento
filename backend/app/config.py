@@ -4,10 +4,7 @@ from datetime import timedelta
 class Config:
     # === DATABASE CONFIGURATION ===
     # PostgreSQL como padrão para todos os ambientes
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL", 
-        "postgresql://postgres:1234@localhost:5432/betting_tracker"
-    )
+    SQLALCHEMY_DATABASE_URI  = "postgresql://postgres:1234@localhost:5432/betting_tracker"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
         'pool_pre_ping': True,

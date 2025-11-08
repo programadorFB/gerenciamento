@@ -49,7 +49,8 @@ class BettingProfile(db.Model):
     
     # Profile Configuration
     features = db.Column(JSON)  # Array of features
-    color = db.Column(db.String(7), default='#FFD700')  # Hex color
+    # Depois (Corrigido)
+    color = db.Column(db.String(9), default='#2f00ffff')
     icon_name = db.Column(db.String(50), default='dice')
     
     # Status
@@ -116,7 +117,7 @@ class Objective(db.Model):
     
     # Configuration
     category = db.Column(db.String(50))  # withdrawal, equipment, vacation, etc
-    color = db.Column(db.String(7), default='#FFD700')
+    color = db.Column(db.String(7), default='#2f00ffff')
     icon_name = db.Column(db.String(50), default='flag')
     
     # Metadata

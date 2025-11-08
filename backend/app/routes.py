@@ -223,7 +223,7 @@ def register():
     email = data.get('email')
     password = data.get('password')
     initial_bank = data.get('initialBank', 0)
-    risk_level = data.get('riskLevel', 5)
+    risk_level = data.get('riskValue', 5)
     
     # Validação obrigatória da banca inicial
     if not all([name, email, password]):
@@ -371,7 +371,7 @@ def create_betting_profile(current_user_id):
         profile_data = data.get('profile', {})
         
         # CORREÇÃO: Converter todos os valores com segurança
-        risk_level = data.get('riskLevel', 5)
+        risk_level = data.get('riskValue', 5)
         initial_balance = safe_decimal(data.get('bankroll', 0))
         stop_loss = safe_decimal(data.get('stopLoss', 0))
         stop_loss_percentage = safe_decimal(data.get('stopLossPercentage', 0))
@@ -402,7 +402,7 @@ def create_betting_profile(current_user_id):
             existing_profile.stop_loss_percentage = stop_loss_percentage
             existing_profile.profit_target = profit_target
             existing_profile.features = profile_data.get('features', [])
-            existing_profile.color = profile_data.get('color', '#FFD700')
+            existing_profile.color = profile_data.get('color', '#2f00ffff')
             existing_profile.icon_name = profile_data.get('icon', {}).get('name', 'dice')
             existing_profile.updated_at = datetime.utcnow()
             
@@ -420,7 +420,7 @@ def create_betting_profile(current_user_id):
                 stop_loss_percentage=stop_loss_percentage,
                 profit_target=profit_target,
                 features=profile_data.get('features', []),
-                color=profile_data.get('color', '#FFD700'),
+                color=profile_data.get('color', '#2f00ffff'),
                 icon_name=profile_data.get('icon', {}).get('name', 'dice')
             )
             
@@ -502,8 +502,8 @@ def update_betting_profile(current_user_id, profile_id):
         profile.stop_loss = Decimal(str(data['stopLoss']))
     if 'profitTarget' in data:
         profile.profit_target = Decimal(str(data['profitTarget']))
-    if 'riskLevel' in data:
-        profile.risk_level = data['riskLevel']
+    if 'riskValue' in data:
+        profile.risk_level = data['riskValue']
     if 'stopLossPercentage' in data:
         profile.stop_loss_percentage = Decimal(str(data['stopLossPercentage']))    
     
@@ -546,6 +546,7 @@ def get_transactions(current_user_id):
             'error': 'Erro ao carregar transações'
         }), 500
 
+# [routes.py]
 @main.route('/transactions', methods=['POST'])
 @token_required
 def create_transaction(current_user_id):
@@ -553,6 +554,18 @@ def create_transaction(current_user_id):
     tx_type = data.get('type')
     amount = Decimal(str(data.get('amount')))
     
+    # --- CORREÇÃO APLICADA AQUI ---
+    date_str = data.get('date') # 1. Pega a data enviada pelo frontend (ex: "2025-11-01")
+    
+    try:
+        # 2. Converte a string 'YYYY-MM-DD' para um objeto datetime
+        #    Usamos .replace() para definir a hora, caso contrário ficaria 00:00:00
+        transaction_date = datetime.strptime(date_str, '%Y-%m-%d').replace(hour=datetime.utcnow().hour, minute=datetime.utcnow().minute)
+    except (ValueError, TypeError):
+        # 3. Se algo der errado (data nula ou formato inválido), usa a data atual
+        transaction_date = datetime.utcnow()
+    # --- FIM DA CORREÇÃO ---
+
     # CORREÇÃO: Lógica de saldo instável substituída
     current_balance = _get_user_balance(current_user_id)
 
@@ -573,7 +586,7 @@ def create_transaction(current_user_id):
         balance_before=current_balance,
         balance_after=new_balance,
         meta=data.get('meta', {}),
-        date=datetime.utcnow()
+        date=transaction_date  # 4. Usa a data correta (convertida ou fallback)
     )
 
     db.session.add(new_tx)
@@ -593,7 +606,6 @@ def create_transaction(current_user_id):
             'meta': new_tx.meta
         }
     }), 201
-
 @main.route('/transactions/summary', methods=['GET'])
 @token_required
 def get_transactions_summary(current_user_id):
@@ -985,7 +997,7 @@ def create_objective(current_user_id):
         target_date=datetime.strptime(data.get('target_date'), '%Y-%m-%d').date() if data.get('target_date') else None,
         priority=data.get('priority', 'medium'),
         category=data.get('category'),
-        color=data.get('color', '#FFD700'),
+        color=data.get('color', '#2f00ffff'),
         icon_name=data.get('icon_name', 'flag'),
         meta=data.get('meta', {})
     )
