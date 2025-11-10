@@ -9,6 +9,8 @@
     border: 1px solid #7F9DB9; /* Borda Cinza-Azul */
     border-radius: 0;
     padding: 20px;
+    width: 1730px;
+    margin-left: 200px;
     margin-bottom: 24px;
     font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
 }

@@ -12,7 +12,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  min-width: 100vw;
+  max-width: 100vw;
   background-color: #D6D3CE; /* Fundo Cinza XP */
   color: #000000;
   animation: fadeIn 0.3s ease-out;
@@ -21,6 +21,7 @@
 
 /* --- Header (Barra de Título XP) --- */
 .header {
+  min-width: 100vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -64,6 +65,9 @@
   flex-grow: 1;
   padding: 20px;
   overflow-y: auto;
+  width: 1800px;
+  margin-left: 150px;
+  margin-top: 100px;
 }
 .formContainer {
   display: flex;

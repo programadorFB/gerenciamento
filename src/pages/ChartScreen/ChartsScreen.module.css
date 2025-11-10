@@ -114,8 +114,8 @@
 /* ===== MAIN CONTENT (Painel de Conteúdo XP) ===== */
 .casinoMain {
   padding: 20px;
-  max-width: 1400px;
-  margin: 0 10px 10px 10px;
+  max-width: 1800px;
+  margin: 0 10px 10px 160px;
   background: #FFFFFF; /* Fundo branco */
   border: 1px solid #7F9DB9;
   border-top: none; /* Conecta com as abas */

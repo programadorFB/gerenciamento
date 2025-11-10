@@ -371,11 +371,11 @@ const PerformanceChart = ({ transactions, currentBalance, initialBalance }) => {
                             <Line 
                                 type="monotone" 
                                 dataKey="balance" 
-                                stroke="#FFD700" 
+                                stroke="#2f00ffff" 
                                 strokeWidth={3}
                                 name="Saldo Atual"
-                                dot={{ fill: '#FFD700', r: 4 }}
-                                activeDot={{ r: 7, fill: '#FDB931' }}
+                                dot={{ fill: '#2f00ffff', r: 4 }}
+                                activeDot={{ r: 7, fill: '#2f00ffff' }}
                             />
                         </LineChart>
                     </ResponsiveContainer>

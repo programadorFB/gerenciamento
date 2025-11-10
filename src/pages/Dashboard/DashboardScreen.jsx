@@ -312,8 +312,10 @@ const Dashboard = () => {
                     </div>
                 </section>
 
-                {/* Gestão de Risco com valores DIÁRIOS */}
-                <section className={styles.riskManagementSection}>
+                {/* Container para Gestão de Risco e Resumo Financeiro */}
+                <section className={styles.overviewSection}>
+                    {/* Gestão de Risco com valores DIÁRIOS */}
+                    <div className={styles.riskManagementSection}>
                     <div className={styles.sectionHeader}>
                         <h2 className={styles.sectionTitle}>Gestão de Risco (Diária)</h2>
                         <button 
@@ -458,43 +460,15 @@ const Dashboard = () => {
                                 )}
                             </div>
                         </div>
+                        </div>
                     </div>
-                </section>
-                
-                {/* Seção Resumo Financeiro - TOTAIS GERAIS */}
-                <section className={styles.summarySection}>
+
+                    {/* Seção Resumo Financeiro - TOTAIS GERAIS */}
+                    <div className={styles.summarySection}>
                     <div className={styles.sectionHeader}>
                         <h2 className={styles.sectionTitle}>Resumo Financeiro (Total)</h2>
                     </div>
                     
-                    {/* Ações Rápidas (Agora estilo botão XP) */}
-                    <section className={styles.quickActions}>
-                        <button 
-                            className={styles.actionButton} 
-                            onClick={() => navigate('/transaction?type=deposit')}
-                        >
-                            <MdAdd /> Depósito
-                        </button>
-                        <button 
-                            className={styles.actionButton} 
-                            onClick={() => navigate('/transaction?type=withdraw')}
-                        >
-                            <MdRemove /> Saque
-                        </button>
-                        <button 
-                            className={styles.actionButton} 
-                            onClick={() => navigate('/transaction?type=gains')}
-                        >
-                            <MdTrendingUp /> Ganhos
-                        </button>
-                        <button 
-                            className={styles.actionButton} 
-                            onClick={() => navigate('/transaction?type=losses')}
-                        >
-                            <MdTrendingDown /> Loss
-                        </button>
-                    </section>
-
                     <div className={styles.summaryCardUnified}>
                         <div className={styles.summaryRow}>
                             <div className={styles.summaryLabel}>
@@ -539,8 +513,38 @@ const Dashboard = () => {
                                 {formatCurrency(totalLosses)}
                             </p>
                         </div>
+                        </div>
                     </div>
                 </section>
+                
+                {/* Ações Rápidas (Agora estilo botão XP) */}
+                    <section className={styles.quickActions}>
+                        <button 
+                            className={styles.actionButton} 
+                            onClick={() => navigate('/transaction?type=deposit')}
+                        >
+                            <MdAdd /> Depósito
+                        </button>
+                        <button 
+                            className={styles.actionButton} 
+                            onClick={() => navigate('/transaction?type=withdraw')}
+                        >
+                            <MdRemove /> Saque
+                        </button>
+                        <button 
+                            className={styles.actionButton} 
+                            onClick={() => navigate('/transaction?type=gains')}
+                        >
+                            <MdTrendingUp /> Ganhos
+                        </button>
+                        <button 
+                            className={styles.actionButton} 
+                            onClick={() => navigate('/transaction?type=losses')}
+                        >
+                            <MdTrendingDown /> Loss
+                        </button>
+                    </section>
+
 
                 {/* Gráfico de Performance */}
                 <PerformanceChart 

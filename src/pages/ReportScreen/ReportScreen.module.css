@@ -134,6 +134,8 @@
 .viewerSection {
   margin: 0 20px 20px 20px;
   padding: 20px;
+  width: 1500px;
+  margin-left:300px ;
   background: #ECE9D8;
   border: 1px solid #7F9DB9;
 }

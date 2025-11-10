@@ -55,7 +55,8 @@
 .imageSection,
 .section {
   padding: 20px;
-  margin: 20px;
+  margin-left: 150px;
+  max-width: 1800px;
   background: #ECE9D8;
   border: 1px solid #7F9DB9;
 }
@@ -403,7 +404,16 @@
     grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
     gap: 8px;
   }
-  
+  .imageSection{
+    margin-left: 0px;
+  }
+  .section {
+  /* padding: 20px; */
+  margin-left: 0px;
+  max-width: 450px;
+  background: #ECE9D8;
+  border: 1px solid #7F9DB9;
+}
   .avatarOption {
     width: 60px;
     height: 60px;

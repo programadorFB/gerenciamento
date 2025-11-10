@@ -8,20 +8,20 @@ import {
     IoChevronForward, 
     IoClose, 
     IoAdd,
-    // ✅ NOVO: Ícones para os botões de ano
     IoPlayBack, 
     IoPlayForward 
 } from 'react-icons/io5';
 import styles from './CalendarScreen.module.css';
 
 // --- Sub-componente do Grid do Calendário ---
-// (Sem alterações aqui... seu código existente)
 export const CalendarGrid = ({ currentDate, transactionsByDay, onDayClick }) => {
   const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const formatCompact = (num) => num.toLocaleString('pt-BR');
+  const formatCompact = (num) => {
+    return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }).replace('R$', '');
+  }
 
   const days = useMemo(() => {
     const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -36,6 +36,7 @@ export const CalendarGrid = ({ currentDate, transactionsByDay, onDayClick }) => 
         date: null,
         day: prevMonthDays - i + 1,
         isOtherMonth: true,
+        summary: { gain: 0, loss: 0, deposit: 0, withdrawal: 0 }
       });
     }
 
@@ -47,9 +48,21 @@ export const CalendarGrid = ({ currentDate, transactionsByDay, onDayClick }) => 
       
       let dailyGain = 0;
       let dailyLoss = 0;
+      let dailyDeposit = 0;
+      let dailyWithdrawal = 0;
+
       dailyTransactions.forEach(tx => {
-          if (tx.type === 'gains') dailyGain += tx.amount;
-          if (tx.type === 'losses') dailyLoss += tx.amount;
+        const amount = parseFloat(tx.amount) || 0; 
+        
+        if (tx.type === 'gains') {
+          dailyGain += amount;
+        } else if (tx.type === 'losses') {
+          dailyLoss += amount;
+        } else if (tx.type === 'deposit') {
+          dailyDeposit += amount;
+        } else if (tx.type === 'withdraw') {
+          dailyWithdrawal += amount;
+        }
       });
 
       daysArray.push({
@@ -62,6 +75,8 @@ export const CalendarGrid = ({ currentDate, transactionsByDay, onDayClick }) => 
         summary: {
           gain: dailyGain,
           loss: dailyLoss,
+          deposit: dailyDeposit,
+          withdrawal: dailyWithdrawal,
         },
       });
     }
@@ -73,6 +88,7 @@ export const CalendarGrid = ({ currentDate, transactionsByDay, onDayClick }) => 
         date: null,
         day: i,
         isOtherMonth: true,
+        summary: { gain: 0, loss: 0, deposit: 0, withdrawal: 0 }
       });
     }
 
@@ -96,7 +112,7 @@ export const CalendarGrid = ({ currentDate, transactionsByDay, onDayClick }) => 
                 styles.dayCell,
                 day.isOtherMonth ? styles.otherMonth : '',
                 day.isToday ? styles.today : '',
-                day.hasData ? styles.dayWithData : '',
+                (day.summary.gain > 0 || day.summary.loss > 0 || day.summary.deposit > 0 || day.summary.withdrawal > 0) ? styles.dayWithData : '',
               ].join(' ');
 
               return (
@@ -109,16 +125,26 @@ export const CalendarGrid = ({ currentDate, transactionsByDay, onDayClick }) => 
                 >
                   <div className={styles.dayNumber}>{day.day}</div>
                   
-                  {day.hasData && (
+                  {(day.summary.gain > 0 || day.summary.loss > 0 || day.summary.deposit > 0 || day.summary.withdrawal > 0) && (
                     <div className={styles.daySummary}>
                       {day.summary.gain > 0 && (
                         <span className={styles.summaryGain}>
-                          +{formatCompact(day.summary.gain)}
+                          Ganho: +{formatCompact(day.summary.gain)}
                         </span>
                       )}
                       {day.summary.loss > 0 && (
                         <span className={styles.summaryLoss}>
-                          -{formatCompact(day.summary.loss)}
+                          Perda: -{formatCompact(day.summary.loss)}
+                        </span>
+                      )}
+                      {day.summary.deposit > 0 && (
+                        <span className={styles.summaryDeposit}>
+                          Depósito: +{formatCompact(day.summary.deposit)}
+                        </span>
+                      )}
+                      {day.summary.withdrawal > 0 && (
+                        <span className={styles.summaryWithdrawal}>
+                          Saque: -{formatCompact(day.summary.withdrawal)}
                         </span>
                       )}
                     </div>
@@ -134,7 +160,6 @@ export const CalendarGrid = ({ currentDate, transactionsByDay, onDayClick }) => 
 };
 
 // --- Sub-componente do Modal de Transações do Dia ---
-// (Sem alterações aqui... seu código existente)
 export const DayTransactionsModal = ({ date, transactions, onClose }) => {
   const navigate = useNavigate();
   
@@ -287,7 +312,6 @@ const CalendarScreen = () => {
         </button>
         
         <div className={styles.headerControls}>
-          {/* ✅ MODIFICADO: Classe e Ícone do Ano */}
           <button 
             className={`${styles.navButton} ${styles.yearButton}`} 
             onClick={handlePrevYear} 
@@ -306,7 +330,6 @@ const CalendarScreen = () => {
             <IoChevronForward />
           </button>
           
-          {/* ✅ MODIFICADO: Classe e Ícone do Ano */}
           <button 
             className={`${styles.navButton} ${styles.yearButton}`} 
             onClick={handleNextYear} 

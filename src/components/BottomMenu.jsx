@@ -19,14 +19,14 @@ const BottomMenu = () => {
       icon: <FiDownload size={20} />,
       label: 'Lançamentos',
       path: '/transaction',
-      color: '#FFD700'
+      color: '#2f00ffff'
     },
     {
       id: 'dashboard',
       icon: <FiHome size={20} />,
       label: 'Tela Inicial',
       path: '/dashboard',
-      color: '#FFD700'
+      color: '#2f00ffff'
     },
     {
       id: 'objectives',

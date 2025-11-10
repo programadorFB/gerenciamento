@@ -33,7 +33,7 @@ const initialState = {
     profitTarget: 0,
     dailyTarget: 0,
     features: [],
-    color: '#FFD700',
+    color: '#2f00ffff',
     iconName: 'dice',
     isInitialized: false,
     createdAt: null,
@@ -170,8 +170,8 @@ const PROFILES = {
     id: 'balanced',
     title: 'Jogador Equilibrado',
     description: 'Combina apostas seguras com algumas jogadas mais arriscadas, buscando equilíbrio entre risco e recompensa.',
-    color: '#FFD700',
-    icon: { name: 'balance-scale', color: '#FFD700' },
+    color: '#2f00ffff',
+    icon: { name: 'balance-scale', color: '#2f00ffff' },
     features: [
       
       'Risco calculado',

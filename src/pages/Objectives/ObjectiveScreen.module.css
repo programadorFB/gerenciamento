@@ -69,8 +69,10 @@
   display: flex;
   background-color: #D6D3CE; /* Fundo cinza */
   border-bottom: 1px solid #7F9DB9;
-  padding: 0 10px;
+  /* padding: 0 10px; */
+  width: 450px;
   gap: 4px;
+  margin-left: 350px;
 }
 
 .tab {
@@ -137,12 +139,13 @@
   flex-grow: 1;
   padding: 20px;
   overflow-y: auto;
+  width: 1800px;
   animation: tabFadeIn 0.4s ease-out;
   /* Painel branco para o conteúdo */
   background: #FFFFFF;
   border: 1px solid #7F9DB9;
   border-top: none; /* Conecta com a aba */
-  margin: 0 10px 10px 10px; /* Alinha com as abas */
+  margin: 0 10px 10px 150px; /* Alinha com as abas */
   border-radius: 0 0 4px 4px;
 }
 

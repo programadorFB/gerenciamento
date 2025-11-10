@@ -196,11 +196,11 @@ const ChartsScreen = () => {
                           acc + (parseFloat(month.net_profit) || 0), base
                         );
                       }),
-                      borderColor: '#FFD700',
+                      borderColor: '#2f00ffff',
                       backgroundColor: 'rgba(255, 215, 0, 0.15)',
                       fill: true,
                       tension: 0.4,
-                      pointBackgroundColor: '#FFD700',
+                      pointBackgroundColor: '#2f00ffff',
                       pointBorderColor: '#000',
                       pointBorderWidth: 3,
                       pointRadius: 6,
@@ -214,16 +214,16 @@ const ChartsScreen = () => {
                     plugins: {
                       legend: {
                         labels: { 
-                          color: '#FFD700',
+                          color: '#2f00ffff',
                           font: { size: 14, weight: 'bold' },
                           padding: 15
                         }
                       },
                       tooltip: {
                         backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                        titleColor: '#FFD700',
+                        titleColor: '#2f00ffff',
                         bodyColor: '#FFFFFF',
-                        borderColor: '#FFD700',
+                        borderColor: '#2f00ffff',
                         borderWidth: 2,
                         cornerRadius: 12,
                         padding: 15,
@@ -245,7 +245,7 @@ const ChartsScreen = () => {
                           lineWidth: 1
                         },
                         ticks: { 
-                          color: '#FFD700',
+                          color: '#2f00ffff',
                           font: { size: 12, weight: 'bold' }
                         }
                       },
@@ -255,7 +255,7 @@ const ChartsScreen = () => {
                           lineWidth: 1
                         },
                         ticks: {
-                          color: '#FFD700',
+                          color: '#2f00ffff',
                           font: { size: 12, weight: 'bold' },
                           callback: function(value) {
                             return 'R$ ' + value.toLocaleString('pt-BR');
@@ -379,15 +379,15 @@ const ChartsScreen = () => {
                     plugins: {
                       legend: {
                         labels: { 
-                          color: '#FFD700',
+                          color: '#2f00ffff',
                           font: { size: 14, weight: 'bold' }
                         }
                       },
                       tooltip: {
                         backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                        titleColor: '#FFD700',
+                        titleColor: '#2f00ffff',
                         bodyColor: '#FFFFFF',
-                        borderColor: '#FFD700',
+                        borderColor: '#2f00ffff',
                         borderWidth: 2,
                         cornerRadius: 12,
                         padding: 15,
@@ -405,12 +405,12 @@ const ChartsScreen = () => {
                         title: {
                           display: true,
                           text: 'Valor da Operação (R$)',
-                          color: '#FFD700',
+                          color: '#2f00ffff',
                           font: { size: 14, weight: 'bold' }
                         },
                         grid: { color: 'rgba(255, 215, 0, 0.1)' },
                         ticks: {
-                          color: '#FFD700',
+                          color: '#2f00ffff',
                           font: { size: 11, weight: 'bold' },
                           callback: function(value) {
                             return 'R$ ' + value.toLocaleString('pt-BR');
@@ -421,12 +421,12 @@ const ChartsScreen = () => {
                         title: {
                           display: true,
                           text: 'Resultado Líquido (R$)',
-                          color: '#FFD700',
+                          color: '#2f00ffff',
                           font: { size: 14, weight: 'bold' }
                         },
                         grid: { color: 'rgba(255, 215, 0, 0.1)' },
                         ticks: {
-                          color: '#FFD700',
+                          color: '#2f00ffff',
                           font: { size: 11, weight: 'bold' },
                           callback: function(value) {
                             return 'R$ ' + value.toLocaleString('pt-BR');
@@ -453,7 +453,7 @@ const ChartsScreen = () => {
                     className={styles.riskFill}
                     style={{ 
                       width: `${Math.min((statisticalAnalysis.profitFactor / 3) * 100, 100)}%`,
-                      background: statisticalAnalysis.profitFactor >= 2 ? '#4CAF50' : statisticalAnalysis.profitFactor >= 1 ? '#FFD700' : '#F44336'
+                      background: statisticalAnalysis.profitFactor >= 2 ? '#4CAF50' : statisticalAnalysis.profitFactor >= 1 ? '#2f00ffff' : '#F44336'
                     }}
                   ></div>
                 </div>
@@ -473,7 +473,7 @@ const ChartsScreen = () => {
                     className={styles.riskFill}
                     style={{ 
                       width: `${Math.min(statisticalAnalysis.maxDrawdown, 100)}%`,
-                      background: statisticalAnalysis.maxDrawdown > 20 ? '#F44336' : statisticalAnalysis.maxDrawdown > 10 ? '#FF9800' : '#FFD700'
+                      background: statisticalAnalysis.maxDrawdown > 20 ? '#F44336' : statisticalAnalysis.maxDrawdown > 10 ? '#FF9800' : '#2f00ffff'
                     }}
                   ></div>
                 </div>
@@ -491,7 +491,7 @@ const ChartsScreen = () => {
                     className={styles.riskFill}
                     style={{ 
                       width: `${Math.min((statisticalAnalysis.volatility / 100) * 100, 100)}%`,
-                      background: 'linear-gradient(90deg, #FFD700, #FF9800)'
+                      background: 'linear-gradient(90deg, #2f00ffff, #FF9800)'
                     }}
                   ></div>
                 </div>

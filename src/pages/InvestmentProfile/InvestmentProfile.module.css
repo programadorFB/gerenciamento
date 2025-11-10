@@ -55,6 +55,8 @@
 }
 
 .scrollView {
+  width: 1800px;
+  margin-left: 150px;
   flex-grow: 1;
   overflow-y: auto;
   padding-bottom: 40px;
