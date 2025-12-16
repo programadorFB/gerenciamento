@@ -31,37 +31,25 @@ const PROFILES = [
   },
 ];
 
-// Função utilitária para encontrar o perfil com base no valor
 const getProfileForValue = (value) => {
-  if (value <= 3) {
-    return PROFILES[0]; // Conservador
-  } else if (value <= 6) {
-    return PROFILES[1]; // Moderado
-  } else {
-    return PROFILES[2]; // Agressivo
-  }
+  if (value <= 3) return PROFILES[0];
+  if (value <= 6) return PROFILES[1];
+  return PROFILES[2];
 };
 
-
-// Custom hook para observar o tamanho de um elemento de forma performática.
 const useResizeObserver = (ref) => {
   const [width, setWidth] = useState(0);
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
-
     const observer = new ResizeObserver(entries => {
-      if (entries[0]) {
-        setWidth(entries[0].contentRect.width);
-      }
+      if (entries[0]) setWidth(entries[0].contentRect.width);
     });
-
     observer.observe(element);
     return () => observer.unobserve(element);
   }, [ref]);
   return width;
 };
-
 
 const RiskSlider = ({ 
   value, 
@@ -74,96 +62,106 @@ const RiskSlider = ({
   const trackRef = useRef(null);
   const knobRef = useRef(null);
   const sliderWidth = useResizeObserver(trackRef);
+  const [isDragging, setIsDragging] = useState(false); // ✅ NOVO: Controla se está arrastando
 
   const controls = useAnimation();
   const x = useMotionValue(0);
+  const knobRadius = 20; // Metade do knob
 
-  // Função para calcular o valor com base na posição X.
-  const calculateValueFromX = useCallback((newX) => {
-    const knobRadius = 20; // Metade da largura do knob (40px / 2)
+  // Função para calcular valor baseada na posição visual
+  const calculateValueFromX = useCallback((currentX) => {
+    if (sliderWidth === 0) return min;
     const effectiveWidth = sliderWidth - (knobRadius * 2);
-    const adjustedX = newX - knobRadius;
+    // Remove o offset do raio para cálculo
+    const adjustedX = currentX - knobRadius;
     const boundedX = Math.max(0, Math.min(adjustedX, effectiveWidth));
-    const newValue = Math.round((boundedX / effectiveWidth) * (max - min) + min);
+    const percent = boundedX / effectiveWidth;
+    const newValue = Math.round(percent * (max - min) + min);
     return newValue;
   }, [sliderWidth, min, max]);
   
-  // Função para atualizar a posição X com base no valor recebido via props.
-  const updateXFromValue = useCallback((val) => {
+  // Função para calcular posição visual baseada no valor
+  const calculateXFromValue = useCallback((val) => {
     if (sliderWidth > 0) {
-      const knobRadius = 20;
       const effectiveWidth = sliderWidth - (knobRadius * 2);
-      const newX = ((val - min) / (max - min)) * effectiveWidth + knobRadius;
+      const percent = (val - min) / (max - min);
+      return (percent * effectiveWidth) + knobRadius;
+    }
+    return 0;
+  }, [sliderWidth, min, max]);
+
+  // ✅ CORREÇÃO CRÍTICA: Só atualiza a posição via código se NÃO estiver arrastando
+  useEffect(() => {
+    if (!isDragging && sliderWidth > 0) {
+      const newX = calculateXFromValue(value);
       x.set(newX);
     }
-  }, [sliderWidth, min, max, x]);
+  }, [value, sliderWidth, isDragging, calculateXFromValue, x]);
 
-  // Sincroniza a posição do knob quando o 'value' externo muda
-  useEffect(() => {
-    updateXFromValue(value);
-  }, [value, updateXFromValue]);
-
-  // Mapeia a posição X do knob para a largura da barra de preenchimento
   const fillWidth = useTransform(x, [0, sliderWidth], ['0%', '100%']);
-  
-  // Calcula o perfil atual com base no valor
   const currentProfile = useMemo(() => getProfileForValue(value), [value]);
   const { color, gradient, icon, title, description } = currentProfile;
 
-  // Função chamada continuamente enquanto o knob é arrastado
+  const handleDragStart = () => {
+    setIsDragging(true); // Bloqueia atualizações externas
+    controls.start({ scale: 1.1, cursor: 'grabbing' });
+  };
+
   const handleDrag = () => {
-    const newSliderValue = calculateValueFromX(x.get());
-    if (newSliderValue !== value) {
-      onValueChange(newSliderValue);
+    const newValue = calculateValueFromX(x.get());
+    if (newValue !== value) {
+      onValueChange(newValue);
     }
   };
 
-  // Função chamada ao soltar o knob
   const handleDragEnd = () => {
+    setIsDragging(false); // Libera atualizações externas
     const finalValue = calculateValueFromX(x.get());
-    updateXFromValue(finalValue); // Trava o knob na posição exata do valor final
-    controls.start({ scale: 1, y: 0 }); // Retorna o knob ao tamanho normal
+    
+    // Snap para a posição exata do inteiro mais próximo
+    const snapX = calculateXFromValue(finalValue);
+    
+    // Anima o knob para a posição de snap
+    controls.start({ 
+      x: snapX, 
+      scale: 1, 
+      cursor: 'grab',
+      transition: { type: 'spring', stiffness: 300, damping: 30 } 
+    });
+    
+    // Garante que o valor final seja enviado
+    onValueChange(finalValue);
   };
 
-  // Função chamada ao começar a arrastar o knob
-  const handleDragStart = () => {
-    controls.start({ scale: 1.3, y: -5 }); // Aumenta o knob para feedback visual
-  };
-
-  // Função que permite clicar na trilha para definir o valor
   const handleTrackClick = (event) => {
+    if (isDragging) return; // Evita cliques acidentais ao arrastar
     if (trackRef.current) {
-        knobRef.current?.focus(); // Foca no knob para acessibilidade
         const rect = trackRef.current.getBoundingClientRect();
         const clickX = event.clientX - rect.left;
-        const newValue = calculateValueFromX(clickX);
+        
+        // Limita o clique dentro da área útil
+        const effectiveX = Math.max(knobRadius, Math.min(clickX, sliderWidth - knobRadius));
+        
+        const newValue = calculateValueFromX(effectiveX);
         onValueChange(newValue);
+        
+        // Animação visual imediata para o clique
+        const newX = calculateXFromValue(newValue);
+        controls.start({ x: newX });
     }
   };
 
-  // Adiciona navegação por teclado (Setas Direita/Esquerda)
-  const handleKeyDown = (event) => {
-    if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      onValueChange(Math.min(value + 1, max));
-    } else if (event.key === 'ArrowLeft') {
-      event.preventDefault();
-      onValueChange(Math.max(value - 1, min));
-    }
-  };
-  
+  // Previne que o clique no knob propague para o track
+  const handleKnobClick = (e) => e.stopPropagation();
+
   return (
     <div className={`${styles.sliderContainer} ${compact ? styles.compactContainer : ''}`} style={containerStyle}>
       <SliderHeader compact={compact} profile={currentProfile} />
       {!compact && <SliderLabels value={value} />}
 
       <div className={`${styles.sliderWrapper} ${compact ? styles.compactSliderWrapper : ''}`}>
-        {/* Âncora de posicionamento que segue o knob */}
-        <motion.div
-          className={styles.floatingIconAnchor}
-          style={{ x }}
-        >
-          {/* O wrapper do ícone agora se centraliza dentro da âncora */}
+        {/* Âncora flutuante do ícone */}
+        <motion.div className={styles.floatingIconAnchor} style={{ x }}>
           <div className={styles.floatingIconWrapper}>
             <div className={styles.iconBubble} style={{ borderColor: color, boxShadow: `0 4px 15px ${color}55` }}>
               <IconComponent iconName={icon} size={compact ? 14 : 18} />
@@ -173,32 +171,32 @@ const RiskSlider = ({
           </div>
         </motion.div>
 
-        {/* Trilha do slider, agora clicável */}
+        {/* Trilha */}
         <div ref={trackRef} className={styles.sliderTrack} onClick={handleTrackClick}>
-          {/* Preenchimento da trilha */}
-          <motion.div className={styles.sliderTrackFill} style={{ width: fillWidth, background: `linear-gradient(to right, ${gradient[0]}, ${gradient[1]})` }} />
+          <motion.div 
+            className={styles.sliderTrackFill} 
+            style={{ 
+              width: fillWidth, 
+              background: `linear-gradient(to right, ${gradient[0]}, ${gradient[1]})` 
+            }} 
+          />
           
-          {/* Knob arrastável e acessível */}
+          {/* Knob */}
           <motion.div
             ref={knobRef}
             className={styles.sliderKnob}
             style={{ x }}
             drag="x"
             dragConstraints={trackRef}
-            dragElastic={0.1}
-            onDrag={handleDrag}
+            dragElastic={0} // Remove elasticidade para evitar que saia do trilho
+            dragMomentum={false} // Remove inércia para parar onde soltar
             onDragStart={handleDragStart}
+            onDrag={handleDrag}
             onDragEnd={handleDragEnd}
-            onKeyDown={handleKeyDown}
+            onClick={handleKnobClick} 
             animate={controls}
-            transition={{ type: 'spring', damping: 12, stiffness: 200 }}
-            // Atributos de Acessibilidade (a11y)
-            role="slider"
-            aria-valuenow={value}
-            aria-valuemin={min}
-            aria-valuemax={max}
-            aria-label="Seletor de Nível de Risco"
-            tabIndex={0} // Torna o knob focável via teclado
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
           >
             <div className={styles.knobCenter} style={{ background: color }} />
           </motion.div>
@@ -211,7 +209,7 @@ const RiskSlider = ({
   );
 };
 
-// --- Sub-componentes ---
+// --- Sub-componentes permanecem iguais ---
 const SliderHeader = ({ compact, profile }) => (
   <div className={compact ? styles.compactHeader : styles.sliderHeader}>
     <h3 className={compact ? styles.compactTitle : styles.sliderTitle}>
@@ -254,7 +252,6 @@ const ScaleNumbers = ({ value, onValueChange, min, max, compact }) => (
   </div>
 );
 
-// Componente helper para renderizar o ícone correto
 const IconComponent = ({ iconName, ...props }) => {
   if (iconName === 'shield-alt') return <FaShieldAlt {...props} />;
   if (iconName === 'balance-scale') return <FaBalanceScale {...props} />;
