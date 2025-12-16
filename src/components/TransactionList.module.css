@@ -1,6 +1,6 @@
 /* ========================================
    Tema XP (Branco, Azul, Cinza)
-   TransactionList.module.css
+   TransactionList.module.css - Mobile First
    ======================================== */
 
 @keyframes fadeOutScale {
@@ -11,11 +11,13 @@
 /* --- ESTILOS GERAIS DA LISTA --- */
 .listContainer {
   width: 100%;
-  padding: 0; /* O padding será controlado pelo wrapper */
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .listFooter {
-  padding: 20px 0;
+  padding: 15px 0;
   display: flex;
   justify-content: center;
 }
@@ -23,59 +25,54 @@
 /* --- CORES (Tema XP) --- */
 .depositColor { color: #0054E3 !important; } /* Azul */
 .withdrawColor { color: #333333 !important; } /* Cinza Escuro */
-/* REMOVIDO: .depositBg, .withdrawBg, .depositIconBg, .withdrawIconBg */
 
-/* --- ITEM DA TRANSAÇÃO (Estilo ListView XP) --- */
+/* --- ITEM DA TRANSAÇÃO --- */
 .transactionItem {
-  background-color: #FFFFFF; /* Fundo Branco */
+  background-color: #FFFFFF;
   border-radius: 0;
   margin-bottom: 0;
   border: none;
-  border-bottom: 1px solid #C0C0C0; /* Divisor Cinza */
+  border-bottom: 1px solid #C0C0C0;
   position: relative;
-  overflow: visible; /* Permitir que as ações apareçam */
-  box-shadow: none;
+  overflow: hidden; /* Evita vazamento */
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 12px 10px; /* Padding maior para toque */
   cursor: pointer;
   transition: background-color 0.1s ease;
+  flex-wrap: nowrap; /* Não quebra linha */
 }
 
 .transactionItem:hover {
-  background-color: #F5F3E8; /* Hover cinza-claro */
-  transform: none;
+  background-color: #F5F3E8;
 }
 
 .transactionItem.isDeleting {
   animation: fadeOutScale 0.3s forwards;
 }
 
-/* REMOVIDO: .sideIndicator */
-
 .transactionIcon {
-  width: 32px;
-  height: 32px;
+  width: 36px; /* Ícone levemente maior */
+  height: 36px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 12px;
-  border: none;
-  /* Fundo removido, o ícone terá a cor */
+  margin-right: 10px;
+  flex-shrink: 0; /* Ícone não encolhe */
 }
 
 .transactionDetails {
   flex: 1;
-  margin-right: 12px;
-  min-width: 0; 
+  min-width: 0; /* Permite truncar texto */
+  margin-right: 8px;
 }
 
 .transactionCategory {
-  font-size: 12px;
+  font-size: 13px; /* Fonte legível */
   font-weight: 700;
   color: #000000;
-  margin: 0 0 4px 0;
+  margin: 0 0 2px 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -85,332 +82,291 @@
   font-size: 11px;
   color: #333333;
   margin: 0;
+  display: block;
 }
 
 .transactionDescription {
   font-style: italic;
   color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* Valor e Ações */
 .transactionAmountContainer {
   text-align: right;
-  padding-right: 90px; /* Espaço para os botões */
-  position: relative;
+  /* No mobile, botões podem ficar abaixo ou ao lado se couber */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 80px; /* Garante espaço mínimo */
 }
 
 .transactionAmount {
-  font-size: 12px;
+  font-size: 14px; /* Valor maior */
   font-weight: bold;
-  margin: 0 0 2px 0;
+  margin-bottom: 4px;
+  white-space: nowrap;
 }
 
 .longPressHint {
-  font-size: 10px;
-  color: #666;
-  font-style: italic;
+  display: none; /* Oculta dica em mobile por padrão */
 }
 
-/* Ações do Item (Botões Cinza XP) */
+/* Ações (Botões) */
 .actionButtonsContainer {
-  position: absolute;
-  right: 5px;
-  top: 50%;
-  transform: translateY(-50%) scale(1); /* Sempre visível */
   display: flex;
-  flex-direction: row; /* Lado a lado */
-  gap: 5px;
-  background-color: transparent;
-  padding: 0;
-  border-radius: 0;
-  border: none;
-  box-shadow: none;
-  z-index: 2;
-  opacity: 1; /* Sempre visível */
-  pointer-events: auto;
+  gap: 6px;
+  margin-top: 4px;
 }
-/* REMOVIDO: .actionButtonsContainer.actionsVisible */
 
 .editActionButton, .deleteActionButton {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
+  justify-content: center;
+  width: 28px; /* Área de toque quadrada */
+  height: 28px;
+  padding: 0;
   border: 1px solid #7F9DB9;
   border-radius: 3px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 14px; /* Ícone maior */
   color: #000;
-  cursor: pointer;
   background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  cursor: pointer;
 }
+
 .editActionButton:hover, .deleteActionButton:hover { 
   background-color: #F5F3E8; 
 }
 
-/* --- ESTADO VAZIO (Painel Cinza XP) --- */
+/* --- ESTADO VAZIO --- */
 .emptyContainer {
   text-align: center;
-  padding: 40px 20px;
+  padding: 30px 15px;
   background: #ECE9D8;
   border: 1px dashed #7F9DB9;
   border-radius: 8px;
+  margin: 10px;
 }
+
 .emptyIconContainer {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   background-color: #FFFFFF;
   border-radius: 50%;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #7F9DB9;
   border: 1px solid #7F9DB9;
 }
+
 .emptyText {
   font-size: 14px;
-  color: #000000;
-  margin: 0 0 8px 0;
   font-weight: 600;
-}
-.emptySubtext {
-  font-size: 12px;
-  color: #333333;
-  margin: 0 0 20px 0;
-  line-height: 1.5;
-}
-.tipContainer {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background-color: #E0E8F5; /* Fundo Info Azul */
-  padding: 10px 12px;
-  border-radius: 4px;
-  border: 1px solid #0054E3;
-  color: #003399;
-}
-.tipText {
-  font-size: 11px;
-  font-weight: 500;
-  margin: 0;
+  margin-bottom: 6px;
 }
 
-/* --- ESTILOS DO MODAL (Janela XP) --- */
+.emptySubtext {
+  font-size: 12px;
+  color: #333;
+}
+
+/* --- MODAL (Janela XP) --- */
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 84, 227, 0.3); /* Overlay Azul */
+  background-color: rgba(0, 84, 227, 0.3);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; /* Centraliza no meio da tela */
   z-index: 1000;
-  padding: 16px;
+  padding: 10px;
   backdrop-filter: blur(2px);
 }
+
 .modalContainer {
   width: 100%;
-  max-width: 500px;
-  max-height: 90vh;
-  background-color: #ECE9D8; /* Fundo Cinza */
+  max-width: 450px; /* Largura desktop */
+  max-height: 90vh; /* Não estoura altura */
+  background-color: #ECE9D8;
   border-radius: 8px 8px 0 0;
   border: 2px solid #0054E3;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
 }
+
 .modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 8px;
-  border-bottom: none;
+  padding: 8px 10px;
   background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-  border-top-left-radius: 6px; /* Ajuste para borda */
+  border-top-left-radius: 6px;
   border-top-right-radius: 6px;
 }
+
 .modalTitle {
   color: #FFFFFF;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
-  margin: 0;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  margin: 0;
 }
+
 .closeButton {
-  padding: 0;
-  width: 21px;
-  height: 21px;
-  border-radius: 0;
+  width: 24px;
+  height: 24px;
   background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 100%);
   border: 1px solid #003C74;
   cursor: pointer;
-  color: #000;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
-.closeButton:hover { background-color: #F5F3E8; }
 
 .modalContent {
+  flex: 1;
   overflow-y: auto;
-  padding: 0 24px;
+  padding: 15px;
   background: #ECE9D8;
 }
-/* Scrollbar XP */
-.modalContent::-webkit-scrollbar { width: 16px; }
-.modalContent::-webkit-scrollbar-track { background: #ECE9D8; border: 1px solid #7F9DB9; }
-.modalContent::-webkit-scrollbar-thumb { background: #BFCCE0; border: 1px solid #7F9DB9; }
-.modalContent::-webkit-scrollbar-thumb:hover { background: #7F9DB9; }
 
-.inputContainer {
-  margin: 16px 0;
-}
+.inputContainer { margin-bottom: 15px; }
+
 .inputLabel {
   display: block;
-  color: #000;
   font-size: 11px;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
-/* Inputs Padrão XP */
 .textInput, textarea, .dateTimeInput {
   width: 100%;
   background-color: #FFFFFF;
   border: 1px solid #7F9DB9;
+  padding: 8px; /* Padding maior para toque */
+  font-size: 13px; /* Fonte legível */
+  box-sizing: border-box;
   border-radius: 0;
-  padding: 4px 6px;
-  color: #000;
-  font-size: 11px;
-  font-weight: 500;
-  box-sizing: border-box; 
-  font-family: inherit;
-  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
-}
-.textInput:focus, textarea:focus, .dateTimeInput:focus {
-  outline: 1px solid #0054E3;
-  border-color: #7F9DB9;
-}
-.inputError {
-  border-color: #BF0000; /* Vermelho para erro */
-  background-color: #FFF0F0;
-}
-.errorText {
-  color: #BF0000;
-  font-size: 11px;
-  margin-top: 6px;
-  font-weight: 500;
 }
 
+.inputError { border-color: #BF0000; background-color: #FFF0F0; }
+.errorText { color: #BF0000; font-size: 11px; margin-top: 4px; }
+
+/* Chips de Categoria */
 .categoriesGrid {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 12px;
 }
+
 .categoryChip {
-  padding: 4px 10px;
-  background-color: #D6D3CE;
-  border-radius: 12px;
+  padding: 6px 12px;
+  background-color: #FFFFFF;
   border: 1px solid #7F9DB9;
-  color: #000;
-  font-size: 11px;
+  border-radius: 12px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
 }
-.categoryChip:hover { background-color: #C0C0C0; }
+
 .categoryChipSelected {
-  background-color: #0054E3; /* Azul */
-  border-color: #003399;
+  background-color: #0054E3;
   color: #FFFFFF;
-  font-weight: 700;
+  border-color: #003399;
 }
 
-.typeContainer, .dateTimeContainer {
-  display: flex;
-  gap: 12px;
-}
-/* Botões de Tipo (Estilo Botão Cinza) */
+/* Botões de Tipo */
+.typeContainer { display: flex; gap: 10px; }
+
 .typeButton {
   flex: 1;
+  padding: 10px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #7F9DB9;
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 8px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-  border: 1px solid #7F9DB9;
-  border-radius: 3px;
-  color: #000;
-  font-weight: 600;
-  font-size: 11px;
-  cursor: pointer;
-}
-.typeButton:hover { background-color: #F5F3E8; }
-
-/* Cores de ícone e seleção */
-.typeButton svg { color: #7F9DB9; }
-.typeButtonActiveDeposit { 
-  background-color: #C1D2EE; 
-  border-color: #0054E3; 
-}
-.typeButtonActiveDeposit svg { color: #0054E3; }
-.typeButtonActiveWithdraw { 
-  background-color: #C1D2EE; 
-  border-color: #0054E3; 
-}
-.typeButtonActiveWithdraw svg { color: #333333; }
-
-
-.dateTimeInputWrapper {
-  flex: 1;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-.dateTimeIcon {
-  position: absolute;
-  left: 6px;
-  color: #0054E3;
-  pointer-events: none;
-  font-size: 14px;
-}
-.dateTimeInput {
-  padding-left: 28px;
+  gap: 6px;
 }
 
+.typeButtonActiveDeposit { background-color: #C1D2EE; border-color: #0054E3; }
+.typeButtonActiveWithdraw { background-color: #C1D2EE; border-color: #0054E3; }
+
+/* Ações do Modal */
 .modalActions {
   display: flex;
-  gap: 12px;
-  padding: 12px;
+  gap: 10px;
+  padding: 15px;
   border-top: 1px solid #7F9DB9;
   background-color: #ECE9D8;
 }
-/* Botões de Ação do Modal (XP) */
+
 .cancelButton, .saveButton {
   flex: 1;
-  padding: 6px 16px;
+  padding: 10px;
   border-radius: 3px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
   border: 1px solid #7F9DB9;
   cursor: pointer;
-  transition: none;
-}
-.cancelButton:hover, .saveButton:hover { opacity: 1; }
-
-.cancelButton {
-  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-  color: #000;
-}
-.cancelButton:hover {
-  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
 }
 
-.saveButton {
-  background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
-  color: #FFFFFF;
-  border-color: #003C74;
+.cancelButton { background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%); }
+.saveButton { 
+  background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%); 
+  color: #FFFFFF; 
+  border-color: #003C74; 
 }
-.saveButton:hover {
-  background: linear-gradient(180deg, #008FE5 0%, #0065F0 50%, #0050C5 100%);
+
+/* ========================================
+   MEDIA QUERIES (DESKTOP)
+   ======================================== */
+@media (min-width: 768px) {
+  /* No Desktop, as ações aparecem ao lado e escondidas até hover */
+  .transactionItem {
+    padding: 8px 15px;
+  }
+
+  .transactionAmountContainer {
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    padding-right: 80px; /* Espaço para botões absolutos */
+  }
+
+  .actionButtonsContainer {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-top: 0;
+    opacity: 0; /* Esconde por padrão */
+    transition: opacity 0.2s;
+  }
+
+  .transactionItem:hover .actionButtonsContainer {
+    opacity: 1; /* Mostra no hover */
+  }
+  
+  .editActionButton, .deleteActionButton {
+    width: auto;
+    height: auto;
+    padding: 4px 8px;
+    font-size: 11px;
+    gap: 4px;
+  }
+  
+  /* Restaura texto nos botões se houver */
+  .editActionButton::after { content: " Editar"; }
+  .deleteActionButton::after { content: " Excluir"; }
 }

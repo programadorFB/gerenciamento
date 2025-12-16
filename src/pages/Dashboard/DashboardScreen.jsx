@@ -83,6 +83,7 @@ const Dashboard = () => {
         dailyLosses,
         lastResetDate
     } = useFinancial();
+    const initialBalance = getEffectiveInitialBalance();
     const { bettingProfile } = useBetting(); 
     const { openMenu } = useSideMenu();
 
@@ -184,10 +185,23 @@ const Dashboard = () => {
         return Math.min((dailyGains / profitTarget) * 100, 100);
     };
 
-    const stopLossMonetaryValue = bettingProfile?.stopLoss || 0;
+// ✅ CORREÇÃO: Prioriza o cálculo dinâmico pela porcentagem
+    const stopLossMonetaryValue = useMemo(() => {
+        // 1. Tenta calcular usando a porcentagem salva e a banca inicial real
+        if (bettingProfile?.stopLossPercentage && bettingProfile.stopLossPercentage > 0) {
+            return initialBalance * (bettingProfile.stopLossPercentage / 100);
+        }
+        
+        // 2. Se não tiver porcentagem, tenta usar o valor fixo salvo (fallback)
+        if (bettingProfile?.stopLoss && bettingProfile.stopLoss > 0) {
+            return bettingProfile.stopLoss;
+        }
+
+        return 0;
+    }, [bettingProfile, initialBalance]);
 
     const isStopLossTriggered = useMemo(() => {
-        if (!stopLossMonetaryValue) return false;
+        if (!stopLossMonetaryValue || stopLossMonetaryValue <= 0) return false;
         return dailyLosses >= stopLossMonetaryValue;
     }, [dailyLosses, stopLossMonetaryValue]);
 
@@ -222,7 +236,7 @@ const Dashboard = () => {
         );
     }
 
-    const initialBalance = getEffectiveInitialBalance();
+
     const overallProfit = balance - initialBalance;
     const realProfit = getRealProfit();
     const profitTarget = calculateProfitTarget();

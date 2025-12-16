@@ -3,15 +3,18 @@
 
 * {
   font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
+  box-sizing: border-box; /* Essencial para responsividade */
 }
 
 #root {
-  max-width: 100%;
+  width: 100%;
   margin: 0;
   padding: 0;
   text-align: center;
   background: linear-gradient(180deg, #5A7FBF 0%, #B8D4F1 100%);
   min-height: 100vh;
+  /* Espaço extra no final para não cobrir conteúdo com a barra de tarefas no mobile */
+  padding-bottom: 40px; 
 }
 
 /* --- XP Window Styles --- */
@@ -24,6 +27,7 @@
   background: linear-gradient(180deg, #5A7FBF 0%, #B8D4F1 100%);
   color: #003399;
   font-family: 'Tahoma', sans-serif;
+  width: 100%;
 }
 
 .spinner {
@@ -37,29 +41,33 @@
 }
 
 .appContent {
-  padding: 2rem;
+  padding: 1rem; /* Padding menor para mobile */
   background: linear-gradient(180deg, #5A7FBF 0%, #B8D4F1 100%);
   min-height: 100vh;
-  overflow-x: hidden;
-  text-align: left;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centraliza o conteúdo */
 }
 
-/* XP Button Style */
+/* XP Button Style - Otimizado para toque */
 .button {
-  padding: 6px 20px;
+  padding: 8px 20px; /* Um pouco maior para dedos */
   border-radius: 3px;
   border: 1px solid #003C74;
   background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 50%, #E0DED0 100%);
   color: #000000;
   cursor: pointer;
   font-weight: normal;
-  font-size: 11px;
+  font-size: 12px; /* Fonte levemente maior para leitura mobile */
   font-family: 'Tahoma', sans-serif;
   transition: all 0.1s;
   box-shadow: 
     1px 1px 0px rgba(255,255,255,0.9) inset,
     -1px -1px 0px rgba(0,0,0,0.2) inset;
   text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+  width: 100%; /* Botões ocupam largura total em containers pequenos */
+  max-width: 200px; /* Limite em telas grandes */
 }
 
 .button:hover {
@@ -83,12 +91,13 @@
 
 /* XP Input Style */
 .input {
-  padding: 4px 6px;
+  padding: 8px 6px; /* Mais altura para facilitar o clique */
   border: 1px solid #7F9DB9;
   background-color: #FFFFFF;
   color: #000000;
-  font-size: 11px;
+  font-size: 12px;
   font-family: 'Tahoma', sans-serif;
+  width: 100%; /* Responsivo */
   box-shadow: 
     -1px -1px 0px rgba(255,255,255,0.8) inset,
     1px 1px 2px rgba(0,0,0,0.1) inset;
@@ -99,7 +108,7 @@
   outline-offset: -1px;
 }
 
-/* XP Form Style */
+/* XP Form Style - Responsivo */
 .loginForm {
   display: flex;
   flex-direction: column;
@@ -108,7 +117,12 @@
   background: linear-gradient(180deg, #ECE9D8 0%, #D6D3CE 100%);
   border: 1px solid #0054E3;
   border-radius: 0;
-  width: 320px;
+  
+  /* Lógica Mobile-First */
+  width: 95%; /* Ocupa quase toda a tela no celular */
+  max-width: 350px; /* Trava em 350px em telas maiores */
+  margin: 0 auto; /* Centraliza */
+  
   box-shadow: 
     0 0 0 1px rgba(255,255,255,0.8),
     2px 2px 8px rgba(0,0,0,0.3);
@@ -121,6 +135,7 @@
   background-color: #FFE5E5;
   padding: 8px;
   border: 1px solid #FF0000;
+  word-wrap: break-word; /* Evita quebra de layout com erros longos */
 }
 
 /* XP Dashboard Header */
@@ -139,24 +154,25 @@
   color: #FFFFFF;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  
+  /* Ajuste para telas muito pequenas */
+  flex-wrap: wrap; 
+  gap: 10px;
 }
 
 /* --- Animations --- */
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* --- XP Logo Styles --- */
 .logo {
-  height: 6em;
-  padding: 1.5em;
+  height: 5em; /* Um pouco menor no mobile */
+  padding: 1em;
   filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
   transition: filter 300ms;
+  max-width: 100%; /* Garante que não estoure a tela */
 }
 
 .logo:hover {
@@ -172,6 +188,8 @@
     0 0 0 1px rgba(255,255,255,0.8),
     2px 2px 8px rgba(0,0,0,0.2);
   margin-bottom: 12px;
+  width: 100%; /* Responsivo */
+  overflow: hidden; /* Evita que conteúdo interno quebre o layout */
 }
 
 /* XP Taskbar-like element */
@@ -180,29 +198,33 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 30px;
+  height: 40px; /* Um pouco mais alta para facilitar o toque no mobile */
   background: linear-gradient(180deg, #245EDC 0%, #1941A5 100%);
   border-top: 2px solid #5A7FBF;
   box-shadow: 0 -1px 0 rgba(0,0,0,0.3);
   z-index: 9999;
+  display: flex;
+  align-items: center;
+  padding-right: 5px;
 }
 
 /* XP Start Button Style */
 .startButton {
-  height: 30px;
-  padding: 0 20px 0 6px;
+  height: 34px; /* Ajustado para a nova altura da taskbar */
+  padding: 0 15px 0 6px;
   background: linear-gradient(180deg, #3FA037 0%, #2E7D2E 100%);
   border: 1px solid #1A5A1A;
   border-radius: 0 12px 12px 0;
   color: #FFFFFF;
   font-weight: bold;
-  font-size: 11px;
+  font-size: 13px; /* Fonte maior */
   display: inline-flex;
   align-items: center;
   gap: 6px;
   cursor: pointer;
   box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  flex-shrink: 0; /* Impede que o botão encolha */
 }
 
 .startButton:hover {
@@ -247,41 +269,15 @@
   font-weight: bold;
 }
 
-.windowButton:hover {
-  background: linear-gradient(180deg, #FFF8DC 0%, #D4E1F5 100%);
+/* XP Desktop Icons Grid System */
+.desktopGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 16px;
+  padding: 20px;
+  width: 100%;
 }
 
-.windowButton:active {
-  background: linear-gradient(180deg, #7F9DB9 0%, #6B8CAF 100%);
-}
-
-/* XP Scrollbar */
-::-webkit-scrollbar {
-  width: 16px;
-}
-
-::-webkit-scrollbar-track {
-  background: #ECE9D8;
-  border: 1px solid #ABABAB;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 50%, #7F9DB9 100%);
-  border: 1px solid #003C74;
-  box-shadow: 1px 1px 0px rgba(255,255,255,0.5) inset;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #FFF8DC 0%, #D4E1F5 50%, #8FADC5 100%);
-}
-
-::-webkit-scrollbar-button {
-  height: 16px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 100%);
-  border: 1px solid #003C74;
-}
-
-/* XP Desktop Icons */
 .desktopIcon {
   display: flex;
   flex-direction: column;
@@ -310,15 +306,16 @@
     1px 1px 2px rgba(0,0,0,0.8),
     -1px -1px 2px rgba(0,0,0,0.8);
   text-align: center;
+  word-break: break-word; /* Quebra palavras longas */
 }
 
-/* XP Status Bar */
+/* XP Status Bar - Oculta em telas muito pequenas se necessário, ou ajustada */
 .statusBar {
   height: 22px;
   background: linear-gradient(180deg, #ECE9D8 0%, #D6D3CE 100%);
   border-top: 1px solid #FFFFFF;
   border-bottom: 1px solid #808080;
-  display: flex;
+  display: none; /* Oculta no mobile por padrão para economizar espaço */
   align-items: center;
   padding: 0 8px;
   font-size: 11px;
@@ -326,16 +323,35 @@
   gap: 12px;
 }
 
-.statusBarPanel {
-  border-left: 1px solid #808080;
-  border-top: 1px solid #808080;
-  border-right: 1px solid #FFFFFF;
-  border-bottom: 1px solid #FFFFFF;
-  padding: 2px 8px;
-  background: #F0F0F0;
-}
-
 .read-the-docs {
   color: #0054E3;
   text-decoration: underline;
+}
+
+/* --- Media Queries para Desktop/Tablet --- */
+@media (min-width: 768px) {
+  .appContent {
+    padding: 2rem;
+  }
+
+  .loginForm {
+    width: 320px; /* Volta ao tamanho fixo clássico no desktop */
+  }
+
+  .logo {
+    height: 6em;
+  }
+
+  .taskbar {
+    height: 30px; /* Altura original XP no desktop */
+  }
+
+  .startButton {
+    height: 30px;
+    font-size: 11px;
+  }
+
+  .statusBar {
+    display: flex; /* Mostra a status bar no desktop */
+  }
 }

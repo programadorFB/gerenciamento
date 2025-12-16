@@ -1,20 +1,21 @@
 /* ========================================
    Tema XP (Branco, Azul, Cinza)
+   InvestmentProfile.module.css - Mobile First
    ======================================== */
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-/* REMOVIDO: @keyframes profile-entry */
 
 /* --- Container Principal --- */
 .container {
   background-color: #D6D3CE; /* Fundo Cinza XP */
   color: #000000; /* Texto Preto */
   min-height: 100vh;
-  min-width: 100vw;
+  width: 100%;
   display: flex;
   flex-direction: column;
   font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
+  overflow-x: hidden; /* Evita rolagem horizontal */
 }
 
 /* --- Header (Barra de Título XP) --- */
@@ -22,55 +23,69 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 12px;
+  padding: 8px 12px;
   background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
   border-bottom: none;
   box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset;
+  position: sticky; /* Fixa no topo mobile */
+  top: 0;
+  z-index: 10;
 }
+
 .headerTitle {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
   color: #FFFFFF;
   margin: 0;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
+
 .backButton {
   background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 100%);
   border: 1px solid #003C74;
   color: #000000;
   border-radius: 0;
-  width: 21px;
-  height: 21px;
+  width: 24px; /* Aumentado levemente para toque */
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   padding: 0;
 }
+
 .backButton:hover {
   background: linear-gradient(180deg, #FFF8DC 0%, #D4E1F5 100%);
 }
+
 .headerRight { 
-  width: 21px; 
+  width: 24px; /* Equilibra o layout do header */
 }
 
+/* --- Conteúdo com Scroll --- */
 .scrollView {
-  width: 1800px;
-  margin-left: 150px;
+  width: 100%;
   flex-grow: 1;
   overflow-y: auto;
+  padding: 10px; /* Padding seguro para mobile */
   padding-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
+
 .introduction {
-  padding: 20px 20px;
+  padding: 10px;
   text-align: center;
 }
+
 .introTitle {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
-  color: #003399; /* Azul escuro */
+  color: #003399;
   margin: 0 0 10px;
 }
+
 .introDescription {
   font-size: 12px;
   line-height: 1.5;
@@ -80,298 +95,287 @@
 /* --- Risk Slider Component (Group Box XP) --- */
 .sliderComponent {
   background-color: #ECE9D8;
-  margin: 0 20px 30px;
-  padding: 20px;
+  padding: 15px;
   border-radius: 0;
-  border: 1px solid #7F9DB9; /* Borda cinza-azul */
+  border: 1px solid #7F9DB9;
+  width: 100%;
 }
+
 .sliderHeader { 
   text-align: center; 
-  margin-bottom: 20px; 
-}
-.sliderTitle { 
-  font-size: 14px; 
-  font-weight: bold; 
-  color: #0054E3; /* Azul */
   margin-bottom: 15px; 
 }
+
+.sliderTitle { 
+  font-size: 13px; 
+  font-weight: bold; 
+  color: #0054E3;
+  margin-bottom: 10px; 
+}
+
 .currentProfileIndicator {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     background-color: #FFFFFF;
-    padding: 8px 15px;
+    padding: 6px 12px;
     border-radius: 0;
     border: 1px solid #7F9DB9;
+    font-size: 11px;
 }
+
 .sliderWrapper { 
   position: relative; 
   padding-top: 10px; 
 }
-
-/* REMOVIDO: .floatingIcon, .iconBubble, .iconArrow (Não se encaixa no XP) */
 
 /* --- Input Range (Slider) Styling XP --- */
 .sliderInput {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 6px;
-  background: #C0C0C0; /* Fundo do trilho cinza */
+  height: 8px; /* Mais alto para facilitar toque */
+  background: #C0C0C0;
   border-radius: 0;
   border: 1px solid #7F9DB9;
   outline: none;
   cursor: pointer;
 }
+
 /* Track styling */
 .sliderInput::-webkit-slider-runnable-track {
   width: 100%;
   height: 100%;
-  /* O gradiente é usado para a parte preenchida */
   background: linear-gradient(to right, #0054E3 0%, #0054E3 var(--progress), #C0C0C0 var(--progress), #C0C0C0 100%);
 }
+
 /* Thumb (knob) styling */
 .sliderInput::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 12px;
-  height: 20px;
+  width: 16px; /* Mais largo para toque */
+  height: 24px; /* Mais alto para toque */
   background: linear-gradient(180deg, #0078D7 0%, #0054E3 100%);
   border-radius: 0;
   border: 1px solid #003C74;
-  margin-top: -8px; /* Centralizar no trilho */
+  margin-top: -9px; /* Centralizar no trilho */
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
 .sliderLabels {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 10px;
   color: #000000;
   padding: 10px 0;
 }
 
 /* --- Profile Display (Painel XP) --- */
 .profileDisplay {
-  background-color: #FFFFFF; /* Fundo branco */
-  margin: 0 20px 30px;
-  padding: 20px;
+  background-color: #FFFFFF;
+  padding: 15px;
   border-radius: 8px;
-  border: 2px solid #0054E3 !important; /* Azul */
+  border: 2px solid #0054E3 !important;
   text-align: center;
-  opacity: 1; /* Simplificado */
-  transform: none; /* Simplificado */
-  animation: none;
-}
-.profileDisplayVisible {
-  animation: none;
+  width: 100%;
 }
 
-/* Roleta simplificada */
 .rouletteWheel {
-  width: 100px;
-  height: 100px;
+  width: 80px; /* Menor no mobile */
+  height: 80px;
   border-radius: 50%;
-  border: 2px solid #7F9DB9; /* Borda cinza */
-  background: #ECE9D8; /* Fundo cinza */
+  border: 2px solid #7F9DB9;
+  background: #ECE9D8;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 auto 20px;
+  margin: 0 auto 15px;
   position: relative;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-  animation: none; /* Rotação removida para simplicidade */
 }
+
 .rouletteWheel.spinning {
-  animation: spin 1s; /* Animação de giro simples */
+  animation: spin 1s;
 }
-.rouletteMarkers {
-  /* Removido para simplicidade */
-}
+
 .rouletteCenter {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: #FFFFFF;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 2px solid #0054E3; /* Azul */
+  border: 2px solid #0054E3;
   box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3);
 }
+
 .rouletteNumber {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
-  color: #0054E3 !important; /* Azul */
-  text-shadow: none;
-}
-.rouletteNumber.numberAnimating {
-  animation: none;
+  color: #0054E3 !important;
 }
 
+/* Header do perfil: Stacked no mobile */
 .profileHeader {
     display: flex;
+    flex-direction: column; /* Mobile first: Coluna */
     align-items: center;
-    gap: 1.5rem;
+    gap: 10px;
     margin-bottom: 1.5rem;
 }
+
 .profileText {
-    flex: 1;
-    text-align: left;
+    width: 100%;
+    text-align: center; /* Centralizado no mobile */
 }
 
 .profileTitle { 
-  font-size: 16px; 
+  font-size: 15px; 
   font-weight: bold; 
-  color: #003399 !important; /* Azul escuro */
-  margin-bottom: 10px; 
-  text-align: center;
+  color: #003399 !important;
+  margin-bottom: 8px; 
 }
+
 .profileDescription { 
-  line-height: 1.5; 
-  margin-bottom: 20px; 
+  line-height: 1.4; 
+  margin-bottom: 15px; 
   color: #000000;
   font-size: 12px;
-  text-align: center;
 }
+
 .featuresContainer {
   background-color: #ECE9D8;
   border-radius: 4px;
-  padding: 15px;
+  padding: 12px;
   text-align: left;
   border: 1px solid #C0C0C0;
 }
+
 .featuresTitle { 
-  font-size: 12px; 
+  font-size: 11px; 
   color: #000000 !important; 
   font-weight: bold; 
-  margin-bottom: 12px; 
+  margin-bottom: 10px; 
   text-align: center; 
 }
+
 .featureItem { 
   display: flex; 
   align-items: center; 
-  gap: 10px; 
-  margin-bottom: 8px; 
-  font-size: 12px;
-}
-.featureItem svg {
-  color: #0054E3 !important; /* Azul */
+  gap: 8px; 
+  margin-bottom: 6px; 
+  font-size: 11px;
 }
 
-/* --- StopLossCard Mock --- */
+.featureItem svg {
+  color: #0054E3 !important;
+  flex-shrink: 0;
+}
+
+/* --- StopLossCard --- */
+.stopLossSection {
+    margin: 10px 0;
+}
+
+.sectionTitle {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #003399;
+    text-align: center;
+}
+
 .stopLossCard {
   background: #FFFFFF;
   border: 1px solid #7F9DB9;
   border-radius: 8px;
-  padding: 20px;
+  padding: 15px;
   cursor: pointer;
+  transition: background-color 0.1s;
 }
-.stopLossSection {
-    padding: 0 20px;
-    margin: 2rem 0;
-}
-.sectionTitle {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #003399; /* Azul escuro */
-    text-align: center;
+.stopLossCard:active {
+    background: #F0F0F0;
 }
 
 /* --- Action Buttons (XP) --- */
 .actionButtons { 
   display: flex;
-  gap: 1rem;
-  padding: 0 20px;
-  margin: 2rem 0;
+  flex-direction: column; /* Mobile: Empilhado */
+  gap: 12px;
+  margin: 1rem 0;
 }
 
-/* Botão Azul (Primário) */
+/* Botão Azul */
 .mainSaveButton {
-  flex: 1;
   width: 100%;
-  padding: 8px 16px;
+  padding: 10px 16px; /* Mais alto para toque */
   border-radius: 3px;
   border: 1px solid #003C74;
   background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
   color: #FFFFFF;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
   box-shadow: 1px 1px 0px rgba(255,255,255,0.8) inset;
 }
-.mainSaveButton:hover:not(:disabled) {
-  background: linear-gradient(180deg, #008FE5 0%, #0065F0 50%, #0050C5 100%);
-}
+
 .mainSaveButton:disabled {
   background: linear-gradient(180deg, #999999 0%, #808080 100%);
-  cursor: not-allowed;
   color: #CCCCCC;
 }
 
-/* Botão Cinza (Secundário) */
+/* Botão Cinza */
 .secondaryButton {
-  flex: 1;
-  padding: 8px 16px;
+  width: 100%;
+  padding: 10px 16px;
   background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
   border: 1px solid #7F9DB9;
   border-radius: 3px;
   color: #000000;
   font-weight: bold;
-  font-size: 11px;
+  font-size: 12px;
   cursor: pointer;
-  transition: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.secondaryButton:hover:not(:disabled) {
-  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
-  transform: none;
-}
+
 .secondaryButton:disabled {
   opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .spinner { animation: spin 1s linear infinite; }
 
-/* --- Status e Alertas (Estilo Info XP) --- */
+/* --- Status e Alertas --- */
 .riskWarning {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Alinhado ao topo para texto longo */
   gap: 10px;
   border: 1px solid #0054E3 !important;
-  background-color: #E0E8F5; /* Azul claro */
-  color: #003399 !important; /* Azul escuro */
+  background-color: #E0E8F5;
+  color: #003399 !important;
   border-radius: 8px;
-  padding: 15px;
-  margin: 20px;
+  padding: 12px;
+  margin-bottom: 10px;
+  font-size: 11px;
 }
-.warningContent { flex: 1; }
-.warningContent p { margin: 0; line-height: 1.4; font-size: 11px; }
 
 .statusMessage {
-  padding: 1rem;
-  margin: 1rem 20px;
-  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
   text-align: center;
   font-weight: 500;
   font-size: 11px;
-  animation: slideIn 0.3s ease;
-  /* Todas as mensagens usam o estilo azul "Info" */
   background: #E0E8F5;
   border: 1px solid #0054E3;
   color: #003399;
 }
-.statusMessage.success, .statusMessage.error, .statusMessage.info {
-  background: #E0E8F5;
-  border: 1px solid #0054E3;
-  color: #003399;
-}
-
 
 /* --- Modal Styles (Janela XP) --- */
 .modalOverlay {
@@ -381,141 +385,115 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: fadeIn 0.3s;
   z-index: 100;
   backdrop-filter: blur(2px);
+  padding: 20px; /* Margem da borda da tela */
 }
+
 .modalContainer {
-  width: 90%;
+  width: 100%;
   max-width: 400px;
-  background: #ECE9D8; /* Fundo cinza */
-  border: 2px solid #0054E3; /* Borda azul */
-  border-radius: 8px 8px 0 0; /* Arredondado em cima */
+  background: #ECE9D8;
+  border: 2px solid #0054E3;
+  border-radius: 8px 8px 0 0;
   box-shadow: 4px 4px 12px rgba(0,0,0,0.4);
 }
+
 .modalHeader { 
   display: flex; 
   justify-content: space-between; 
   align-items: center;
-  padding: 4px 8px; 
-  /* Barra de título azul */
+  padding: 6px 10px; 
   background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-  border-bottom: none; 
 }
+
 .modalTitle { 
-  font-size: 11px; 
+  font-size: 12px; 
   font-weight: bold; 
   color: #FFFFFF; 
   margin: 0; 
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
+
 .modalCloseButton { 
   background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 100%);
   border: 1px solid #003C74;
   color: #000; 
-  cursor: pointer; 
-  width: 21px;
-  height: 21px;
-  border-radius: 0;
-  padding: 0;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.modalCloseButton:hover {
-  background: linear-gradient(180deg, #FFF8DC 0%, #D4E1F5 100%);
+  cursor: pointer;
 }
 
 .modalContent { 
-  padding: 20px; 
+  padding: 15px; 
   background: #ECE9D8;
 }
+
 .inputLabel { 
   display: block; 
-  margin-bottom: 8px; 
+  margin-bottom: 6px; 
   font-size: 11px;
   font-weight: bold;
 }
+
 .modalInput {
   width: 100%;
   background: #FFFFFF;
   border: 1px solid #7F9DB9;
-  border-radius: 0;
-  padding: 6px;
+  padding: 8px;
   color: #000;
-  font-size: 12px;
-  box-sizing: border-box;
+  font-size: 13px; /* Fonte maior para evitar zoom no iOS */
 }
-.modalInput:focus {
-  outline: 1px solid #0054E3;
-  background: #FFFFFF;
-}
+
 .errorText { 
-  color: #BF0000; /* Erro mantido vermelho para inputs */
-  margin-top: 8px; 
+  color: #BF0000; 
+  margin-top: 6px; 
   font-size: 11px; 
-}
-.modalInput.inputError {
-  border-color: #BF0000;
 }
 
 .percentageTips {
   margin-top: 1rem;
-  padding: 1rem;
+  padding: 10px;
   background: #FFFFFF;
-  border-radius: 0;
   border: 1px solid #7F9DB9;
 }
+
 .tipTitle {
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #003399; /* Azul */
+  margin-bottom: 4px;
+  color: #003399;
   font-size: 11px;
 }
+
 .tipItem {
-  font-size: 11px;
-  margin: 0.25rem 0;
+  font-size: 10px;
+  margin: 2px 0;
   color: #000000;
 }
 
 .modalActions {
   display: flex;
   justify-content: flex-end;
-  padding: 12px;
+  padding: 10px;
   border-top: 1px solid #7F9DB9;
   gap: 10px;
   background: #ECE9D8;
 }
+
 .cancelButton, .saveButton {
-  padding: 6px 16px;
+  padding: 8px 16px;
   border-radius: 3px;
   border: 1px solid #7F9DB9;
   cursor: pointer;
   font-weight: bold;
   font-size: 11px;
 }
-/* Botão Cinza */
-.cancelButton { 
-  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%); 
-  color: #000; 
-}
-.cancelButton:hover {
-  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
-}
-/* Botão Azul */
-.saveButton { 
-  background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
-  color: #FFFFFF; 
-  border-color: #003C74;
-}
-.saveButton:hover {
-  background: linear-gradient(180deg, #008FE5 0%, #0065F0 50%, #0050C5 100%);
-}
-.saveButton:disabled {
-  background: linear-gradient(180deg, #999999 0%, #808080 100%);
-  cursor: not-allowed;
-  color: #CCCCCC;
-}
+
+.cancelButton { background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%); color: #000; }
+.saveButton { background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%); color: #FFFFFF; border-color: #003C74; }
 
 /* --- Loading --- */
 .loadingContainer {
@@ -523,28 +501,64 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 3rem;
+    padding: 20px;
     color: #000000;
     text-align: center;
     min-height: 100vh;
     background: #D6D3CE;
 }
+
 .loadingSpinner {
     animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
-    font-size: 2rem;
-    color: #0054E3; /* Azul */
+    margin-bottom: 10px;
+    font-size: 30px;
+    color: #0054E3;
 }
 
-/* --- Responsividade --- */
-@media (max-width: 768px) {
-    .profileHeader {
-        flex-direction: column;
-        text-align: center;
-        gap: 1rem;
-    }
-    
-    .actionButtons {
-        flex-direction: column;
-    }
+/* ========================================
+   Media Queries (Desktop / Tablet)
+   ======================================== */
+@media (min-width: 768px) {
+  /* No Desktop, centralizamos e limitamos a largura */
+  .scrollView {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .introTitle {
+    font-size: 22px;
+  }
+
+  /* Header do perfil vira linha */
+  .profileHeader {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    gap: 20px;
+  }
+
+  .profileText {
+    text-align: left;
+  }
+  
+  .rouletteWheel {
+    width: 100px; /* Volta ao tamanho normal */
+    height: 100px;
+    margin: 0; /* Remove margem automática */
+  }
+
+  .rouletteCenter { width: 50px; height: 50px; }
+  .rouletteNumber { font-size: 20px; }
+
+  /* Botões em linha */
+  .actionButtons {
+    flex-direction: row;
+    gap: 20px;
+  }
+
+  .mainSaveButton, .secondaryButton {
+    width: auto; /* Tamanho natural */
+    flex: 1;
+  }
 }

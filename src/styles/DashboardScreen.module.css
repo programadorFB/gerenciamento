@@ -1,124 +1,44 @@
 /* ========================================
-   RESET E CONFIGURAÇÕES GERAIS (TEMA XP)
+   Tema XP (Branco, Azul, Cinza)
+   DashboardScreen.module.css - Mobile First
    ======================================== */
 
+/* --- RESET & GERAL --- */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* MODIFICADO: Fonte padrão XP */
 body {
   font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
-  background: #D6D3CE; /* Fundo cinza clássico */
-  color: #000000; /* Texto preto */
+  background: #D6D3CE;
+  color: #000;
 }
 
-/* ========================================
-   CONTAINER PRINCIPAL DO DASHBOARD (TEMA XP)
-   ======================================== */
-
-/* MODIFICADO: Fundo cinza sólido, sem imagem, sem overlay */
+/* Container Principal */
 .dashboardContainer {
   min-height: 100vh;
-  min-width: 100vw;
-  background: #D6D3CE; /* Fundo cinza clássico */
-  position: relative;
   width: 100%;
-  overflow-x: hidden;
-  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
-}
-
-/* REMOVIDO: .overlayGradient */
-
-.header, .scrollView {
+  background: #D6D3CE;
   position: relative;
-  z-index: 2;
+  overflow-x: hidden;
+  padding-bottom: 20px; /* Espaço extra no final */
 }
 
-/* ========================================
-   HEADER (Barra de Título XP)
-   ======================================== */
-
-/* MODIFICADO: Agora é a barra de título azul */
+/* --- HEADER (Barra de Título XP) --- */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 12px;
-  /* Gradiente azul da barra de título XP */
+  padding: 8px 12px;
   background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-  border-bottom: none; /* Removida borda dourada */
-  backdrop-filter: none; /* Removido blur */
-  gap: 12px;
   box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset;
+  position: sticky; /* Fixa no topo em mobile */
+  top: 0;
+  z-index: 100;
 }
 
-.greetingContainer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-  justify-content: center;
-}
-.profileAvatarContainer {
-  flex-shrink: 0;
-}
-
-/* MODIFICADO: Borda azul */
-.profileAvatar {
-  width: 32px; /* Menor para caber na barra de título */
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-  background-color: #7F9DB9; /* Fundo cinza-azul */
-  border: 2px solid #FFFFFF; /* Borda branca */
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.profileAvatarPlaceholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: bold;
-  color: #ffffff;
-}
-
-/* MODIFICADO: Ajustado para o novo header */
-.profileIconBadge {
-  position: absolute;
-  top: -5px;
-  left: 20px;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  backdrop-filter: none;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  font-size: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-  margin-left: 0; 
-}
-
-/* MODIFICADO: Texto da barra de título (branco) */
-.greeting {
-  font-size: clamp(12px, 2.5vw, 14px);
-  font-weight: bold;
-  color: #FFFFFF; /* Texto branco */
-  margin: 0;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-}
-
-/* REMOVIDO: Animações de .profileIconBadge (fadeInScale, subtlePulse) */
-/* REMOVIDO: Media queries de .profileIconBadge (simplificado) */
-
-/* MODIFICADO: Ícone do menu (hamburger) agora é branco */
 .menuButton {
   background: none;
   border: none;
@@ -126,70 +46,117 @@ body {
   padding: 8px;
   display: flex;
   align-items: center;
-  justify-content: center;
 }
 
 .menuIcon {
   width: 20px;
   height: 2px;
-  background: #FFFFFF; /* Branco */
+  background: #FFFFFF;
   display: block;
   position: relative;
 }
-
-.menuIcon::before,
-.menuIcon::after {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 2px;
-  background: #FFFFFF; /* Branco */
-  left: 0;
+.menuIcon::before, .menuIcon::after {
+  content: ''; position: absolute; width: 20px; height: 2px; background: #FFFFFF; left: 0;
 }
-
 .menuIcon::before { top: -6px; }
 .menuIcon::after { top: 6px; }
 
-/* MODIFICADO: Logo agora é branco para contraste */
-.logoImg {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  filter: brightness(0) invert(1); /* Força o logo a ser branco */
-  margin-left: 8px;
+.greetingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 8px;
 }
 
-/* ========================================
-   SEÇÃO DE SALDO (Estilo Group-Box XP)
-   ======================================== */
+.greeting {
+  font-size: 14px;
+  font-weight: bold;
+  color: #FFFFFF;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px; /* Limita largura no mobile */
+}
 
+.logoImg {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1);
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.profileWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.profileAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #7F9DB9;
+  border: 2px solid #FFFFFF;
+  object-fit: cover;
+}
+
+.profileAvatarPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFF;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.profileIconBadge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  background: #0054E3;
+  border-radius: 50%;
+  border: 1px solid #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: #FFF;
+}
+
+/* --- SCROLL VIEW --- */
+.scrollView {
+  padding: 10px; /* Padding geral para o conteúdo */
+  max-width: 1200px; /* Limite máximo para telas gigantes */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espaço entre seções */
+}
+
+/* --- SEÇÃO DE SALDO --- */
 .balanceSection {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
-  gap: 12px;
-  padding: 20px;
-  width: 1800px;
-  max-width: 2000px;
-  margin: 0 auto;
+  grid-template-columns: 1fr; /* Mobile: 1 por linha */
+  gap: 10px;
 }
 
-/* MODIFICADO: Estilo "group box" cinza */
 .balanceCard {
   background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-  border: 1px solid #7F9DB9; /* Borda cinza-azul */
+  border: 1px solid #7F9DB9;
   border-radius: 8px;
   padding: 12px;
   text-align: center;
-  box-shadow: 1px 1px 0px rgba(255,255,255,0.8) inset,
-              2px 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 1px 1px 0px rgba(255,255,255,0.8) inset, 2px 2px 5px rgba(0,0,0,0.2);
 }
 
-/* MODIFICADO: Borda azul primária */
 .balanceCard.main {
   border: 2px solid #0054E3;
-  box-shadow: 0 0 0 1px rgba(0, 84, 227, 0.4),
-              2px 2px 5px rgba(0,0,0,0.2);
+  order: -1; /* Joga o saldo principal para o topo no mobile */
 }
 
 .cardHeader {
@@ -197,605 +164,279 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  margin-bottom: 8px;
   font-size: 11px;
   font-weight: bold;
-  color: #000000; /* Texto preto */
-}
-
-/* MODIFICADO: Cores de texto */
-.balanceAmount {
-  font-size: clamp(16px, 3vw, 18px);
-  font-weight: bold;
+  color: #333;
   margin-bottom: 4px;
-  word-break: break-word;
-  color: #000000;
-}
-.balanceAmount.main {
-  font-size: clamp(18px, 3.5vw, 20px);
-  color: #003399; /* Azul escuro */
 }
 
-.cardSubtitle {
-  font-size: 10px;
-  color: #333333; /* Cinza escuro */
+.cardHeader svg { color: #0054E3 !important; }
+
+.balanceAmount {
+  font-size: 20px;
+  font-weight: bold;
+  color: #000;
 }
+.balanceAmount.main { font-size: 26px; color: #003399; }
+.balanceAmount.initial { color: #0054E3; }
+.balanceAmount.positive { color: #006400; } /* Verde escuro para leitura */
+.balanceAmount.negative { color: #BF0000; }
 
-/* MODIFICADO: Cores semânticas removidas */
-.positive { color: #0054E3; } /* Verde -> Azul */
-.negative { color: #333333; } /* Vermelho -> Cinza Escuro */
-.balanceAmount.initial { color: #0054E3; } /* Verde -> Azul */
-
-/* MODIFICADO: Ícones para o novo tema */
-.cardHeader svg {
-  color: #0054E3 !important; /* Força todos os ícones do header a serem azuis */
+.performance {
+  font-size: 11px;
+  font-weight: bold;
+  margin-top: 4px;
 }
-.cardHeader svg[color="#fdb931"] { color: #0054E3 !important; }
-.cardHeader svg[color="#4CAF50"] { color: #0054E3 !important; }
-.cardHeader svg[color="#d1b464"] { color: #0054E3 !important; }
+.performance.positive { color: #006400; }
+.performance.negative { color: #BF0000; }
 
-/* ========================================
-   AÇÕES RÁPIDAS (Botões XP)
-   ======================================== */
-
+/* --- AÇÕES RÁPIDAS --- */
 .quickActions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100px, 100%), 1fr));
+  grid-template-columns: repeat(2, 1fr); /* Mobile: 2 colunas */
   gap: 8px;
-    width: 1760px;
-  margin-left: 188px;
-  padding: 0 20px 20px;
-  /* max-width: 1800px; */
-  margin: 0 auto;
 }
 
-/* MODIFICADO: Botão padrão azul XP */
 .actionButton {
-  padding: 8px 12px;
+  padding: 10px;
+  background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
   border: 1px solid #003C74;
   border-radius: 3px;
-  font-weight: bold;
+  color: #FFFFFF;
   font-size: 11px;
+  font-weight: bold;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  transition: none;
-  white-space: nowrap;
-  
-  /* Gradiente azul */
-  background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
-  color: #FFFFFF;
+  gap: 6px;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-  box-shadow: 1px 1px 0px rgba(255,255,255,0.8) inset,
-              -1px -1px 0px rgba(0,0,0,0.2) inset,
-              0 2px 4px rgba(0,0,0,0.2);
 }
+.actionButton:active { background: #003399; }
 
-.actionButton:hover {
-  transform: none;
-  background: linear-gradient(180deg, #008FE5 0%, #0065F0 50%, #0050C5 100%);
-}
-
-.actionButton:active {
-  background: linear-gradient(180deg, #0040B0 0%, #003399 50%, #002875 100%);
-  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.4);
-}
-
-/* REMOVIDO: Classes .deposit, .withdraw, .gains, .losses (não são mais necessárias) */
-
-/* ========================================
-   SEÇÕES GENÉRICAS (TEMA XP)
-   ======================================== */
-
-.overviewSection,
-.transactionsList,
-.objectivesList {
-  padding: 20px;
-  border-top: 1px solid #7F9DB9; /* Borda cinza */
-  max-width: 1800px;
-  margin: 0 auto;
-}
-
+/* --- SEÇÕES GERAIS --- */
 .sectionHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
-  gap: 12px;
-  flex-wrap: wrap;
+  margin-bottom: 10px;
 }
 
-/* MODIFICADO: Título da seção (azul) */
 .sectionTitle {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
-  color: #003399; /* Dourado -> Azul Escuro */
+  color: #003399;
 }
 
-/* MODIFICADO: Botão "Ver Todos" (link azul) */
 .seeAllButton {
   background: none;
   border: none;
-  color: #0054E3; /* Dourado -> Azul */
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 12px;
-  white-space: nowrap;
+  color: #0054E3;
+  font-size: 11px;
+  font-weight: bold;
   text-decoration: underline;
+  cursor: pointer;
 }
 
-.emptyState {
-  text-align: center;
-  padding: 30px 20px;
-  color: #666;
-  background: #ECE9D8;
-  border: 1px dashed #7F9DB9;
-  border-radius: 8px;
-}
-
-.emptyState p {
-  margin-top: 15px;
-  color: #333333;
-  font-size: 12px;
-}
-
-/* ========================================
-   SEÇÃO DE GESTÃO DE RISCO (Estilo Janela XP)
-   ======================================== */
-
+/* --- GESTÃO DE RISCO --- */
 .riskManagementSection {
-  padding: 0 20px;
-  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .riskCardsContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: 1fr; /* Mobile: 1 por linha */
   gap: 16px;
-      width: auto;
-    margin-left: -15px;
-  margin-top: 16px;
 }
 
-/* MODIFICADO: Card agora é uma "Janela" */
 .riskCard {
-  background: #FFFFFF; /* Fundo do corpo da janela */
-  border-radius: 8px;
-  padding: 0; /* Padding será no header e body */
-  border: 2px solid #0054E3; /* Borda azul da janela */
-  box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-  transition: none;
-}
-.riskCard:hover {
-  transform: none;
-  box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-  border-color: #0054E3;
+  background: #FFFFFF;
+  border: 2px solid #0054E3;
+  border-radius: 6px;
+  overflow: hidden; /* Garante bordas arredondadas */
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
 }
 
-/* MODIFICADO: Alerta de Stop Loss (azul, não vermelho) */
-.stopLossTriggered {
-  border: 3px solid #003399; /* Borda azul escura e grossa */
-  animation: pulse 2s infinite;
-}
-
-/* MODIFICADO: Keyframe para pulsar azul */
-@keyframes pulse {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(0, 84, 227, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 40px rgba(0, 84, 227, 0.6);
-  }
-}
-
-/* ========================================
-   HEADER DOS CARDS DE RISCO (Barra de Título XP)
-   ======================================== */
-
-/* MODIFICADO: Barra de título azul */
 .riskCardHeader {
+  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+  padding: 6px 10px;
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 0;
-  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-  padding: 4px 8px;
-  border-radius: 6px 6px 0 0; /* Arredondado em cima */
-  box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset;
+  color: #FFF;
 }
 
-/* MODIFICADO: Wrapper do ícone (transparente) */
-.riskIconWrapper {
-  width: auto;
-  height: auto;
-  border-radius: 0;
-  background: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* MODIFICADO: Ícones da barra de título (brancos) */
-.riskIconWrapper svg {
-  color: #FFFFFF !important; /* Força o ícone a ser branco */
-  font-size: 14px;
-}
-
-/* MODIFICADO: Título da barra (branco) */
 .riskCardTitle {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
-  color: #FFFFFF;
-  text-transform: none; /* Título normal */
-  letter-spacing: 0;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
 }
 
-/* NOVO: Corpo da "Janela" (branco) */
 .riskCardBody {
-  padding: 16px;
-  background: #FFFFFF;
-  border-radius: 0 0 6px 6px; /* Arredondado embaixo */
+  padding: 12px;
 }
-
-/* ========================================
-   VALORES DOS CARDS DE RISCO
-   ======================================== */
 
 .riskCardValue {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 16px;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
 }
 
 .riskMainValue {
-  font-size: 24px;
-  font-weight: 700;
-  color: #000000;
-  line-height: 1;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
 }
 
 .riskPercentage {
-  font-size: 12px;
-  color: #333333;
-  font-weight: 500;
-}
-
-/* REMOVIDO: .riskDistance (simplificado) */
-
-/* ========================================
-   BANNERS DE ALERTA E SUCESSO (TEMA XP)
-   ======================================== */
-
-/* MODIFICADO: Alerta (estilo erro/info azul) */
-.alertBanner {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #E0E8F5 100%);
-  border: 1px solid #0054E3;
-  border-radius: 4px;
-  color: #003399;
-  font-weight: 600;
   font-size: 11px;
+  color: #666;
 }
 
-/* MODIFICADO: Sucesso (também azul) */
-.successBanner {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px;
-  background: linear-gradient(180deg, #E0F5E1 0%, #D4E8D5 100%);
-  border: 1px solid #0054E3;
-  border-radius: 4px;
-  color: #003399;
-  font-weight: 600;
-  font-size: 11px;
-  margin-top: 12px;
-  /* Animação removida para o tema XP */
-  animation: none; 
-}
-@keyframes celebrationPulse { 
-  /* MODIFICADO: Animação de pulso azul */
-  0%, 100% {
-    box-shadow: 0 2px 8px rgba(0, 84, 227, 0.3);
-  }
-  50% {
-    box-shadow: 0 4px 12px rgba(0, 84, 227, 0.5);
-  }
-}
+.progressBarContainer { margin-top: 8px; }
 
-/* ========================================
-   BARRA DE PROGRESSO (TEMA XP)
-   ======================================== */
-
-.progressBarContainer {
-  margin-top: 12px;
-}
-
-/* MODIFICADO: Barra de progresso estilo XP */
 .progressBar {
-  width: 100%;
-  height: 12px; /* Mais grossa */
-  background: #FFFFFF;
-  border-radius: 0;
-  overflow: hidden;
-  margin-bottom: 8px;
+  height: 14px;
+  background: #FFF;
   border: 1px solid #7F9DB9;
   padding: 1px;
 }
 
-/* MODIFICADO: Preenchimento azul */
 .progressBarFill {
   height: 100%;
-  background: #0054E3; /* Dourado -> Azul */
-  border-radius: 0;
-  transition: width 0.5s ease;
+  background: #0054E3;
+  width: 0; /* Animado via JS */
+  transition: width 0.3s;
 }
 
-/* MODIFICADO: Estilo XP */
 .progressInfo {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0;
-  background: none;
-  border-radius: 0;
+  font-size: 10px;
+  margin-top: 2px;
+  color: #333;
 }
 
-.progressCurrent {
-  font-size: 12px;
-  font-weight: 600;
-  color: #000000;
-}
-
-/* MODIFICADO: Porcentagem (azul) */
-.progressPercent {
-  font-size: 14px;
-  font-weight: 700;
-  color: #003399; /* Dourado -> Azul Escuro */
-}
-
-/* ========================================
-   ESTADO VAZIO (TEMA XP)
-   ======================================== */
 .riskCardEmpty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
   text-align: center;
-  gap: 12px;
+  padding: 10px;
+  font-size: 11px;
+  color: #666;
 }
 
-.riskCardEmpty p {
-  color: #333333;
-  font-size: 12px;
-  margin: 0;
-}
-/* ================================================= */
-/* ✅ ADICIONE ESTAS CLASSES ao seu DashboardScreen.module.css  */
-/* ================================================= */
-
-/* Garante que o .sectionHeader (que você já deve ter)
-   use flexbox para alinhar os itens */
-.sectionHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  margin-bottom: 16px;
-  /* (Mantenha seus outros estilos de .sectionHeader aqui) */
-}
-
-/* Novo: Agrupa o título e os botões de navegação */
-.calendarHeaderGroup {
-  display: flex;
-  align-items: center;
-  gap: 20px; /* Espaço entre o Título e os botões de nav */
-}
-
-/* Novo: Container para os botões de navegação */
-.calendarNavControls {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Espaço entre os botões de nav */
-}
-.calendarMonthTitle {
-  font-size: 14px; /* Tamanho da fonte (ajuste conforme necessário) */
-  font-weight: 600;
-  color: #FFFFFF; /* Cor branca do tema XP */
-  margin: 0;
-  padding: 0 5px; /* Leve espaçamento lateral */
-  min-width: 160px; /* Largura mínima para evitar que o layout "pule" */
-  text-align: center;
-  white-space: nowrap; /* Impede que quebre a linha */
-  text-transform: capitalize; /* "Novembro" em vez de "novembro" */
-}
-/* Ajuste para o .sectionHeader do calendário para 
-   evitar quebra de linha em telas menores, se necessário */
-.calendarSection{
-  width: 1730px;
-  margin-left: 200px;
-  /* margin-left: 95px; */
-} 
-.sectionHeader {
-  flex-wrap: wrap; /* Permite quebrar linha se não houver espaço */
-  gap: 10px;       /* Espaço caso quebre a linha */
-}
-/* MODIFICADO: Botão de configurar (azul) */
 .configureButton {
-  padding: 6px 16px;
+  margin-top: 8px;
+  padding: 4px 10px;
+  background: #0054E3;
+  color: #FFF;
   border: 1px solid #003C74;
   border-radius: 3px;
-  font-weight: bold;
-  font-size: 11px;
+  font-size: 10px;
   cursor: pointer;
-  background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
-  color: #FFFFFF;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-  box-shadow: 1px 1px 0px rgba(255,255,255,0.8) inset,
-              -1px -1px 0px rgba(0,0,0,0.2) inset,
-              0 2px 4px rgba(0,0,0,0.2);
 }
 
-.configureButton:hover {
-  transform: none;
-  background: linear-gradient(180deg, #008FE5 0%, #0065F0 50%, #0050C5 100%);
-  box-shadow: 1px 1px 0px rgba(255,255,255,0.8) inset,
-              -1px -1px 0px rgba(0,0,0,0.2) inset,
-              0 2px 4px rgba(0,0,0,0.2);
-}
-
-.configureButton:active {
-  transform: none;
-}
-
-/* ========================================
-   RESUMO FINANCEIRO (TEMA XP)
-   ======================================== */
-.summarySection {
-    margin-bottom: 24px;
-    padding: 0 20px;
-}
-
-/* REMOVIDO: .summaryCardsContainer, .summaryCard (usando .summaryCardUnified) */
-
-/* MODIFICADO: Card unificado estilo XP */
-.summaryCardUnified {
-  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-  border-radius: 8px;
-  padding: 12px;
-  width: 100%; /* Ajustado */
-  margin-left: 0; /* Ajustado */
+/* Alertas */
+.alertBanner, .successBanner {
+  margin-top: 10px;
+  padding: 6px;
+  font-size: 11px;
+  font-weight: bold;
+  border-radius: 3px;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
+}
+.alertBanner { background: #FFE5E5; color: #BF0000; border: 1px solid #BF0000; }
+.successBanner { background: #E5FFE5; color: #006400; border: 1px solid #006400; }
+.stopLossTriggered { border-color: #BF0000 !important; }
+
+/* --- RESUMO FINANCEIRO --- */
+.summaryCardUnified {
+  background: #FFFFFF;
   border: 1px solid #7F9DB9;
-  backdrop-filter: none;
-  box-shadow: 1px 1px 0px rgba(255,255,255,0.8) inset,
-              2px 2px 5px rgba(0,0,0,0.2);
+  border-radius: 4px;
 }
 
 .summaryRow {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 8px 4px;
-  border-bottom: 1px solid #C0C0C0; /* Borda cinza mais escura */
+  padding: 10px;
+  border-bottom: 1px solid #ECE9D8;
 }
-
-.summaryRow:last-child {
-  border-bottom: none;
-}
+.summaryRow:last-child { border-bottom: none; }
 
 .summaryLabel {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-size: 12px;
-  font-weight: bold;
-  color: #000000;
+  color: #333;
 }
+.summaryLabel svg { color: #0054E3 !important; }
 
 .summaryValue {
+  font-weight: bold;
   font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0;
+}
+.summaryValue.positive { color: #006400; }
+.summaryValue.negative { color: #BF0000; }
+
+/* --- CALENDÁRIO --- */
+.calendarSection {
+  /* Garante que o calendário não estoure a tela */
+  width: 100%;
+  overflow: hidden;
+  background: #ECE9D8;
+  border: 1px solid #7F9DB9;
+  padding: 4px;
+}
+.calendarSection .sectionHeader {
+  padding: 4px;
+  margin-bottom: 4px;
 }
 
-/* MODIFICADO: Cores de ícones do resumo */
-.summaryRow:nth-child(1) .summaryLabel svg { color: #0054E3 !important; } /* Deposit (Azul) */
-.summaryRow:nth-child(2) .summaryLabel svg { color: #333333 !important; } /* Withdraw (Cinza) */
-.summaryRow:nth-child(3) .summaryLabel svg { color: #0054E3 !important; } /* Gains (Azul) */
-.summaryRow:nth-child(4) .summaryLabel svg { color: #333333 !important; } /* Losses (Cinza) */
-
-
-/* REMOVIDO: Estilos .additionalInfo (não parecem estar no JSX) */
-/* REMOVIDO: Estilos .resetInfo (não parecem estar no JSX) */
-/* REMOVIDO: Estilos .dailyBadge, .newDayIndicator, .nearCompletion, .almostComplete, .shimmer, .dailyTooltip (não parecem estar no JSX) */
-
+/* --- ESTADO VAZIO --- */
+.emptyState {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 12px;
+  background: #FFF;
+  border: 1px dashed #7F9DB9;
+  border-radius: 4px;
+}
 
 /* ========================================
-   RESPONSIVIDADE (Simplificada)
+   MEDIA QUERIES (TABLET & DESKTOP)
    ======================================== */
 
-@media (max-width: 450px) {
-  .dashboardContainer {
-    overflow-x: hidden;
-    margin-left: 0;
-  }
-  
-  .header {
-    padding: 6px 10px;
-  }
-  
-  .greeting {
-    font-size: 11px;
-  }
-  
-  .balanceSection,
-  .quickActions,
-  .overviewSection,
-  .transactionsList,
-  .objectivesList,
-  .riskManagementSection,
-  .summarySection {
-    padding: 10px;
-  }
-
+@media (min-width: 600px) {
   .balanceSection {
-    grid-template-columns: 1fr;
-    max-width: 100%;
-    margin-left: 0;
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas em telas médias+ */
   }
-    
-  .summaryCardUnified {
-    width: 100%;
-    margin-left: 0;
-  }
+  .balanceCard.main { order: 0; } /* Volta para o meio/ordem normal */
 
   .quickActions {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr); /* 4 botões em linha */
   }
 
   .riskCardsContainer {
-    grid-template-columns: 1fr;
-  }
-  
-  .riskCardBody {
-    padding: 12px;
-  }
-
-  .riskMainValue {
-    font-size: 20px;
-  }
-  
-  .actionButton {
-    font-size: 10px;
-    padding: 8px;
-  }
-
-  .progressInfo {
-    flex-direction: row;
+    grid-template-columns: repeat(2, 1fr); /* 2 cards lado a lado */
   }
 }
 
-/* Tablets */
-@media (min-width: 481px) and (max-width: 768px) {
-  .balanceSection {
-    grid-template-columns: 1fr 1fr;
+@media (min-width: 1024px) {
+  /* Ajustes finos para telas grandes */
+  .scrollView {
+    padding: 20px;
+    gap: 24px;
   }
-  .riskCardTitle {
-    width: 350px;
-}
-  .quickActions {
-    grid-template-columns: 1fr 1fr;
-  }
+  
+  .greeting { font-size: 16px; max-width: none; }
+  
+  .balanceAmount { font-size: 24px; }
+  .balanceAmount.main { font-size: 32px; }
 }

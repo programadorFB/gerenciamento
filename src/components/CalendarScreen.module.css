@@ -1,27 +1,28 @@
 /* ========================================
    Tema XP (Branco, Azul, Cinza)
-   CalendarScreen.module.css
+   CalendarScreen.module.css - Versão Otimizada Mobile
    ======================================== */
 
 .container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  min-width: 100vw;
-  background-color: #D6D3CE; /* Fundo Cinza XP */
+  width: 100%;
+  background-color: #D6D3CE;
   color: #000;
   font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
+  overflow-x: hidden;
 }
 
-/* --- Cabeçalho (Barra de Título XP) --- */
+/* --- Cabeçalho --- */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 12px;
+  padding: 8px;
   background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-  border-bottom: none;
-  box-shadow: 0 1px 0 rgba(255,252,255,0.3) inset;
+  flex-wrap: wrap; /* Permite quebra em telas pequenas */
+  gap: 10px;
 }
 
 .backButton,
@@ -31,311 +32,275 @@
   border-radius: 3px;
   color: #000;
   cursor: pointer;
-  padding: 4px 10px;
+  padding: 6px 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 11px;
   font-weight: bold;
 }
+
 .backButton:hover,
 .navButton:hover {
   background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
 }
 
-/* ✅ NOVO: Estilos para separar os botões de Ano */
-.yearButton {
-  /* Os ícones diferentes já ajudam na distinção */
-}
-
 .headerControls {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 6px;
+  flex-grow: 1;
+  /* No mobile, centraliza e garante largura total se quebrar linha */
+  width: 100%; 
 }
 
-/* Seleciona o PRIMEIRO botão dentro de 'headerControls' 
-  QUE TAMBÉM TENHA a classe 'yearButton' (Ano Anterior)
-*/
-.headerControls > .yearButton:first-child {
-  margin-right: 5px; /* Adiciona espaço extra entre [<< Ano] e [< Mês] */
-                   /* O 'gap: 10px' + 'margin-right: 5px' = 15px de espaço total */
+/* Ajuste Desktop para o Header */
+@media (min-width: 600px) {
+  .header { flex-wrap: nowrap; }
+  .headerControls { width: auto; flex-grow: 0; }
 }
-
-/* Seleciona o ÚLTIMO botão dentro de 'headerControls' 
-  QUE TAMBÉM TENHA a classe 'yearButton' (Próximo Ano)
-*/
-.headerControls > .yearButton:last-child {
-  margin-left: 5px; /* Adiciona espaço extra entre [Mês >] e [Ano >>] */
-                  /* O 'gap: 10px' + 'margin-left: 5px' = 15px de espaço total */
-}
-/* ============================================ */
-
 
 .monthTitle {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: bold;
   color: #FFFFFF;
-  margin: 0;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-  min-width: 150px;
+  min-width: 110px;
   text-align: center;
   text-transform: capitalize;
 }
 
+/* --- Conteúdo --- */
 .content {
   flex-grow: 1;
-  padding: 20px;
+  padding: 8px; /* Padding menor no mobile */
   overflow-y: auto;
 }
 
-/* --- Grid do Calendário (Estilo Tabela XP) --- */
+/* --- Grid do Calendário --- */
 .calendarGrid {
   width: 100%;
   border-collapse: collapse;
   background: #FFFFFF;
   border: 1px solid #7F9DB9;
+  table-layout: fixed; /* Força colunas de tamanhos iguais */
 }
 
 .dayHeader {
   background: #ECE9D8;
   border: 1px solid #7F9DB9;
-  padding: 8px;
-  font-size: 11px;
+  padding: 6px 2px;
+  font-size: 10px;
   font-weight: bold;
   text-align: center;
   color: #003399;
 }
 
+/* Célula do Dia */
 .dayCell {
-  width: 14.28%;
-  height: 100px;
+  width: 14.28%; /* 100% dividido por 7 */
+  height: 60px; /* Altura compacta no mobile */
   border: 1px solid #7F9DB9;
-  padding: 4px;
+  padding: 2px;
   vertical-align: top;
-  text-align: right;
-  position: relative; /* Importante para o resumo */
-  transition: background-color 0.1s ease;
+  position: relative;
+  background-color: #FFF;
 }
 
 .dayNumber {
   font-size: 11px;
   font-weight: bold;
   color: #000;
+  display: block;
+  text-align: right;
+  margin-right: 2px;
 }
 
-/* Dia de outro mês (cinza) */
 .otherMonth {
-  background-color: #ECE9D8;
+  background-color: #F0F0F0;
   cursor: default;
 }
-.otherMonth .dayNumber {
-  color: #888;
-  font-weight: normal;
-}
+.otherMonth .dayNumber { color: #AAA; }
 
-/* Dia de hoje (borda vermelha) */
 .today .dayNumber {
   color: #BF0000;
   border: 1px solid #BF0000;
-  padding: 2px;
-  border-radius: 2px;
   background: #FFF0F0;
+  border-radius: 2px;
+  padding: 0 3px;
+  display: inline-block;
 }
 
-/* Dia com dados */
 .dayWithData {
-  background-color: #F0F8FF;
   cursor: pointer;
+  background-color: #F9FCFF;
 }
-.dayWithData:hover {
-  background-color: #C1D2EE; /* Azul claro */
-}
+.dayWithData:hover { background-color: #E3EFFF; }
 
-/* ⛔ REMOVIDO: .transactionMarker */
-
-/* ✅ NOVO: Resumo de Ganhos/Perdas no Grid */
+/* --- RESUMO (A Mágica da Responsividade) --- */
 .daySummary {
-  position: absolute;
-  bottom: 4px;
-  left: 4px;
-  right: 4px;
   display: flex;
   flex-direction: column;
-  font-size: 10px;
-  text-align: left;
-  line-height: 1.2;
-}
-.summaryGain {
-  color: #006400; /* Verde Escuro */
-  font-weight: bold;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.summaryLoss {
-  color: #BF0000; /* Vermelho XP */
-  font-weight: bold;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  gap: 2px;
+  margin-top: 2px;
+  /* Centraliza no mobile */
+  align-items: center; 
 }
 
+/* ESTILO MOBILE: 
+   Transformamos o texto em barras coloridas ou pontos.
+   Font-size 0 esconde o texto, mas mantemos o bloco visível.
+*/
+.summaryGain,
+.summaryLoss,
+.summaryDeposit,
+.summaryWithdrawal {
+  font-size: 0; /* Esconde o texto "Ganho: R$..." */
+  height: 4px;  /* Altura da barra */
+  width: 80%;   /* Largura da barra dentro da célula */
+  border-radius: 2px;
+  display: block;
+}
+
+.summaryGain { background-color: #4CAF50; /* Verde */ }
+.summaryLoss { background-color: #F44336; /* Vermelho */ }
+.summaryDeposit { background-color: #2196F3; /* Azul */ }
+.summaryWithdrawal { background-color: #FF9800; /* Laranja */ }
 
 /* ========================================
-   MODAL (Janela XP)
+   MODAL (Ajustado para Mobile)
    ======================================== */
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 84, 227, 0.3); /* Overlay Azul */
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 20px;
+  padding: 10px;
   backdrop-filter: blur(2px);
 }
 
 .modalContainer {
   background: #ECE9D8;
-  border-radius: 8px 8px 0 0;
   width: 100%;
-  max-width: 600px;
-  max-height: 90vh;
+  max-width: 500px; /* Largura máxima desktop */
+  max-height: 90vh; /* Não estourar altura */
   display: flex;
   flex-direction: column;
   border: 2px solid #0054E3;
-  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  border-radius: 4px;
 }
 
 .modalHeader {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 4px 8px;
-  border-bottom: none;
+  align-items: center;
+  padding: 8px;
   background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
+  color: white;
 }
 
 .modalTitle {
-  font-size: 11px;
-  font-weight: 700;
-  color: #FFFFFF;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
   margin: 0;
-  text-transform: capitalize;
+  font-size: 13px;
+  font-weight: bold;
 }
 
 .closeButton {
-  padding: 0;
-  width: 21px;
-  height: 21px;
-  border-radius: 0;
-  background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 100%);
-  border: 1px solid #003C74;
+  background: #D4D0C8;
+  border: 1px solid #FFF;
   cursor: pointer;
-  color: #000;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.closeButton:hover {
-  background: #F5F3E8;
+  padding: 2px 6px;
+  border-radius: 2px;
 }
 
-/* ✅ NOVO: Seção de Anotações */
 .notesSection {
   padding: 10px;
-  padding-bottom: 0;
   background: #ECE9D8;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-.notesTitle {
-  font-size: 11px;
-  font-weight: bold;
-  color: #000;
-  margin: 0;
-  padding-bottom: 4px;
-  border-bottom: 1px solid #7F9DB9;
-}
+
 .notesTextarea {
   width: 100%;
-  padding: 8px;
-  font-family: 'Tahoma', sans-serif;
-  font-size: 11px;
-  background: #FFFFFF;
+  height: 60px;
+  resize: none;
+  font-family: inherit;
   border: 1px solid #7F9DB9;
-  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3);
-  resize: vertical;
-  min-height: 60px;
-}
-.saveNoteButton {
-  /* Estilo botão XP */
-  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-  border: 1px solid #7F9DB9;
-  border-radius: 3px;
-  color: #000;
-  cursor: pointer;
-  padding: 4px 10px;
-  font-size: 11px;
-  font-weight: bold;
-  align-self: flex-start; /* Alinha à esquerda */
-}
-.saveNoteButton:hover {
-  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
-}
-.saveNoteButton:disabled {
-  background: #ECE9D8;
-  color: #7F9DB9;
-  cursor: not-allowed;
 }
 
+.saveNoteButton {
+  align-self: flex-start;
+  padding: 4px 12px;
+}
 
 .modalContent {
   flex: 1;
   overflow-y: auto;
-  padding: 10px; /* Reduzido o padding superior */
-  background: #FFFFFF;
+  padding: 10px;
+  background: #FFF;
   border: 1px solid #7F9DB9;
-  margin: 10px;
-  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3);
+  margin: 0 10px;
+  min-height: 150px;
 }
-
-/* Scrollbar XP */
-.modalContent::-webkit-scrollbar { width: 16px; }
-.modalContent::-webkit-scrollbar-track { background: #ECE9D8; border: 1px solid #7F9DB9; }
-.modalContent::-webkit-scrollbar-thumb { background: #BFCCE0; border: 1px solid #7F9DB9; }
-.modalContent::-webkit-scrollbar-thumb:hover { background: #7F9DB9; }
 
 .modalActions {
   padding: 10px;
-  background: #ECE9D8;
-  border-top: 1px solid #7F9DB9;
   display: flex;
-  justify-content: flex-end; /* Alinha o botão à direita */
-  gap: 10px;
+  justify-content: flex-end;
 }
 
 .addTransactionButton {
+  width: 100%;
+  padding: 10px;
   background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
   border: 1px solid #7F9DB9;
-  border-radius: 3px;
-  color: #000;
-  cursor: pointer;
-  padding: 4px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
   font-weight: bold;
-  gap: 5px;
+  cursor: pointer;
 }
 
-.addTransactionButton:hover {
-  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+/* ========================================
+   MEDIA QUERIES (DESKTOP)
+   ======================================== */
+@media (min-width: 768px) {
+  .dayCell {
+    height: 100px; /* Célula mais alta */
+    padding: 4px;
+  }
+
+  .daySummary {
+    align-items: flex-start; /* Alinha texto à esquerda */
+  }
+
+  /* Restaura o texto no Desktop */
+  .summaryGain,
+  .summaryLoss,
+  .summaryDeposit,
+  .summaryWithdrawal {
+    font-size: 10px; /* Texto visível */
+    height: auto;
+    width: auto;
+    background-color: transparent; /* Remove o fundo de barra */
+    display: inline;
+    border-radius: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  /* Cores do texto no Desktop */
+  .summaryGain { color: #006400; }
+  .summaryLoss { color: #BF0000; }
+  .summaryDeposit { color: #0054E3; }
+  .summaryWithdrawal { color: #FF9800; }
+  
+  .addTransactionButton {
+    width: auto;
+  }
 }

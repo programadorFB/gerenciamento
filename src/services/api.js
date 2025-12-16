@@ -3,12 +3,12 @@ import axios from 'axios';
 
 const getBaseURL = () => {
   if (import.meta.env.DEV) {
-    return 'https://gerenciamento.sortehub.online';
+    return 'https://area-backend.sortehub.online';
   } else {
-    return 'https://gerenciamento.sortehub.online';
+    return 'https://area-backend.sortehub.online';
   }
 };
-const STATIC_BASE_URL = 'https://gerenciamento.sortehub.online';
+const STATIC_BASE_URL = 'https://area-backend.sortehub.online';
 const API_BASE_URL = getBaseURL();
 
 const api = axios.create({
@@ -189,7 +189,7 @@ const apiService = {
   // User profile management
   async getUserProfile() {
     try {
-      const response = await api.get('/user/profile');
+      const response = await api.get('/users/update');
       return response;
     } catch (error) {
       return { success: false, error: error.message };
@@ -204,7 +204,7 @@ const apiService = {
         }
       } : {};
 
-      const response = await api.put('/user/profile', profileData, config);
+      const response = await api.put('/users/update', profileData, config);
       return response;
     } catch (error) {
       return { success: false, error: error.message };

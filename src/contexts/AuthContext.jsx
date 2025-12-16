@@ -195,26 +195,29 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const updateProfile = useCallback(async (profileData) => {
-    dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_START });
-    try {
-      const response = await apiService.updateUserProfile(profileData);
+const updateProfile = useCallback(async (profileData) => {
+  dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_START });
+  try {
+    const response = await apiService.updateUserProfile(profileData);
+    
+    if (response.success && response.user) {
+      // ✅ Usar response.user diretamente (backend já retorna objeto completo)
+      const updatedUser = response.user;
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
+      dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_SUCCESS, payload: { user: updatedUser } });
       
-      if (response.success) {
-        const updatedUser = { ...state.user, ...response.data };
-        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
-        dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_SUCCESS, payload: { user: updatedUser } });
-        return { success: true, data: response.data };
-      } else {
-        dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_FAILURE, payload: response.error });
-        return { success: false, error: response.error };
-      }
-    } catch (error) {
-      const errorMessage = error.message || 'Erro ao atualizar perfil.';
-      dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_FAILURE, payload: errorMessage });
-      return { success: false, error: errorMessage };
+      console.log('✅ Contexto atualizado:', updatedUser); // Debug
+      return { success: true };
+    } else {
+      dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_FAILURE, payload: response.error });
+      return { success: false, error: response.error };
     }
-  }, [state.user]);
+  } catch (error) {
+    const errorMessage = error.message || 'Erro ao atualizar perfil.';
+    dispatch({ type: AUTH_ACTIONS.UPDATE_PROFILE_FAILURE, payload: errorMessage });
+    return { success: false, error: errorMessage };
+  }
+}, []);
 
   const logout = useCallback(async () => {
     try {
