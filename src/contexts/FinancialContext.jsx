@@ -546,7 +546,31 @@ export const FinancialProvider = ({ children }) => {
       }
     }
   }, [calculateDailyTotals, user]);
-
+  // Função para calcular progresso baseado no LUCRO
+const calculateObjectiveProgress = (objective, transactions) => {
+  // Calcula lucro real: ganhos - perdas
+  const gains = transactions
+    .filter(tx => tx.type === 'gains')
+    .reduce((acc, tx) => acc + parseFloat(tx.amount), 0);
+  
+  const losses = transactions
+    .filter(tx => tx.type === 'losses')
+    .reduce((acc, tx) => acc + parseFloat(tx.amount), 0);
+  
+  const realProfit = gains - losses;
+  
+  // Progresso é baseado no lucro, não no saldo
+  const progress = objective.target_value > 0 
+    ? Math.min(100, Math.max(0, (realProfit / objective.target_value) * 100))
+    : 0;
+  
+  return {
+    ...objective,
+    current_value: realProfit,
+    progress,
+    isCompleted: realProfit >= objective.target_value
+  };
+};
   const getBankResetStatus = useCallback(async () => {
     try {
       const response = await apiService.getBankResetStatus();

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { MdClose, MdEdit, MdDelete, MdInfoOutline, MdEvent, MdCheckCircle } from 'react-icons/md';
 import { FaBullseye, FaTrophy } from 'react-icons/fa';
@@ -98,7 +97,7 @@ const EditObjectiveModal = ({ visible, objective, onClose, onSave }) => {
             {errors.title && <p className={styles.errorText}>{errors.title}</p>}
           </div>
           <div className={styles.inputContainer}>
-            <label className={styles.inputLabel}>Meta (R$) *</label>
+            <label className={styles.inputLabel}>Meta de Lucro (R$) *</label>
             <input name="target_amount" type="text" inputMode="decimal" className={`${styles.textInput} ${errors.target_amount ? styles.inputError : ''}`} value={editedObjective.target_amount || ''} onChange={handleAmountChange} placeholder="10000,00" />
             {errors.target_amount && <p className={styles.errorText}>{errors.target_amount}</p>}
           </div>
@@ -130,7 +129,7 @@ const EditObjectiveModal = ({ visible, objective, onClose, onSave }) => {
 };
 
 // --- COMPONENTE DO ITEM INDIVIDUAL ---
-const ObjectiveItem = ({ item, currentBalance, onUpdateObjective, onDeleteObjective, onCompleteObjective }) => {
+const ObjectiveItem = ({ item, realProfit, onUpdateObjective, onDeleteObjective, onCompleteObjective }) => {
   const [showActions, setShowActions] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -139,8 +138,10 @@ const ObjectiveItem = ({ item, currentBalance, onUpdateObjective, onDeleteObject
   const formatDate = (dateString) => new Date(dateString).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
   const getDaysRemaining = (deadline) => Math.ceil((new Date(deadline) - new Date()) / (1000 * 60 * 60 * 24));
 
-  // ✅ MUDANÇA: Progresso baseado no saldo atual
-  const progress = Math.min((currentBalance / item.target_amount) * 100, 100);
+  // ✅ MUDANÇA: Progresso baseado no LUCRO REAL (gains - losses)
+  // Usar Math.max(0, realProfit) para não mostrar progresso negativo
+  const effectiveProfit = Math.max(0, realProfit);
+  const progress = Math.min((effectiveProfit / item.target_amount) * 100, 100);
   const isCompleted = progress >= 100 || item.status === 'completed';
   const daysRemaining = getDaysRemaining(item.target_date);
   
@@ -159,7 +160,6 @@ const ObjectiveItem = ({ item, currentBalance, onUpdateObjective, onDeleteObject
     }
   };
 
-  // ✅ MUDANÇA: Handler para checkbox de conclusão
   const handleCheckboxChange = async (e) => {
     e.stopPropagation();
     if (item.status !== 'completed') {
@@ -193,7 +193,6 @@ const ObjectiveItem = ({ item, currentBalance, onUpdateObjective, onDeleteObject
           <div className={styles.headerRight}>
             <span className={styles.objectiveProgress}>{progress.toFixed(1)}%</span>
             
-            {/* ✅ MUDANÇA: Checkbox para marcar como concluído */}
             {isCompleted && item.status !== 'completed' && (
               <label className={styles.checkboxContainer}>
                 <input
@@ -244,9 +243,12 @@ const ObjectiveItem = ({ item, currentBalance, onUpdateObjective, onDeleteObject
             </div>
           </div>
           <div className={styles.objectiveDetails}>
-            {/* ✅ MUDANÇA: Mostrar saldo atual ao invés de current_amount */}
-            <p className={styles.currentAmount}>{formatCurrency(currentBalance)}</p>
+            {/* ✅ MUDANÇA: Mostrar lucro real com indicador visual */}
+            <p className={`${styles.currentAmount} ${realProfit < 0 ? styles.negativeProfit : ''}`}>
+              {formatCurrency(realProfit)}
+            </p>
             <p className={styles.targetAmount}>de {formatCurrency(item.target_amount)}</p>
+            <p className={styles.profitLabel}>Lucro acumulado</p>
             <div className={styles.deadlineDateContainer}>
               <MdEvent size={14} />
               <span>Meta: {formatDate(item.target_date)}</span>
@@ -257,7 +259,6 @@ const ObjectiveItem = ({ item, currentBalance, onUpdateObjective, onDeleteObject
           </div>
         </div>
 
-        {/* ✅ MUDANÇA: Removido o botão de concluir da área de ações */}
         <div className={`${styles.actionButtonsContainer} ${showActions ? styles.actionsVisible : ''}`}>
           <button onClick={handleEdit}>
             <MdEdit /> Editar
@@ -274,11 +275,14 @@ const ObjectiveItem = ({ item, currentBalance, onUpdateObjective, onDeleteObject
 
 // --- COMPONENTE PRINCIPAL DA LISTA ---
 const ObjectivesList = ({ showCompleted = false }) => {
-  const { objectives, balance, updateObjective, deleteObjective, refreshData } = useFinancial();
+  // ✅ MUDANÇA: Usar getRealProfit ao invés de balance
+  const { objectives, getRealProfit, updateObjective, deleteObjective, refreshData } = useFinancial();
   const [localObjectives, setLocalObjectives] = useState([]);
 
+  // Calcular lucro real uma vez
+  const realProfit = getRealProfit();
+
   useEffect(() => {
-    // ✅ MUDANÇA: Filtrar por status (completed ou in_progress)
     const filtered = objectives.filter(obj => 
       showCompleted ? obj.status === 'completed' : obj.status !== 'completed'
     );
@@ -311,13 +315,10 @@ const ObjectivesList = ({ showCompleted = false }) => {
     }
   };
 
-  // ✅ NOVO: Função para marcar objetivo como concluído
   const handleObjectiveCompleted = async (objectiveId) => {
     try {
-      // Buscar o objetivo para pegar o target_amount
       const objective = localObjectives.find(obj => obj.id === objectiveId);
       
-      // Atualizar com current_amount igual ao target_amount (isso fará o backend marcar como completed)
       await apiService.updateObjective(objectiveId, { 
         current_amount: objective.target_amount 
       });
@@ -341,14 +342,14 @@ const ObjectivesList = ({ showCompleted = false }) => {
         <p className={styles.emptySubtext}>
           {showCompleted 
             ? 'Complete seus objetivos para vê-los aqui!' 
-            : 'Crie seu primeiro objetivo financeiro para começar.'}
+            : 'Crie seu primeiro objetivo de lucro para começar.'}
         </p>
         <div className={styles.tipContainer}>
           <MdInfoOutline size={16} />
           <p className={styles.tipText}>
             {showCompleted 
               ? 'Objetivos concluídos ficam salvos aqui para seu histórico.' 
-              : 'O progresso é calculado com base no seu saldo atual.'}
+              : 'O progresso é calculado com base no seu lucro real (ganhos - perdas).'}
           </p>
         </div>
       </div>
@@ -361,10 +362,10 @@ const ObjectivesList = ({ showCompleted = false }) => {
         <ObjectiveItem
           key={item.id}
           item={item}
-          currentBalance={balance} // ✅ MUDANÇA: Passar o saldo atual
+          realProfit={realProfit} // ✅ MUDANÇA: Passar lucro real
           onUpdateObjective={handleObjectiveUpdated}
           onDeleteObjective={handleObjectiveDeleted}
-          onCompleteObjective={handleObjectiveCompleted} // ✅ NOVO
+          onCompleteObjective={handleObjectiveCompleted}
         />
       ))}
     </div>

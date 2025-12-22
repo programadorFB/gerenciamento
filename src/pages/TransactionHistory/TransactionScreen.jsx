@@ -15,20 +15,26 @@ const TRANSACTION_TYPES = [
   { name: 'Ganhos', key: 'gains', icon: <IoTrendingUp />, color: '#2f00ffff', description: 'Lucros obtidos em operações' },
   { name: 'Loss', key: 'losses', icon: <IoTrendingDown />, color: '#FFC107', description: 'Prejuízos em operações' }
 ];
+
 const getCurrentDate = () => new Date().toISOString().split('T')[0];
 
 // --- Reusable Sub-Components ---
+// ✅ CORREÇÃO: Mudado defaultValue para value
 const DatePicker = ({ visible, onClose, onDateSelect, selectedDate }) => {
   if (!visible) return null;
   return (
     <div className={styles.datePickerOverlay} onClick={onClose}>
-        <div className={styles.datePickerContainer} onClick={e => e.stopPropagation()}>
-            <h3>Selecione a Data</h3>
-            <input type="date" defaultValue={selectedDate} onChange={e => onDateSelect(e.target.value)} />
-            <button onClick={onClose}>Fechar</button>
-        </div>
+      <div className={styles.datePickerContainer} onClick={e => e.stopPropagation()}>
+        <h3>Selecione a Data</h3>
+        <input 
+          type="date" 
+          value={selectedDate || ''} 
+          onChange={e => onDateSelect(e.target.value)} 
+        />
+        <button onClick={onClose}>Fechar</button>
+      </div>
     </div>
-  )
+  );
 };
 
 const DateInput = ({ value, onDateChange }) => {
@@ -37,9 +43,26 @@ const DateInput = ({ value, onDateChange }) => {
   
   return (
     <div className={styles.dateInputContainer}>
-      <input type="text" readOnly value={displayDate} onClick={() => setPickerVisible(true)} placeholder="Selecione uma data" className={styles.input} />
-      <button type="button" className={styles.calendarIcon} onClick={() => setPickerVisible(true)}><IoCalendar /></button>
-      <DatePicker visible={pickerVisible} onClose={() => setPickerVisible(false)} onDateSelect={onDateChange} selectedDate={value} />
+      <input 
+        type="text" 
+        readOnly 
+        value={displayDate} 
+        onClick={() => setPickerVisible(true)} 
+        placeholder="Selecione uma data" 
+        className={styles.input} 
+      />
+      <button type="button" className={styles.calendarIcon} onClick={() => setPickerVisible(true)}>
+        <IoCalendar />
+      </button>
+      <DatePicker 
+        visible={pickerVisible} 
+        onClose={() => setPickerVisible(false)} 
+        onDateSelect={(newDate) => {
+          onDateChange(newDate);
+          setPickerVisible(false); // ✅ Fecha o picker após selecionar
+        }} 
+        selectedDate={value} 
+      />
     </div>
   );
 };
@@ -52,16 +75,11 @@ const TransactionScreen = () => {
 
   const params = new URLSearchParams(location.search);
   const typeParam = params.get('type');
-  
-  // ✅ NOVO: Ler o parâmetro 'defaultDate' da URL
   const dateParam = params.get('defaultDate');
 
   const [transactionType, setTransactionType] = useState(typeParam || 'deposit');
   const [amount, setAmount] = useState('');
-  
-  // ✅ ATUALIZADO: Usar dateParam se existir, senão usar a data atual
   const [date, setDate] = useState(dateParam || getCurrentDate());
-  
   const [loading, setLoading] = useState(false);
   const [isInitialBank, setIsInitialBank] = useState(false);
   
@@ -71,11 +89,14 @@ const TransactionScreen = () => {
     e.preventDefault();
     if (!isValid) return alert('Por favor, preencha todos os campos corretamente.');
     
+    // ✅ Debug log para verificar a data
+    console.log('📅 Data sendo enviada:', date);
+    
     setLoading(true);
     const numericAmount = parseFloat(amount.replace(',', '.'));
     const selectedType = TRANSACTION_TYPES.find(type => type.key === transactionType);
 
-    await addTransaction({
+    const result = await addTransaction({
       type: transactionType,
       amount: numericAmount,
       description: selectedType.name,
@@ -85,8 +106,13 @@ const TransactionScreen = () => {
     });
     
     setLoading(false);
-    alert('Transação adicionada com sucesso!');
-    navigate('/dashboard');
+    
+    if (result?.success) {
+      alert('Transação adicionada com sucesso!');
+      navigate('/dashboard');
+    } else {
+      alert(result?.error || 'Erro ao adicionar transação');
+    }
   };
 
   return (
@@ -124,7 +150,15 @@ const TransactionScreen = () => {
 
           <div className={styles.inputGroup}>
             <label htmlFor="amount">Valor *</label>
-            <input id="amount" type="text" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="R$ 0,00" className={styles.input} />
+            <input 
+              id="amount" 
+              type="text" 
+              inputMode="decimal" 
+              value={amount} 
+              onChange={(e) => setAmount(e.target.value)} 
+              placeholder="R$ 0,00" 
+              className={styles.input} 
+            />
           </div>
 
           <div className={styles.inputGroup}>
@@ -132,7 +166,18 @@ const TransactionScreen = () => {
             <DateInput value={date} onDateChange={setDate} />
           </div>
           
-          {transactionType === 'deposit'}
+          {/* ✅ CORREÇÃO: Adicionado o checkbox de banca inicial que estava faltando */}
+          {transactionType === 'deposit' && (
+            <div className={styles.checkboxContainer} onClick={() => setIsInitialBank(!isInitialBank)}>
+              <div className={`${styles.checkbox} ${isInitialBank ? styles.checkboxActive : ''}`}>
+                {isInitialBank && <IoCheckmark />}
+              </div>
+              <div>
+                <label className={styles.checkboxLabel}>Banca Inicial</label>
+                <p className={styles.checkboxDescription}>Marque se este é um depósito inicial.</p>
+              </div>
+            </div>
+          )}
 
           <button type="submit" className={styles.submitButton} disabled={!isValid || loading}>
             {loading ? 'Processando...' : `Processar ${TRANSACTION_TYPES.find(t => t.key === transactionType)?.name}`}

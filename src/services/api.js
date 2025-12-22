@@ -302,14 +302,15 @@ const apiService = {
         return { success: false, error: 'Data é obrigatória' };
       }
       
-      const transactionData = {
+      // api.js - linha 311
+    const transactionData = {
         type: data.type,
         amount: data.amount,
         date: data.date,
         description: data.description || this.getDefaultDescription(data.type),
         category: data.category || this.getDefaultCategory(data.type),
-        is_initial_bank: data.is_initial_bank || false // ← COLUNA ATUALIZADA
-      };
+        is_initial_bank: data.isInitialBank || false  // ✅ Corrigido!
+    };
 
       return await api.post('/transactions', transactionData);
     } catch (error) {
