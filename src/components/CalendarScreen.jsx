@@ -9,10 +9,11 @@ import {
     IoClose, 
     IoAdd,
     IoPlayBack, 
-    IoPlayForward 
+    IoPlayForward,
+    IoRefreshCircle
 } from 'react-icons/io5';
 import styles from './CalendarScreen.module.css';
-
+import apiService from '../services/api';
 // Função auxiliar para formatar a data que vai na URL quando clicamos em "Adicionar Transação"
 const formatLocalDate = (date) => {
   if (!date) return null;
@@ -20,6 +21,54 @@ const formatLocalDate = (date) => {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+};
+
+// Modal de confirmação de reset
+const ResetConfirmationModal = ({ onConfirm, onClose, isResetting }) => {
+  return (
+    <div className={styles.modalOverlay}>
+      <div className={styles.resetModalContainer}>
+        <header className={styles.modalHeader}>
+          <h2 className={styles.modalTitle}>⚠️ Resetar Calendário</h2>
+          <button onClick={onClose} className={styles.closeButton} disabled={isResetting}>
+            <IoClose size={24} />
+          </button>
+        </header>
+        
+        <div className={styles.resetModalContent}>
+          <p className={styles.warningText}>
+            Esta ação irá <strong>deletar TODAS as suas transações</strong> e resetar sua banca para o valor inicial.
+          </p>
+          <ul className={styles.warningList}>
+            <li>✓ Todas as transações serão permanentemente deletadas</li>
+            <li>✓ O saldo voltará para a banca inicial</li>
+            <li>✓ Estatísticas e sessões serão resetadas</li>
+            <li>✓ Suas configurações e perfil serão mantidos</li>
+          </ul>
+          <p className={styles.dangerText}>
+            ⚠️ <strong>Esta ação não pode ser desfeita!</strong>
+          </p>
+        </div>
+        
+        <div className={styles.resetModalActions}>
+          <button 
+            className={styles.cancelButton} 
+            onClick={onClose}
+            disabled={isResetting}
+          >
+            Cancelar
+          </button>
+          <button 
+            className={styles.confirmResetButton} 
+            onClick={onConfirm}
+            disabled={isResetting}
+          >
+            {isResetting ? 'Resetando...' : 'Sim, Resetar Tudo'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export const CalendarGrid = ({ currentDate, transactionsByDay, onDayClick }) => {
@@ -185,11 +234,14 @@ export const DayTransactionsModal = ({ date, transactions, onClose }) => {
 
 const CalendarScreen = () => {
   const navigate = useNavigate();
-  const { transactions } = useFinancial();
+  const { transactions, forceResetBank: resetBank, refreshData } = useFinancial();// ✅ CORRIGIDO
   const [currentDate, setCurrentDate] = useState(new Date());
   const [modalDate, setModalDate] = useState(null);
   const [modalTransactions, setModalTransactions] = useState([]);
-
+  
+  // ✅ Estados para o modal de reset
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
   // LOGICA PRINCIPAL DE AGRUPAMENTO (EVITA BUG DE FUSO HORÁRIO)
   const transactionsByDay = useMemo(() => {
     const map = {};
@@ -206,7 +258,7 @@ const CalendarScreen = () => {
             // Fallback
             dateKey = new Date(tx.date).toISOString().split('T')[0];
         }
-
+        
         if (!map[dateKey]) map[dateKey] = [];
         map[dateKey].push(tx);
       } catch (e) {
@@ -226,22 +278,106 @@ const CalendarScreen = () => {
     setModalTransactions(transactions);
   };
 
+  // ✅ FUNÇÃO DE RESET CHAMANDO API DIRETAMENTE
+const handleConfirmReset = async () => {
+  setIsResetting(true);
+  
+  try {
+    console.log('🔄 Chamando API de reset via apiService...');
+    
+    // Chama a rota /users/reset-bank definida no seu backend
+    const response = await apiService.forceResetBank();
+
+    if (response.success) {
+      console.log('✅ Reset total bem-sucedido!');
+      
+      // Atualiza os dados no contexto financeiro para limpar a tela
+      if (refreshData) {
+        await refreshData();
+      }
+
+      setShowResetModal(false);
+      
+      // Mostra o feedback detalhado do que foi apagado
+      const { deleted_counts } = response.data;
+      alert(`✅ Histórico limpo com sucesso!\n\n` +
+            `📊 ${deleted_counts.transactions} transações removidas\n` +
+            `🎯 ${deleted_counts.objectives} objetivos removidos.`);
+      
+      setCurrentDate(new Date());
+    } else {
+      alert(`❌ Erro ao resetar: ${response.error || 'Erro desconhecido'}`);
+    }
+  } catch (error) {
+    console.error('❌ Erro na operação de reset:', error);
+    alert('❌ Erro de conexão ou permissão ao tentar resetar.');
+  } finally {
+    setIsResetting(false);
+  }
+};
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <button className={styles.backButton} onClick={() => navigate(-1)}><IoArrowBack /> Voltar</button>
+        <button className={styles.backButton} onClick={() => navigate(-1)}>
+          <IoArrowBack /> Voltar
+        </button>
+        
         <div className={styles.headerControls}>
-          <button className={`${styles.navButton} ${styles.yearButton}`} onClick={handlePrevYear}><IoPlayBack /></button>
-          <button className={styles.navButton} onClick={handlePrevMonth}><IoChevronBack /></button>
-          <h1 className={styles.monthTitle}>{currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</h1>
-          <button className={styles.navButton} onClick={handleNextMonth}><IoChevronForward /></button>
-          <button className={`${styles.navButton} ${styles.yearButton}`} onClick={handleNextYear}><IoPlayForward /></button>
+          <button className={`${styles.navButton} ${styles.yearButton}`} onClick={handlePrevYear}>
+            <IoPlayBack />
+          </button>
+          <button className={styles.navButton} onClick={handlePrevMonth}>
+            <IoChevronBack />
+          </button>
+          <h1 className={styles.monthTitle}>
+            {currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+          </h1>
+          <button className={styles.navButton} onClick={handleNextMonth}>
+            <IoChevronForward />
+          </button>
+          <button className={`${styles.navButton} ${styles.yearButton}`} onClick={handleNextYear}>
+            <IoPlayForward />
+          </button>
         </div>
+
+        {/* BOTÃO DE RESET */}
+        <button 
+          className={styles.resetButton} 
+          onClick={() => setShowResetModal(true)}
+          title="Resetar calendário e transações"
+          disabled={isResetting}
+        >
+          <IoRefreshCircle size={18} />
+          Resetar
+        </button>
       </header>
+
       <main className={styles.content}>
-        <CalendarGrid currentDate={currentDate} transactionsByDay={transactionsByDay} onDayClick={handleDayClick} />
+        <CalendarGrid 
+          currentDate={currentDate} 
+          transactionsByDay={transactionsByDay} 
+          onDayClick={handleDayClick} 
+        />
       </main>
-      <DayTransactionsModal date={modalDate} transactions={modalTransactions} onClose={() => { setModalDate(null); setModalTransactions([]); }} />
+
+      <DayTransactionsModal 
+        date={modalDate} 
+        transactions={modalTransactions} 
+        onClose={() => { 
+          setModalDate(null); 
+          setModalTransactions([]); 
+        }} 
+      />
+
+      {/* MODAL DE CONFIRMAÇÃO DE RESET */}
+      {showResetModal && (
+        <ResetConfirmationModal
+          onConfirm={handleConfirmReset}
+          onClose={() => setShowResetModal(false)}
+          isResetting={isResetting}
+        />
+      )}
     </div>
   );
 };

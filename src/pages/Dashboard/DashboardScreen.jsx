@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useFinancial } from '../../contexts/FinancialContext';
 import { BettingProvider, useBetting } from '../../contexts/BettingContext'; 
 import { useSideMenu } from '../../contexts/SideMenuContext';
-
+import apiService from '../../services/api';
 // --- Components ---
 import SideMenu from '../../components/SideMenu';
 import TransactionList from '../../components/TransactionList';
@@ -91,6 +91,8 @@ const Dashboard = () => {
     const [calendarDate, setCalendarDate] = useState(new Date()); // Data atual do calendário no dashboard
     const [modalDate, setModalDate] = useState(null);
     const [modalTransactions, setModalTransactions] = useState([]);
+    const [showResetModal, setShowResetModal] = useState(false);
+    const [isResetting, setIsResetting] = useState(false);
 
     useEffect(() => {
         if (!isLoading && !user) {
@@ -121,7 +123,62 @@ const Dashboard = () => {
         });
         return map;
     }, [transactions]);
+const handleQuickEditInitial = async () => {
+    // Busca a transação inicial por 3 critérios diferentes para não falhar
+    const initialTx = transactions.find(tx => 
+        tx.is_initial_bank === true || 
+        tx.description?.toLowerCase().includes('inicial') ||
+        tx.category?.toLowerCase().includes('inicial')
+    );
+    
+    if (!initialTx) {
+        alert("Não encontramos a transação de banca inicial na sua lista. Tente realizar um 'Reset' para criá-la corretamente ou procure-a no histórico.");
+        return;
+    }
 
+    const newValue = prompt(`Editando: ${initialTx.description}\nDigite o novo valor da banca:`, initialTx.amount);
+    
+    if (newValue !== null && newValue !== "" && !isNaN(newValue.replace(',', '.'))) {
+        try {
+            const numericValue = parseFloat(newValue.replace(',', '.'));
+            
+            // Chama o apiService para atualizar
+            const response = await apiService.updateTransaction(initialTx.id, {
+                amount: numericValue,
+                description: initialTx.description
+            });
+
+            if (response.success) {
+                alert("Banca inicial atualizada! O saldo de todo o histórico será recalculado.");
+                if (refreshData) await refreshData(); 
+            } else {
+                // Se cair aqui com erro 400, é porque falta comentar a trava no routes.py
+                alert(`Erro do servidor: ${response.error}`);
+            }
+        } catch (e) {
+            alert("Erro ao conectar com o servidor.");
+        }
+    }
+};
+const handleConfirmReset = async () => {
+    setIsResetting(true);
+    try {
+        console.log('🔄 Chamando API de reset via Dashboard...');
+        const response = await apiService.forceResetBank();
+
+        if (response.success) {
+            if (refreshData) await refreshData();
+            setShowResetModal(false);
+            alert(`✅ Banca resetada com sucesso!\n💰 Saldo inicial restaurado.`);
+        } else {
+            alert(`❌ Erro ao resetar: ${response.error}`);
+        }
+    } catch (error) {
+        alert('❌ Erro ao conectar com o servidor.');
+    } finally {
+        setIsResetting(false);
+    }
+};
     // ✅ NOVO: Funções para controlar o modal (copiado de CalendarScreen)
     const handleDayClick = (date, transactions) => {
         setModalDate(date);
@@ -289,16 +346,22 @@ const Dashboard = () => {
                 
                 {/* Seção de Saldos */}
                 <section className={styles.balanceSection}>
-                    <div className={styles.balanceCard}>
-                        <div className={styles.cardHeader}>
-                            {/* O CSS forçará a cor correta (azul) */}
-                            <MdAccountBalanceWallet size={20} />
-                            <span>Banca Inicial</span>
-                        </div>
-                        <p className={`${styles.balanceAmount} ${styles.initial}`}>
-                            {formatCurrency(initialBalance)}
-                        </p>
-                    </div>
+    <div 
+        className={styles.balanceCard} 
+        onClick={handleQuickEditInitial} 
+        style={{ cursor: 'pointer' }}
+        title="Clique para editar a banca inicial"
+    >
+        <div className={styles.cardHeader}>
+            <MdAccountBalanceWallet size={20} />
+            <span>Banca Inicial</span>
+            {/* Ícone visual de edição opcional */}
+            <MdRefresh size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
+        </div>
+        <p className={`${styles.balanceAmount} ${styles.initial}`}>
+            {formatCurrency(initialBalance)}
+        </p>
+    </div>
 
                     <div className={`${styles.balanceCard} ${styles.main}`}>
                         <div className={styles.cardHeader}>
@@ -567,13 +630,47 @@ const Dashboard = () => {
                     initialBalance={initialBalance}
                 />
 
+{/* Modal de Confirmação de Reset - Adicione no final do return */}
+{showResetModal && (
+<div className={styles.modalOverlay}>
+<div className={styles.resetModalContainer} style={{ background: '#1a1a1a', padding: '20px', borderRadius: '12px', maxWidth: '400px', width: '90%' }}>
+<h2 style={{ color: '#fff', marginBottom: '15px' }}>⚠️ Resetar Histórico?</h2>
+<p style={{ color: '#ccc', marginBottom: '20px' }}>
+    Isso irá <strong>deletar permanentemente</strong> todas as suas transações, ganhos e perdas, voltando ao saldo inicial.
+</p>
+<div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+    <button 
+        onClick={() => setShowResetModal(false)}
+        style={{ background: '#333', color: '#fff', border: 'none', padding: '10px 15px', borderRadius: '8px', cursor: 'pointer' }}
+    >
+        Cancelar
+    </button>
+    <button 
+        onClick={handleConfirmReset}
+        disabled={isResetting}
+        style={{ background: '#ff4444', color: '#fff', border: 'none', padding: '10px 15px', borderRadius: '8px', cursor: 'pointer' }}
+    >
+        {isResetting ? 'Limpando...' : 'Confirmar Reset'}
+    </button>
+</div>
+</div>
+</div>
+)}
                 {/* =======================================================
                 ✅ NOVO: Seção do Calendário inserida abaixo do gráfico
                 =======================================================
                 */}
-                <section className={styles.calendarSection}>
-                    <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>Calendário de Transações</h2>
+              <section className={styles.calendarSection}>
+                <div className={styles.sectionHeader}>
+                    <h2 className={styles.sectionTitle}>Calendário de Transações</h2>
+                    <div style={{ display: 'flex', gap: '10px' }}> {/* Container para alinhar os botões */}
+                        <button 
+                            className={styles.seeAllButton} 
+                            onClick={() => setShowResetModal(true)}
+                            style={{ color: '#ff4444', borderColor: '#ff4444' }} // Destaque para o Reset
+                        >
+                            <MdRefresh size={18} /> Resetar
+                        </button>
                         <button 
                             className={styles.seeAllButton} 
                             onClick={() => navigate('/calendar')}
@@ -581,16 +678,14 @@ const Dashboard = () => {
                             Ver Tela Cheia
                         </button>
                     </div>
-                    
-                    {/* O componente CalendarGrid usará automaticamente os estilos
-                      importados de 'CalendarScreen.module.css' 
-                    */}
-                    <CalendarGrid
-                        currentDate={calendarDate}
-                        transactionsByDay={transactionsByDay}
-                        onDayClick={handleDayClick}
-                    />
-                </section>
+                </div>
+                
+                <CalendarGrid
+                    currentDate={calendarDate}
+                    transactionsByDay={transactionsByDay}
+                    onDayClick={handleDayClick}
+                />
+            </section>
                 {/* ======================================================= */}
 
 

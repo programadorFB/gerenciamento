@@ -14,14 +14,16 @@
   overflow-x: hidden;
 }
 
-/* --- Cabeçalho --- */
+/* ========================================
+   CABEÇALHO
+   ======================================== */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 8px;
   background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-  flex-wrap: wrap; /* Permite quebra em telas pequenas */
+  flex-wrap: wrap;
   gap: 10px;
 }
 
@@ -51,14 +53,7 @@
   justify-content: center;
   gap: 6px;
   flex-grow: 1;
-  /* No mobile, centraliza e garante largura total se quebrar linha */
-  width: 100%; 
-}
-
-/* Ajuste Desktop para o Header */
-@media (min-width: 600px) {
-  .header { flex-wrap: nowrap; }
-  .headerControls { width: auto; flex-grow: 0; }
+  width: 100%;
 }
 
 .monthTitle {
@@ -71,20 +66,53 @@
   text-transform: capitalize;
 }
 
-/* --- Conteúdo --- */
+/* ========================================
+   BOTÃO DE RESET
+   ======================================== */
+.resetButton {
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #ff4444, #cc0000);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(255, 68, 68, 0.3);
+}
+
+.resetButton:hover {
+  background: linear-gradient(135deg, #ff6666, #dd0000);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 68, 68, 0.5);
+}
+
+.resetButton:active {
+  transform: translateY(0);
+}
+
+/* ========================================
+   CONTEÚDO
+   ======================================== */
 .content {
   flex-grow: 1;
-  padding: 8px; /* Padding menor no mobile */
+  padding: 8px;
   overflow-y: auto;
 }
 
-/* --- Grid do Calendário --- */
+/* ========================================
+   GRID DO CALENDÁRIO
+   ======================================== */
 .calendarGrid {
   width: 100%;
   border-collapse: collapse;
   background: #FFFFFF;
   border: 1px solid #7F9DB9;
-  table-layout: fixed; /* Força colunas de tamanhos iguais */
+  table-layout: fixed;
 }
 
 .dayHeader {
@@ -97,10 +125,9 @@
   color: #003399;
 }
 
-/* Célula do Dia */
 .dayCell {
-  width: 14.28%; /* 100% dividido por 7 */
-  height: 60px; /* Altura compacta no mobile */
+  width: 14.28%;
+  height: 60px;
   border: 1px solid #7F9DB9;
   padding: 2px;
   vertical-align: top;
@@ -121,7 +148,10 @@
   background-color: #F0F0F0;
   cursor: default;
 }
-.otherMonth .dayNumber { color: #AAA; }
+
+.otherMonth .dayNumber {
+  color: #AAA;
+}
 
 .today .dayNumber {
   color: #BF0000;
@@ -136,40 +166,40 @@
   cursor: pointer;
   background-color: #F9FCFF;
 }
-.dayWithData:hover { background-color: #E3EFFF; }
 
-/* --- RESUMO (A Mágica da Responsividade) --- */
+.dayWithData:hover {
+  background-color: #E3EFFF;
+}
+
+/* ========================================
+   RESUMO DO DIA (Responsivo)
+   ======================================== */
 .daySummary {
   display: flex;
   flex-direction: column;
   gap: 2px;
   margin-top: 2px;
-  /* Centraliza no mobile */
-  align-items: center; 
+  align-items: center;
 }
 
-/* ESTILO MOBILE: 
-   Transformamos o texto em barras coloridas ou pontos.
-   Font-size 0 esconde o texto, mas mantemos o bloco visível.
-*/
 .summaryGain,
 .summaryLoss,
 .summaryDeposit,
 .summaryWithdrawal {
-  font-size: 0; /* Esconde o texto "Ganho: R$..." */
-  height: 4px;  /* Altura da barra */
-  width: 80%;   /* Largura da barra dentro da célula */
+  font-size: 0;
+  height: 4px;
+  width: 80%;
   border-radius: 2px;
   display: block;
 }
 
-.summaryGain { background-color: #4CAF50; /* Verde */ }
-.summaryLoss { background-color: #F44336; /* Vermelho */ }
-.summaryDeposit { background-color: #2196F3; /* Azul */ }
-.summaryWithdrawal { background-color: #FF9800; /* Laranja */ }
+.summaryGain { background-color: #4CAF50; }
+.summaryLoss { background-color: #F44336; }
+.summaryDeposit { background-color: #2196F3; }
+.summaryWithdrawal { background-color: #FF9800; }
 
 /* ========================================
-   MODAL (Ajustado para Mobile)
+   MODAL DE TRANSAÇÕES DO DIA
    ======================================== */
 .modalOverlay {
   position: fixed;
@@ -186,8 +216,8 @@
 .modalContainer {
   background: #ECE9D8;
   width: 100%;
-  max-width: 500px; /* Largura máxima desktop */
-  max-height: 90vh; /* Não estourar altura */
+  max-width: 500px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   border: 2px solid #0054E3;
@@ -226,6 +256,13 @@
   gap: 8px;
 }
 
+.notesTitle {
+  font-size: 12px;
+  font-weight: bold;
+  color: #003399;
+  margin: 0;
+}
+
 .notesTextarea {
   width: 100%;
   height: 60px;
@@ -233,11 +270,21 @@
   color: #000;
   font-family: inherit;
   border: 1px solid #7F9DB9;
+  padding: 6px;
 }
 
 .saveNoteButton {
   align-self: flex-start;
-  padding: 4px 12px;
+  padding: 6px 16px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
+  border: 1px solid #7F9DB9;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.saveNoteButton:hover {
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
 }
 
 .modalContent {
@@ -264,30 +311,195 @@
   font-weight: bold;
   color: #000;
   cursor: pointer;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.addTransactionButton:hover {
+  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
 }
 
 /* ========================================
-   MEDIA QUERIES (DESKTOP)
+   MODAL DE CONFIRMAÇÃO DE RESET
    ======================================== */
+.resetModalContainer {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 520px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.resetModalContent {
+  padding: 24px 0;
+}
+
+.warningText {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.warningText strong {
+  color: #d32f2f;
+  font-weight: 700;
+}
+
+.warningList {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.warningList li {
+  padding: 10px 0;
+  color: #555;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.warningList li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: #4CAF50;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dangerText {
+  background: linear-gradient(135deg, #ffebee, #ffcdd2);
+  border-left: 4px solid #f44336;
+  padding: 16px;
+  border-radius: 8px;
+  color: #c62828;
+  font-size: 14px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.dangerText strong {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.resetModalActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.cancelButton {
+  flex: 1;
+  padding: 14px;
+  background: #f5f5f5;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.2s;
+  color: #666;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: #eeeeee;
+  border-color: #d0d0d0;
+  transform: translateY(-1px);
+}
+
+.cancelButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.confirmResetButton {
+  flex: 1;
+  padding: 14px;
+  background: linear-gradient(135deg, #ff4444, #cc0000);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 15px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
+}
+
+.confirmResetButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ff6666, #dd0000);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 68, 68, 0.4);
+}
+
+.confirmResetButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.confirmResetButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ========================================
+   MEDIA QUERIES - DESKTOP
+   ======================================== */
+@media (min-width: 600px) {
+  .header {
+    flex-wrap: nowrap;
+  }
+  
+  .headerControls {
+    width: auto;
+    flex-grow: 0;
+  }
+}
+
 @media (min-width: 768px) {
   .dayCell {
-    height: 100px; /* Célula mais alta */
+    height: 100px;
     padding: 4px;
   }
 
   .daySummary {
-    align-items: flex-start; /* Alinha texto à esquerda */
+    align-items: flex-start;
   }
 
-  /* Restaura o texto no Desktop */
   .summaryGain,
   .summaryLoss,
   .summaryDeposit,
   .summaryWithdrawal {
-    font-size: 10px; /* Texto visível */
+    font-size: 10px;
     height: auto;
     width: auto;
-    background-color: transparent; /* Remove o fundo de barra */
+    background-color: transparent;
     display: inline;
     border-radius: 0;
     white-space: nowrap;
@@ -296,7 +508,6 @@
     max-width: 100%;
   }
 
-  /* Cores do texto no Desktop */
   .summaryGain { color: #006400; }
   .summaryLoss { color: #BF0000; }
   .summaryDeposit { color: #0054E3; }
@@ -304,5 +515,29 @@
   
   .addTransactionButton {
     width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .resetButton {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .resetButton span {
+    display: none;
+  }
+
+  .resetModalContainer {
+    padding: 24px;
+    width: 95%;
+  }
+
+  .warningText {
+    font-size: 14px;
+  }
+
+  .warningList li {
+    font-size: 13px;
   }
 }

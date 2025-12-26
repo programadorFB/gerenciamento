@@ -288,7 +288,53 @@ const apiService = {
     
     return Math.max(0, total);
   },
+// 1. Helper para localizar a transação específica da banca inicial
+  async getInitialBankTransaction() {
+    try {
+      const response = await this.getInitialBankTransactions();
+      if (response.success && response.data && response.data.length > 0) {
+        return response.data[0];
+      }
+      return null;
+    } catch (error) {
+      return null;
+    }
+  },
 
+  // 2. Função INTELIGENTE para definir a Banca Inicial
+  async updateInitialBank(amount) {
+    try {
+      const numericAmount = typeof amount === 'string' ? parseFloat(amount.replace(',', '.')) : amount;
+      if (isNaN(numericAmount) || numericAmount <= 0) {
+        return { success: false, error: 'Valor inválido.' };
+      }
+
+      const existingTx = await this.getInitialBankTransaction();
+
+      if (existingTx) {
+        // ATUALIZA (PUT)
+        const response = await api.put(`/transactions/${existingTx.id}`, {
+          amount: numericAmount,
+          description: existingTx.description || "Banca Inicial",
+          date: existingTx.date, 
+          type: TRANSACTION_TYPES.DEPOSIT,
+          is_initial_bank: true 
+        });
+        return { success: true, data: response.data };
+      } else {
+        // CRIA NOVA (POST)
+        return await this.createTransaction({
+          amount: numericAmount,
+          type: TRANSACTION_TYPES.DEPOSIT,
+          description: "Banca Inicial",
+          date: new Date().toISOString().split('T')[0],
+          isInitialBank: true
+        });
+      }
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
   // TRANSAÇÃO COMPLETAMENTE ATUALIZADA PARA O SISTEMA UNIFICADO COM is_initial_bank
   async createTransaction(data) {
     try {
@@ -445,9 +491,9 @@ const apiService = {
    * Força um reset manual da banca (transforma saldo atual em nova banca inicial)
    * @returns {Promise<Object>} Informações do reset realizado
    */
-  async forceResetBank() {
+async forceResetBank() {
     try {
-      const response = await api.post('/user/force-bank-reset');
+      const response = await api.post('/users/reset-bank');  // ✅ CORRIGIDO
       return response;
     } catch (error) {
       console.error('Error forcing bank reset:', error);
@@ -528,7 +574,7 @@ const apiService = {
       currency: 'BRL'
     }).format(numericAmount);
   },
-
+  
   parseCurrencyInput(input) {
     if (!input) return 0;
     const cleaned = input.toString().replace(/[^\d.,]/g, '');
