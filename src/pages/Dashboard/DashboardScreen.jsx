@@ -624,11 +624,11 @@ const handleConfirmReset = async () => {
 
 
                 {/* Gráfico de Performance */}
-                <PerformanceChart 
+                {/* <PerformanceChart 
                     transactions={transactions}
                     currentBalance={balance}
                     initialBalance={initialBalance}
-                />
+                /> */}
 
 {/* Modal de Confirmação de Reset - Adicione no final do return */}
 {showResetModal && (
