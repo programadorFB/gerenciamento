@@ -126,12 +126,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px; /* Área de toque quadrada */
+  width: 60px; /* Área de toque quadrada */
   height: 28px;
   padding: 0;
+  gap: 4px;
   border: 1px solid #7F9DB9;
   border-radius: 3px;
-  font-size: 14px; /* Ícone maior */
+  font-size: 10px; /* Ícone maior */
   color: #000;
   background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
   cursor: pointer;
@@ -367,11 +368,11 @@
     width: auto;
     height: auto;
     padding: 4px 8px;
-    font-size: 11px;
+    font-size: 8px;
     gap: 4px;
   }
   
   /* Restaura texto nos botões se houver */
   .editActionButton::after { content: " Editar"; }
   .deleteActionButton::after { content: " Excluir"; }
-}
+} 

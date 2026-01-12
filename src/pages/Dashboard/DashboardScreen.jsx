@@ -123,8 +123,8 @@ const Dashboard = () => {
         });
         return map;
     }, [transactions]);
-const handleQuickEditInitial = async () => {
-    // Busca a transação inicial por 3 critérios diferentes para não falhar
+    const handleQuickEditInitial = async () => {
+        // Busca a transação inicial por 3 critérios diferentes para não falhar
     const initialTx = transactions.find(tx => 
         tx.is_initial_bank === true || 
         tx.description?.toLowerCase().includes('inicial') ||
@@ -135,8 +135,8 @@ const handleQuickEditInitial = async () => {
         alert("Não encontramos a transação de banca inicial na sua lista. Tente realizar um 'Reset' para criá-la corretamente ou procure-a no histórico.");
         return;
     }
-
     const newValue = prompt(`Editando: ${initialTx.description}\nDigite o novo valor da banca:`, initialTx.amount);
+
     
     if (newValue !== null && newValue !== "" && !isNaN(newValue.replace(',', '.'))) {
         try {
