@@ -1,296 +1,265 @@
 /* ========================================
-   Tema XP (Branco, Azul, Cinza)
+   TEMA: CASSINO ROYAL / FOOTBALL STUDIO
    StopLossCard.module.css
    ======================================== */
 
-/* Container (Estilo Fieldset/Group Box XP) */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;600;700&display=swap');
+
+/* --- Container Principal (Painel de Segurança) --- */
 .container {
-  border-radius: 0;
-  overflow: visible; /* Fieldset precisa disso */
-  background-color: #ECE9D8; /* Fundo Cinza */
-  border: 1px solid #7F9DB9; /* Borda Cinza-Azul */
-  box-shadow: none;
-  color: #000000;
-  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
-  margin: 1rem 0;
-  padding: 10px;
-  transition: none;
+  background: #15191E;
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  font-family: 'Montserrat', sans-serif;
+  transition: all 0.3s ease;
 }
 
-/* REMOVIDO: .container:hover, .container.statusChange, @keyframes cardPulse */
+/* Borda luminosa no topo baseada na cor do estado */
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--status-color, #2979FF);
+  box-shadow: 0 0 15px var(--status-color, #2979FF);
+  transition: background 0.3s, box-shadow 0.3s;
+}
 
-/* REMOVIDO: .gradient (agora é o próprio fieldset) */
-
-/* Header (Agora é a <legend> do fieldset) */
+/* Header */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0; /* A <legend> cuida disso */
-  padding: 0 10px; /* Espaçamento da <legend> */
-  width: auto; /* Necessário para <legend> */
+  margin-bottom: 20px;
 }
 
 .headerLeft {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .iconWrapper {
-  font-size: 16px;
+  font-size: 24px;
   color: var(--status-color);
-  transition: none;
+  background: rgba(255,255,255,0.05);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+  transition: color 0.3s;
 }
-/* REMOVIDO: .iconWrapper.iconPulse, @keyframes iconPulseAnim */
 
 .title {
-  font-size: 11px;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--status-color);
+  color: #FFF;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   margin: 0;
-  transition: none;
 }
-/* REMOVIDO: .subtitle (combinado no título ou removido do JSX) */
 
-
+/* Conteúdo Central */
 .content {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  padding-top: 10px; /* Espaço após a <legend> */
+  gap: 16px;
 }
 
+/* Display da Porcentagem (Grande) */
 .percentageItem {
-  flex: 1;
   text-align: center;
-  margin-bottom: 8px;
+  padding: 10px 0;
 }
 
 .percentageLabel {
   font-size: 11px;
-  color: #333;
+  color: #8B949E;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
   display: block;
-  margin-bottom: 4px;
 }
 
 .percentageValue {
-  font-size: 18px;
-  font-weight: 700;
-  color: #000;
-  transition: none;
-}
-/* REMOVIDO: .percentageValue.valueAnimating, @keyframes valueBounce */
-
-/* Barra de Progresso XP */
-.progressSection {
-  margin-top: 8px;
-}
-.progressBar {
-  height: 16px; /* Altura padrão XP */
-  background-color: #FFFFFF;
-  border-radius: 0;
-  overflow: hidden;
-  position: relative;
-  box-shadow: none;
-  border: 1px solid #7F9DB9;
-}
-.progressFill {
-  height: 100%;
-  border-radius: 0;
-  background-color: var(--status-color, #0054E3); /* Cor de status (azul) */
-  transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  position: relative;
-  box-shadow: none;
-}
-/* REMOVIDO: .progressFill.progressCritical, @keyframes progressGlow */
-
-.progressText {
-  font-size: 11px;
-  color: #333;
-  text-align: center;
-  margin-top: 8px;
+  font-family: 'Cinzel', serif;
+  font-size: 48px;
+  font-weight: 900;
+  color: #FFF;
+  text-shadow: 0 0 20px var(--status-color);
+  line-height: 1;
+  transition: text-shadow 0.3s;
 }
 
-/* Mensagem de Status (Estilo Info XP) */
-.statusMessage {
-  background-color: #E0E8F5; /* Fundo Info Azul */
-  padding: 12px;
-  border-radius: 4px;
-  border: 1px solid var(--status-color, #0054E3);
-  text-align: center;
-  font-size: 12px;
-}
-/* REMOVIDO: .statusMessage.messageSlide, @keyframes messageSlideIn */
-
-.messageText {
-  margin: 0;
-  font-weight: 600;
-  color: #000;
-}
-.descriptionText {
-  margin: 8px 0 0 0;
-  font-size: 11px;
-  color: #333;
-}
-.criticalText {
-  color: #BF0000; /* Vermelho */
-  font-weight: bold;
-}
-
-/* REMOVIDO: .statsSection, .statCard, .statIcon, .statContent, .statLabel, .statValue (Não estão no JSX) */
-
-/* Seção de Valores */
-.amountSection {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 16px;
-  padding-top: 1rem;
-  border-top: 1px solid #C0C0C0;
-}
-.amountItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 0;
-  transition: none;
-}
-.amountItem:hover {
-  padding-left: 0;
-  background-color: transparent;
-}
-.amountLabel {
-  font-size: 11px;
-  color: #333;
-}
-.amountValue {
-  font-weight: 600;
-  font-size: 12px;
-  color: #000;
-  transition: none;
-}
-.amountValue.lossValue {
-  color: #BF0000; /* Vermelho */
-  animation: none;
-}
-/* REMOVIDO: @keyframes lossFlash */
-
-
-/* Estilos do Slider (XP) */
+/* --- Slider Customizado (Trilho) --- */
 .sliderSection {
-  padding: 10px 0;
-  margin-bottom: 10px;
+  margin: 10px 0;
+  position: relative;
 }
+
 .sliderHeader {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding: 10px;
-  background: #FFFFFF; /* Fundo branco */
-  border-radius: 4px;
-  border: 1px solid #7F9DB9;
-}
-.sliderIconWrapper {
-  font-size: 24px;
-  color: var(--slider-color, #7F9DB9);
-}
-.sliderHeaderText {
-  flex: 1;
-}
-.sliderTitle {
-  font-size: 12px;
-  font-weight: 700;
-  margin: 0;
-  color: #000;
-}
-.sliderSubtitle {
-  font-size: 11px;
-  color: #333;
-  margin: 2px 0 0 0;
-}
-.sliderContainer {
-  position: relative;
-  margin-top: 16px;
-  padding-bottom: 32px; /* espaço para números */
+  justify-content: space-between;
+  margin-bottom: 12px;
 }
 
-/* REMOVIDO: .sliderTrack, .sliderFill (Input range faz tudo) */
+.sliderTitle {
+  font-size: 11px;
+  color: #FFF;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.sliderContainer {
+  position: relative;
+  height: 40px; /* Altura para toque */
+  display: flex;
+  align-items: center;
+}
 
 .slider {
   -webkit-appearance: none;
-  appearance: none;
   width: 100%;
-  height: 6px;
-  background: #C0C0C0; /* Trilho Cinza */
-  border-radius: 0;
-  border: 1px solid #7F9DB9;
+  height: 8px;
+  background: #0F1216;
+  border-radius: 4px;
+  border: 1px solid #333;
   outline: none;
-  opacity: 1;
-  transition: none;
   position: relative;
   z-index: 2;
-  cursor: pointer;
 }
 
+/* Thumb (O Seletor Metálico) */
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  appearance: none;
-  width: 12px;
-  height: 20px;
-  background: var(--slider-color, #0054E3); /* Azul (ou cor dinâmica) */
+  width: 24px;
+  height: 24px;
+  background: #E0E0E0; /* Metal */
+  border: 2px solid var(--status-color);
+  border-radius: 50%;
   cursor: pointer;
-  border: 1px solid #003C74;
-  box-shadow: none;
-  transition: none;
-}
-.slider::-webkit-slider-thumb:hover {
-  transform: none;
-  box-shadow: none;
+  box-shadow: 0 0 15px var(--status-color);
+  margin-top: -9px; /* Centralizar no track (8px height) */
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.slider::-moz-range-thumb {
-  width: 12px;
-  height: 20px;
-  background: var(--slider-color, #0054E3);
-  cursor: pointer;
-  border: 1px solid #003C74;
-  box-shadow: none;
-  transition: none;
-}
-.slider::-moz-range-thumb:hover {
-  transform: none;
-  box-shadow: none;
-}
-
-/* ===== RÉGUA COM NÚMEROS ===== */
+/* Régua Numérica */
 .numberRuler {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-top: 12px;
-  padding: 0 2px;
-  user-select: none;
+  margin-top: 8px;
+  padding: 0 4px;
 }
+
 .numberMark {
-  font-size: 11px;
-  color: #333;
-  font-weight: 500;
-  transition: none;
+  font-size: 10px;
+  color: #444;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s;
+  width: 20px;
+  text-align: center;
 }
-.numberMark:hover {
-  color: #000;
-  text-shadow: none;
-  transform: none;
-}
+
+.numberMark:hover { color: #FFF; }
+
 .activeNumber {
-  color: var(--slider-color, #003399);
-  text-shadow: none;
+  color: var(--status-color);
+  font-weight: 800;
+  transform: scale(1.2);
+  text-shadow: 0 0 5px var(--status-color);
+}
+
+/* --- Barra de Progresso (Dano Recebido) --- */
+.progressSection {
+  background: rgba(0,0,0,0.3);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.progressBar {
+  height: 6px;
+  background: #0F1216;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--status-color);
+  transition: width 0.5s ease;
+  box-shadow: 0 0 10px var(--status-color);
+}
+
+.progressText {
+  font-size: 10px;
+  color: #8B949E;
+  text-align: right;
+  margin: 0;
+}
+
+/* Info Financeira */
+.amountSection {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.amountLabel {
+  font-size: 11px;
+  color: #8B949E;
+  text-transform: uppercase;
+}
+
+.amountValue {
+  font-size: 13px;
   font-weight: 700;
-  transform: none;
+  color: #FFF;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Mensagens de Status */
+.statusMessage {
+  margin-top: 10px;
+  padding: 12px;
+  background: rgba(255,255,255,0.03);
+  border-left: 3px solid var(--status-color);
+  border-radius: 0 8px 8px 0;
+}
+
+.messageText {
+  color: #FFF;
+  font-size: 12px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.descriptionText {
+  color: #8B949E;
+  font-size: 11px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Animação */
+.messageSlide {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
 }

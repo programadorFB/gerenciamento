@@ -1,421 +1,414 @@
 /* ========================================
-   Tema XP (Branco, Azul, Cinza)
+   TEMA: CASSINO ROYAL / FOOTBALL STUDIO
+   profileScreen.module.css
    ======================================== */
 
-.container {
-  background-color: #D6D3CE; /* Fundo Cinza XP */
-  color: #000000; /* Texto Preto */
-  min-height: 100vh;
-  min-width: 100vw;
-  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;600;700&display=swap');
+
+@keyframes cardFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
 }
 
-/* --- Header (Barra de Título XP) --- */
+@keyframes spin { 
+    from { transform: rotate(0deg); } 
+    to { transform: rotate(360deg); } 
+}
+
+/* --- Container Principal (Mesa de Jogo) --- */
+.container {
+    min-height: 100vh;
+    width: 100%;
+    background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
+    /* Textura de mesa de feltro */
+        display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alinha ao topo para scroll */
+    padding: 20px;
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+}
+
+/* Scroll Container para centralizar o cartão */
+.scrollContainer {
+    width: 100%;
+    max-width: 500px;
+    margin-top: 20px;
+    margin-bottom: 80px;
+}
+
+/* =========================================================
+   CARTÃO DE MEMBRO (Card Style)
+   ========================================================= */
+
+/* Borda Branca Grossa (Papel da Carta) */
+.profileCardWrapper {
+    background: #E0E0E0; 
+    padding: 12px; /* Espessura da borda */
+    border-radius: 24px;
+    box-shadow: 
+        0 30px 60px -10px rgba(0,0,0,0.9), 
+        0 0 0 1px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+/* Miolo Escuro e Texturizado */
+.form {
+    background: #0F1216;
+    border-radius: 16px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #000;
+
+    /* Textura Royal */
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.1) 0%, transparent 60%),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 10px);
+}
+
+/* --- Header --- */
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 12px;
-  border-bottom: none;
-  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .backButton {
-  /* Botão Cinza Padrão */
-  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-  border: 1px solid #7F9DB9;
-  border-radius: 3px;
-  color: #000;
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: #FFF;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 .backButton:hover {
-  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+    border-color: #D4AF37;
+    color: #D4AF37;
 }
 
 .title {
-  font-size: 11px;
-  font-weight: bold;
-  color: #FFFFFF;
-  margin: 0;
-  text-align: center;
-  flex: 1;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #D4AF37;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-.headerSpacer {
-  width: 40px; 
-}
+.headerSpacer { width: 36px; }
 
-/* --- Seções (Estilo Group Box) --- */
-.imageSection,
-.section {
-  padding: 20px;
-  margin-left: 150px;
-  max-width: 1800px;
-  background: #ECE9D8;
-  border: 1px solid #7F9DB9;
-}
-
+/* --- Seção de Avatar (Ficha de Poker) --- */
 .imageSection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-bottom: 1px solid #7F9DB9; /* Mantido para separar da seção de avatar */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .imageContainer {
-  margin-bottom: 20px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+/* Moldura do Avatar (Ficha) */
+.imageContainer::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px dashed #D4AF37; /* Borda tracejada dourada */
+    animation: spin 60s linear infinite;
+    opacity: 0.5;
 }
 
 .profileImage {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 2px solid #7F9DB9; /* Borda Cinza */
-  object-fit: cover;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid #1A1E24;
+    box-shadow: 0 0 0 2px #D4AF37, 0 10px 30px rgba(0,0,0,0.5); /* Borda interna e externa */
+    object-fit: cover;
+    background-color: #0F1216;
 }
 
 .profileImagePlaceholder {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background-color: #7F9DB9; /* Fundo Cinza-Azul */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1A1E24 0%, #0F1216 100%);
+    border: 4px solid #1A1E24;
+    box-shadow: 0 0 0 2px #D4AF37;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .profileImagePlaceholder span {
-  font-size: 48px;
-  font-weight: bold;
-  color: #FFFFFF; /* Texto Branco */
+    font-family: 'Cinzel', serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: #D4AF37;
 }
 
 .imageButtons {
-  display: flex;
-  gap: 10px;
+    margin-top: 10px;
 }
 
-/* Botão Cinza XP */
-.imageButton,
 .removeButton {
-  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-  border: 1px solid #7F9DB9;
-  border-radius: 3px;
-  padding: 6px 16px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 11px;
-  color: #000;
-  transition: none;
+    background: transparent;
+    border: 1px solid rgba(255, 77, 77, 0.3);
+    color: #FF4D4D;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
 }
-.imageButton:hover,
 .removeButton:hover {
-  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+    background: rgba(255, 77, 77, 0.1);
+    border-color: #FF4D4D;
 }
-/* REMOVIDO: .removeButton (vermelho), agora usa o estilo cinza padrão */
 
-
-/* --- Avatar Selector (Nested Group Box) --- */
+/* --- Seletor de Avatar (Grid de Fichas) --- */
 .avatarSelector {
-  margin-top: 30px;
-  width: 100%;
-  max-width: 400px;
-  padding: 15px;
-  background-color: #FFFFFF; /* Fundo branco */
-  border-radius: 0;
-  border: 1px solid #C0C0C0; /* Borda cinza mais clara */
+    width: 100%;
+    margin-top: 20px;
 }
 
 .avatarSelectorTitle {
-  font-size: 14px;
-  color: #003399; /* Azul escuro */
-  margin-top: 0;
-  margin-bottom: 15px;
-  text-align: center;
-  font-weight: 600;
+    font-size: 11px;
+    color: #8B949E;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    font-weight: 700;
 }
 
 .avatarGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
-  gap: 10px;
-  justify-items: center;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .avatarOption {
-  background: none;
-  border: 2px solid #C0C0C0; /* Borda cinza */
-  padding: 0;
-  cursor: pointer;
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  position: relative;
-  transition: transform 0.2s ease, border-color 0.2s ease;
-  overflow: hidden;
-  display: block;
+    background: transparent;
+    padding: 4px; /* Espaço para a borda */
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    cursor: pointer;
+    width: 64px;
+    height: 64px;
+    position: relative;
+    transition: all 0.2s;
 }
 
 .avatarOption:hover {
-  transform: scale(1.05);
+    border-color: rgba(212, 175, 55, 0.5);
+    transform: translateY(-2px);
 }
 
 .avatarOptionSelected {
-  border-color: #0054E3; /* Borda Azul */
-  box-shadow: none;
+    border-color: #D4AF37; /* Ouro */
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
 }
 
 .avatarOptionImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-  display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
 }
 
 .avatarCheckmark {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: #0054E3; /* Azul */
-  color: #FFFFFF; /* Branco */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background: #D4AF37;
+    border-radius: 50%;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    border: 2px solid #0F1216;
 }
-/* --- End Avatar Selector Styles --- */
 
+/* --- Seções de Inputs --- */
+.section {
+    padding: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
 
 .sectionTitle {
-  font-size: 14px;
-  font-weight: bold;
-  color: #003399; /* Azul escuro */
-  margin-bottom: 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: #FFF;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.sectionTitle::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 16px;
+    background: #D4AF37;
+    border-radius: 2px;
 }
 
 .inputContainer {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .label {
-  display: block;
-  font-size: 11px;
-  color: #000000; /* Preto */
-  margin-bottom: 6px;
-  font-weight: 600;
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+    color: #8B949E;
+    margin-bottom: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-/* Input Padrão XP */
+/* Input Premium */
 .input {
-  width: 100%;
-  background: #FFFFFF;
-  border: 1px solid #7F9DB9;
-  border-radius: 0;
-  padding: 4px 6px;
-  font-size: 11px;
-  color: #000000;
-  box-sizing: border-box;
-  box-shadow: 
-      -1px -1px 0px rgba(255,255,255,0.8) inset,
-      1px 1px 2px rgba(0,0,0,0.1) inset;
+    width: 100%;
+    background: #1A1E24;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #FFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s;
 }
 
 .input:focus {
-  outline: 1px solid #0054E3;
-  outline-offset: -1px;
-  background: #FFFEF9;
+    outline: none;
+    border-color: #D4AF37;
+    background: #21262D;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
 }
 
 .input:disabled,
 .disabledInput {
-  background-color: #ECE9D8;
-  color: #7F9DB9;
-  cursor: not-allowed;
-  border-color: #C0C0C0;
+    background: #0F1216;
+    color: #666;
+    border-color: #222;
+    cursor: not-allowed;
 }
 
-.helperText {
-  font-size: 11px;
-  color: #333333;
-  margin-top: 5px;
-}
-
-.buttonSection {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.button {
-  padding: 8px 16px;
-  border-radius: 3px;
-  font-size: 11px;
-  font-weight: bold;
-  cursor: pointer;
-  width: 100%;
-  transition: none;
-}
-
-.button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-.button:not(:disabled):hover {
-  transform: none;
-  box-shadow: none;
-}
-
-/* Botão Salvar (Azul) */
-.saveButton {
-  border: 1px solid #003C74;
-  background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
-  color: #FFFFFF;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-  box-shadow: 1px 1px 0px rgba(255,255,255,0.8) inset;
-}
-.saveButton:not(:disabled):hover {
-  background: linear-gradient(180deg, #008FE5 0%, #0065F0 50%, #0050C5 100%);
-}
-.saveButton:disabled {
-  background: linear-gradient(180deg, #999999 0%, #808080 100%);
-  color: #CCCCCC;
-}
-
-/* Botão Logout (Cinza) */
-.logoutButton {
-  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-  border: 1px solid #7F9DB9;
-  color: #000;
-}
-.logoutButton:not(:disabled):hover {
-  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
-}
-
-/* ========================================
-   CAMPO DE BANCA INICIAL (CURRENCY INPUT)
-   ======================================== */
-
-.labelIcon {
-  margin-right: 6px;
-  vertical-align: middle;
-  color: #0054E3; /* Azul */
-}
-
+/* Input de Moeda */
 .currencyInputWrapper {
-  display: flex;
-  align-items: center;
-  background-color: #FFFFFF;
-  border: 1px solid #7F9DB9;
-  border-radius: 0;
-  padding: 0;
-  transition: none;
-  overflow: hidden;
-  box-shadow: 
-      -1px -1px 0px rgba(255,255,255,0.8) inset,
-      1px 1px 2px rgba(0,0,0,0.1) inset;
-}
-
-.currencyInputWrapper:focus-within {
-  border-color: #7F9DB9;
-  box-shadow: -1px -1px 0px rgba(255,255,255,0.8) inset,
-              1px 1px 2px rgba(0,0,0,0.1) inset;
-}
-/* O foco será no input interno */
-.currencyInput:focus {
-  outline: 1px solid #0054E3;
-  outline-offset: -1px;
+    display: flex;
+    align-items: center;
+    position: relative;
 }
 
 .currencySymbol {
-  padding: 4px 8px;
-  font-size: 11px;
-  color: #003399; /* Azul escuro */
-  font-weight: 700;
-  background-color: #ECE9D8; /* Fundo cinza */
-  border-right: 1px solid #7F9DB9;
+    position: absolute;
+    left: 16px;
+    color: #D4AF37;
+    font-weight: 700;
+    font-size: 14px;
+    z-index: 2;
 }
 
 .currencyInput {
-  flex: 1;
-  background-color: transparent;
-  border: none;
-  padding: 4px 6px;
-  font-size: 11px;
-  color: #000;
-  font-weight: 600;
-  outline: none;
+    flex: 1;
+    background: #1A1E24;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 14px 16px 14px 45px; /* Padding extra para o símbolo */
+    font-size: 14px;
+    color: #FFF;
+    font-weight: 600;
+    outline: none;
+    transition: all 0.3s;
 }
 
-.currencyInput::placeholder {
-  color: #666;
-  font-weight: 400;
+.currencyInput:focus {
+    border-color: #D4AF37;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
 }
 
-.currencyInput:disabled {
-  color: #888;
-  cursor: not-allowed;
-}
-
-/* Warning Text (Estilo Info Azul) */
-.warningText {
-  font-size: 11px;
-  color: #003399; /* Azul escuro */
-  margin-top: 8px;
-  padding: 8px 12px;
-  background-color: #E0E8F5; /* Azul claro */
-  border: 1px solid #0054E3; /* Borda Azul */
-  border-radius: 4px;
-  line-height: 1.4;
-}
-
-/* Responsive adjustments */
-@media (max-width: 480px) {
-  .imageButtons {
+/* Botões Finais */
+.buttonSection {
+    padding: 24px;
+    display: flex;
     flex-direction: column;
-    width: 100%;
-    max-width: 200px;
-  }
-  
-  .imageButton {
-    width: 100%;
-  }
-  
-  .header {
-    padding: 6px 10px;
-  }
-  
-  .title {
-    font-size: 11px;
-  }
-  
-  .avatarGrid {
-    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-    gap: 8px;
-  }
-  .imageSection{
-    margin-left: 0px;
-  }
-  .section {
-  /* padding: 20px; */
-  margin-left: 0px;
-  max-width: 450px;
-  background: #ECE9D8;
-  border: 1px solid #7F9DB9;
+    gap: 16px;
+    background: rgba(0, 0, 0, 0.2);
 }
-  .avatarOption {
-    width: 60px;
-    height: 60px;
-  }
+
+.button {
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    transition: all 0.2s;
+}
+
+.saveButton {
+    /* Gradiente Dourado */
+    background: linear-gradient(135deg, #D4AF37 0%, #AA8A25 100%);
+    color: #000;
+    font-family: 'Cinzel', serif;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+}
+
+.saveButton:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
+    filter: brightness(1.1);
+}
+
+.saveButton:disabled {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.logoutButton {
+    background: transparent;
+    border: 1px solid #333;
+    color: #8B949E;
+}
+
+.logoutButton:hover {
+    border-color: #FF4D4D;
+    color: #FF4D4D;
+    background: rgba(255, 77, 77, 0.05);
 }

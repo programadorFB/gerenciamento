@@ -1,7 +1,9 @@
 /* ========================================
-   Tema XP (Branco, Azul, Cinza)
-   DashboardScreen.module.css - Mobile First
+   TEMA: CASSINO ROYAL / FOOTBALL STUDIO
+   DashboardScreen.module.css
    ======================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;600;700&display=swap');
 
 /* --- RESET & GERAL --- */
 * {
@@ -11,402 +13,498 @@
 }
 
 body {
-  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
-  background: #D6D3CE;
-  color: #000;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #0F1216;
+  color: #E0E0E0;
 }
 
-/* Container Principal */
+/* --- Container Principal (Mesa de Jogo) --- */
 .dashboardContainer {
   min-height: 100vh;
   width: 100%;
-  background: #D6D3CE;
+  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
   position: relative;
   overflow-x: hidden;
-  padding-bottom: 20px; /* Espaço extra no final */
+  padding-bottom: 90px; /* Espaço para menu flutuante */
 }
 
-/* --- HEADER (Barra de Título XP) --- */
+/* --- HEADER (Barra Superior) --- */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
-  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset;
-  position: sticky; /* Fixa no topo em mobile */
+  padding: 16px 20px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
 .menuButton {
-  background: none;
+  background: transparent;
   border: none;
   cursor: pointer;
   padding: 8px;
   display: flex;
   align-items: center;
+  color: #D4AF37; /* Dourado */
 }
 
 .menuIcon {
-  width: 20px;
+  width: 24px;
   height: 2px;
-  background: #FFFFFF;
+  background: #D4AF37;
   display: block;
   position: relative;
+  border-radius: 2px;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
 }
 .menuIcon::before, .menuIcon::after {
-  content: ''; position: absolute; width: 20px; height: 2px; background: #FFFFFF; left: 0;
+  content: ''; position: absolute; width: 24px; height: 2px; background: #D4AF37; left: 0; border-radius: 2px;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
 }
-.menuIcon::before { top: -6px; }
-.menuIcon::after { top: 6px; }
+.menuIcon::before { top: -8px; }
+.menuIcon::after { top: 8px; }
 
 .greetingContainer {
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 1;
-  gap: 8px;
+  gap: 12px;
 }
 
 .greeting {
-  font-size: 14px;
-  font-weight: bold;
-  color: #FFFFFF;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFF;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 150px; /* Limita largura no mobile */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .logoImg {
-  width: 20px;
-  height: 20px;
-  filter: brightness(0) invert(1);
-  margin-left: 4px;
-  vertical-align: middle;
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
 }
 
+/* Avatar do Perfil */
 .profileWrapper {
   position: relative;
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .profileAvatar {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background-color: #7F9DB9;
-  border: 2px solid #FFFFFF;
+  background-color: #1A1E24;
+  border: 2px solid #D4AF37;
   object-fit: cover;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
 .profileAvatarPlaceholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #FFF;
-  font-size: 12px;
-  font-weight: bold;
+  color: #D4AF37;
+  font-size: 14px;
+  font-weight: 700;
+  background: #0F1216;
+  font-family: 'Cinzel', serif;
 }
 
 .profileIconBadge {
   position: absolute;
-  bottom: -4px;
-  right: -4px;
-  width: 16px;
-  height: 16px;
-  background: #0054E3;
+  bottom: -2px;
+  right: -2px;
+  width: 18px;
+  height: 18px;
+  background: #0F1216;
   border-radius: 50%;
-  border: 1px solid #FFF;
+  border: 1px solid #D4AF37;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 8px;
-  color: #FFF;
+  font-size: 10px;
+  color: #D4AF37;
 }
 
 /* --- SCROLL VIEW --- */
 .scrollView {
-  padding: 10px; /* Padding geral para o conteúdo */
-  max-width: 1200px; /* Limite máximo para telas gigantes */
+  padding: 20px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Espaço entre seções */
+  gap: 24px;
 }
 
-/* --- SEÇÃO DE SALDO --- */
+/* --- SEÇÃO DE SALDO (PLAQUETAS VIP) --- */
 .balanceSection {
   display: grid;
-  grid-template-columns: 1fr; /* Mobile: 1 por linha */
-  gap: 10px;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
+/* Estilo Base da Plaqueta */
 .balanceCard {
-  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-  border: 1px solid #7F9DB9;
-  border-radius: 8px;
-  padding: 12px;
+  background: linear-gradient(135deg, #000000 0%, #000000 100%);
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 16px;
   text-align: center;
-  box-shadow: 1px 1px 0px rgba(255,255,255,0.8) inset, 2px 2px 5px rgba(0,0,0,0.2);
+  position: relative;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  /* Textura sutil */
+  /* background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 1px, transparent 1px, transparent 10px); */
 }
 
+/* Plaqueta Principal (Ouro) */
 .balanceCard.main {
-  border: 2px solid #0054E3;
-  order: -1; /* Joga o saldo principal para o topo no mobile */
+  background: linear-gradient(135deg, #1A1E24 0%, #000 100%);
+  border: 1px solid #D4AF37;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.15), inset 0 0 20px rgba(212, 175, 55, 0.05);
+  order: -1;
+  padding: 24px 16px;
 }
+
+/* Cantos decorativos da plaqueta main */
+.balanceCard.main::before, .balanceCard.main::after {
+  content: '';
+  position: absolute;
+  width: 10px; height: 10px;
+  border: 2px solid #D4AF37;
+  transition: all 0.3s;
+}
+.balanceCard.main::before { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+.balanceCard.main::after { bottom: 8px; right: 8px; border-left: none; border-top: none; }
 
 .cardHeader {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 11px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 4px;
+  font-weight: 700;
+  color: #8B949E;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.cardHeader svg { color: #0054E3 !important; }
+.balanceCard.main .cardHeader { color: #D4AF37; }
+.balanceCard.main .cardHeader svg { color: #D4AF37 !important; }
 
 .balanceAmount {
-  font-size: 20px;
-  font-weight: bold;
-  color: #000;
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.5px;
 }
-.balanceAmount.main { font-size: 26px; color: #003399; }
-.balanceAmount.initial { color: #0054E3; }
-.balanceAmount.positive { color: #006400; } /* Verde escuro para leitura */
-.balanceAmount.negative { color: #BF0000; }
+
+.balanceAmount.main { 
+  font-size: 36px; 
+  color: #FFFFFF; 
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.balanceAmount.initial { color: #8B949E; font-size: 20px; }
+.balanceAmount.positive { color: #00FF88; text-shadow: 0 0 5px rgba(0,255,136,0.3); }
+.balanceAmount.negative { color: #FF4D4D; text-shadow: 0 0 5px rgba(255,77,77,0.3); }
 
 .performance {
   font-size: 11px;
-  font-weight: bold;
-  margin-top: 4px;
+  font-weight: 700;
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: inline-block;
+  background: rgba(255,255,255,0.05);
 }
-.performance.positive { color: #006400; }
-.performance.negative { color: #BF0000; }
+.performance.positive { color: #00FF88; border: 1px solid rgba(0,255,136,0.3); }
+.performance.negative { color: #FF4D4D; border: 1px solid rgba(255,77,77,0.3); }
 
-/* --- AÇÕES RÁPIDAS --- */
+/* --- AÇÕES RÁPIDAS (Botões de Aposta) --- */
 .quickActions {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Mobile: 2 colunas */
-  gap: 8px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
 .actionButton {
-  padding: 10px;
-  background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
-  border: 1px solid #003C74;
-  border-radius: 3px;
-  color: #FFFFFF;
+  padding: 16px;
+  background: linear-gradient(180deg, #2C333A 0%, #1A1E24 100%);
+  border: 1px solid #333;
+  border-bottom: 3px solid #0F1216; /* Efeito 3D */
+  border-radius: 8px;
+  color: #B0B8C3;
   font-size: 11px;
-  font-weight: bold;
+  font-weight: 800;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  gap: 8px;
+  transition: all 0.1s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-.actionButton:active { background: #003399; }
+
+.actionButton:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+  background: #15191E;
+}
+
+/* Cores específicas por ação (Hover) */
+.actionButton:hover { color: #FFF; border-color: #555; }
+.actionButton:nth-child(1):hover { border-color: #00E0FF; color: #00E0FF; box-shadow: 0 0 10px rgba(0,224,255,0.2); } /* Depósito */
+.actionButton:nth-child(2):hover { border-color: #FFA500; color: #FFA500; box-shadow: 0 0 10px rgba(255,165,0,0.2); } /* Saque */
+.actionButton:nth-child(3):hover { border-color: #00FF88; color: #00FF88; box-shadow: 0 0 10px rgba(0,255,136,0.2); } /* Ganhos */
+.actionButton:nth-child(4):hover { border-color: #FF4D4D; color: #FF4D4D; box-shadow: 0 0 10px rgba(255,77,77,0.2); } /* Loss */
 
 /* --- SEÇÕES GERAIS --- */
 .sectionHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
+  padding: 0 4px;
 }
 
 .sectionTitle {
+  font-family: 'Cinzel', serif;
   font-size: 14px;
-  font-weight: bold;
-  color: #003399;
+  font-weight: 700;
+  color: #D4AF37;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sectionTitle::before {
+  content: '';
+  display: block;
+  width: 3px; height: 14px;
+  background: #D4AF37;
+  box-shadow: 0 0 5px #D4AF37;
 }
 
 .seeAllButton {
   background: none;
-  border: none;
-  color: #0054E3;
-  font-size: 11px;
-  font-weight: bold;
-  text-decoration: underline;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  padding: 4px 10px;
+  color: #8B949E;
+  font-size: 10px;
+  font-weight: 600;
   cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+}
+.seeAllButton:hover { 
+  border-color: #FFF; 
+  color: #FFF; 
 }
 
-/* --- GESTÃO DE RISCO --- */
+/* --- GESTÃO DE RISCO (Cards) --- */
 .riskManagementSection {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
 }
 
 .riskCardsContainer {
   display: grid;
-  grid-template-columns: 1fr; /* Mobile: 1 por linha */
+  grid-template-columns: 1fr;
   gap: 16px;
 }
 
 .riskCard {
-  background: #FFFFFF;
-  border: 2px solid #0054E3;
-  border-radius: 6px;
-  overflow: hidden; /* Garante bordas arredondadas */
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  background: #15191E;
+  border: 1px solid #2C333A;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .riskCardHeader {
-  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-  padding: 6px 10px;
+  background: rgba(0,0,0,0.2);
+  padding: 12px 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #FFF;
+  gap: 10px;
+  border-bottom: 1px solid #2C333A;
 }
 
 .riskCardTitle {
   font-size: 12px;
-  font-weight: bold;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  font-weight: 700;
+  color: #B0B8C3;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.riskCardBody {
-  padding: 12px;
-}
+.riskCardBody { padding: 16px; }
 
 .riskCardValue {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .riskMainValue {
-  font-size: 18px;
-  font-weight: bold;
-  color: #000;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #FFFFFF;
 }
 
 .riskPercentage {
   font-size: 11px;
-  color: #666;
+  color: #6E7681;
 }
 
-.progressBarContainer { margin-top: 8px; }
+/* Barras de Progresso Neon */
+.progressBarContainer { margin-top: 12px; }
 
 .progressBar {
-  height: 14px;
-  background: #FFF;
-  border: 1px solid #7F9DB9;
-  padding: 1px;
+  height: 6px;
+  background: #0F1216;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid #2C333A;
 }
 
 .progressBarFill {
   height: 100%;
-  background: #0054E3;
-  width: 0; /* Animado via JS */
-  transition: width 0.3s;
+  background: #00FF88;
+  width: 0;
+  transition: width 0.5s ease;
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
 }
 
 .progressInfo {
   display: flex;
   justify-content: space-between;
   font-size: 10px;
-  margin-top: 2px;
-  color: #333;
+  margin-top: 6px;
+  color: #8B949E;
+  font-weight: 600;
 }
 
 .riskCardEmpty {
   text-align: center;
-  padding: 10px;
+  padding: 20px;
   font-size: 11px;
-  color: #666;
+  color: #6E7681;
 }
 
 .configureButton {
-  margin-top: 8px;
-  padding: 4px 10px;
-  background: #0054E3;
-  color: #FFF;
-  border: 1px solid #003C74;
-  border-radius: 3px;
-  font-size: 10px;
-  cursor: pointer;
-}
-
-/* Alertas */
-.alertBanner, .successBanner {
   margin-top: 10px;
-  padding: 6px;
-  font-size: 11px;
-  font-weight: bold;
-  border-radius: 3px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  color: #D4AF37;
+  border: 1px solid #D4AF37;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  text-transform: uppercase;
 }
-.alertBanner { background: #FFE5E5; color: #BF0000; border: 1px solid #BF0000; }
-.successBanner { background: #E5FFE5; color: #006400; border: 1px solid #006400; }
-.stopLossTriggered { border-color: #BF0000 !important; }
+.configureButton:hover { background: rgba(212, 175, 55, 0.1); }
 
 /* --- RESUMO FINANCEIRO --- */
 .summaryCardUnified {
-  background: #FFFFFF;
-  border: 1px solid #7F9DB9;
-  border-radius: 4px;
+  background: #15191E;
+  border: 1px solid #2C333A;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .summaryRow {
   display: flex;
   justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid #ECE9D8;
+  padding: 16px;
+  border-bottom: 1px solid #2C333A;
+  align-items: center;
 }
 .summaryRow:last-child { border-bottom: none; }
 
 .summaryLabel {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   font-size: 12px;
-  color: #333;
+  color: #8B949E;
+  font-weight: 500;
 }
-.summaryLabel svg { color: #0054E3 !important; }
+.summaryLabel svg { color: #D4AF37 !important; font-size: 16px; }
 
 .summaryValue {
-  font-weight: bold;
-  font-size: 12px;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: 'Montserrat', sans-serif;
+  color: #FFFFFF;
 }
-.summaryValue.positive { color: #006400; }
-.summaryValue.negative { color: #BF0000; }
+.summaryValue.positive { color: #00FF88; text-shadow: 0 0 5px rgba(0,255,136,0.3); }
+.summaryValue.negative { color: #FF4D4D; text-shadow: 0 0 5px rgba(255,77,77,0.3); }
 
 /* --- CALENDÁRIO --- */
 .calendarSection {
-  /* Garante que o calendário não estoure a tela */
-  width: 100%;
-  overflow: hidden;
-  background: #ECE9D8;
-  border: 1px solid #7F9DB9;
-  padding: 4px;
-}
-.calendarSection .sectionHeader {
-  padding: 4px;
-  margin-bottom: 4px;
+  background: #15191E;
+  border: 1px solid #2C333A;
+  padding: 16px;
+  border-radius: 12px;
 }
 
 /* --- ESTADO VAZIO --- */
 .emptyState {
   text-align: center;
-  padding: 20px;
-  color: #666;
+  padding: 40px 20px;
+  color: #6E7681;
   font-size: 12px;
-  background: #FFF;
-  border: 1px dashed #7F9DB9;
-  border-radius: 4px;
+  background: rgba(255,255,255,0.02);
+  border: 1px dashed #333;
+  border-radius: 8px;
+}
+
+/* --- Modal Overlay --- */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  backdrop-filter: blur(5px);
+}
+
+.resetModalContainer {
+  /* Estilos inline no JSX, mas definidos aqui para referência */
+  box-shadow: 0 0 50px rgba(255, 68, 68, 0.2);
+  border: 1px solid #333;
 }
 
 /* ========================================
@@ -415,28 +513,27 @@ body {
 
 @media (min-width: 600px) {
   .balanceSection {
-    grid-template-columns: repeat(3, 1fr); /* 3 colunas em telas médias+ */
+    grid-template-columns: repeat(3, 1fr);
   }
-  .balanceCard.main { order: 0; } /* Volta para o meio/ordem normal */
+  .balanceCard.main { order: 0; }
 
   .quickActions {
-    grid-template-columns: repeat(4, 1fr); /* 4 botões em linha */
+    grid-template-columns: repeat(4, 1fr);
   }
 
   .riskCardsContainer {
-    grid-template-columns: repeat(2, 1fr); /* 2 cards lado a lado */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
-  /* Ajustes finos para telas grandes */
   .scrollView {
-    padding: 20px;
-    gap: 24px;
+    padding: 40px;
+    gap: 40px;
   }
   
-  .greeting { font-size: 16px; max-width: none; }
+  .greeting { font-size: 20px; }
   
-  .balanceAmount { font-size: 24px; }
-  .balanceAmount.main { font-size: 32px; }
+  .balanceAmount { font-size: 32px; }
+  .balanceAmount.main { font-size: 48px; }
 }

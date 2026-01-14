@@ -1,351 +1,315 @@
 /* ========================================
-   Tema XP (Branco, Azul, Cinza)
-   ChartsScreen.module.css - Mobile First
+   TEMA: CASSINO ROYAL / FOOTBALL STUDIO
+   ChartsScreen.module.css
    ======================================== */
 
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;600;700&display=swap');
 
+/* --- Container Principal (Mesa de Análise) --- */
 .casinoContainer {
-  min-height: 100vh;
-  width: 100%;
-  background: #D6D3CE; /* Fundo Cinza XP */
-  color: #000000;
-  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
-  position: relative;
-  overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
+  /* Textura de mesa de feltro */
+  
+  color: #E0E0E0;
+  font-family: 'Montserrat', sans-serif;
+  overflow-x: hidden;
+  padding-bottom: 40px;
 }
 
-/* ===== HEADER (Barra de Título XP) ===== */
+/* --- Header --- */
 .casinoHeader {
-  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-  border-bottom: none;
-  box-shadow: none;
-  padding: 6px 12px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   position: sticky;
   top: 0;
   z-index: 100;
-  display: flex;
-  flex-direction: column; /* Mobile: Empilhado para abas abaixo */
-  gap: 8px;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
 .casinoBackButton {
-  align-self: flex-start; /* Alinha à esquerda */
+  background: transparent;
+  border: none;
+  color: #B0B8C3;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-  border: 1px solid #7F9DB9;
-  border-radius: 3px;
-  color: #000;
-  font-size: 11px;
+  gap: 8px;
+  font-size: 12px;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: none;
+  width: fit-content;
+  transition: color 0.2s;
 }
+.casinoBackButton:hover { color: #FFF; }
 
-.casinoBackButton:hover {
-  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
-}
-
-/* --- Abas XP (Scroll Horizontal no Mobile) --- */
+/* Navegação (Chips) */
 .casinoNav {
   display: flex;
-  gap: 4px;
-  justify-content: flex-start;
-  padding: 0 4px;
-  background: #D6D3CE;
-  border-bottom: 1px solid #7F9DB9;
-  width: 100%;
-  overflow-x: auto; /* Permite rolagem horizontal */
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
   -webkit-overflow-scrolling: touch;
-  margin-top: 4px;
+  scrollbar-width: none;
 }
+.casinoNav::-webkit-scrollbar { display: none; }
 
 .casinoNavButton {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  background: #ECE9D8;
-  border: 1px solid #7F9DB9;
-  border-bottom: none;
-  border-radius: 4px 4px 0 0;
-  color: #333;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 20px;
+  background: #1A1E24;
+  border: 1px solid #333;
+  color: #8B949E;
   font-size: 11px;
   font-weight: 700;
+  text-transform: uppercase;
   cursor: pointer;
-  white-space: nowrap; /* Impede quebra de texto */
-  margin-top: 4px;
-  flex-shrink: 0; /* Impede que encolham */
-}
-
-.casinoNavButton:hover {
-  background: #F5F3E8;
-  color: #000;
-}
-
-.casinoNavActive {
-  background: #FFFFFF !important;
-  border: 1px solid #7F9DB9 !important;
-  border-bottom: 1px solid #FFFFFF !important;
-  color: #000 !important;
-  margin-top: 0;
-  padding-top: 12px;
+  white-space: nowrap;
+  transition: all 0.3s ease;
   position: relative;
-  z-index: 2;
-}
-
-/* ===== MAIN CONTENT ===== */
-.casinoMain {
-  padding: 10px;
-  width: 100%;
-  background: #FFFFFF;
-  border: 1px solid #7F9DB9;
-  border-top: none;
-  flex-grow: 1;
-}
-
-/* ===== PERFORMANCE LAYOUT ===== */
-.casinoPerformance {
-  display: grid;
-  grid-template-columns: 1fr; /* Mobile: 1 coluna */
-  gap: 15px;
-}
-
-/* ===== CARDS PRINCIPAIS ===== */
-.casinoCard {
-  background: #ECE9D8;
-  border: 1px solid #7F9DB9;
-  border-radius: 0;
-  padding: 15px;
   overflow: hidden;
 }
 
-.cardHeader {
+.casinoNavButton:hover {
+  background: #252B33;
+  color: #FFF;
+}
+
+/* Chip Ativo (Dourado) */
+.casinoNavActive {
+  background: linear-gradient(135deg, #D4AF37 0%, #AA8A25 100%);
+  color: #000 !important;
+  border-color: #FDFD00;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+/* Brilho no ativo */
+.activeGlow {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: skewX(-20deg) translateX(-150%);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  to { transform: skewX(-20deg) translateX(150%); }
+}
+
+/* --- Área Principal --- */
+.casinoMain {
+  flex-grow: 1;
+  padding: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  margin-bottom: 15px;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeIn 0.5s ease-out;
 }
 
-.headerIcon {
-  font-size: 16px;
-  color: #0054E3;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.cardHeader h2 {
-  font-size: 13px;
-  font-weight: 900;
-  color: #003399;
-  margin: 0;
-}
-
-.chartZone {
-  height: 300px; /* Altura boa para mobile */
+/* Container do Gráfico (Monitor) */
+.chartWrapper {
+  background: #15191E;
+  border: 1px solid #2C333A;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
   position: relative;
-  z-index: 1;
-  padding: 5px;
-  background: #FFFFFF;
-  border: 1px solid #7F9DB9;
-  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3);
+  min-height: 300px;
 }
 
-/* ===== MÉTRICAS ===== */
-.metricsDisplay {
-  display: grid;
-  grid-template-columns: 1fr; /* Mobile: 1 coluna */
-  gap: 10px;
-}
-
-.casinoMetricCard {
-  background: #ECE9D8;
-  border: 1px solid #C0C0C0;
-  border-radius: 4px;
-  padding: 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.metricIconGold, .metricIconRed, .metricIconDiamond, .metricIconCircle {
-  font-size: 20px;
-  color: #0054E3;
-}
-.metricIconCircle svg { color: #0054E3; }
-
-.metricContent {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.metricLabel {
-  font-size: 10px;
-  color: #333;
-  font-weight: 600;
-}
-
-.metricValue, .metricValueLarge {
-  font-size: 16px;
-  font-weight: 900;
-  color: #000;
-}
-/* Força preto no lugar do verde */
-.metricValueLarge[style*="#4CAF50"] { color: #000 !important; }
-
-/* ===== RISK LAYOUT ===== */
-.casinoRisk {
-  display: grid;
-  grid-template-columns: 1fr; /* Mobile: 1 coluna */
-  gap: 15px;
-}
-
-.riskIndicators {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.casinoRiskCard {
-  background: #ECE9D8;
-  border: 1px solid #C0C0C0;
-  border-radius: 4px;
-  padding: 12px;
-}
-
-.riskHeader {
+/* Título do Gráfico */
+.chartTitleArea {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 12px;
 }
 
-.riskLabel {
-  font-size: 10px;
-  color: #333;
-  font-weight: 600;
-}
-
-.riskValue {
+.chartTitleArea h2 {
+  font-family: 'Cinzel', serif;
   font-size: 16px;
-  font-weight: 900;
-  color: #000;
-}
-.riskValue[style*="#F44336"] { color: #BF0000 !important; }
-.riskValue[style*="#FF9800"] { color: #E69100 !important; }
-.riskValue[style*="#4CAF50"] { color: #0054E3 !important; }
-
-.riskBar {
-  width: 100%;
-  height: 14px;
-  background: #FFFFFF;
-  border: 1px solid #7F9DB9;
-}
-.riskFill {
-  height: 100%;
-  transition: width 0.5s ease;
-}
-
-.operationsSplit {
+  color: #FFF;
+  margin: 0;
   display: flex;
-  justify-content: space-around;
-  padding-top: 8px;
+  align-items: center;
+  gap: 10px;
 }
-.splitItem {
+
+.chartTitleArea h2 svg { color: #D4AF37; }
+
+/* Cards de Estatística (Painel Digital) */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.casinoStatCard {
+  background: linear-gradient(145deg, #1A1E24, #0F1216);
+  border: 1px solid #2C333A;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Indicador lateral colorido */
+.casinoStatCard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0; width: 3px;
+  background: var(--stat-color, #888);
+  box-shadow: 0 0 10px var(--stat-color);
+}
+
+.statLabel {
+  font-size: 10px;
+  color: #8B949E;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #000;
 }
-.splitItem svg[style*="#4CAF50"] { color: #0054E3 !important; }
-.splitItem svg[style*="#F44336"] { color: #333333 !important; }
 
-/* ===== LOADING / EMPTY ===== */
-.casinoEmpty, .casinoLoading {
+.statValue {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #FFF;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.statSubtext {
+  font-size: 10px;
+  color: #666;
+}
+
+/* Placar de Jogo (Wins vs Losses) */
+.casinoScoreboard {
+  display: flex;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid #333;
+  margin-top: 10px;
+}
+
+.scoreSide {
+  flex: 1;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 300px;
-  background: #FFFFFF;
-  border: 1px dashed #7F9DB9;
+  gap: 4px;
+}
+
+.scoreWins {
+  background: linear-gradient(180deg, #1A3A2A 0%, #000 100%);
+  border-right: 1px solid #333;
+}
+.scoreLosses {
+  background: linear-gradient(180deg, #3A1A1A 0%, #000 100%);
+}
+
+.scoreLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #888;
+}
+
+.scoreValue {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.scoreValue.win { color: #00FF88; text-shadow: 0 0 10px rgba(0,255,136,0.3); }
+.scoreValue.loss { color: #FF4D4D; text-shadow: 0 0 10px rgba(255,77,77,0.3); }
+
+/* Distribuição (Scatter Plot Wrapper) */
+.distributionWrapper {
+  background: #15191E;
+  border: 1px solid #2C333A;
+  border-radius: 16px;
   padding: 20px;
-  text-align: center;
+  height: 400px;
 }
 
-.emptyIcon { font-size: 40px; color: #7F9DB9; margin-bottom: 15px; }
-.casinoEmpty h2 { font-size: 16px; color: #003399; margin-bottom: 10px; }
-.casinoEmpty p { font-size: 11px; color: #333; margin-bottom: 20px; }
+/* Loading */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  color: #D4AF37;
+}
 
-.loadingSpinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #C0C0C0;
-  border-top-color: #0054E3;
+.spinner {
+  width: 40px; height: 40px;
+  border: 4px solid rgba(212, 175, 55, 0.2);
+  border-top-color: #D4AF37;
   border-radius: 50%;
-  animation: rotate 1s linear infinite;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
 }
+
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* ========================================
-   MEDIA QUERIES (TABLET & DESKTOP)
+   Media Queries (Desktop)
    ======================================== */
 @media (min-width: 768px) {
   .casinoHeader {
-    flex-direction: row; /* Volta ao layout horizontal */
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
   }
   
-  .casinoBackButton {
-    margin-bottom: 0; /* Remove margem extra */
-  }
-
-  /* Abas centralizadas no Desktop */
   .casinoNav {
-    width: auto;
-    margin: 0;
-    overflow-x: visible;
-    border-bottom: none; /* No header, a borda é diferente */
+    padding-bottom: 0;
+    overflow: visible;
   }
-  
+
   .casinoMain {
-    width: 95%; /* Centralizado com margem */
-    max-width: 1600px;
-    margin: 0 auto 20px auto;
-    padding: 20px;
-    border: 1px solid #7F9DB9;
-    /* Borda superior volta se as abas estiverem separadas visualmente */
+    padding: 40px;
   }
 
-  .casinoPerformance {
-    grid-template-columns: 1fr; /* Ainda 1 col para gráfico ocupar largura total */
-    gap: 20px;
+  .statsGrid {
+    grid-template-columns: repeat(4, 1fr);
   }
   
-  .metricsDisplay {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Cards lado a lado */
-  }
-
-  .casinoRisk {
-    grid-template-columns: 2fr 1fr; /* Gráfico maior + Indicadores lateral */
-  }
-
-  .chartZone {
-    height: 500px; /* Gráfico maior */
-    padding: 15px;
-  }
-  
-  .cardHeader h2 { font-size: 14px; }
-  .metricValue, .riskValue { font-size: 18px; }
+  .statValue { font-size: 24px; }
+  .scoreValue { font-size: 48px; }
 }

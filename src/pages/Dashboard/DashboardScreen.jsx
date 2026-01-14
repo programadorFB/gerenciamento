@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react'; // ✅ NOVO: Importado useState e useCallback
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // --- Contexts ---
@@ -7,41 +7,37 @@ import { useFinancial } from '../../contexts/FinancialContext';
 import { BettingProvider, useBetting } from '../../contexts/BettingContext'; 
 import { useSideMenu } from '../../contexts/SideMenuContext';
 import apiService from '../../services/api';
+
 // --- Components ---
 import SideMenu from '../../components/SideMenu';
 import TransactionList from '../../components/TransactionList';
-import ObjectivesList from '../../components/ObjectivesList';
-import PerformanceChart from '../../components/PerformanceChart';
-// ✅ NOVO: Importando os sub-componentes do calendário
-// (Ajuste o caminho se sua CalendarScreen não estiver em 'pages/CalendarScreen/CalendarScreen.jsx')
+// import ObjectivesList from '../../components/ObjectivesList'; // Opcional
+// import PerformanceChart from '../../components/PerformanceChart'; // Opcional
 import { CalendarGrid, DayTransactionsModal } from '../../components/CalendarScreen';
 
-// --- Icons ---
+// --- Icons (Atualizados para react-icons/io5 e fa para consistência) ---
 import { 
     MdAccountBalanceWallet, 
     MdFlag, 
-    MdAdd, 
-    MdRemove, 
-    MdTrendingUp, 
-    MdTrendingDown, 
-    MdWarning,
-    MdRefresh 
+    MdRefresh,
+    MdWarning
 } from 'react-icons/md';
 import { 
     FaCoins, 
     FaReceipt, 
-    FaBullseye, 
     FaShieldAlt, 
     FaChartLine, 
     FaDice, 
     FaFire, 
     FaBalanceScale,
-    FaCalendarDay 
+    FaPlus,
+    FaMinus,
+    FaArrowUp,
+    FaArrowDown
 } from 'react-icons/fa';
 
 // --- Assets ---
 import logo from '../../assets/logo.png';
-// import background from '../../assets/fundoLuxo.jpg'; // ⛔ Removido no tema XP
 
 // --- Avatares Locais ---
 import avatar1 from '../../assets/avatares/1.png';
@@ -52,8 +48,7 @@ import avatar5 from '../../assets/avatares/5.png';
 import avatar6 from '../../assets/avatares/6.png';
 
 // --- CSS Module ---
-// Apontando para o CSS do tema XP
-import styles from '../../styles/DashboardScreen.module.css'; 
+import styles from '../../styles/DashboardScreen.module.css';
 
 // --- Avatares ---
 const PREDEFINED_AVATARS = [
@@ -80,15 +75,15 @@ const Dashboard = () => {
         totalWithdraws,
         totalGains,
         dailyGains,
-        dailyLosses,
-        lastResetDate
+        dailyLosses
     } = useFinancial();
+    
     const initialBalance = getEffectiveInitialBalance();
     const { bettingProfile } = useBetting(); 
     const { openMenu } = useSideMenu();
 
-    // ✅ NOVO: Estados para o Calendário e Modal
-    const [calendarDate, setCalendarDate] = useState(new Date()); // Data atual do calendário no dashboard
+    // Estados
+    const [calendarDate, setCalendarDate] = useState(new Date());
     const [modalDate, setModalDate] = useState(null);
     const [modalTransactions, setModalTransactions] = useState([]);
     const [showResetModal, setShowResetModal] = useState(false);
@@ -106,12 +101,10 @@ const Dashboard = () => {
         }
     }, [user, refreshData]);
 
-    // ✅ NOVO: Lógica para agrupar transações por dia (copiado de CalendarScreen)
     const transactionsByDay = useMemo(() => {
         const map = {};
         transactions.forEach(tx => {
             try {
-                // Usamos new Date(tx.date) para garantir que datas em string sejam processadas
                 const dateKey = new Date(tx.date).toISOString().split('T')[0];
                 if (!map[dateKey]) {
                 map[dateKey] = [];
@@ -123,63 +116,57 @@ const Dashboard = () => {
         });
         return map;
     }, [transactions]);
+
     const handleQuickEditInitial = async () => {
-        // Busca a transação inicial por 3 critérios diferentes para não falhar
-    const initialTx = transactions.find(tx => 
-        tx.is_initial_bank === true || 
-        tx.description?.toLowerCase().includes('inicial') ||
-        tx.category?.toLowerCase().includes('inicial')
-    );
-    
-    if (!initialTx) {
-        alert("Não encontramos a transação de banca inicial na sua lista. Tente realizar um 'Reset' para criá-la corretamente ou procure-a no histórico.");
-        return;
-    }
-    const newValue = prompt(`Editando: ${initialTx.description}\nDigite o novo valor da banca:`, initialTx.amount);
+        const initialTx = transactions.find(tx => 
+            tx.is_initial_bank === true || 
+            tx.description?.toLowerCase().includes('inicial') ||
+            tx.category?.toLowerCase().includes('inicial')
+        );
+        
+        if (!initialTx) {
+            alert("Não encontramos a transação de banca inicial. Tente resetar o histórico.");
+            return;
+        }
+        
+        const newValue = prompt(`Editando Banca Inicial:\nValor atual: R$ ${initialTx.amount}`, initialTx.amount);
 
-    
-    if (newValue !== null && newValue !== "" && !isNaN(newValue.replace(',', '.'))) {
-        try {
-            const numericValue = parseFloat(newValue.replace(',', '.'));
-            
-            // Chama o apiService para atualizar
-            const response = await apiService.updateTransaction(initialTx.id, {
-                amount: numericValue,
-                description: initialTx.description
-            });
+        if (newValue !== null && newValue !== "" && !isNaN(newValue.replace(',', '.'))) {
+            try {
+                const numericValue = parseFloat(newValue.replace(',', '.'));
+                const response = await apiService.updateTransaction(initialTx.id, {
+                    amount: numericValue,
+                    description: initialTx.description
+                });
 
-            if (response.success) {
-                alert("Banca inicial atualizada! O saldo de todo o histórico será recalculado.");
-                if (refreshData) await refreshData(); 
-            } else {
-                // Se cair aqui com erro 400, é porque falta comentar a trava no routes.py
-                alert(`Erro do servidor: ${response.error}`);
+                if (response.success) {
+                    if (refreshData) await refreshData(); 
+                } else {
+                    alert(`Erro: ${response.error}`);
+                }
+            } catch (e) {
+                alert("Erro ao conectar com o servidor.");
             }
-        } catch (e) {
-            alert("Erro ao conectar com o servidor.");
         }
-    }
-};
-const handleConfirmReset = async () => {
-    setIsResetting(true);
-    try {
-        console.log('🔄 Chamando API de reset via Dashboard...');
-        const response = await apiService.forceResetBank();
+    };
 
-        if (response.success) {
-            if (refreshData) await refreshData();
-            setShowResetModal(false);
-            alert(`✅ Banca resetada com sucesso!\n💰 Saldo inicial restaurado.`);
-        } else {
-            alert(`❌ Erro ao resetar: ${response.error}`);
+    const handleConfirmReset = async () => {
+        setIsResetting(true);
+        try {
+            const response = await apiService.forceResetBank();
+            if (response.success) {
+                if (refreshData) await refreshData();
+                setShowResetModal(false);
+            } else {
+                alert(`Erro: ${response.error}`);
+            }
+        } catch (error) {
+            alert('Erro ao conectar com o servidor.');
+        } finally {
+            setIsResetting(false);
         }
-    } catch (error) {
-        alert('❌ Erro ao conectar com o servidor.');
-    } finally {
-        setIsResetting(false);
-    }
-};
-    // ✅ NOVO: Funções para controlar o modal (copiado de CalendarScreen)
+    };
+
     const handleDayClick = (date, transactions) => {
         setModalDate(date);
         setModalTransactions(transactions);
@@ -190,7 +177,6 @@ const handleConfirmReset = async () => {
         setModalTransactions([]);
     };
 
-
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('pt-BR', { 
             style: 'currency', 
@@ -198,36 +184,16 @@ const handleConfirmReset = async () => {
         }).format(amount || 0);
     };
 
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('pt-BR', { 
-            day: '2-digit', 
-            month: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
     const getProfileIcon = () => {
         if (!bettingProfile?.isInitialized) return null;
-        
-        // No tema XP, forçamos o ícone a ser branco 
-        const color = '#FFFFFF'; 
+        const color = '#D4AF37'; 
         const iconName = bettingProfile.iconName || 'dice';
         
         switch(iconName) {
-            case 'shield-alt':
-            case 'shield':
-                return <FaShieldAlt color={color} />;
-            case 'fire':
-                return <FaFire color={color} />;
-            case 'balance-scale':
-            case 'balance':
-                return <FaBalanceScale color={color} />;
-            case 'dice':
-            default:
-                return <FaDice color={color} />;
+            case 'shield-alt': return <FaShieldAlt color={color} />;
+            case 'fire': return <FaFire color={color} />;
+            case 'balance-scale': return <FaBalanceScale color={color} />;
+            default: return <FaDice color={color} />;
         }
     };
 
@@ -242,18 +208,13 @@ const handleConfirmReset = async () => {
         return Math.min((dailyGains / profitTarget) * 100, 100);
     };
 
-// ✅ CORREÇÃO: Prioriza o cálculo dinâmico pela porcentagem
     const stopLossMonetaryValue = useMemo(() => {
-        // 1. Tenta calcular usando a porcentagem salva e a banca inicial real
         if (bettingProfile?.stopLossPercentage && bettingProfile.stopLossPercentage > 0) {
             return initialBalance * (bettingProfile.stopLossPercentage / 100);
         }
-        
-        // 2. Se não tiver porcentagem, tenta usar o valor fixo salvo (fallback)
         if (bettingProfile?.stopLoss && bettingProfile.stopLoss > 0) {
             return bettingProfile.stopLoss;
         }
-
         return 0;
     }, [bettingProfile, initialBalance]);
 
@@ -267,74 +228,48 @@ const handleConfirmReset = async () => {
         return stopLossMonetaryValue - dailyLosses;
     }, [dailyLosses, stopLossMonetaryValue]);
 
-    const getAvatarUrl = () => {
+    const avatarUrl = useMemo(() => {
         if (!user?.profile_photo) return null;
         const avatar = PREDEFINED_AVATARS.find(a => a.id === user.profile_photo);
         return avatar ? avatar.url : null;
-    };
-
-    const avatarUrl = getAvatarUrl();
+    }, [user]);
 
     const getInitials = () => {
-        if (!user?.name) return 'J';
-        return user.name
-            .split(' ')
-            .map(word => word.charAt(0))
-            .join('')
-            .toUpperCase()
-            .slice(0, 2);
+        if (!user?.name) return 'PL';
+        return user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
     };
-
-    if (isLoading || !user) {
-        return (
-            <div className={styles.loadingContainer}>
-                <p>Carregando...</p>
-            </div>
-        );
-    }
-
 
     const overallProfit = balance - initialBalance;
     const realProfit = getRealProfit();
     const profitTarget = calculateProfitTarget();
     const dailyProfitProgress = calculateDailyProfitProgress();
-    
     const recentTransactions = transactions.slice(-5).reverse();
-    const incompleteObjectives = objectives.filter(obj => obj.current_amount < obj.target_amount);
-    
+
+    if (isLoading || !user) return <div className={styles.emptyState}>Carregando mesa...</div>;
+
     return (
-        // O fundo 'background' foi removido, o CSS cuida disso
         <div className={styles.dashboardContainer}>
-            {/* O overlayGradient foi removido, o CSS cuida disso */}
-            
             <header className={styles.header}>
                 <button className={styles.menuButton} onClick={openMenu}>
                     <span className={styles.menuIcon}></span>
                 </button>
                 
                 <div className={styles.greetingContainer}>
-                    <h1 className={styles.greeting}>
-                        Olá, {user?.name || 'Jogador'}!
+                    <div className={styles.greeting}>
+                        {user?.name || 'Jogador'}
                         <img src={logo} alt="Logo" className={styles.logoImg} />
-                    </h1>
+                    </div>
                     
-                    <div className={styles.profileWrapper}>
-                        <div className={styles.profileAvatarContainer}>
-                            {avatarUrl ? (
-                                <img 
-                                    src={avatarUrl} 
-                                    alt="Avatar" 
-                                    className={styles.profileAvatar} 
-                                />
-                            ) : (
-                                <div className={`${styles.profileAvatar} ${styles.profileAvatarPlaceholder}`}>
-                                    <span>{getInitials()}</span>
-                                </div>
-                            )}
-                        </div>
-                        
+                    <div className={styles.profileWrapper} onClick={() => navigate('/profile')}>
+                        {avatarUrl ? (
+                            <img src={avatarUrl} alt="Avatar" className={styles.profileAvatar} />
+                        ) : (
+                            <div className={`${styles.profileAvatar} ${styles.profileAvatarPlaceholder}`}>
+                                <span>{getInitials()}</span>
+                            </div>
+                        )}
                         {bettingProfile?.isInitialized && (
-                            <div className={styles.profileIconBadge} title={bettingProfile.title}>
+                            <div className={styles.profileIconBadge}>
                                 {getProfileIcon()}
                             </div>
                         )}
@@ -344,30 +279,24 @@ const handleConfirmReset = async () => {
 
             <main className={styles.scrollView}>
                 
-                {/* Seção de Saldos */}
+                {/* SALDOS (Plaquetas VIP) */}
                 <section className={styles.balanceSection}>
-    <div 
-        className={styles.balanceCard} 
-        onClick={handleQuickEditInitial} 
-        style={{ cursor: 'pointer' }}
-        title="Clique para editar a banca inicial"
-    >
-        <div className={styles.cardHeader}>
-            <MdAccountBalanceWallet size={20} />
-            <span>Banca Inicial</span>
-            {/* Ícone visual de edição opcional */}
-            <MdRefresh size={14} style={{ marginLeft: 'auto', opacity: 0.5 }} />
-        </div>
-        <p className={`${styles.balanceAmount} ${styles.initial}`}>
-            {formatCurrency(initialBalance)}
-        </p>
-    </div>
+                    <div 
+                        className={styles.balanceCard} 
+                        onClick={handleQuickEditInitial} 
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <div className={styles.cardHeader}>
+                            <MdAccountBalanceWallet /> <span>Banca Inicial</span>
+                        </div>
+                        <p className={`${styles.balanceAmount} ${styles.initial}`}>
+                            {formatCurrency(initialBalance)}
+                        </p>
+                    </div>
 
                     <div className={`${styles.balanceCard} ${styles.main}`}>
                         <div className={styles.cardHeader}>
-                            {/* O CSS forçará a cor correta (azul) */}
-                            <FaCoins size={20} />
-                            <span>Saldo Atual</span>
+                            <FaCoins /> <span>Saldo Atual</span>
                         </div>
                         <p className={`${styles.balanceAmount} ${styles.main}`}>
                             {formatCurrency(balance)}
@@ -379,9 +308,7 @@ const handleConfirmReset = async () => {
 
                     <div className={styles.balanceCard}>
                         <div className={styles.cardHeader}>
-                            {/* O CSS forçará a cor correta (azul) */}
-                            <MdFlag size={20} />
-                            <span>Lucro Real</span>
+                            <MdFlag /> <span>Lucro Real</span>
                         </div>
                         <p className={`${styles.balanceAmount} ${realProfit >= 0 ? styles.positive : styles.negative}`}>
                             {formatCurrency(realProfit)}
@@ -389,353 +316,220 @@ const handleConfirmReset = async () => {
                     </div>
                 </section>
 
-                {/* Container para Gestão de Risco e Resumo Financeiro */}
-                <section className={styles.overviewSection}>
-                    {/* Gestão de Risco com valores DIÁRIOS */}
-                    <div className={styles.riskManagementSection}>
+                {/* PAINÉIS DE ESTATÍSTICA (Cards Escuros) */}
+                <section className={styles.riskManagementSection}>
                     <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>Gestão de Risco (Diária)</h2>
-                        <button 
-                            className={styles.seeAllButton} 
-                            onClick={() => navigate('/investment-profile')}
-                        >
-                            Configurar
+                        <h2 className={styles.sectionTitle}>Performance do Dia</h2>
+                        <button className={styles.seeAllButton} onClick={() => navigate('/investment-profile')}>
+                            Ajustar
                         </button>
                     </div>
 
                     <div className={styles.riskCardsContainer}>
-                        {/* Card Meta de Lucro DIÁRIA */}
+                        {/* Meta de Lucro */}
                         <div className={styles.riskCard}>
                             <div className={styles.riskCardHeader}>
-                                <div className={styles.riskIconWrapper}>
-                                    {/* O CSS forçará a cor correta (branca) */}
-                                    <FaChartLine size={18} />
-                                </div>
-                                <span className={styles.riskCardTitle}>Win Diário</span>
+                                <FaChartLine color="#FFF" />
+                                <span className={styles.riskCardTitle}>Meta de Win</span>
                             </div>
-                            
-                            {/* 👇 Wrapper do Corpo da Janela ADICIONADO 👇 */}
                             <div className={styles.riskCardBody}>
-                                {bettingProfile?.riskLevel && bettingProfile.riskLevel > 0 ? (
+                                {bettingProfile?.riskLevel > 0 ? (
                                     <>
                                         <div className={styles.riskCardValue}>
-                                            <span className={styles.riskMainValue}>
-                                                {formatCurrency(profitTarget)}
-                                            </span>
-                                            <span className={styles.riskPercentage}>
-                                                {bettingProfile.riskLevel}% da banca
-                                            </span>
+                                            <span className={styles.riskMainValue}>{formatCurrency(profitTarget)}</span>
+                                            <span className={styles.riskPercentage}>{bettingProfile.riskLevel}% da banca</span>
                                         </div>
-                                        
                                         <div className={styles.progressBarContainer}>
                                             <div className={styles.progressBar}>
                                                 <div 
-                                                    className={styles.progressBarFill}
-                                                    style={{ 
-                                                        width: `${dailyProfitProgress}%`,
-                                                        // A cor de fundo azul é definida no CSS
-                                                    }}
+                                                    className={styles.progressBarFill} 
+                                                    style={{ width: `${dailyProfitProgress}%` }} 
                                                 />
                                             </div>
                                             <div className={styles.progressInfo}>
-                                                <span className={styles.progressCurrent}>
-                                                    {formatCurrency(dailyGains)}
-                                                </span>
-                                                <span className={styles.progressPercent}>
-                                                    {dailyProfitProgress.toFixed(1)}%
-                                                </span>
+                                                <span>{formatCurrency(dailyGains)}</span>
+                                                <span>{dailyProfitProgress.toFixed(1)}%</span>
                                             </div>
                                         </div>
-                                        
-                                        {dailyProfitProgress >= 100 && (
-                                            <div className={styles.successBanner}>
-                                                <MdFlag size={16} />
-                                                <span>Meta do Dia Alcançada! 🎉</span>
+                                    </>
+                                ) : (
+                                    <div className={styles.riskCardEmpty}>
+                                        <p>Perfil não definido</p>
+                                        <button className={styles.configureButton} onClick={() => navigate('/investment-profile')}>Configurar</button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Stop Loss */}
+                        <div className={styles.riskCard}>
+                            <div className={styles.riskCardHeader}>
+                                <FaShieldAlt color="#FFF" />
+                                <span className={styles.riskCardTitle}>Limite de Perda</span>
+                            </div>
+                            <div className={styles.riskCardBody}>
+                                {stopLossMonetaryValue > 0 ? (
+                                    <>
+                                        <div className={styles.riskCardValue}>
+                                            <span className={styles.riskMainValue}>{formatCurrency(stopLossMonetaryValue)}</span>
+                                            <span className={styles.riskPercentage}>Proteção Ativa</span>
+                                        </div>
+                                        <div className={styles.progressBarContainer}>
+                                            <div className={styles.progressBar}>
+                                                <div 
+                                                    className={styles.progressBarFill} 
+                                                    style={{ 
+                                                        width: `${Math.min((dailyLosses / stopLossMonetaryValue) * 100, 100)}%`,
+                                                        backgroundColor: isStopLossTriggered ? '#FF4D4D' : '#00FF88'
+                                                    }} 
+                                                />
+                                            </div>
+                                            <div className={styles.progressInfo}>
+                                                <span style={{ color: '#FF4D4D' }}>-{formatCurrency(dailyLosses)}</span>
+                                                <span>{((dailyLosses / stopLossMonetaryValue) * 100).toFixed(1)}%</span>
+                                            </div>
+                                        </div>
+                                        {isStopLossTriggered && (
+                                            <div className={styles.alertBanner}>
+                                                <MdWarning /> <span>Limite Atingido!</span>
                                             </div>
                                         )}
                                     </>
                                 ) : (
                                     <div className={styles.riskCardEmpty}>
-                                        <p>Defina seu perfil de risco</p>
-                                        <button 
-                                            className={styles.configureButton}
-                                            onClick={() => navigate('/investment-profile')}
-                                        >
-                                            Definir perfil
-                                        </button>
+                                        <p>Sem proteção</p>
+                                        <button className={styles.configureButton} onClick={() => navigate('/investment-profile')}>Configurar</button>
                                     </div>
                                 )}
                             </div>
-                        </div>
-
-                        {/* Card Stop Loss DIÁRIO */}
-                        <div className={`${styles.riskCard} ${isStopLossTriggered ? styles.stopLossTriggered : ''}`}>
-                            <div className={styles.riskCardHeader}>
-                                <div className={styles.riskIconWrapper}>
-                                    {/* O CSS forçará a cor correta (branca) */}
-                                    <FaShieldAlt size={18} />
-                                </div>
-                                <span className={styles.riskCardTitle}>StopLoss Diário</span>
-                            </div>
-                            
-                            {/* 👇 Wrapper do Corpo da Janela ADICIONADO 👇 */}
-                            <div className={styles.riskCardBody}>
-                                {stopLossMonetaryValue > 0 ? (
-                                    <>
-                                        <div className={styles.riskCardValue}>
-                                            <span className={styles.riskMainValue}>
-                                                {formatCurrency(stopLossMonetaryValue)}
-                                            </span>
-                                            <span className={styles.riskPercentage}>
-                                                Limite de perda
-                                            </span>
-                                        </div>
-                                        
-                                        <div className={styles.progressBarContainer}>
-                                            <div className={styles.progressBar}>
-                                                <div 
-                                                    className={styles.progressBarFill}
-                                                    style={{ 
-                                                        width: `${Math.min((dailyLosses / stopLossMonetaryValue) * 100, 100)}%`,
-                                                        // A cor de fundo azul é definida no CSS
-                                                    }}
-                                                />
-                                            </div>
-                                            <div className={styles.progressInfo}>
-                                                <span className={styles.progressCurrent}>
-                                                    {formatCurrency(dailyLosses)}
-                                                </span>
-                                                <span className={styles.progressPercent}>
-                                                    {((dailyLosses / stopLossMonetaryValue) * 100).toFixed(1)}%
-                                                </span>
-                                            </div>
-                                        </div>
-                                        
-                                        {isStopLossTriggered ? (
-                                            <div className={styles.alertBanner}>
-                                                <MdWarning size={16} />
-                                                <span>Limite do Dia Atingido!</span>
-                                            </div>
-                                        ) : stopLossDistance && stopLossDistance < stopLossMonetaryValue * 0.2 ? (
-                                            // Usando o .alertBanner para "Atenção" também
-                                            <div className={styles.alertBanner}> 
-                                                <MdWarning size={16} />
-                                                <span>Atenção! Faltam {formatCurrency(stopLossDistance)}</span>
-                                            </div>
-                                        ) : null}
-                                    </>
-                                ) : (
-                                    <div className={styles.riskCardEmpty}>
-                                        <p>Não configurado</p>
-                                        <button 
-                                            className={styles.configureButton}
-                                            onClick={() => navigate('/investment-profile')}
-                                        >
-                                            Configurar agora
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-
-                    {/* Seção Resumo Financeiro - TOTAIS GERAIS */}
-                    <div className={styles.summarySection}>
-                    <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>Resumo Financeiro (Total)</h2>
-                    </div>
-                    
-                    <div className={styles.summaryCardUnified}>
-                        <div className={styles.summaryRow}>
-                            <div className={styles.summaryLabel}>
-                                {/* O CSS forçará a cor correta (azul) */}
-                                <MdAdd size={22} />
-                                <span>Total Depositado</span>
-                            </div>
-                            <p className={`${styles.summaryValue} ${styles.positive}`}>
-                                {formatCurrency(totalDeposits)}
-                            </p>
-                        </div>
-
-                        <div className={styles.summaryRow}>
-                            <div className={styles.summaryLabel}>
-                                {/* O CSS forçará a cor correta (cinza) */}
-                                <MdRemove size={22} />
-                                <span>Total Sacado</span>
-                            </div>
-                            <p className={`${styles.summaryValue} ${styles.negative}`}>
-                                {formatCurrency(totalWithdraws)}
-                            </p>
-                        </div>
-
-                        <div className={styles.summaryRow}>
-                            <div className={styles.summaryLabel}>
-                                {/* O CSS forçará a cor correta (azul) */}
-                                <MdTrendingUp size={22} />
-                                <span>Total de Ganhos</span>
-                            </div>
-                            <p className={`${styles.summaryValue} ${styles.positive}`}>
-                                {formatCurrency(totalGains)}
-                            </p>
-                        </div>
-
-                        <div className={styles.summaryRow}>
-                            <div className={styles.summaryLabel}>
-                                {/* O CSS forçará a cor correta (cinza) */}
-                                <MdTrendingDown size={22} />
-                                <span>Total de Loss</span>
-                            </div>
-                            <p className={`${styles.summaryValue} ${styles.negative}`}>
-                                {formatCurrency(totalLosses)}
-                            </p>
-                        </div>
                         </div>
                     </div>
                 </section>
-                
-                {/* Ações Rápidas (Agora estilo botão XP) */}
-                    <section className={styles.quickActions}>
-                        <button 
-                            className={styles.actionButton} 
-                            onClick={() => navigate('/transaction?type=deposit')}
-                        >
-                            <MdAdd /> Depósito
-                        </button>
-                        <button 
-                            className={styles.actionButton} 
-                            onClick={() => navigate('/transaction?type=withdraw')}
-                        >
-                            <MdRemove /> Saque
-                        </button>
-                        <button 
-                            className={styles.actionButton} 
-                            onClick={() => navigate('/transaction?type=gains')}
-                        >
-                            <MdTrendingUp /> Ganhos
-                        </button>
-                        <button 
-                            className={styles.actionButton} 
-                            onClick={() => navigate('/transaction?type=losses')}
-                        >
-                            <MdTrendingDown /> Loss
-                        </button>
-                    </section>
 
-
-                {/* Gráfico de Performance */}
-                {/* <PerformanceChart 
-                    transactions={transactions}
-                    currentBalance={balance}
-                    initialBalance={initialBalance}
-                /> */}
-
-{/* Modal de Confirmação de Reset - Adicione no final do return */}
-{showResetModal && (
-<div className={styles.modalOverlay}>
-<div className={styles.resetModalContainer} style={{ background: '#1a1a1a', padding: '20px', borderRadius: '12px', maxWidth: '400px', width: '90%' }}>
-<h2 style={{ color: '#fff', marginBottom: '15px' }}>⚠️ Resetar Histórico?</h2>
-<p style={{ color: '#ccc', marginBottom: '20px' }}>
-    Isso irá <strong>deletar permanentemente</strong> todas as suas transações, ganhos e perdas, voltando ao saldo inicial.
-</p>
-<div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-    <button 
-        onClick={() => setShowResetModal(false)}
-        style={{ background: '#333', color: '#fff', border: 'none', padding: '10px 15px', borderRadius: '8px', cursor: 'pointer' }}
-    >
-        Cancelar
-    </button>
-    <button 
-        onClick={handleConfirmReset}
-        disabled={isResetting}
-        style={{ background: '#ff4444', color: '#fff', border: 'none', padding: '10px 15px', borderRadius: '8px', cursor: 'pointer' }}
-    >
-        {isResetting ? 'Limpando...' : 'Confirmar Reset'}
-    </button>
-</div>
-</div>
-</div>
-)}
-                {/* =======================================================
-                ✅ NOVO: Seção do Calendário inserida abaixo do gráfico
-                =======================================================
-                */}
-              <section className={styles.calendarSection}>
-                <div className={styles.sectionHeader}>
-                    <h2 className={styles.sectionTitle}>Calendário de Transações</h2>
-                    <div style={{ display: 'flex', gap: '10px' }}> {/* Container para alinhar os botões */}
-                        <button 
-                            className={styles.seeAllButton} 
-                            onClick={() => setShowResetModal(true)}
-                            style={{ color: '#ff4444', borderColor: '#ff4444' }} // Destaque para o Reset
-                        >
-                            <MdRefresh size={18} /> Resetar
-                        </button>
-                        <button 
-                            className={styles.seeAllButton} 
-                            onClick={() => navigate('/calendar')}
-                        >
-                            Ver Tela Cheia
-                        </button>
+                {/* RESUMO GERAL */}
+                <section className={styles.summarySection}>
+                    <div className={styles.sectionHeader}>
+                        <h2 className={styles.sectionTitle}>Caixa Geral</h2>
                     </div>
-                </div>
-                
-                <CalendarGrid
-                    currentDate={calendarDate}
-                    transactionsByDay={transactionsByDay}
-                    onDayClick={handleDayClick}
-                />
-            </section>
-                {/* ======================================================= */}
+                    <div className={styles.summaryCardUnified}>
+                        <div className={styles.summaryRow}>
+                            <div className={styles.summaryLabel}><FaPlus /> Depósitos</div>
+                            <p className={`${styles.summaryValue} ${styles.positive}`}>{formatCurrency(totalDeposits)}</p>
+                        </div>
+                        <div className={styles.summaryRow}>
+                            <div className={styles.summaryLabel}><FaMinus /> Saques</div>
+                            <p className={`${styles.summaryValue} ${styles.negative}`}>{formatCurrency(totalWithdraws)}</p>
+                        </div>
+                        <div className={styles.summaryRow}>
+                            <div className={styles.summaryLabel}><FaArrowUp /> Ganhos</div>
+                            <p className={`${styles.summaryValue} ${styles.positive}`}>{formatCurrency(totalGains)}</p>
+                        </div>
+                        <div className={styles.summaryRow}>
+                            <div className={styles.summaryLabel}><FaArrowDown /> Perdas</div>
+                            <p className={`${styles.summaryValue} ${styles.negative}`}>{formatCurrency(totalLosses)}</p>
+                        </div>
+                    </div>
+                </section>
 
+                {/* AÇÕES RÁPIDAS (Botões de Jogo) */}
+                <section className={styles.quickActions}>
+                    <button className={styles.actionButton} onClick={() => navigate('/transaction?type=deposit')}>
+                        <FaPlus /> Depósito
+                    </button>
+                    <button className={styles.actionButton} onClick={() => navigate('/transaction?type=withdraw')}>
+                        <FaMinus /> Saque
+                    </button>
+                    <button className={styles.actionButton} onClick={() => navigate('/transaction?type=gains')}>
+                        <FaArrowUp /> Win
+                    </button>
+                    <button className={styles.actionButton} onClick={() => navigate('/transaction?type=losses')}>
+                        <FaArrowDown /> Loss
+                    </button>
+                </section>
 
-                {/* Transações Recentes */}
+                {/* CALENDÁRIO */}
+                <section className={styles.calendarSection}>
+                    <div className={styles.sectionHeader}>
+                        <h2 className={styles.sectionTitle}>Histórico Diário</h2>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <button 
+                                className={styles.seeAllButton} 
+                                onClick={() => setShowResetModal(true)}
+                                style={{ color: '#FF4D4D', borderColor: '#FF4D4D' }}
+                            >
+                                <MdRefresh /> Reset
+                            </button>
+                            <button className={styles.seeAllButton} onClick={() => navigate('/calendar')}>
+                                Expandir
+                            </button>
+                        </div>
+                    </div>
+                    <CalendarGrid
+                        currentDate={calendarDate}
+                        transactionsByDay={transactionsByDay}
+                        onDayClick={handleDayClick}
+                    />
+                </section>
+
+                {/* TRANSAÇÕES RECENTES */}
                 <section className={styles.transactionsList}>
                     <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>Transações Recentes</h2>
-                        <button 
-                            className={styles.seeAllButton} 
-                            onClick={() => navigate('/history')}
-                        >
-                            Ver Todas
+                        <h2 className={styles.sectionTitle}>Últimas Rodadas</h2>
+                        <button className={styles.seeAllButton} onClick={() => navigate('/history')}>
+                            Ver Tudo
                         </button>
                     </div>
                     {recentTransactions.length > 0 ? (
                        <TransactionList 
                             transactions={recentTransactions}
-                            emptyMessage="Nenhuma transação encontrada"
-                            />
+                            emptyMessage="Sem registros"
+                        />
                     ) : (
                         <div className={styles.emptyState}>
-                            <FaReceipt size={40} />
-                            <p>Nenhuma transação ainda.</p>
+                            <FaReceipt size={30} style={{marginBottom: 10}} />
+                            <p>Nenhuma jogada recente.</p>
                         </div>
                     )}
                 </section>
-
-                {/* Objetivos Ativos (Desativado no seu código original) */}
-                {/* <section className={styles.objectivesList}>
-                    ...
-                </section> */}
             </main>
 
             <SideMenu />
 
-            {/* =======================================================
-            ✅ NOVO: Modal do Calendário 
-            (Renderizado aqui para sobrepor todo o conteúdo)
-            =======================================================
-            */}
             <DayTransactionsModal
                 date={modalDate}
                 transactions={modalTransactions}
                 onClose={closeModal}
             />
+
+            {showResetModal && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.resetModalContainer} style={{ background: '#15191E', padding: '24px', borderRadius: '16px', maxWidth: '400px', width: '90%', border: '1px solid #FF4D4D' }}>
+                        <h2 style={{ color: '#FFF', marginBottom: '16px', fontFamily: 'Cinzel, serif' }}>⚠️ Reiniciar Mesa?</h2>
+                        <p style={{ color: '#B0B8C3', marginBottom: '24px', fontSize: '13px', lineHeight: '1.5' }}>
+                            Isso apagará <strong>todos os registros</strong> e restaurará a banca inicial. Esta ação é irreversível.
+                        </p>
+                        <div style={{ display: 'flex', gap: '12px' }}>
+                            <button 
+                                onClick={() => setShowResetModal(false)}
+                                style={{ flex: 1, background: '#2C333A', color: '#FFF', border: 'none', padding: '12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+                            >
+                                CANCELAR
+                            </button>
+                            <button 
+                                onClick={handleConfirmReset}
+                                disabled={isResetting}
+                                style={{ flex: 1, background: '#FF4D4D', color: '#FFF', border: 'none', padding: '12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+                            >
+                                {isResetting ? 'Limpando...' : 'CONFIRMAR'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
 
-// Wrapper com Provider do Betting Context
 const DashboardWithProvider = () => {
     return (
         <BettingProvider>

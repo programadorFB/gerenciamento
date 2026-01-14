@@ -1,10 +1,23 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { MdClose, MdEvent, MdAccessTime, MdEdit, MdDelete, MdInfoOutline, MdTouchApp } from 'react-icons/md';
-import { FaPlusCircle, FaMinusCircle, FaReceipt } from 'react-icons/fa';
-import { FinancialProvider, useFinancial } from '../contexts/FinancialContext';
+import { 
+  MdClose, 
+  MdEdit, 
+  MdDelete, 
+  MdInfoOutline, 
+  MdTouchApp,
+  MdAccessTime 
+} from 'react-icons/md';
+import { 
+  FaArrowUp, 
+  FaArrowDown, 
+  FaTrophy, 
+  FaChartLine, 
+  FaReceipt 
+} from 'react-icons/fa';
+import { useFinancial } from '../contexts/FinancialContext';
 import styles from './TransactionList.module.css';
 
-// --- COMPONENTE DO MODAL DE EDIÇÃO ---
+// --- MODAL DE EDIÇÃO ---
 const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
   const [editedTransaction, setEditedTransaction] = useState({});
   const [errors, setErrors] = useState({});
@@ -14,9 +27,8 @@ const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
       const dateObject = transaction.date ? new Date(transaction.date) : new Date();
       setEditedTransaction({
         ...transaction,
-        // Formata para os inputs de data e hora
-        dateInput: dateObject.toISOString().split('T')[0], // YYYY-MM-DD
-        timeInput: dateObject.toTimeString().split(' ')[0].substring(0, 5), // HH:MM
+        dateInput: dateObject.toISOString().split('T')[0],
+        timeInput: dateObject.toTimeString().split(' ')[0].substring(0, 5),
       });
       setErrors({});
     }
@@ -24,53 +36,24 @@ const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
 
   const validateFields = () => {
     const newErrors = {};
-    if (!editedTransaction.category?.trim()) newErrors.category = 'Categoria é obrigatória';
-    if (!editedTransaction.amount || editedTransaction.amount <= 0) newErrors.amount = 'Valor deve ser maior que zero';
-    if (!editedTransaction.type) newErrors.type = 'Tipo é obrigatório';
-    if (!editedTransaction.dateInput || !editedTransaction.timeInput) newErrors.date = 'Data e hora são obrigatórias';
+    if (!editedTransaction.category?.trim()) newErrors.category = 'Jogo/Categoria é obrigatória';
+    if (!editedTransaction.amount || editedTransaction.amount <= 0) newErrors.amount = 'Valor deve ser positivo';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
-    if (!validateFields()) {
-      alert('Erro: Por favor, corrija os campos antes de salvar.');
-      return;
-    }
+  const handleSubmit = () => {
+    if (!validateFields()) return;
+    
+    // Reconstrói a data completa
     const finalDate = new Date(`${editedTransaction.dateInput}T${editedTransaction.timeInput}:00`);
-    const dataToSave = {
+    
+    onSave({
       ...editedTransaction,
       date: finalDate.toISOString(),
-      amount: parseFloat(editedTransaction.amount),
-      category: editedTransaction.category.trim(),
-      description: editedTransaction.description?.trim() || '',
-    };
-    onSave(dataToSave);
-    onClose();
+      amount: parseFloat(editedTransaction.amount)
+    });
   };
-
-  const handleAmountChange = (e) => {
-    const { value } = e.target;
-    const numericValue = value.replace(/[^0-9,.]/g, '').replace(',', '.');
-    setEditedTransaction(prev => ({ ...prev, amount: numericValue }));
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEditedTransaction(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: null }));
-    }
-  };
-
-  const handleTypeChange = (type) => {
-    setEditedTransaction(prev => ({ ...prev, type }));
-    if (errors.type) {
-      setErrors(prev => ({ ...prev, type: null }));
-    }
-  };
-
-  const predefinedCategories = ['Alimentação', 'Transporte', 'Entretenimento', 'Saúde', 'Educação', 'Compras', 'Contas', 'Investimento', 'Emergência', 'Outros'];
 
   if (!visible) return null;
 
@@ -78,305 +61,199 @@ const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
     <div className={styles.modalOverlay}>
       <div className={styles.modalContainer}>
         <header className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>Editar Transação</h2>
-          <button onClick={onClose} className={styles.closeButton}>
-            <MdClose size={24} />
-          </button>
+          <h3 className={styles.modalTitle}>Ajustar Registro</h3>
+          <button onClick={onClose} className={styles.closeButton}><MdClose /></button>
         </header>
-
+        
         <div className={styles.modalContent}>
-          {/* Tipo */}
           <div className={styles.inputContainer}>
-            <label className={styles.inputLabel}>Tipo *</label>
-            <div className={styles.typeContainer}>
-              <button
-                className={`${styles.typeButton} ${editedTransaction.type === 'deposit' ? styles.typeButtonActiveDeposit : ''}`}
-                onClick={() => handleTypeChange('deposit')}
-              >
-                <FaPlusCircle /> Depósito
-              </button>
-              <button
-                className={`${styles.typeButton} ${editedTransaction.type === 'withdraw' ? styles.typeButtonActiveWithdraw : ''}`}
-                onClick={() => handleTypeChange('withdraw')}
-              >
-                <FaMinusCircle /> Saque
-              </button>
-              <button
-                className={`${styles.typeButton} ${editedTransaction.type === 'gains' ? styles.typeButtonActiveDeposit : ''}`}
-                onClick={() => handleTypeChange('gains')}
-              >
-                <FaPlusCircle /> Ganho
-              </button>
-              <button
-                className={`${styles.typeButton} ${editedTransaction.type === 'losses' ? styles.typeButtonActiveWithdraw : ''}`}
-                onClick={() => handleTypeChange('losses')}
-              >
-                <FaMinusCircle /> Loss
-              </button>
-            </div>
-            {errors.type && <p className={styles.errorText}>{errors.type}</p>}
-          </div>
-
-          {/* Categoria */}
-          <div className={styles.inputContainer}>
-            <label className={styles.inputLabel}>Categoria *</label>
+            <label className={styles.inputLabel}>Jogo / Categoria</label>
             <input
               type="text"
-              name="category"
               className={`${styles.textInput} ${errors.category ? styles.inputError : ''}`}
               value={editedTransaction.category || ''}
-              onChange={handleChange}
-              placeholder="Digite ou selecione uma categoria"
+              onChange={(e) => setEditedTransaction({...editedTransaction, category: e.target.value})}
+              placeholder="Ex: Roleta, Blackjack"
             />
             {errors.category && <p className={styles.errorText}>{errors.category}</p>}
-            <div className={styles.categoriesGrid}>
-              {predefinedCategories.map((cat) => (
-                <button
-                  key={cat}
-                  className={`${styles.categoryChip} ${editedTransaction.category === cat ? styles.categoryChipSelected : ''}`}
-                  onClick={() => setEditedTransaction(prev => ({ ...prev, category: cat }))}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
           </div>
 
-          {/* Valor */}
           <div className={styles.inputContainer}>
-            <label className={styles.inputLabel}>Valor (R$) *</label>
+            <label className={styles.inputLabel}>Valor (R$)</label>
             <input
-              type="text"
-              inputMode="decimal"
+              type="number"
               className={`${styles.textInput} ${errors.amount ? styles.inputError : ''}`}
               value={editedTransaction.amount || ''}
-              onChange={handleAmountChange}
-              placeholder="0,00"
+              onChange={(e) => setEditedTransaction({...editedTransaction, amount: e.target.value})}
             />
             {errors.amount && <p className={styles.errorText}>{errors.amount}</p>}
           </div>
 
-          {/* Data e Hora */}
           <div className={styles.inputContainer}>
-            <label className={styles.inputLabel}>Data e Hora *</label>
-            <div className={styles.dateTimeContainer}>
-              <div className={styles.dateTimeInputWrapper}>
-                <MdEvent className={styles.dateTimeIcon} />
-                <input type="date" name="dateInput" value={editedTransaction.dateInput || ''} onChange={handleChange} className={styles.dateTimeInput} />
-              </div>
-              <div className={styles.dateTimeInputWrapper}>
-                <MdAccessTime className={styles.dateTimeIcon} />
-                <input type="time" name="timeInput" value={editedTransaction.timeInput || ''} onChange={handleChange} className={styles.dateTimeInput} />
-              </div>
+            <label className={styles.inputLabel}>Data e Hora</label>
+            <div style={{display: 'flex', gap: '10px'}}>
+              <input
+                type="date"
+                className={styles.dateTimeInput}
+                value={editedTransaction.dateInput || ''}
+                onChange={(e) => setEditedTransaction({...editedTransaction, dateInput: e.target.value})}
+              />
+              <input
+                type="time"
+                className={styles.dateTimeInput}
+                value={editedTransaction.timeInput || ''}
+                onChange={(e) => setEditedTransaction({...editedTransaction, timeInput: e.target.value})}
+              />
             </div>
-            {errors.date && <p className={styles.errorText}>{errors.date}</p>}
           </div>
 
-          {/* Descrição */}
           <div className={styles.inputContainer}>
-            <label className={styles.inputLabel}>Descrição (Opcional)</label>
+            <label className={styles.inputLabel}>Observações</label>
             <textarea
-              name="description"
               className={styles.textInput}
+              rows="3"
               value={editedTransaction.description || ''}
-              onChange={handleChange}
-              placeholder="Adicione uma descrição..."
-              rows={3}
+              onChange={(e) => setEditedTransaction({...editedTransaction, description: e.target.value})}
+              placeholder="Detalhes da jogada..."
             />
           </div>
         </div>
 
-        <footer className={styles.modalActions}>
+        <div className={styles.modalActions}>
           <button className={styles.cancelButton} onClick={onClose}>Cancelar</button>
-          <button className={styles.saveButton} onClick={handleSave}>Salvar Alterações</button>
-        </footer>
+          <button className={styles.saveButton} onClick={handleSubmit}>Salvar</button>
+        </div>
       </div>
     </div>
   );
 };
 
-// --- COMPONENTE DO ITEM DA TRANSAÇÃO ---
+// --- ITEM DA LISTA (TICKET) ---
 const TransactionItem = ({ item, showActions = true }) => {
-  const { updateTransaction, deleteTransaction, refreshData } = useFinancial();
-  const [actionsVisible, setActionsVisible] = useState(false);
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const { updateTransaction, deleteTransaction } = useFinancial();
+  const [isEditing, setIsEditing] = useState(false);
 
-  // Função para determinar as cores e ícones baseados no tipo
-  const getTransactionInfo = () => {
-    switch (item.type) {
-      case 'deposit':
-      case 'gains':
-        return {
-          isPositive: true,
-          icon: <FaPlusCircle className={styles.depositColor} size={20} />,
-          sideIndicatorClass: styles.depositBg,
-          iconBgClass: styles.depositIconBg,
-          amountClass: styles.depositColor,
-          sign: '+',
-          typeLabel: item.type === 'gains' ? 'Ganho' : 'Depósito'
-        };
-      case 'withdraw':
-      case 'losses':
-        return {
-          isPositive: false,
-          icon: <FaMinusCircle className={styles.withdrawColor} size={20} />,
-          sideIndicatorClass: styles.withdrawBg,
-          iconBgClass: styles.withdrawIconBg,
-          amountClass: styles.withdrawColor,
-          sign: '-',
-          typeLabel: item.type === 'losses' ? 'Loss' : 'Saque'
-        };
-      default:
-        // Fallback para tipos desconhecidos
-        const isPositive = parseFloat(item.amount) >= 0;
-        return {
-          isPositive,
-          icon: isPositive ? 
-            <FaPlusCircle className={styles.depositColor} size={20} /> : 
-            <FaMinusCircle className={styles.withdrawColor} size={20} />,
-          sideIndicatorClass: isPositive ? styles.depositBg : styles.withdrawBg,
-          iconBgClass: isPositive ? styles.depositIconBg : styles.withdrawIconBg,
-          amountClass: isPositive ? styles.depositColor : styles.withdrawColor,
-          sign: isPositive ? '+' : '-',
-          typeLabel: 'Transação'
-        };
-    }
-  };
-
-  const transactionInfo = getTransactionInfo();
-  const amountValue = Math.abs(parseFloat(item.amount) || 0);
-
-  const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-  const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-
-  const handleEdit = (e) => {
-    e.stopPropagation();
-    setEditModalVisible(true);
-    setActionsVisible(false);
-  };
+  const amount = parseFloat(item.amount);
   
-  const handleDelete = (e) => {
-    e.stopPropagation();
-    const confirmationMessage = `Tem certeza que deseja excluir a transação "${item.category}"?\n\nValor: ${formatCurrency(item.amount)}\nData: ${formatDate(item.date)}\nTipo: ${transactionInfo.typeLabel}\n\nEsta ação não pode ser desfeita.`;
-    if (window.confirm(confirmationMessage)) {
-      confirmDelete();
-    }
-    setActionsVisible(false);
-  };
-  
-  const confirmDelete = async () => {
-    try {
-      setIsDeleting(true); // Ativa a animação de saída
-      setTimeout(async () => {
-        const result = await deleteTransaction(item.id);
-        if (result.success) {
-          alert('Transação excluída com sucesso!');
-          await refreshData();
-        } else {
-          alert(result.error || 'Não foi possível excluir a transação.');
-          setIsDeleting(false); // Reverte se der erro
-        }
-      }, 300); // Espera a animação terminar
-    } catch (error) {
-      alert('Erro ao excluir a transação.');
-      setIsDeleting(false);
+  // Lógica de Ícones e Cores (Tema Cassino)
+  let icon, typeClass, borderColor;
+  if (item.type === 'deposit') {
+    icon = <FaArrowUp />;
+    typeClass = styles.depositColor;
+    borderColor = '#00E0FF'; // Azul Neon
+  } else if (item.type === 'withdraw') {
+    icon = <FaArrowDown />;
+    typeClass = styles.withdrawColor;
+    borderColor = '#FFA500'; // Laranja
+  } else if (item.type === 'gains') {
+    icon = <FaTrophy />;
+    typeClass = styles.depositColor; // Verde Neon
+    borderColor = '#00FF88';
+  } else if (item.type === 'losses') {
+    icon = <FaChartLine style={{transform: 'scaleY(-1)'}} />;
+    typeClass = styles.withdrawColor; // Vermelho Neon
+    borderColor = '#FF4D4D';
+  } else {
+    // Fallback
+    icon = <FaReceipt />;
+    typeClass = amount >= 0 ? styles.depositColor : styles.withdrawColor;
+    borderColor = '#888';
+  }
+
+  const handleDelete = () => {
+    if (window.confirm('Excluir este registro permanentemente?')) {
+      deleteTransaction(item.id);
     }
   };
 
-  const handleSaveTransaction = async (editedTransaction) => {
-    try {
-      const result = await updateTransaction(editedTransaction.id, editedTransaction);
-      if (result.success) {
-        alert('Transação atualizada com sucesso!');
-        await refreshData();
-      } else {
-        alert(result.error || 'Não foi possível atualizar a transação.');
-      }
-    } catch (error) {
-      alert('Erro ao atualizar a transação.');
-    }
+  const handleUpdate = (updatedData) => {
+    updateTransaction(item.id, updatedData);
+    setIsEditing(false);
   };
 
-  const itemClasses = `${styles.transactionItem} ${isDeleting ? styles.isDeleting : ''}`;
+  const formatDate = (dateStr) => {
+    return new Date(dateStr).toLocaleString('pt-BR', {
+      day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+    });
+  };
+
+  const formatCurrency = (val) => {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Math.abs(val));
+  };
 
   return (
     <>
-      <div className={itemClasses} onClick={() => showActions && setActionsVisible(!actionsVisible)}>
-        <div className={`${styles.sideIndicator} ${transactionInfo.sideIndicatorClass}`} />
-        
-        <div className={`${styles.transactionIcon} ${transactionInfo.iconBgClass}`}>
-          {transactionInfo.icon}
+      <div className={styles.transactionItem} style={{'--item-color': borderColor}}>
+        <div className={styles.transactionIcon}>
+          {icon}
         </div>
         
         <div className={styles.transactionDetails}>
-          <div className={styles.categoryRow}>
-            <p className={styles.transactionCategory}>{item.category || 'Não categorizado'}</p>
-            <span className={styles.typeBadge}>{transactionInfo.typeLabel}</span>
-          </div>
-          <p className={styles.transactionDate}>{formatDate(item.date)}</p>
+          <h4 className={styles.transactionCategory}>{item.category}</h4>
+          <p className={styles.transactionDate}>
+            <MdAccessTime size={10} /> {formatDate(item.date)}
+          </p>
           {item.description && <p className={styles.transactionDescription}>{item.description}</p>}
         </div>
-        
-        <div className={styles.transactionAmountContainer}>
-          <p className={`${styles.transactionAmount} ${transactionInfo.amountClass}`}>
-            {transactionInfo.sign} {formatCurrency(amountValue)}
-          </p>
-          {showActions && <span className={styles.longPressHint}>Clique para ações</span>}
-        </div>
 
-        {showActions && (
-          <div className={`${styles.actionButtonsContainer} ${actionsVisible ? styles.actionsVisible : ''}`}>
-            <button className={styles.editActionButton} onClick={handleEdit}>
-              <MdEdit size={18} /> Editar
-            </button>
-            <button className={styles.deleteActionButton} onClick={handleDelete}>
-              <MdDelete size={18} /> Excluir
-            </button>
-          </div>
-        )}
+        <div className={styles.transactionAmountContainer}>
+          <span className={`${styles.transactionAmount} ${typeClass}`}>
+            {['deposit', 'gains'].includes(item.type) ? '+' : '-'} {formatCurrency(amount)}
+          </span>
+          
+          {showActions && (
+            <div className={styles.actionButtonsContainer}>
+              <button 
+                onClick={() => setIsEditing(true)} 
+                className={styles.editActionButton} 
+                title="Editar"
+              >
+                <MdEdit size={16} />
+              </button>
+              <button 
+                onClick={handleDelete} 
+                className={styles.deleteActionButton} 
+                title="Excluir"
+              >
+                <MdDelete size={16} />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
-      <EditTransactionModal
-        visible={editModalVisible}
-        transaction={item}
-        onClose={() => setEditModalVisible(false)}
-        onSave={handleSaveTransaction}
+      <EditTransactionModal 
+        visible={isEditing} 
+        transaction={item} 
+        onClose={() => setIsEditing(false)} 
+        onSave={handleUpdate} 
       />
     </>
   );
 };
 
-// --- COMPONENTE PRINCIPAL DA LISTA ---
-const TransactionList = ({ transactions, showActions = true, emptyMessage, sortByRecent = true }) => {
-  // Ordena as transações por data (mais recentes primeiro)
+// --- COMPONENTE PRINCIPAL ---
+const TransactionList = ({ transactions, sortByRecent = true, showActions = true, emptyMessage }) => {
+  
   const sortedTransactions = useMemo(() => {
-    if (!transactions || transactions.length === 0) return [];
-    
+    if (!transactions) return [];
     return [...transactions].sort((a, b) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
-      
-      if (sortByRecent) {
-        // Mais recentes primeiro (padrão)
-        return dateB - dateA;
-      } else {
-        // Mais antigos primeiro
-        return dateA - dateB;
-      }
+      return sortByRecent ? dateB - dateA : dateA - dateB;
     });
   }, [transactions, sortByRecent]);
 
   if (!transactions || transactions.length === 0) {
     return (
       <div className={styles.emptyContainer}>
-        <div className={styles.emptyIconContainer}><FaReceipt size={50} /></div>
-        <p className={styles.emptyText}>{emptyMessage || 'Nenhuma transação ainda'}</p>
-        <p className={styles.emptySubtext}>As transações aparecerão aqui assim que você adicionar uma.</p>
+        <div className={styles.emptyIconContainer}><FaReceipt /></div>
+        <p className={styles.emptyText}>{emptyMessage || 'Mesa Limpa'}</p>
+        <p className={styles.emptySubtext}>Nenhuma jogada registrada ainda.</p>
         {showActions && (
           <div className={styles.tipContainer}>
-            <MdInfoOutline size={16} />
-            <p className={styles.tipText}>Clique em uma transação para editá-la ou excluí-la.</p>
+            <MdInfoOutline size={14} />
+            <span>Adicione registros no Terminal</span>
           </div>
         )}
       </div>
@@ -386,13 +263,18 @@ const TransactionList = ({ transactions, showActions = true, emptyMessage, sortB
   return (
     <div className={styles.listContainer}>
       {sortedTransactions.map((transaction) => (
-        <TransactionItem key={transaction.id} item={transaction} showActions={showActions} />
+        <TransactionItem 
+          key={transaction.id} 
+          item={transaction} 
+          showActions={showActions} 
+        />
       ))}
-      {showActions && sortedTransactions.length > 3 && (
+      
+      {showActions && sortedTransactions.length > 5 && (
         <div className={styles.listFooter}>
           <div className={styles.tipContainer}>
-            <MdTouchApp size={16} />
-            <p className={styles.tipText}>Clique em qualquer transação para editar ou excluir.</p>
+            <MdTouchApp size={14} />
+            <span>Toque e segure para mais opções</span>
           </div>
         </div>
       )}

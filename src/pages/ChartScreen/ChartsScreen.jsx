@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useFinancial } from '../../contexts/FinancialContext';
-import apiService from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 
 // --- Charting Library Imports ---
-import { Line, Scatter } from 'react-chartjs-2';
+import { Line, Scatter, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,23 +13,22 @@ import {
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
+  ArcElement
 } from 'chart.js';
 
 // --- Icons ---
 import {
   FaArrowLeft,
   FaChartLine,
-  FaExclamationTriangle,
-  FaArrowUp,
-  FaArrowDown,
   FaTrophy,
   FaFire,
   FaShieldAlt,
-  FaDice
+  FaArrowUp,
+  FaArrowDown
 } from 'react-icons/fa';
-import { FaArrowTrendUp } from 'react-icons/fa6';
-import { GiCrownCoin, GiDiamondTrophy } from 'react-icons/gi';
+import { FaArrowTrendUp, FaChartPie } from 'react-icons/fa6';
+import { GiDiamonds, GiPokerHand } from 'react-icons/gi';
 
 // --- CSS Module ---
 import styles from './ChartsScreen.module.css';
@@ -38,496 +36,258 @@ import styles from './ChartsScreen.module.css';
 // Register Chart.js components
 ChartJS.register(
   CategoryScale, LinearScale, PointElement, LineElement,
-  Title, Tooltip, Legend, Filler
+  Title, Tooltip, Legend, Filler, ArcElement
 );
 
+// --- Configurações de Estilo do Gráfico (Dark Mode) ---
+const CHART_COLORS = {
+  gold: '#D4AF37',
+  green: '#00FF88',
+  red: '#FF4D4D',
+  grid: 'rgba(255, 255, 255, 0.05)',
+  text: '#B0B8C3'
+};
+
+const commonOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      labels: { color: '#FFF', font: { family: 'Montserrat', size: 11 } }
+    },
+    tooltip: {
+      backgroundColor: 'rgba(21, 25, 30, 0.95)',
+      titleColor: '#D4AF37',
+      bodyColor: '#FFF',
+      borderColor: '#333',
+      borderWidth: 1,
+      padding: 10,
+      titleFont: { family: 'Cinzel', size: 13 },
+      bodyFont: { family: 'Montserrat' }
+    }
+  },
+  scales: {
+    x: {
+      grid: { color: CHART_COLORS.grid },
+      ticks: { color: CHART_COLORS.text, font: { size: 10 } }
+    },
+    y: {
+      grid: { color: CHART_COLORS.grid },
+      ticks: { color: CHART_COLORS.text, font: { size: 10 } }
+    }
+  }
+};
+
 const CHART_TYPES = [
-  { key: 'performance', label: 'Desempenho', icon: <FaArrowTrendUp /> },
-  { key: 'risk', label: 'Análise de Risco', icon: <FaExclamationTriangle /> }
+  { key: 'performance', label: 'Evolução', icon: <FaArrowTrendUp /> },
+  { key: 'distribution', label: 'Distribuição', icon: <FaChartPie /> },
+  { key: 'stats', label: 'Placar', icon: <GiPokerHand /> },
 ];
 
 const ChartsScreen = () => {
-  const { transactions } = useFinancial();
+  const { transactions, loading, getEffectiveInitialBalance } = useFinancial();
   const navigate = useNavigate();
   const [selectedChart, setSelectedChart] = useState('performance');
-  const [loading, setLoading] = useState(true);
-  const [overviewData, setOverviewData] = useState(null);
-  const [trendsData, setTrendsData] = useState([]);
+  const [chartData, setChartData] = useState(null);
+  const [stats, setStats] = useState(null);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const [overviewRes, trendsRes] = await Promise.all([
-        apiService.getAnalyticsOverview(),
-        apiService.getMonthlyAnalytics('12')
-      ]);
+  const initialBalance = getEffectiveInitialBalance();
 
-      if (overviewRes.success) setOverviewData(overviewRes.data);
-      if (trendsRes.success) setTrendsData(trendsRes.data.sort((a, b) => new Date(a.month) - new Date(b.month)));
-    } catch (error) {
-      console.error("Failed to fetch chart data:", error);
-    } finally {
-      setLoading(false);
+  // Processamento de Dados
+  useEffect(() => {
+    if (transactions.length > 0) {
+      const sortedTx = [...transactions].sort((a, b) => new Date(a.date) - new Date(b.date));
+      
+      let currentBalance = initialBalance;
+      const balanceHistory = [];
+      const labels = [];
+      const scatterPoints = []; // Para vitórias/derrotas
+      
+      let wins = 0;
+      let losses = 0;
+      let totalGains = 0;
+      let totalLosses = 0;
+
+      // Adiciona ponto inicial
+      labels.push('Início');
+      balanceHistory.push(initialBalance);
+
+      sortedTx.forEach(tx => {
+        const amount = parseFloat(tx.amount);
+        const isGain = ['deposit', 'gains'].includes(tx.type) || (!tx.type && amount >= 0);
+        
+        // Atualiza saldo
+        if (['deposit', 'gains'].includes(tx.type)) {
+            currentBalance += Math.abs(amount);
+            if (tx.type === 'gains') { wins++; totalGains += Math.abs(amount); }
+        } else {
+            currentBalance -= Math.abs(amount);
+            if (tx.type === 'losses') { losses++; totalLosses += Math.abs(amount); }
+        }
+
+        // Pontos para o gráfico
+        const dateLabel = new Date(tx.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+        labels.push(dateLabel);
+        balanceHistory.push(currentBalance);
+
+        // Pontos de Scatter (apenas jogadas)
+        if (tx.type === 'gains' || tx.type === 'losses') {
+            scatterPoints.push({
+                x: dateLabel,
+                y: Math.abs(amount),
+                type: tx.type
+            });
+        }
+      });
+
+      // Configuração do Gráfico de Linha (Performance)
+      const lineData = {
+        labels,
+        datasets: [
+          {
+            label: 'Banca Total',
+            data: balanceHistory,
+            borderColor: CHART_COLORS.gold,
+            backgroundColor: 'rgba(212, 175, 55, 0.1)',
+            borderWidth: 2,
+            pointBackgroundColor: '#000',
+            pointBorderColor: CHART_COLORS.gold,
+            pointRadius: 3,
+            tension: 0.3,
+            fill: true,
+          }
+        ]
+      };
+
+      // Configuração do Gráfico de Rosca (Win/Loss)
+      const doughnutData = {
+        labels: ['Vitórias', 'Derrotas'],
+        datasets: [{
+            data: [wins, losses],
+            backgroundColor: [CHART_COLORS.green, CHART_COLORS.red],
+            borderColor: '#0F1216',
+            borderWidth: 4,
+            hoverOffset: 10
+        }]
+      };
+
+      setChartData({ line: lineData, doughnut: doughnutData });
+      setStats({
+          wins, 
+          losses, 
+          totalGains, 
+          totalLosses,
+          winRate: (wins + losses) > 0 ? (wins / (wins + losses) * 100).toFixed(1) : 0,
+          currentBalance
+      });
     }
-  }, []);
+  }, [transactions, initialBalance]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
-  // Análises estatísticas
-  const statisticalAnalysis = useMemo(() => {
-    const operationalTxs = transactions.filter(tx =>
-      apiService.isOperationalTransaction(tx.type)
-    );
-
-    const gains = operationalTxs.filter(tx => tx.type === 'gains');
-    const losses = operationalTxs.filter(tx => tx.type === 'losses');
-
-    const gainAmounts = gains.map(tx => tx.amount);
-    const lossAmounts = losses.map(tx => tx.amount);
-
-    const totalGains = gainAmounts.reduce((a, b) => a + b, 0);
-    const totalLosses = lossAmounts.reduce((a, b) => a + b, 0);
-    const netProfit = totalGains - totalLosses;
-
-    const avgGain = gains.length > 0 ? totalGains / gains.length : 0;
-    const avgLoss = losses.length > 0 ? totalLosses / losses.length : 0;
-    const winRate = operationalTxs.length > 0 ? (gains.length / operationalTxs.length) * 100 : 0;
-
-    const returns = operationalTxs.map(tx =>
-      tx.type === 'gains' ? tx.amount : -tx.amount
-    );
-    const meanReturn = returns.length > 0 ? returns.reduce((a, b) => a + b, 0) / returns.length : 0;
-    const variance = returns.length > 0 ? returns.reduce((acc, val) => acc + Math.pow(val - meanReturn, 2), 0) / returns.length : 0;
-    const volatility = Math.sqrt(variance);
-
-    const sharpeRatio = volatility > 0 ? (meanReturn / volatility) : 0;
-    const maxGain = gains.length > 0 ? Math.max(...gainAmounts) : 0;
-    const maxLoss = losses.length > 0 ? Math.max(...lossAmounts) : 0;
-
-    let currentStreak = 0;
-    let maxWinStreak = 0;
-    let maxLossStreak = 0;
-
-    operationalTxs.forEach(tx => {
-      if (tx.type === 'gains') {
-        currentStreak = Math.max(currentStreak + 1, 1);
-        maxWinStreak = Math.max(maxWinStreak, currentStreak);
-      } else {
-        currentStreak = Math.min(currentStreak - 1, -1);
-        maxLossStreak = Math.min(maxLossStreak, currentStreak);
-      }
-    });
-
-    let runningBalance = 0;
-    let peak = 0;
-    let maxDrawdown = 0;
-
-    operationalTxs.forEach(tx => {
-      runningBalance += tx.type === 'gains' ? tx.amount : -tx.amount;
-      if (runningBalance > peak) peak = runningBalance;
-      const drawdown = peak > 0 ? ((peak - runningBalance) / peak) * 100 : 0;
-      maxDrawdown = Math.max(maxDrawdown, drawdown);
-    });
-
-    return {
-      totalGains,
-      totalLosses,
-      netProfit,
-      avgGain,
-      avgLoss,
-      winRate,
-      volatility,
-      sharpeRatio,
-      maxGain,
-      maxLoss,
-      maxWinStreak: Math.abs(maxWinStreak),
-      maxLossStreak: Math.abs(maxLossStreak),
-      totalTrades: operationalTxs.length,
-      winningTrades: gains.length,
-      losingTrades: losses.length,
-      profitFactor: totalLosses > 0 ? totalGains / totalLosses : totalGains > 0 ? Infinity : 0,
-      maxDrawdown,
-      expectancy: (avgGain * (winRate/100)) - (avgLoss * ((100-winRate)/100))
-    };
-  }, [transactions]);
-
-  const renderEmptyState = () => (
-    <div className={styles.casinoEmpty}>
-      <GiDiamondTrophy className={styles.emptyIcon} />
-      <h2>Sem Dados para Análise</h2>
-      <p>Faça suas primeiras apostas para ver estatísticas</p>
-      <FaDice className={styles.diceIcon} />
-    </div>
-  );
-
-  const renderChartContent = () => {
-    if (loading) {
-      return (
-        <div className={styles.casinoLoading}>
-          <div className={styles.loadingSpinner}></div>
-          <p>Calculando probabilidades...</p>
-        </div>
-      );
+  const renderContent = () => {
+    if (loading || !chartData) {
+        return (
+            <div className={styles.loadingContainer}>
+                <div className={styles.spinner}></div>
+                <p>Carregando dados da mesa...</p>
+            </div>
+        );
     }
 
-    if (transactions.length === 0) return renderEmptyState();
-
-    switch(selectedChart) {
+    switch (selectedChart) {
       case 'performance':
         return (
-          <div className={styles.casinoPerformance}>
-            {/* Card Principal - Gráfico */}
-            <div className={styles.casinoCard}>
-              <div className={styles.cardHeader}>
-                <GiCrownCoin className={styles.headerIcon} />
-                <h2>Evolução do Patrimônio</h2>
-                <div className={styles.headerGlow}></div>
-              </div>
-              
-              <div className={styles.chartZone}>
-                <Line
-                  data={{
-                    labels: trendsData.map(d => new Date(d.month).toLocaleString('default', { month: 'short' })),
-                    datasets: [{
-                      label: 'Patrimônio Acumulado',
-                      data: trendsData.map((d, index) => {
-                        const base = parseFloat(overviewData?.initial_balance || 0);
-                        return trendsData.slice(0, index + 1).reduce((acc, month) =>
-                          acc + (parseFloat(month.net_profit) || 0), base
-                        );
-                      }),
-                      borderColor: '#2f00ffff',
-                      backgroundColor: 'rgba(255, 215, 0, 0.15)',
-                      fill: true,
-                      tension: 0.4,
-                      pointBackgroundColor: '#2f00ffff',
-                      pointBorderColor: '#000',
-                      pointBorderWidth: 3,
-                      pointRadius: 6,
-                      pointHoverRadius: 10,
-                      borderWidth: 4
-                    }]
-                  }}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                      legend: {
-                        labels: { 
-                          color: '#2f00ffff',
-                          font: { size: 14, weight: 'bold' },
-                          padding: 15
-                        }
-                      },
-                      tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                        titleColor: '#2f00ffff',
-                        bodyColor: '#FFFFFF',
-                        borderColor: '#2f00ffff',
-                        borderWidth: 2,
-                        cornerRadius: 12,
-                        padding: 15,
-                        displayColors: false,
-                        callbacks: {
-                          label: function(context) {
-                            return 'R$ ' + context.parsed.y.toLocaleString('pt-BR', {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2
-                            });
-                          }
-                        }
-                      }
-                    },
-                    scales: {
-                      x: {
-                        grid: { 
-                          color: 'rgba(255, 215, 0, 0.1)',
-                          lineWidth: 1
-                        },
-                        ticks: { 
-                          color: '#2f00ffff',
-                          font: { size: 12, weight: 'bold' }
-                        }
-                      },
-                      y: {
-                        grid: { 
-                          color: 'rgba(255, 215, 0, 0.1)',
-                          lineWidth: 1
-                        },
-                        ticks: {
-                          color: '#2f00ffff',
-                          font: { size: 12, weight: 'bold' },
-                          callback: function(value) {
-                            return 'R$ ' + value.toLocaleString('pt-BR');
-                          }
-                        }
-                      }
-                    }
-                  }}
-                />
-              </div>
+          <div className={styles.chartWrapper}>
+            <div className={styles.chartTitleArea}>
+                <h2><FaChartLine /> Evolução da Banca</h2>
+                <span style={{color: '#FFF', fontWeight: 'bold'}}>{formatCurrency(stats.currentBalance)}</span>
             </div>
-
-            {/* Cards de Métricas */}
-            <div className={styles.metricsDisplay}>
-              <div className={styles.casinoMetricCard}>
-                <FaTrophy className={styles.metricIconGold} />
-                <div className={styles.metricContent}>
-                  <span className={styles.metricLabel}>Win Rate</span>
-                  <span className={styles.metricValueLarge}>{statisticalAnalysis.winRate.toFixed(1)}%</span>
-                </div>
-                <div className={styles.cardShine}></div>
-              </div>
-
-              <div className={styles.casinoMetricCard}>
-                <FaFire className={styles.metricIconRed} />
-                <div className={styles.metricContent}>
-                  <span className={styles.metricLabel}>Maior Sequência</span>
-                  <span className={styles.metricValueLarge}>{statisticalAnalysis.maxWinStreak} Wins</span>
-                </div>
-                <div className={styles.cardShine}></div>
-              </div>
-
-              <div className={styles.casinoMetricCard}>
-                <GiDiamondTrophy className={styles.metricIconDiamond} />
-                <div className={styles.metricContent}>
-                  <span className={styles.metricLabel}>Maior Ganho</span>
-                  <span className={styles.metricValueLarge} style={{color: '#4CAF50'}}>
-                    R$ {statisticalAnalysis.maxGain.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </span>
-                </div>
-                <div className={styles.cardShine}></div>
-              </div>
-
-              <div className={styles.casinoMetricCard}>
-                <div className={styles.metricIconCircle}>
-                  <FaArrowUp />
-                </div>
-                <div className={styles.metricContent}>
-                  <span className={styles.metricLabel}>Sharpe Ratio</span>
-                  <span className={styles.metricValue}>{statisticalAnalysis.sharpeRatio.toFixed(3)}</span>
-                </div>
-              </div>
-
-              <div className={styles.casinoMetricCard}>
-                <div className={styles.metricIconCircle}>
-                  <FaChartLine />
-                </div>
-                <div className={styles.metricContent}>
-                  <span className={styles.metricLabel}>Expectativa</span>
-                  <span className={styles.metricValue}>
-                    R$ {statisticalAnalysis.expectancy.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </span>
-                </div>
-              </div>
-
-              <div className={styles.casinoMetricCard}>
-                <div className={styles.metricIconCircle}>
-                  <FaArrowDown />
-                </div>
-                <div className={styles.metricContent}>
-                  <span className={styles.metricLabel}>Maior Perda</span>
-                  <span className={styles.metricValue} style={{color: '#F44336'}}>
-                    R$ {statisticalAnalysis.maxLoss.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </span>
-                </div>
-              </div>
+            <div style={{height: '300px'}}>
+                <Line data={chartData.line} options={commonOptions} />
             </div>
           </div>
         );
 
-      case 'risk':
-        const operationalTransactions = transactions.filter(tx =>
-          apiService.isOperationalTransaction(tx.type)
-        );
-
-        if (operationalTransactions.length === 0) return renderEmptyState();
-
+      case 'distribution':
         return (
-          <div className={styles.casinoRisk}>
-            {/* Card Principal - Scatter */}
-            <div className={styles.casinoCard}>
-              <div className={styles.cardHeader}>
-                <FaShieldAlt className={styles.headerIcon} />
-                <h2>Distribuição de Resultados</h2>
-                <div className={styles.headerGlow}></div>
-              </div>
-              
-              <div className={styles.chartZone}>
-                <Scatter
-                  data={{
-                    datasets: [{
-                      label: 'Operações',
-                      data: operationalTransactions.map(tx => ({
-                        x: tx.amount,
-                        y: tx.type === 'gains' ? tx.amount : -tx.amount,
-                      })),
-                      backgroundColor: operationalTransactions.map(tx =>
-                        tx.type === 'gains' ? 'rgba(76, 175, 80, 0.7)' : 'rgba(244, 67, 54, 0.7)'
-                      ),
-                      borderColor: operationalTransactions.map(tx =>
-                        tx.type === 'gains' ? '#4CAF50' : '#F44336'
-                      ),
-                      borderWidth: 2,
-                      pointRadius: 8,
-                      pointHoverRadius: 12
-                    }]
-                  }}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                      legend: {
-                        labels: { 
-                          color: '#2f00ffff',
-                          font: { size: 14, weight: 'bold' }
-                        }
-                      },
-                      tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                        titleColor: '#2f00ffff',
-                        bodyColor: '#FFFFFF',
-                        borderColor: '#2f00ffff',
-                        borderWidth: 2,
-                        cornerRadius: 12,
-                        padding: 15,
-                        callbacks: {
-                          label: function(context) {
-                            return 'R$ ' + context.parsed.x.toLocaleString('pt-BR', {
-                              minimumFractionDigits: 2
-                            });
-                          }
-                        }
-                      }
-                    },
-                    scales: {
-                      x: {
-                        title: {
-                          display: true,
-                          text: 'Valor da Operação (R$)',
-                          color: '#2f00ffff',
-                          font: { size: 14, weight: 'bold' }
-                        },
-                        grid: { color: 'rgba(255, 215, 0, 0.1)' },
-                        ticks: {
-                          color: '#2f00ffff',
-                          font: { size: 11, weight: 'bold' },
-                          callback: function(value) {
-                            return 'R$ ' + value.toLocaleString('pt-BR');
-                          }
-                        }
-                      },
-                      y: {
-                        title: {
-                          display: true,
-                          text: 'Resultado Líquido (R$)',
-                          color: '#2f00ffff',
-                          font: { size: 14, weight: 'bold' }
-                        },
-                        grid: { color: 'rgba(255, 215, 0, 0.1)' },
-                        ticks: {
-                          color: '#2f00ffff',
-                          font: { size: 11, weight: 'bold' },
-                          callback: function(value) {
-                            return 'R$ ' + value.toLocaleString('pt-BR');
-                          }
-                        }
-                      }
-                    }
-                  }}
-                />
-              </div>
+          <div className={styles.chartWrapper} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+             <div className={styles.chartTitleArea} style={{width: '100%'}}>
+                <h2><FaChartPie /> Distribuição de Resultados</h2>
             </div>
-
-            {/* Indicadores de Risco */}
-            <div className={styles.riskIndicators}>
-              <div className={styles.casinoRiskCard}>
-                <div className={styles.riskHeader}>
-                  <span className={styles.riskLabel}>Profit Factor</span>
-                  <span className={styles.riskValue}>
-                    {statisticalAnalysis.profitFactor === Infinity ? '∞' : statisticalAnalysis.profitFactor.toFixed(2)}
-                  </span>
+            <div style={{height: '300px', width: '300px', position: 'relative'}}>
+                <Doughnut 
+                    data={chartData.doughnut} 
+                    options={{
+                        ...commonOptions, 
+                        cutout: '70%',
+                        plugins: { legend: { position: 'bottom', labels: { color: '#FFF' } } }
+                    }} 
+                />
+                {/* Texto central da rosca */}
+                <div style={{
+                    position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -60%)',
+                    textAlign: 'center', color: '#FFF'
+                }}>
+                    <div style={{fontSize: '24px', fontWeight: 'bold'}}>{stats.winRate}%</div>
+                    <div style={{fontSize: '10px', color: '#888'}}>Win Rate</div>
                 </div>
-                <div className={styles.riskBar}>
-                  <div 
-                    className={styles.riskFill}
-                    style={{ 
-                      width: `${Math.min((statisticalAnalysis.profitFactor / 3) * 100, 100)}%`,
-                      background: statisticalAnalysis.profitFactor >= 2 ? '#4CAF50' : statisticalAnalysis.profitFactor >= 1 ? '#2f00ffff' : '#F44336'
-                    }}
-                  ></div>
-                </div>
-              </div>
-
-              <div className={styles.casinoRiskCard}>
-                <div className={styles.riskHeader}>
-                  <span className={styles.riskLabel}>Max Drawdown</span>
-                  <span className={styles.riskValue} style={{
-                    color: statisticalAnalysis.maxDrawdown > 20 ? '#F44336' : statisticalAnalysis.maxDrawdown > 10 ? '#FF9800' : '#4CAF50'
-                  }}>
-                    {statisticalAnalysis.maxDrawdown.toFixed(1)}%
-                  </span>
-                </div>
-                <div className={styles.riskBar}>
-                  <div 
-                    className={styles.riskFill}
-                    style={{ 
-                      width: `${Math.min(statisticalAnalysis.maxDrawdown, 100)}%`,
-                      background: statisticalAnalysis.maxDrawdown > 20 ? '#F44336' : statisticalAnalysis.maxDrawdown > 10 ? '#FF9800' : '#2f00ffff'
-                    }}
-                  ></div>
-                </div>
-              </div>
-
-              <div className={styles.casinoRiskCard}>
-                <div className={styles.riskHeader}>
-                  <span className={styles.riskLabel}>Volatilidade</span>
-                  <span className={styles.riskValue}>
-                    {((statisticalAnalysis.volatility / (parseFloat(overviewData?.current_balance) || 1)) * 100).toFixed(1)}%
-                  </span>
-                </div>
-                <div className={styles.riskBar}>
-                  <div 
-                    className={styles.riskFill}
-                    style={{ 
-                      width: `${Math.min((statisticalAnalysis.volatility / 100) * 100, 100)}%`,
-                      background: 'linear-gradient(90deg, #2f00ffff, #FF9800)'
-                    }}
-                  ></div>
-                </div>
-              </div>
-
-              <div className={styles.casinoRiskCard}>
-                <div className={styles.riskHeader}>
-                  <span className={styles.riskLabel}>Total de Operações</span>
-                  <span className={styles.riskValue}>{statisticalAnalysis.totalTrades}</span>
-                </div>
-                <div className={styles.operationsSplit}>
-                  <div className={styles.splitItem}>
-                    <FaArrowUp style={{color: '#4CAF50'}} />
-                    <span>{statisticalAnalysis.winningTrades} Wins</span>
-                  </div>
-                  <div className={styles.splitItem}>
-                    <FaArrowDown style={{color: '#F44336'}} />
-                    <span>{statisticalAnalysis.losingTrades} Losses</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         );
 
-      default:
-        return null;
+      case 'stats':
+        return (
+          <>
+            <div className={styles.chartTitleArea}>
+                <h2><GiDiamonds /> Estatísticas da Sessão</h2>
+            </div>
+            
+            <div className={styles.casinoScoreboard}>
+                <div className={`${styles.scoreSide} ${styles.scoreWins}`}>
+                    <span className={styles.scoreLabel}>VITÓRIAS</span>
+                    <span className={`${styles.scoreValue} ${styles.win}`}>{stats.wins}</span>
+                    <span className={styles.statSubtext} style={{color: CHART_COLORS.green}}>
+                        {formatCurrency(stats.totalGains)}
+                    </span>
+                </div>
+                <div className={`${styles.scoreSide} ${styles.scoreLosses}`}>
+                    <span className={styles.scoreLabel}>DERROTAS</span>
+                    <span className={`${styles.scoreValue} ${styles.loss}`}>{stats.losses}</span>
+                    <span className={styles.statSubtext} style={{color: CHART_COLORS.red}}>
+                        -{formatCurrency(stats.totalLosses)}
+                    </span>
+                </div>
+            </div>
+
+            <div className={styles.statsGrid} style={{marginTop: '20px'}}>
+                <div className={styles.casinoStatCard} style={{'--stat-color': CHART_COLORS.gold}}>
+                    <span className={styles.statLabel}><FaTrophy /> Taxa de Acerto</span>
+                    <span className={styles.statValue}>{stats.winRate}%</span>
+                </div>
+                <div className={styles.casinoStatCard} style={{'--stat-color': '#00E0FF'}}>
+                    <span className={styles.statLabel}><FaFire /> Total de Jogos</span>
+                    <span className={styles.statValue}>{stats.wins + stats.losses}</span>
+                </div>
+                <div className={styles.casinoStatCard} style={{'--stat-color': CHART_COLORS.green}}>
+                    <span className={styles.statLabel}><FaArrowUp /> Lucro Líquido</span>
+                    <span className={styles.statValue} style={{color: (stats.totalGains - stats.totalLosses) >= 0 ? CHART_COLORS.green : CHART_COLORS.red}}>
+                        {formatCurrency(stats.totalGains - stats.totalLosses)}
+                    </span>
+                </div>
+            </div>
+          </>
+        );
+
+      default: return null;
     }
   };
 
   return (
     <div className={styles.casinoContainer}>
-      <div className={styles.casinoHeader}>
+      <header className={styles.casinoHeader}>
         <button onClick={() => navigate(-1)} className={styles.casinoBackButton}>
-          <FaArrowLeft />
-          <span>Voltar</span>
+          <FaArrowLeft /> VOLTAR À MESA
         </button>
 
         <div className={styles.casinoNav}>
@@ -543,10 +303,10 @@ const ChartsScreen = () => {
             </button>
           ))}
         </div>
-      </div>
+      </header>
 
       <main className={styles.casinoMain}>
-        {renderChartContent()}
+        {renderContent()}
       </main>
     </div>
   );

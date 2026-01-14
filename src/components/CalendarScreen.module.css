@@ -1,6 +1,6 @@
 /* ========================================
-   Tema XP (Branco, Azul, Cinza)
-   CalendarScreen.module.css - Versão Otimizada Mobile
+   TEMA CASINO / TIPSTER (Dark, Neon, Gold)
+   CalendarScreen.module.css
    ======================================== */
 
 .container {
@@ -8,10 +8,12 @@
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-  background-color: #D6D3CE;
-  color: #000;
-  font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
+  background-color: #0F1216;
+  background-image: radial-gradient(circle at 50% 0%, #1a2c38 0%, #0F1216 60%);
+  color: #E0E0E0;
+  font-family: 'Inter', 'Montserrat', sans-serif;
   overflow-x: hidden;
+  padding-bottom: 80px; /* Espaço para menu */
 }
 
 /* ========================================
@@ -21,78 +23,85 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px;
-  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-  flex-wrap: wrap;
-  gap: 10px;
+  padding: 16px 20px;
+  background: rgba(21, 25, 30, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #2C333A;
+  flex-wrap: nowrap;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .backButton,
 .navButton {
-  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-  border: 1px solid #7F9DB9;
-  border-radius: 3px;
-  color: #000;
+  background: #1A1E24;
+  border: 1px solid #2C333A;
+  border-radius: 8px;
+  color: #FFFFFF;
   cursor: pointer;
-  padding: 6px 12px;
+  padding: 8px 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: bold;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s;
 }
 
 .backButton:hover,
 .navButton:hover {
-  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+  background: #21262D;
+  border-color: #00FF88;
+  color: #00FF88;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
 }
 
 .headerControls {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 12px;
   flex-grow: 1;
-  width: 100%;
 }
 
 .monthTitle {
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 800;
   color: #FFFFFF;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-  min-width: 110px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Montserrat', sans-serif;
+  min-width: 140px;
   text-align: center;
-  text-transform: capitalize;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 /* ========================================
-   BOTÃO DE RESET
+   BOTÃO DE RESET (Danger Zone)
    ======================================== */
 .resetButton {
-  padding: 10px 18px;
-  background: linear-gradient(135deg, #ff4444, #cc0000);
-  color: white;
-  border: none;
-  border-radius: 10px;
+  padding: 8px 16px;
+  background: rgba(255, 77, 77, 0.1);
+  color: #FF4D4D;
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 12px;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 2px 8px rgba(255, 68, 68, 0.3);
+  gap: 6px;
+  text-transform: uppercase;
 }
 
 .resetButton:hover {
-  background: linear-gradient(135deg, #ff6666, #dd0000);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 68, 68, 0.5);
-}
-
-.resetButton:active {
-  transform: translateY(0);
+  background: rgba(255, 77, 77, 0.2);
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.2);
+  transform: translateY(-1px);
 }
 
 /* ========================================
@@ -100,8 +109,11 @@
    ======================================== */
 .content {
   flex-grow: 1;
-  padding: 8px;
+  padding: 16px;
   overflow-y: auto;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 /* ========================================
@@ -109,76 +121,88 @@
    ======================================== */
 .calendarGrid {
   width: 100%;
-  border-collapse: collapse;
-  background: #FFFFFF;
-  border: 1px solid #7F9DB9;
+  border-collapse: separate; 
+  border-spacing: 4px; /* Espaço entre células estilo app */
+  background: transparent;
   table-layout: fixed;
 }
 
 .dayHeader {
-  background: #ECE9D8;
-  border: 1px solid #7F9DB9;
-  padding: 6px 2px;
-  font-size: 10px;
-  font-weight: bold;
+  background: transparent;
+  padding: 10px 0;
+  font-size: 11px;
+  font-weight: 700;
   text-align: center;
-  color: #003399;
+  color: #8B949E;
+  text-transform: uppercase;
+  border: none;
 }
 
 .dayCell {
   width: 14.28%;
-  height: 60px;
-  border: 1px solid #7F9DB9;
-  padding: 2px;
+  height: 80px; /* Mais alto para toque */
+  border: 1px solid #2C333A;
+  background-color: #15191E;
+  border-radius: 8px;
+  padding: 6px;
   vertical-align: top;
   position: relative;
-  background-color: #FFF;
+  transition: all 0.2s ease;
 }
 
 .dayNumber {
-  font-size: 11px;
-  font-weight: bold;
-  color: #000;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8B949E;
   display: block;
   text-align: right;
-  margin-right: 2px;
+  margin-bottom: 4px;
 }
 
 .otherMonth {
-  background-color: #F0F0F0;
-  cursor: default;
+  background-color: #0F1216; /* Mais escuro */
+  border-color: transparent;
+  opacity: 0.5;
 }
 
 .otherMonth .dayNumber {
-  color: #AAA;
+  color: #484F58;
+}
+
+/* Dia Atual: Destaque Neon */
+.today {
+  border: 1px solid #00FF88;
+  background: rgba(0, 255, 136, 0.05);
+  box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.1);
 }
 
 .today .dayNumber {
-  color: #BF0000;
-  border: 1px solid #BF0000;
-  background: #FFF0F0;
-  border-radius: 2px;
-  padding: 0 3px;
-  display: inline-block;
+  color: #00FF88;
+  font-weight: 800;
 }
 
 .dayWithData {
   cursor: pointer;
-  background-color: #F9FCFF;
+  background-color: #1A1E24;
+  border-color: #30363D;
 }
 
 .dayWithData:hover {
-  background-color: #E3EFFF;
+  background-color: #21262D;
+  border-color: #8B949E;
+  transform: scale(1.02);
+  z-index: 5;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
 /* ========================================
-   RESUMO DO DIA (Responsivo)
+   RESUMO DO DIA (Barras Neon)
    ======================================== */
 .daySummary {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  margin-top: 2px;
+  gap: 3px;
+  margin-top: 4px;
   align-items: center;
 }
 
@@ -188,356 +212,283 @@
 .summaryWithdrawal {
   font-size: 0;
   height: 4px;
-  width: 80%;
+  width: 90%;
   border-radius: 2px;
   display: block;
+  box-shadow: 0 0 4px currentColor; /* Glow baseado na cor */
 }
 
-.summaryGain { background-color: #4CAF50; }
-.summaryLoss { background-color: #F44336; }
-.summaryDeposit { background-color: #2196F3; }
-.summaryWithdrawal { background-color: #FF9800; }
+.summaryGain { background-color: #00FF88; color: rgba(0, 255, 136, 0.4); }
+.summaryLoss { background-color: #FF4D4D; color: rgba(255, 77, 77, 0.4); }
+.summaryDeposit { background-color: #00E0FF; color: rgba(0, 224, 255, 0.4); } /* Ciano */
+.summaryWithdrawal { background-color: #FFA500; color: rgba(255, 165, 0, 0.4); } /* Laranja */
 
 /* ========================================
-   MODAL DE TRANSAÇÕES DO DIA
+   MODAL DE TRANSAÇÕES (Dark Glass)
    ======================================== */
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.85); /* Fundo bem escuro */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 10px;
-  backdrop-filter: blur(2px);
+  padding: 16px;
+  backdrop-filter: blur(5px);
 }
 
 .modalContainer {
-  background: #ECE9D8;
+  background: #15191E;
   width: 100%;
   max-width: 500px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  border: 2px solid #0054E3;
-  box-shadow: 0 0 15px rgba(0,0,0,0.5);
-  border-radius: 4px;
+  border: 1px solid #2C333A;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px;
-  background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-  color: white;
+  padding: 16px;
+  background: #1A1E24;
+  border-bottom: 1px solid #2C333A;
 }
 
 .modalTitle {
   margin: 0;
-  font-size: 13px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .closeButton {
-  background: #D4D0C8;
-  border: 1px solid #FFF;
+  background: transparent;
+  border: 1px solid #2C333A;
   cursor: pointer;
-  padding: 2px 6px;
-  border-radius: 2px;
+  padding: 6px;
+  border-radius: 50%;
+  color: #8B949E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.closeButton:hover {
+  color: #FFFFFF;
+  background: #2C333A;
 }
 
 .notesSection {
-  padding: 10px;
-  background: #ECE9D8;
+  padding: 16px;
+  background: #0F1216;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  border-bottom: 1px solid #2C333A;
 }
 
 .notesTitle {
   font-size: 12px;
-  font-weight: bold;
-  color: #003399;
+  font-weight: 600;
+  color: #8B949E;
   margin: 0;
+  text-transform: uppercase;
 }
 
 .notesTextarea {
   width: 100%;
-  height: 60px;
+  height: 80px;
   resize: none;
-  color: #000;
+  background: #1A1E24;
+  color: #FFFFFF;
   font-family: inherit;
-  border: 1px solid #7F9DB9;
-  padding: 6px;
+  border: 1px solid #2C333A;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.notesTextarea:focus {
+  outline: none;
+  border-color: #00FF88;
 }
 
 .saveNoteButton {
   align-self: flex-start;
-  padding: 6px 16px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-  border: 1px solid #7F9DB9;
+  padding: 8px 16px;
+  background: #1A1E24;
+  border: 1px solid #2C333A;
+  color: #00FF88;
   cursor: pointer;
-  font-weight: bold;
-  border-radius: 3px;
+  font-weight: 600;
+  border-radius: 6px;
+  font-size: 12px;
 }
-
 .saveNoteButton:hover {
-  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+  background: rgba(0, 255, 136, 0.1);
 }
 
 .modalContent {
   flex: 1;
   overflow-y: auto;
-  padding: 10px;
-  background: #FFF;
-  border: 1px solid #7F9DB9;
-  margin: 0 10px;
-  min-height: 150px;
+  padding: 16px;
+  background: #15191E;
+  min-height: 200px;
 }
 
 .modalActions {
-  padding: 10px;
-  display: flex;
-  justify-content: flex-end;
+  padding: 16px;
+  border-top: 1px solid #2C333A;
+  background: #1A1E24;
 }
 
 .addTransactionButton {
   width: 100%;
-  padding: 10px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-  border: 1px solid #7F9DB9;
-  font-weight: bold;
-  color: #000;
+  padding: 14px;
+  background: linear-gradient(90deg, #00C853 0%, #009624 100%);
+  border: none;
+  font-weight: 800;
+  color: #FFFFFF;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
+  text-transform: uppercase;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 1px;
 }
 
 .addTransactionButton:hover {
-  background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+  box-shadow: 0 0 15px rgba(0, 200, 83, 0.4);
+  transform: translateY(-1px);
 }
 
 /* ========================================
    MODAL DE CONFIRMAÇÃO DE RESET
    ======================================== */
 .resetModalContainer {
-  background: white;
-  border-radius: 20px;
+  background: #1A1E24;
+  border: 1px solid #FF4D4D;
+  border-radius: 16px;
   padding: 32px;
   max-width: 520px;
   width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.resetModalContent {
-  padding: 24px 0;
+  box-shadow: 0 0 50px rgba(255, 77, 77, 0.2);
+  color: #E0E0E0;
 }
 
 .warningText {
   font-size: 16px;
-  color: #333;
-  margin-bottom: 20px;
+  color: #E0E0E0;
+  margin-bottom: 24px;
   line-height: 1.6;
   text-align: center;
 }
 
 .warningText strong {
-  color: #d32f2f;
+  color: #FF4D4D;
   font-weight: 700;
 }
 
 .warningList {
-  list-style: none;
-  padding: 0;
-  margin: 20px 0;
-  background: #f8f9fa;
+  background: rgba(255, 77, 77, 0.05);
   border-radius: 12px;
   padding: 20px;
+  border: 1px solid rgba(255, 77, 77, 0.1);
 }
 
 .warningList li {
-  padding: 10px 0;
-  color: #555;
+  color: #B0B0B0;
   font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
 .warningList li::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  background: #4CAF50;
-  border-radius: 50%;
-  flex-shrink: 0;
+  background: #FF4D4D;
 }
 
 .dangerText {
-  background: linear-gradient(135deg, #ffebee, #ffcdd2);
-  border-left: 4px solid #f44336;
+  background: rgba(255, 77, 77, 0.1);
+  border-left: 4px solid #FF4D4D;
   padding: 16px;
   border-radius: 8px;
-  color: #c62828;
+  color: #FF4D4D;
   font-size: 14px;
-  margin-top: 20px;
+  margin-top: 24px;
   text-align: center;
 }
 
-.dangerText strong {
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.resetModalActions {
-  display: flex;
-  gap: 12px;
-  margin-top: 32px;
-}
-
 .cancelButton {
-  flex: 1;
-  padding: 14px;
-  background: #f5f5f5;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 15px;
-  transition: all 0.2s;
-  color: #666;
+  background: #15191E;
+  border: 1px solid #2C333A;
+  color: #8B949E;
+  border-radius: 8px;
 }
-
 .cancelButton:hover:not(:disabled) {
-  background: #eeeeee;
-  border-color: #d0d0d0;
-  transform: translateY(-1px);
-}
-
-.cancelButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  background: #2C333A;
+  color: #FFFFFF;
 }
 
 .confirmResetButton {
-  flex: 1;
-  padding: 14px;
-  background: linear-gradient(135deg, #ff4444, #cc0000);
-  color: white;
+  background: #FF4D4D;
+  color: #FFFFFF;
   border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 15px;
-  transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
 }
-
 .confirmResetButton:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ff6666, #dd0000);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(255, 68, 68, 0.4);
-}
-
-.confirmResetButton:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.confirmResetButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
+  background: #FF3333;
+  box-shadow: 0 0 25px rgba(255, 77, 77, 0.5);
 }
 
 /* ========================================
-   MEDIA QUERIES - DESKTOP
+   RESPONSIVIDADE (Desktop)
    ======================================== */
-@media (min-width: 600px) {
-  .header {
-    flex-wrap: nowrap;
-  }
-  
-  .headerControls {
-    width: auto;
-    flex-grow: 0;
-  }
-}
-
 @media (min-width: 768px) {
+  .container {
+    padding-bottom: 20px; /* Menu não é fixo em desktop geralmente */
+  }
+
   .dayCell {
-    height: 100px;
-    padding: 4px;
+    height: 120px;
+    padding: 10px;
   }
 
   .daySummary {
     align-items: flex-start;
   }
 
+  /* Exibe valores numéricos no Desktop */
   .summaryGain,
   .summaryLoss,
   .summaryDeposit,
   .summaryWithdrawal {
-    font-size: 10px;
+    font-size: 11px;
     height: auto;
     width: auto;
     background-color: transparent;
-    display: inline;
-    border-radius: 0;
+    display: inline-block;
+    border-radius: 4px;
+    padding: 2px 6px;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
+    box-shadow: none;
+    font-weight: 600;
   }
 
-  .summaryGain { color: #006400; }
-  .summaryLoss { color: #BF0000; }
-  .summaryDeposit { color: #0054E3; }
-  .summaryWithdrawal { color: #FF9800; }
+  .summaryGain { background: rgba(0, 255, 136, 0.1); color: #00FF88; border: 1px solid rgba(0, 255, 136, 0.2); }
+  .summaryLoss { background: rgba(255, 77, 77, 0.1); color: #FF4D4D; border: 1px solid rgba(255, 77, 77, 0.2); }
+  .summaryDeposit { background: rgba(0, 224, 255, 0.1); color: #00E0FF; }
+  .summaryWithdrawal { background: rgba(255, 165, 0, 0.1); color: #FFA500; }
   
   .addTransactionButton {
     width: auto;
-  }
-}
-
-@media (max-width: 768px) {
-  .resetButton {
-    padding: 8px 12px;
-    font-size: 13px;
-  }
-
-  .resetButton span {
-    display: none;
-  }
-
-  .resetModalContainer {
-    padding: 24px;
-    width: 95%;
-  }
-
-  .warningText {
-    font-size: 14px;
-  }
-
-  .warningList li {
-    font-size: 13px;
+    padding: 12px 24px;
   }
 }

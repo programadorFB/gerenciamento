@@ -1,243 +1,392 @@
 /* ========================================
-   Tema XP (Branco, Azul, Cinza)
+   TEMA: CASSINO ROYAL / FOOTBALL STUDIO
    TransactionHistoryScreen.module.css
    ======================================== */
 
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;500;700&display=swap');
+
+/* --- Container Principal (Mesa de Jogo) --- */
 .container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    min-width: 100vw;
-    background-color: #D6D3CE; /* Fundo Cinza XP */
-    color: #000;
-    font-family: 'Tahoma', 'Trebuchet MS', sans-serif;
+    width: 100%;
+    background-color: #0F1216;
+    /* Textura de mesa */
+    background-image: 
+        radial-gradient(circle at 50% 30%, #1c2530 0%, #0F1216 70%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    color: #E0E0E0;
+    font-family: 'Montserrat', sans-serif;
 }
-/* --- Header (Barra de Título XP) --- */
+
+/* --- Header --- */
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 12px;
-    background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset;
-}
-.header h1 { 
-    font-size: 11px; 
-    font-weight: bold; 
-    margin: 0; 
-    color: #FFFFFF;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-}
-.backButton, .infoButton {
-    background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-    border: 1px solid #7F9DB9;
-    border-radius: 3px;
-    color: #000;
-    cursor: pointer;
-    padding: 4px;
-}
-.backButton:hover, .infoButton:hover {
-    background: linear-gradient(180deg, #FFFEF9 0%, #F5F3E8 100%);
+    padding: 16px 20px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-/* --- Filtros (Estilo Toolbar/Abas XP) --- */
+.header h1 { 
+    font-family: 'Cinzel', serif;
+    font-size: 16px; 
+    font-weight: 700; 
+    margin: 0; 
+    color: #D4AF37; /* Dourado */
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.backButton, .infoButton {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: #FFF;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.backButton:hover, .infoButton:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: #D4AF37;
+    color: #D4AF37;
+}
+
+/* --- Filtros (Estilo Fichas de Cassino) --- */
 .filterContainer {
     display: flex;
-    justify-content: space-around;
-    padding: 10px;
-    background-color: #ECE9D8; /* Fundo cinza claro */
-    border-bottom: 1px solid #7F9DB9;
+    gap: 10px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    background: transparent;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
 }
+.filterContainer::-webkit-scrollbar { display: none; }
+
 .filterContainer button {
-    padding: 6px 12px;
-    border-radius: 3px;
-    background-color: #ECE9D8;
-    border: 1px solid #7F9DB9;
-    color: #000;
-    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: #1A1E24;
+    border: 1px solid #333;
+    color: #8B949E;
+    font-weight: 700;
     font-size: 11px;
     cursor: pointer;
-}
-.filterContainer .filterActive {
-    background-color: #C1D2EE; /* Fundo azul claro (selecionado) */
-    color: #000;
-    border: 1px solid #003399;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* --- Lista (Estilo ListView XP) --- */
+/* Ficha Ativa (Dourada) */
+.filterContainer .filterActive {
+    background: linear-gradient(135deg, #D4AF37 0%, #AA8A25 100%);
+    color: #000;
+    border-color: #FFD700;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+    transform: translateY(-1px);
+}
+
+/* --- Lista (Tickets) --- */
 .listContainer {
     flex-grow: 1;
     overflow-y: auto;
-    padding: 10px 15px 20px;
-    background: #FFFFFF; /* Fundo da lista branco */
-    border: 1px solid #7F9DB9;
-    margin: 10px;
+    padding: 10px 20px 80px 20px; /* Espaço extra embaixo */
 }
 
-/* Item da Lista */
+/* Item da Lista (O Ticket) */
 .itemContainer {
+    margin-bottom: 12px;
+    background-color: #15191E;
+    border-radius: 12px;
+    border: 1px solid #2C333A;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
     display: flex;
     align-items: center;
-    margin-top: 0;
-    background-color: #FFFFFF;
-    border-radius: 0;
-    border-bottom: 1px solid #C0C0C0; /* Linha divisória */
-    position: relative;
 }
+
+.itemContainer:hover {
+    transform: translateX(4px);
+    border-color: #444;
+}
+
+/* Barra lateral colorida indicando tipo */
+.itemContainer::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--tx-color, #888);
+}
+
 .itemTouchable {
     flex-grow: 1;
     display: flex;
     align-items: center;
-    padding: 10px;
-    gap: 15px;
+    padding: 16px;
+    gap: 16px;
+    cursor: pointer;
 }
+
 .iconContainer {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Fundo azul para todos */
-    background-color: rgba(0, 84, 227, 0.15) !important;
-}
-/* Ícones são todos azuis */
-.iconContainer svg {
-    color: #0054E3 !important; 
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-.detailsContainer { flex-grow: 1; }
-.itemCategory { font-size: 12px; font-weight: bold; margin: 0; color: #000; }
-.itemDate { font-size: 11px; color: #333; margin: 4px 0; }
-.itemDescription { font-size: 11px; color: #666; font-style: italic; }
+.iconContainer svg {
+    filter: drop-shadow(0 0 5px currentColor);
+}
+
+.detailsContainer { flex-grow: 1; min-width: 0; }
+
+.categoryRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.itemCategory { 
+    font-size: 14px; 
+    font-weight: 700; 
+    color: #FFF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.typeBadge {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.1);
+    color: #AAA;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.itemDate { 
+    font-size: 11px; 
+    color: #8B949E; 
+    margin: 0; 
+    font-weight: 500;
+}
+
+.itemDescription { 
+    font-size: 11px; 
+    color: #666; 
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
 
 .itemAmount { 
-    font-size: 12px; 
-    font-weight: bold; 
-    /* Cor baseada na prop (positivo/negativo) */
-}
-.itemAmount[style*="rgb(90, 138, 106)"], /* Verde (positivo) */
-.itemAmount[style*="#5A8A6A"] {
-    color: #0054E3 !important; /* Mudar para Azul */
-}
-.itemAmount[style*="rgb(164, 74, 74)"], /* Vermelho (negativo) */
-.itemAmount[style*="#A44A4A"] {
-    color: #333333 !important; /* Mudar para Cinza Escuro */
+    font-size: 14px; 
+    font-weight: 700; 
+    font-family: 'Montserrat', sans-serif;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+    white-space: nowrap;
 }
 
+/* Cores Neon para Valores */
+.amountPositive { color: #00FF88 !important; text-shadow: 0 0 8px rgba(0,255,136,0.3); }
+.amountNegative { color: #FF4D4D !important; text-shadow: 0 0 8px rgba(255,77,77,0.3); }
 
+/* Ações Permanentes (Desktop ou sempre visíveis) */
 .permanentActions {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    padding-right: 10px;
+    gap: 8px;
+    padding-right: 12px;
+    border-left: 1px solid #2C333A;
+    padding-left: 12px;
 }
-.editButton, .deleteButton {
-    background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%);
-    border: 1px solid #7F9DB9;
-    border-radius: 3px;
-    padding: 4px;
-    cursor: pointer;
-    color: #000; /* Cor do ícone */
-}
-/* REMOVIDO: Cores de borda/texto (dourado/vermelho) */
 
-/* --- Modal (Estilo Janela XP) --- */
+.editButton, .deleteButton {
+    background: transparent;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    color: #6E7681;
+    transition: color 0.2s;
+}
+
+.editButton:hover { color: #FFF; }
+.deleteButton:hover { color: #FF4D4D; }
+
+/* --- Estado Vazio --- */
+.emptyContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #666;
+    border: 1px dashed #333;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+.emptyContainer svg { color: #333; margin-bottom: 10px; }
+
+/* Loading */
+.loadingContainer {
+    text-align: center;
+    color: #D4AF37;
+    margin-top: 40px;
+    font-family: 'Cinzel', serif;
+}
+
+/* --- Modal (Dark Glass) --- */
 .modalOverlay { 
     position: fixed; 
     inset: 0; 
-    background: rgba(0, 84, 227, 0.3); /* Overlay Azul */
+    background: rgba(0, 0, 0, 0.9);
     display: flex; 
     justify-content: center; 
     align-items: center; 
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
 }
+
 .modalContainer { 
-    background: #ECE9D8; 
-    border-radius: 8px 8px 0 0; 
-    border: 2px solid #0054E3;
-    width: 95%; 
+    background: #15191E; 
+    border-radius: 16px;
+    border: 1px solid #333;
+    width: 90%; 
     max-width: 450px; 
     max-height: 90vh; 
     display: flex; 
     flex-direction: column;
-    box-shadow: 4px 4px 12px rgba(0,0,0,0.4);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    position: relative;
+    overflow: hidden;
 }
+
+/* Barra Dourada */
+.modalContainer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #D4AF37, #FFF, #D4AF37);
+}
+
 .modalHeader { 
     display: flex; 
     justify-content: space-between; 
     align-items: center;
-    padding: 4px 8px; 
-    border-bottom: none;
-    /* Barra de título azul */
-    background: linear-gradient(180deg, #0054E3 0%, #0040B0 100%);
+    padding: 20px 24px; 
+    border-bottom: 1px solid #2C333A;
 }
+
 .modalHeader h3 {
-    font-size: 11px;
-    font-weight: bold;
-    color: #FFFFFF;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    color: #FFF;
+    margin: 0;
+    text-transform: uppercase;
 }
+
 .modalHeader button { 
-    background: linear-gradient(180deg, #FFFFFF 0%, #BFCCE0 100%);
-    border: 1px solid #003C74;
-    color: #000; 
+    background: transparent;
+    border: none;
+    color: #666; 
     cursor: pointer; 
-    width: 21px;
-    height: 21px;
-    padding: 0;
+    transition: color 0.2s;
 }
+.modalHeader button:hover { color: #FFF; }
+
 .modalContent { 
     overflow-y: auto; 
-    padding: 5px 20px; 
-    background: #ECE9D8;
+    padding: 24px; 
+    background: #15191E;
 }
-.modalActions { 
-    display: flex; 
-    gap: 10px; 
-    padding: 12px; 
-    border-top: 1px solid #7F9DB9; 
-    background: #ECE9D8;
-}
-.inputGroup { margin: 15px 0; }
+
+.inputGroup { margin-bottom: 20px; }
 .inputGroup label { 
     display: block; 
     margin-bottom: 8px; 
-    font-weight: 600; 
-    color: #000; /* Preto */
+    font-weight: 700; 
+    color: #8B949E; 
     font-size: 11px;
+    text-transform: uppercase;
 }
-/* Inputs Padrão XP */
+
+/* Inputs Dark */
 .inputGroup input, .inputGroup textarea, .inputGroup select { 
     width: 100%; 
-    background: #FFFFFF; 
-    border: 1px solid #7F9DB9; 
-    border-radius: 0; 
-    padding: 4px 6px; 
-    color: #000; 
-    font-size: 11px; 
-    box-sizing: border-box; 
+    background: #0F1216; 
+    border: 1px solid #333; 
+    border-radius: 8px; 
+    padding: 12px; 
+    color: #FFF; 
+    font-size: 14px; 
+    font-family: 'Montserrat', sans-serif;
+    outline: none;
 }
-.dateTimeContainer { display: flex; gap: 10px; }
+.inputGroup input:focus, .inputGroup textarea:focus, .inputGroup select:focus {
+    border-color: #D4AF37;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+}
+
+.dateTimeContainer { display: flex; gap: 12px; }
 .dateTimeContainer input { flex: 1; }
+
+.modalActions { 
+    display: flex; 
+    gap: 12px; 
+    padding: 20px 24px; 
+    border-top: 1px solid #2C333A; 
+    background: #1A1E24;
+}
 
 .cancelButton, .saveButton { 
     flex: 1; 
-    padding: 6px 12px; 
-    border-radius: 3px; 
-    border: 1px solid #7F9DB9; 
-    font-weight: bold; 
+    padding: 14px; 
+    border-radius: 8px; 
+    font-weight: 800; 
     cursor: pointer; 
-    font-size: 11px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
-/* Botão Cinza */
+
 .cancelButton { 
-    background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 100%); 
-    color: #000; 
+    background: #2C333A; 
+    color: #FFF; 
+    border: none;
 }
-/* Botão Azul */
 .saveButton { 
-    background: linear-gradient(180deg, #0078D7 0%, #0054E3 50%, #0040B0 100%);
-    color: #FFFFFF; 
-    border-color: #003C74;
+    background: linear-gradient(135deg, #D4AF37 0%, #AA8A25 100%);
+    color: #000; 
+    border: none;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+}
+.saveButton:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
 }

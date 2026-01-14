@@ -1,18 +1,19 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFinancial } from '../../contexts/FinancialContext';
-import { MdArrowBack, MdInfoOutline, MdEdit, MdDelete, MdClose, MdEvent, MdAccessTime } from 'react-icons/md';
-import { FaPlusCircle, FaMinusCircle, FaReceipt } from 'react-icons/fa';
+import { MdArrowBack, MdInfoOutline, MdEdit, MdDelete, MdClose } from 'react-icons/md';
+import { FaPlusCircle, FaMinusCircle, FaReceipt, FaCoins, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import styles from './TransactionHistoryScreen.module.css';
 
-// Cores metálicas
-const METALLIC_COLORS = {
+// Cores do Tema (Neon & Ouro)
+const THEME_COLORS = {
     gold: '#D4AF37',
-    greenMetal: '#5A8A6A',
-    redMetal: '#A44A4A',
+    neonGreen: '#00FF88',
+    neonRed: '#FF4D4D',
+    neonBlue: '#00E0FF',
 };
 
-// --- Edit Transaction Modal (Web Version) ---
+// --- Edit Transaction Modal ---
 const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
     const [editedTransaction, setEditedTransaction] = useState({});
     
@@ -21,8 +22,8 @@ const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
             const dateObj = new Date(transaction.date);
             setEditedTransaction({
                 ...transaction,
-                dateInput: dateObj.toISOString().split('T')[0], // YYYY-MM-DD
-                timeInput: dateObj.toTimeString().split(' ')[0].substring(0, 5), // HH:MM
+                dateInput: dateObj.toISOString().split('T')[0],
+                timeInput: dateObj.toTimeString().split(' ')[0].substring(0, 5),
             });
         }
     }, [transaction]);
@@ -30,11 +31,6 @@ const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setEditedTransaction(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleTypeChange = (e) => {
-        const { value } = e.target;
-        setEditedTransaction(prev => ({ ...prev, type: value }));
     };
 
     const handleSave = () => {
@@ -54,22 +50,22 @@ const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
         <div className={styles.modalOverlay}>
             <div className={styles.modalContainer}>
                 <header className={styles.modalHeader}>
-                    <h3>Editar Transação</h3>
+                    <h3>Ajustar Registro</h3>
                     <button onClick={onClose}><MdClose size={24} /></button>
                 </header>
                 <main className={styles.modalContent}>
                     <div className={styles.inputGroup}>
-                        <label>Tipo de Transação</label>
-                        <select name="type" value={editedTransaction.type || ''} onChange={handleTypeChange}>
-                            <option value="deposit">Depósito</option>
-                            <option value="withdraw">Saque</option>
-                            <option value="gains">Ganho</option>
-                            <option value="losses">Loss</option>
+                        <label>Tipo de Movimento</label>
+                        <select name="type" value={editedTransaction.type || ''} onChange={handleChange}>
+                            <option value="deposit">Depósito (Entrada)</option>
+                            <option value="withdraw">Saque (Saída)</option>
+                            <option value="gains">Vitória (Green)</option>
+                            <option value="losses">Derrota (Red)</option>
                         </select>
                     </div>
                     <div className={styles.inputGroup}>
-                        <label>Categoria</label>
-                        <input type="text" name="category" value={editedTransaction.category || ''} onChange={handleChange} />
+                        <label>Categoria / Jogo</label>
+                        <input type="text" name="category" value={editedTransaction.category || ''} onChange={handleChange} placeholder="Ex: Roleta, Blackjack..." />
                     </div>
                     <div className={styles.inputGroup}>
                         <label>Valor (R$)</label>
@@ -83,60 +79,68 @@ const EditTransactionModal = ({ visible, transaction, onClose, onSave }) => {
                         </div>
                     </div>
                     <div className={styles.inputGroup}>
-                        <label>Descrição</label>
-                        <textarea name="description" value={editedTransaction.description || ''} onChange={handleChange} rows="3"></textarea>
+                        <label>Observações</label>
+                        <textarea name="description" value={editedTransaction.description || ''} onChange={handleChange} rows="3" placeholder="Detalhes da jogada..."></textarea>
                     </div>
                 </main>
                 <footer className={styles.modalActions}>
                     <button className={styles.cancelButton} onClick={onClose}>Cancelar</button>
-                    <button className={styles.saveButton} onClick={handleSave}>Salvar</button>
+                    <button className={styles.saveButton} onClick={handleSave}>Confirmar</button>
                 </footer>
             </div>
         </div>
     );
 };
 
-// --- Transaction Item (Web Version) ---
+// --- Transaction Item (Ticket) ---
 const TransactionItem = React.memo(({ item, onEdit, onDelete }) => {
-    // Função para determinar se é entrada (positiva) ou saída (negativa)
+    
+    // Configurações Visuais baseadas no Tipo
     const getTransactionInfo = (transaction) => {
         const amount = parseFloat(transaction.amount) || 0;
         
+        // Cores e Ícones Neon
         switch (transaction.type) {
             case 'deposit':
-            case 'gains':
                 return {
-                    isPositive: true,
-                    icon: <FaPlusCircle color={METALLIC_COLORS.greenMetal} size={20} />,
-                    color: METALLIC_COLORS.greenMetal,
-                    backgroundColor: 'rgba(90, 138, 106, 0.15)',
-                    sign: '+'
+                    icon: <FaArrowUp color={THEME_COLORS.neonBlue} size={16} />,
+                    color: THEME_COLORS.neonBlue,
+                    label: 'Depósito',
+                    borderColor: THEME_COLORS.neonBlue
                 };
             case 'withdraw':
+                return {
+                    icon: <FaArrowDown color="#FFA500" size={16} />,
+                    color: "#FFA500", // Laranja
+                    label: 'Saque',
+                    borderColor: "#FFA500"
+                };
+            case 'gains':
+                return {
+                    icon: <FaCoins color={THEME_COLORS.neonGreen} size={16} />,
+                    color: THEME_COLORS.neonGreen,
+                    label: 'Green',
+                    borderColor: THEME_COLORS.neonGreen
+                };
             case 'losses':
                 return {
-                    isPositive: false,
-                    icon: <FaMinusCircle color={METALLIC_COLORS.redMetal} size={20} />,
-                    color: METALLIC_COLORS.redMetal,
-                    backgroundColor: 'rgba(164, 74, 74, 0.15)',
-                    sign: '-'
+                    icon: <FaCoins color={THEME_COLORS.neonRed} size={16} />,
+                    color: THEME_COLORS.neonRed,
+                    label: 'Red',
+                    borderColor: THEME_COLORS.neonRed
                 };
             default:
-                // Fallback baseado no valor se o tipo não for reconhecido
                 const isPositive = amount >= 0;
                 return {
-                    isPositive,
-                    icon: isPositive ? 
-                        <FaPlusCircle color={METALLIC_COLORS.greenMetal} size={20} /> : 
-                        <FaMinusCircle color={METALLIC_COLORS.redMetal} size={20} />,
-                    color: isPositive ? METALLIC_COLORS.greenMetal : METALLIC_COLORS.redMetal,
-                    backgroundColor: isPositive ? 'rgba(90, 138, 106, 0.15)' : 'rgba(164, 74, 74, 0.15)',
-                    sign: isPositive ? '+' : '-'
+                    icon: <FaReceipt color="#888" size={16} />,
+                    color: isPositive ? THEME_COLORS.neonGreen : "#888",
+                    label: 'Outro',
+                    borderColor: "#444"
                 };
         }
     };
 
-    const transactionInfo = getTransactionInfo(item);
+    const info = getTransactionInfo(item);
     const amountValue = Math.abs(parseFloat(item.amount) || 0);
     
     const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { 
@@ -149,51 +153,41 @@ const TransactionItem = React.memo(({ item, onEdit, onDelete }) => {
         timeStyle: 'short' 
     });
 
-    const getTypeLabel = (type) => {
-        const labels = {
-            'deposit': 'Depósito',
-            'withdraw': 'Saque',
-            'gains': 'Ganho',
-            'losses': 'Loss'
-        };
-        return labels[type] || type;
-    };
-
     return (
-        <div className={styles.itemContainer}>
+        <div 
+            className={styles.itemContainer}
+            style={{ '--tx-color': info.borderColor }} // Variável CSS para a borda lateral
+        >
             <div className={styles.itemTouchable}>
-                <div 
-                    className={styles.iconContainer} 
-                    style={{ backgroundColor: transactionInfo.backgroundColor }}
-                >
-                    {transactionInfo.icon}
+                <div className={styles.iconContainer}>
+                    {info.icon}
                 </div>
+                
                 <div className={styles.detailsContainer}>
                     <div className={styles.categoryRow}>
-                        <p className={styles.itemCategory}>
-                            {item.category || 'Não categorizado'}
-                        </p>
-                        <span className={styles.typeBadge}>
-                            {getTypeLabel(item.type)}
-                        </span>
+                        <span className={styles.itemCategory}>{item.category || 'Geral'}</span>
+                        <span className={styles.typeBadge}>{info.label}</span>
                     </div>
                     <p className={styles.itemDate}>{formatDate(item.date)}</p>
                     {item.description && (
                         <p className={styles.itemDescription}>{item.description}</p>
                     )}
                 </div>
-                <p 
-                    className={styles.itemAmount} 
-                    style={{ color: transactionInfo.color }}
-                >
-                    {transactionInfo.sign} {formatCurrency(amountValue)}
+
+                <p className={`${styles.itemAmount} ${
+                    ['deposit', 'gains'].includes(item.type) || (!item.type && parseFloat(item.amount) >= 0) 
+                    ? styles.amountPositive 
+                    : styles.amountNegative
+                }`}>
+                    {['deposit', 'gains'].includes(item.type) ? '+' : '-'} {formatCurrency(amountValue)}
                 </p>
             </div>
+
             <div className={styles.permanentActions}>
-                <button onClick={() => onEdit(item)} className={styles.editButton}>
+                <button onClick={() => onEdit(item)} className={styles.editButton} title="Editar">
                     <MdEdit size={18} />
                 </button>
-                <button onClick={() => onDelete(item.id)} className={styles.deleteButton}>
+                <button onClick={() => onDelete(item.id)} className={styles.deleteButton} title="Excluir">
                     <MdDelete size={18} />
                 </button>
             </div>
@@ -201,7 +195,7 @@ const TransactionItem = React.memo(({ item, onEdit, onDelete }) => {
     );
 });
 
-// --- Main Screen Component (Web Version) ---
+// --- Main Screen ---
 const TransactionHistoryScreen = () => {
     const navigate = useNavigate();
     const { transactions, loading, refreshData, updateTransaction, deleteTransaction } = useFinancial();
@@ -218,31 +212,20 @@ const TransactionHistoryScreen = () => {
     
     const handleSaveTransaction = async (editedTransaction) => {
         await updateTransaction(editedTransaction.id, editedTransaction);
-        onRefresh(); // Refresh data after update
+        onRefresh();
     };
 
     const handleDeleteTransaction = (transactionId) => {
-        if (window.confirm('Tem certeza que deseja excluir esta transação?')) {
+        if (window.confirm('Confirma a exclusão deste registro?')) {
             deleteTransaction(transactionId).then(() => onRefresh());
         }
     };
 
     const filteredTransactions = useMemo(() => {
         const sorted = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
-        
         if (filter === 'all') return sorted;
-        
-        // Filtro para entradas (positivas)
-        if (filter === 'incomes') {
-            return sorted.filter(tx => tx.type === 'deposit' || tx.type === 'gains');
-        }
-        
-        // Filtro para saídas (negativas)
-        if (filter === 'outcomes') {
-            return sorted.filter(tx => tx.type === 'withdraw' || tx.type === 'losses');
-        }
-        
-        // Filtro individual por tipo
+        if (filter === 'incomes') return sorted.filter(tx => tx.type === 'deposit' || tx.type === 'gains');
+        if (filter === 'outcomes') return sorted.filter(tx => tx.type === 'withdraw' || tx.type === 'losses');
         return sorted.filter(tx => tx.type === filter);
     }, [transactions, filter]);
     
@@ -250,39 +233,40 @@ const TransactionHistoryScreen = () => {
         <div className={styles.container}>
             <header className={styles.header}>
                 <button onClick={() => navigate(-1)} className={styles.backButton}>
-                    <MdArrowBack size={24} />
+                    <MdArrowBack size={20} />
                 </button>
-                <h1>Histórico de Transações</h1>
-                <button className={styles.infoButton} onClick={() => alert('Para editar ou excluir uma transação, use os botões à direita de cada item.')}>
+                <h1>Registro de Apostas</h1>
+                <button className={styles.infoButton} onClick={() => alert('Este é o seu registro oficial de entradas e saídas.')}>
                     <MdInfoOutline size={20} />
                 </button>
             </header>
 
+            {/* Chips de Filtro */}
             <div className={styles.filterContainer}>
                 <button onClick={() => setFilter('all')} className={filter === 'all' ? styles.filterActive : ''}>
-                    Todas
-                </button>
-                <button onClick={() => setFilter('incomes')} className={filter === 'incomes' ? styles.filterActive : ''}>
-                    Entradas
-                </button>
-                <button onClick={() => setFilter('outcomes')} className={filter === 'outcomes' ? styles.filterActive : ''}>
-                    Saídas
+                    Todos
                 </button>
                 <button onClick={() => setFilter('gains')} className={filter === 'gains' ? styles.filterActive : ''}>
-                    Ganhos
+                    Vitórias
                 </button>
                 <button onClick={() => setFilter('losses')} className={filter === 'losses' ? styles.filterActive : ''}>
-                    Loss
+                    Derrotas
+                </button>
+                <button onClick={() => setFilter('incomes')} className={filter === 'incomes' ? styles.filterActive : ''}>
+                    Depósitos
+                </button>
+                <button onClick={() => setFilter('outcomes')} className={filter === 'outcomes' ? styles.filterActive : ''}>
+                    Saques
                 </button>
             </div>
 
             <main className={styles.listContainer}>
                 {loading && transactions.length === 0 ? (
-                    <div className={styles.loadingContainer}>Carregando...</div>
+                    <div className={styles.loadingContainer}>Carregando Registros...</div>
                 ) : filteredTransactions.length === 0 ? (
                     <div className={styles.emptyContainer}>
-                        <FaReceipt size={50} />
-                        <p>Nenhuma Transação Encontrada</p>
+                        <FaReceipt size={40} />
+                        <p>Nenhum registro encontrado</p>
                     </div>
                 ) : (
                     filteredTransactions.map(item => (

@@ -7,7 +7,7 @@ import ObjectiveModal from '../../components/ObjectiveModal';
 import ObjectivesList from '../../components/ObjectivesList';
 
 // --- Icons ---
-import { IoArrowBack } from 'react-icons/io5';
+import { MdArrowBack, MdAdd } from 'react-icons/md';
 import { FaBullseye, FaTrophy } from 'react-icons/fa';
 
 // --- CSS Module ---
@@ -18,47 +18,50 @@ const ObjectivesScreen = () => {
   const { addObjective } = useFinancial();
   const [objectiveModalVisible, setObjectiveModalVisible] = useState(false);
   
-  // ✅ NOVO: Estado para controlar a aba ativa
+  // Estado para controlar a aba ativa
   const [activeTab, setActiveTab] = useState('active'); // 'active' ou 'completed'
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <button className={styles.backButton} onClick={() => navigate(-1)}>
-          <IoArrowBack /> Voltar
+          <MdArrowBack size={18} /> <span>Voltar</span>
         </button>
-        <h1>Meus Objetivos</h1>
+        <h1>Missões & Metas</h1>
         <div className={styles.headerSpacer} />
       </header>
 
-      {/* ✅ NOVO: Sistema de Abas */}
+      {/* Sistema de Abas (Chips) */}
       <div className={styles.tabsContainer}>
         <button 
           className={`${styles.tab} ${activeTab === 'active' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('active')}
         >
-          <FaBullseye size={18} />
-          <span>Ativos</span>
+          <FaBullseye />
+          <span>Em Jogo</span>
         </button>
         <button 
           className={`${styles.tab} ${activeTab === 'completed' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('completed')}
         >
-          <FaTrophy size={18} />
-          <span>Concluídos</span>
+          <FaTrophy />
+          <span>Conquistados</span>
         </button>
       </div>
 
       <main className={styles.content}>
-        {/* Só mostrar botão de criar na aba de ativos */}
+        {/* Botão de Ação Principal (Só na aba ativa) */}
         {activeTab === 'active' && (
           <button className={styles.addObjectiveButton} onClick={() => setObjectiveModalVisible(true)}>
-            + Criar Novo Objetivo
+            <MdAdd size={20} /> DEFINIR NOVO OBJETIVO
           </button>
         )}
         
-        {/* ✅ MUDANÇA: Passar prop showCompleted baseado na aba ativa */}
-        <ObjectivesList showCompleted={activeTab === 'completed'} />
+        {/* Lista de Objetivos (Container interno estilizado pelo componente filho, 
+            mas o pai controla o layout geral) */}
+        <div style={{ width: '100%', maxWidth: '800px' }}>
+            <ObjectivesList showCompleted={activeTab === 'completed'} />
+        </div>
       </main>
 
       <ObjectiveModal 

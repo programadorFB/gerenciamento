@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 // Ícones
-import { FaCoins, FaUserTie, FaChessKnight, FaDice, FaChartLine, FaBullseye } from 'react-icons/fa';
+import { FaCoins, FaUserTie, FaBullseye } from 'react-icons/fa';
 import { FiDownload, FiHome } from 'react-icons/fi';
 
 // CSS Module
@@ -16,46 +16,39 @@ const BottomMenu = () => {
   const menuItems = [
     {
       id: 'transactions',
-      icon: <FiDownload size={20} />,
-      label: 'Lançamentos',
+      icon: <FiDownload />,
+      label: 'Caixa',
       path: '/transaction',
-      color: '#2f00ffff'
+      color: '#00E0FF' // Azul Neon (Cyber)
     },
     {
       id: 'dashboard',
-      icon: <FiHome size={20} />,
-      label: 'Tela Inicial',
+      icon: <FiHome />,
+      label: 'Mesa',
       path: '/dashboard',
-      color: '#2f00ffff'
+      color: '#00FF88' // Verde Neon (Win)
     },
     {
       id: 'objectives',
-      icon: <FaBullseye size={20} />,
-      label: 'Objetivos',
+      icon: <FaBullseye />,
+      label: 'Metas',
       path: '/objectives',
-      color: '#E91E63'
+      color: '#FF0055' // Rosa Neon (Impacto)
     },
     {
       id: 'investment',
-      icon: <FaUserTie size={20} />,
-      label: 'Perfil',
+      icon: <FaUserTie />,
+      label: 'Tática',
       path: '/investment-profile',
-      color: '#4CAF50'
-    },
-    // {
-    //   id: 'strategy',
-    //   icon: <FaChessKnight size={20} />,
-    //   label: 'Estratégia',
-    //   path: '/strategy',
-    //   color: '#2196F3'
-    // }
+      color: '#D4AF37' // Dourado (Premium)
+    }
   ];
 
   const handleNavigation = (path, id) => {
     setActiveItem(id);
     navigate(path);
     
-    // Efeito de feedback visual
+    // Reset do efeito de pulso
     setTimeout(() => setActiveItem(''), 300);
   };
 
@@ -63,7 +56,7 @@ const BottomMenu = () => {
 
   return (
     <div className={styles.bottomMenuContainer}>
-      {/* Efeito de luz neon atrás do menu */}
+      {/* Luz de fundo geral */}
       <div className={styles.neonGlow}></div>
       
       <nav className={styles.bottomMenu}>
@@ -74,21 +67,21 @@ const BottomMenu = () => {
             onClick={() => handleNavigation(item.path, item.id)}
             style={{
               '--item-color': item.color,
-              '--item-glow': `${item.color}40`
+              '--item-glow': `${item.color}60` // Adiciona transparência à cor base para o glow
             }}
           >
-            {/* Efeito de brilho ativo */}
+            {/* Luz atrás do ícone ativo */}
             <div className={styles.activeGlow}></div>
             
-            {/* Ícone com efeito especial */}
+            {/* Ícone */}
             <div className={styles.iconContainer}>
               {item.icon}
             </div>
             
-            {/* Label do menu */}
+            {/* Texto do menu */}
             <span className={styles.menuLabel}>{item.label}</span>
             
-            {/* Indicador de atividade */}
+            {/* Indicador na borda inferior */}
             <div className={styles.activeIndicator}></div>
           </button>
         ))}
