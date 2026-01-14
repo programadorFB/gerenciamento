@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSpinner, FaCheck, FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa'; // Adicionei FaEye/FaEyeSlash
+import { FaSpinner, FaEye, FaEyeSlash, FaCheck, FaTimes } from 'react-icons/fa';
+import { GiHearts, GiDiamonds, GiClubs, GiSpades } from 'react-icons/gi';
 
 import { useAuth } from '../../contexts/AuthContext';
-import RiskSlider from '../../components/RiskSlider';
+import RiskSlider from '../../components/RiskSlider'; // Certifique-se que o slider existe
 
-// import logo from '../../assets/logo.png'; // REMOVIDO
 import styles from './LoginScreen.module.css';
 
 const LoginScreen = () => {
@@ -143,9 +143,14 @@ const LoginScreen = () => {
                     <div className={styles.form}>
                         
                         <div className={styles.header}>
-                            {/* LOGO REMOVIDA DAQUI */}
-                            <h1 className={styles.title}>Dealer's Access</h1>
-                            <p className={styles.subtitle}>{isLogin ? 'Bem-vindo à Mesa' : 'Junte-se ao Jogo'}</p>
+                            <div className={styles.suitIcons}>
+                                <GiSpades />
+                                <GiHearts />
+                                <GiDiamonds />
+                                <GiClubs />
+                            </div>
+                            <h1 className={styles.title}>FUTEBOL STUDIO</h1>
+                            <p className={styles.subtitle}>{isLogin ? 'ACESSO VIP' : 'NOVO JOGADOR'}</p>
                         </div>
 
                         {error && <div className={styles.errorContainer}>{error}</div>}
@@ -153,7 +158,7 @@ const LoginScreen = () => {
                         <form style={{width: '100%'}} onSubmit={handleSubmit}>
                             {!isLogin && (
                                 <div className={styles.inputGroup}>
-                                    <label htmlFor="name">Nome do Jogador</label>
+                                    <label htmlFor="name">NOME</label>
                                     <div className={styles.inputWrapper}>
                                         <input
                                             id="name"
@@ -169,7 +174,7 @@ const LoginScreen = () => {
                             )}
 
                             <div className={styles.inputGroup}>
-                                <label htmlFor="email">Email</label>
+                                <label htmlFor="email">EMAIL</label>
                                 <div className={styles.inputWrapper}>
                                     <input
                                         id="email"
@@ -183,14 +188,14 @@ const LoginScreen = () => {
                             </div>
 
                             <div className={styles.inputGroup}>
-                                <label htmlFor="password">Senha</label>
+                                <label htmlFor="password">SENHA</label>
                                 <div className={styles.inputWrapper}>
                                     <input
                                         id="password"
                                         type={showPassword ? 'text' : 'password'}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        placeholder="******"
+                                        placeholder=".........."
                                         required
                                         minLength="6"
                                     />
@@ -221,7 +226,7 @@ const LoginScreen = () => {
                             {!isLogin && (
                                 <>
                                     <div className={styles.inputGroup}>
-                                        <label htmlFor="initialBank">Banca Inicial</label>
+                                        <label htmlFor="initialBank">BANCA INICIAL</label>
                                         <div className={styles.inputWrapper}>
                                             <span className={styles.currencyPrefix}>R$</span>
                                             <input
@@ -238,7 +243,7 @@ const LoginScreen = () => {
                                     </div>
 
                                     <div className={styles.inputGroup}>
-                                        <label>Defina seu Estilo</label>
+                                        <label>ESTILO DE JOGO</label>
                                         <RiskSlider value={riskValue} onValueChange={setRiskValue} />
                                     </div>
                                 </>
@@ -250,20 +255,20 @@ const LoginScreen = () => {
                                 disabled={isLoading || !validateForm()}
                             >
                                 <div className={styles.goldGradient}>
-                                    {isLoading ? <FaSpinner className={styles.spinner} /> : (isLogin ? 'ENTRAR NA MESA' : 'REGISTRAR JOGADA')}
+                                    {isLoading ? <FaSpinner className={styles.spinner} /> : (isLogin ? 'ENTRAR' : 'REGISTRAR')}
                                 </div>
                             </button>
                         </form>
 
                         <button onClick={toggleMode} className={styles.toggleButton}>
-                            {isLogin ? "Novo por aqui?" : 'Já tem acesso?'}
-                            <span>{isLogin ? 'Crie sua conta' : 'Faça Login'}</span>
+                            {isLogin ? "Novo por aqui?" : 'Já possui conta?'}
+                            <span>{isLogin ? 'CADASTRE-SE' : 'FAÇA LOGIN'}</span>
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Modal de Reset (Manteve-se igual) */}
+            {/* Modal de Reset de Senha */}
             {showResetModal && (
                 <div className={styles.modalOverlay} onClick={() => setShowResetModal(false)}>
                     <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -291,15 +296,15 @@ const LoginScreen = () => {
                         ) : (
                             <div style={{width: '100%'}}>
                                 <div className={styles.modalHeader}>
-                                    <h2>Recuperar Acesso</h2>
-                                    <p>Digite seu email para receber o link de recuperação</p>
+                                    <h2>RECUPERAR ACESSO</h2>
+                                    <p>Digite seu email para receber o link</p>
                                 </div>
 
                                 {resetError && <div className={styles.errorContainer}>{resetError}</div>}
                                 
                                 <form onSubmit={handleResetPassword}>
                                     <div className={styles.inputGroup}>
-                                        <label>Email Cadastrado</label>
+                                        <label>EMAIL CADASTRADO</label>
                                         <div className={styles.inputWrapper}>
                                             <input
                                                 type="email"
