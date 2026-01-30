@@ -1,33 +1,23 @@
 /* ========================================
-   TEMA: CASSINO ROYAL / FOOTBALL STUDIO
-   ObjectiveScreen.module.css
+   OBJECTIVE SCREEN - HIGH STAKES ROUTETTE
+   Theme: Vanta Black | Casino Gold | Felt Green Accents
    ======================================== */
-
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;600;700&display=swap');
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes tabSlide {
-  from { opacity: 0; transform: translateX(-10px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-/* --- Estrutura da Tela (Mesa de Feltro) --- */
+/* --- Estrutura da Tela --- */
 .container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
-  /* Textura de mesa de feltro */
-  
-  color: #E0E0E0;
-  font-family: 'Montserrat', sans-serif;
+  background: radial-gradient(circle at top center, #151515 0%, #050505 100%);
+  color: #F5F5F5;
+  font-family: 'Inter', sans-serif;
   overflow-x: hidden;
-  padding-bottom: 80px; /* Espaço para menu inferior */
 }
 
 /* --- Cabeçalho --- */
@@ -35,25 +25,25 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px 24px;
+  background: rgba(10, 10, 10, 0.95);
+  border-bottom: 2px solid #D4AF37;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
 }
 
-.header h1 {
+.pageTitle {
   font-family: 'Cinzel', serif;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
-  color: #D4AF37; /* Dourado */
+  color: #D4AF37;
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 2px;
-  text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
 .backButton {
@@ -61,170 +51,160 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px;
-  color: #FFF;
-  font-size: 12px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #888;
+  font-size: 10px;
   font-weight: 600;
   cursor: pointer;
-  padding: 8px 16px;
-  transition: all 0.2s;
-  font-family: 'Montserrat', sans-serif;
+  padding: 8px 12px;
+  transition: all 0.3s ease;
   text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .backButton:hover {
-  background: rgba(255,255,255,0.1);
   border-color: #D4AF37;
   color: #D4AF37;
+  background: rgba(212, 175, 55, 0.05);
 }
 
-.headerSpacer { width: 80px; } /* Ajuste para equilibrar o header */
+.headerSpacer { width: 32px; }
 
-/* --- Sistema de Abas (Estilo Chips/Toggle) --- */
-.tabsContainer {
+/* --- Controles da Mesa (Abas/Chips) --- */
+.tableControls {
+  padding: 20px 0;
   display: flex;
   justify-content: center;
-  gap: 12px;
-  padding: 20px 20px 0 20px;
-  margin-bottom: 20px;
-  width: 100%;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.tab {
-  flex: 1;
-  max-width: 180px;
+.chipToggleContainer {
+  display: flex;
+  gap: 16px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 6px;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+}
+
+.chipTab {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  padding: 12px;
-  background: #15191E;
-  border: 1px solid #333;
-  border-radius: 12px;
-  color: #8B949E;
-  font-size: 12px;
+  padding: 10px 24px;
+  border-radius: 40px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #666;
+  font-size: 11px;
   font-weight: 700;
   cursor: pointer;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  letter-spacing: 1px;
 }
 
-.tab:hover {
-  background: #1F242B;
+.chipTab:hover {
+  color: #E0E0E0;
+}
+
+/* Estado Ativo: Ouro (Em Jogo) */
+.chipActiveGold {
+  background: linear-gradient(180deg, #D4AF37 0%, #AA8A1E 100%);
+  color: #000;
+  border-color: #FEE184;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Estado Ativo: Verde (Conquistas) */
+.chipActiveGreen {
+  background: linear-gradient(180deg, #4CAF50 0%, #2E7D32 100%);
   color: #FFF;
+  border-color: #81C784;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+  transform: translateY(-1px);
 }
 
-/* Aba Ativa (Dourada) */
-.tabActive {
-  background: linear-gradient(135deg, #D4AF37 0%, #AA8A25 100%);
-  color: #000 !important;
-  border-color: #FFD700;
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-  transform: translateY(-2px);
-}
+.tabIcon { font-size: 14px; }
 
-/* Brilho na aba ativa */
-.tabActive::after {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 50%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  transform: skewX(-20deg);
-  animation: shine 3s infinite;
-}
-
-.tab svg { font-size: 16px; }
-.tabActive svg { color: #000; } /* Ícone preto no fundo dourado */
-
-/* --- Conteúdo Principal (Painel) --- */
-.content {
+/* --- Conteúdo Principal --- */
+.contentTable {
   flex-grow: 1;
-  padding: 0 20px 20px 20px;
-  overflow-y: auto;
-  width: 100%;
-  animation: fadeIn 0.4s ease-out;
+  padding: 24px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* --- Botão Adicionar (Verde Neon/Mesa) --- */
-.addObjectiveButton {
+.listWrapper {
   width: 100%;
-  max-width: 600px; /* Limite em desktop */
+}
+
+/* --- Botão "Nova Aposta" --- */
+.addBetButton {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 30px;
   padding: 16px;
-  border: none;
-  border-radius: 12px;
-  font-weight: 800;
-  font-size: 13px;
-  cursor: pointer;
-  margin-bottom: 24px;
+  
+  /* Estilo Lingote Escuro com Ouro */
+  background: linear-gradient(145deg, #1A1A1A 0%, #000000 100%);
+  border: 1px solid #D4AF37;
+  border-radius: 8px;
+  
+  color: #D4AF37;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  /* Gradiente Verde "Apostar" */
-  background: linear-gradient(90deg, #00C853 0%, #009624 100%);
-  color: #FFFFFF;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-family: 'Montserrat', sans-serif;
-  box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3);
-  transition: all 0.2s;
+  gap: 12px;
+  
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
-.addObjectiveButton:hover {
+.addBetButton:hover {
+  background: linear-gradient(145deg, #252525 0%, #0A0A0A 100%);
+  box-shadow: 
+    0 0 25px rgba(212, 175, 55, 0.15),
+    inset 0 0 10px rgba(212, 175, 55, 0.05);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 200, 83, 0.5);
-  filter: brightness(1.1);
+  color: #FEE184;
+  border-color: #FEE184;
 }
 
-.addObjectiveButton:active {
-  transform: translateY(0);
-}
-
-@keyframes shine {
-  to { background-position: 200% center; }
+.addBetButton:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
 /* ========================================
-   MEDIA QUERIES (DESKTOP)
+   MEDIA QUERIES
    ======================================== */
 @media (min-width: 768px) {
-  .header {
-    padding: 20px 40px;
-  }
+  .header { padding: 20px 40px; }
+  .pageTitle { font-size: 20px; }
   
-  .header h1 {
-    font-size: 24px;
+  .contentTable {
+    padding: 40px;
   }
 
-  .tabsContainer {
-    gap: 20px;
-    margin-bottom: 40px;
-  }
-  
-  .tab {
-    padding: 14px 30px;
-    font-size: 14px;
-  }
-
-  /* Container do conteúdo mais controlado no desktop */
-  .content {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 40px 40px 40px;
-  }
-
-  .addObjectiveButton {
+  .addBetButton {
     width: auto;
-    min-width: 300px;
-    padding: 18px 40px;
-    font-size: 14px;
+    padding: 16px 60px;
   }
 }

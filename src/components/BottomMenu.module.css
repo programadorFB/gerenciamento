@@ -1,50 +1,42 @@
 /* ========================================
-   TEMA CASINO / TIPSTER (Breathtaking)
-   BottomMenu.module.css
+   BOTTOM MENU - BLOOD & GOLD EDITION
    ======================================== */
 
 .bottomMenuContainer {
   position: fixed;
-  bottom: 20px; /* Flutuando acima da borda */
-  left: 20px;
-  right: 20px;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 450px;
   height: 70px;
   z-index: 1000;
-  max-width: 500px; /* Largura máxima para não esticar demais em tablets */
-  margin: 0 auto; /* Centraliza */
   
-  /* Fundo Complexo: Gradiente Dark + Glassmorphism */
-  background: rgba(21, 25, 30, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 24px; /* Formato Pílula */
+  /* Fundo "Levantado" (Cinza Metálico Profundo, não preto) */
+  background: linear-gradient(180deg, #1a1a1a 0%, #121212 100%);
+  backdrop-filter: blur(16px);
+  border-radius: 35px;
   
-  /* Bordas e Iluminação */
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* BORDA DE OURO ESCOVADO (Gradiente Realista) */
+  border: 2px solid transparent;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  background-image: 
+    linear-gradient(#1a1a1a, #121212), /* Fundo interno */
+    linear-gradient(90deg, #8B7355, #D4AF37, #FEE184, #D4AF37, #8B7355); /* Borda Metálica */
+  
   box-shadow: 
-    0 20px 40px -10px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 10px 30px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
     
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.3s ease;
 }
 
-/* Luz de fundo geral (Ambient Glow) */
-.neonGlow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  height: 20px;
-  background: linear-gradient(90deg, #00E0FF, #00FF88, #FF0055, #D4AF37);
-  filter: blur(40px);
-  opacity: 0.15;
-  z-index: -1;
-  border-radius: 50%;
-  pointer-events: none;
-}
+/* Remove o neon difuso antigo */
+.neonGlow { display: none; }
 
 .bottomMenu {
   display: flex;
@@ -52,8 +44,7 @@
   align-items: center;
   width: 100%;
   height: 100%;
-  padding: 0 16px;
-  position: relative;
+  padding: 0 12px;
 }
 
 .menuItem {
@@ -64,121 +55,96 @@
   justify-content: center;
   flex: 1;
   height: 100%;
-  
-  text-decoration: none;
-  color: #6E7681; /* Cinza metálico inativo */
+  color: #666; /* Cinza médio inativo */
   background: transparent;
   border: none;
-  border-radius: 16px;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .menuItem:hover {
-  color: #B0B8C3;
+  color: #D4AF37; /* Brilho dourado no hover */
 }
 
-/* --- ESTADO ATIVO (Neon) --- */
+/* --- ESTADO ATIVO --- */
 .active {
   color: #FFFFFF !important;
 }
 
-/* Luz de fundo do item ativo (Spotlight) */
+/* Spotlight Dourado Atrás do Ícone */
 .activeGlow {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 40px;
-  height: 40px;
-  background: var(--item-glow);
-  filter: blur(15px);
+  width: 45px;
+  height: 45px;
+  background: radial-gradient(circle, rgba(201, 162, 39, 0.25) 0%, transparent 70%);
+  filter: blur(8px);
   z-index: -1;
   opacity: 0;
-  transition: opacity 0.3s;
-  border-radius: 50%;
+  transition: opacity 0.4s ease;
 }
 
-.active .activeGlow {
-  opacity: 1;
-}
+.active .activeGlow { opacity: 1; }
 
 .iconContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-size: 22px;
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
   z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
 }
 
-/* Animação do ícone ao ativar (Flutua e colore) */
+/* Ícone Ativo sobe e vira OURO PURO */
 .active .iconContainer {
   transform: translateY(-6px);
-  color: var(--item-color) !important;
-  filter: drop-shadow(0 0 8px var(--item-color));
+  color: #FFD700 !important; 
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));
 }
 
 .menuLabel {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
-  font-size: 9px;
-  letter-spacing: 0.5px;
+  font-size: 10px;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  color: inherit;
+  
+  /* Texto Dourado Metálico */
+  background: linear-gradient(to bottom, #FCEabb 0%, #F8B500 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
   margin-top: 4px;
   opacity: 0;
   transform: translateY(10px);
   transition: all 0.3s ease;
   position: absolute;
-  bottom: 8px;
+  bottom: 12px;
 }
 
-/* Label aparece quando ativo */
 .active .menuLabel {
   opacity: 1;
   transform: translateY(0);
-  color: #FFFFFF;
-  text-shadow: 0 0 10px var(--item-color);
 }
 
-/* Indicador de Ponto (Dot) embaixo do ativo */
+/* Indicador Inferior (Barra de Ouro) */
 .activeIndicator {
   position: absolute;
   bottom: 0;
-  width: 20px;
+  width: 24px;
   height: 3px;
   border-radius: 4px 4px 0 0;
-  background: var(--item-color);
-  box-shadow: 0 0 10px var(--item-color);
+  
+  /* Gradiente Metálico */
+  background: linear-gradient(90deg, #B8860B, #FFD700, #B8860B);
+  box-shadow: 0 -2px 10px rgba(201, 162, 39, 0.5);
+  
   opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translateY(5px);
+  transition: all 0.3s ease;
 }
 
 .active .activeIndicator {
   opacity: 1;
   transform: translateY(0);
-}
-
-/* Efeito de Clique (Pulse) */
-@keyframes pulseEffect {
-  0% { transform: scale(1); }
-  50% { transform: scale(0.9); }
-  100% { transform: scale(1); }
-}
-
-.pulse .iconContainer {
-  animation: pulseEffect 0.3s ease-in-out;
-}
-
-/* Responsividade */
-@media (max-width: 480px) {
-  .bottomMenuContainer { 
-    bottom: 15px;
-    left: 15px;
-    right: 15px;
-    height: 65px; 
-  }
 }

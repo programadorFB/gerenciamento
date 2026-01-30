@@ -24,7 +24,7 @@ const BottomMenu = () => {
     {
       id: 'dashboard',
       icon: <FiHome />,
-      label: 'Mesa',
+      label: 'Dashboard',
       path: '/dashboard',
       color: '#00FF88' // Verde Neon (Win)
     },
@@ -38,7 +38,7 @@ const BottomMenu = () => {
     {
       id: 'investment',
       icon: <FaUserTie />,
-      label: 'Tática',
+      label: 'Perfil de Investidor',
       path: '/investment-profile',
       color: '#D4AF37' // Dourado (Premium)
     }

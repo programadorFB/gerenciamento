@@ -7,8 +7,8 @@ import ObjectiveModal from '../../components/ObjectiveModal';
 import ObjectivesList from '../../components/ObjectivesList';
 
 // --- Icons ---
-import { MdArrowBack, MdAdd } from 'react-icons/md';
-import { FaBullseye, FaTrophy } from 'react-icons/fa';
+import { MdArrowBack, MdAddCircleOutline } from 'react-icons/md';
+import { GiDart, GiTrophyCup } from 'react-icons/gi'; 
 
 // --- CSS Module ---
 import styles from './ObjectiveScreen.module.css';
@@ -25,41 +25,44 @@ const ObjectivesScreen = () => {
     <div className={styles.container}>
       <header className={styles.header}>
         <button className={styles.backButton} onClick={() => navigate(-1)}>
-          <MdArrowBack size={18} /> <span>Voltar</span>
+          <MdArrowBack size={18} /> <span>VOLTAR</span>
         </button>
-        <h1>Missões & Metas</h1>
+        <h1 className={styles.pageTitle}>MISSÕES DA BANCA</h1>
         <div className={styles.headerSpacer} />
       </header>
 
-      {/* Sistema de Abas (Chips) */}
-      <div className={styles.tabsContainer}>
-        <button 
-          className={`${styles.tab} ${activeTab === 'active' ? styles.tabActive : ''}`}
-          onClick={() => setActiveTab('active')}
-        >
-          <FaBullseye />
-          <span>Em Jogo</span>
-        </button>
-        <button 
-          className={`${styles.tab} ${activeTab === 'completed' ? styles.tabActive : ''}`}
-          onClick={() => setActiveTab('completed')}
-        >
-          <FaTrophy />
-          <span>Conquistados</span>
-        </button>
+      {/* Navegação tipo "Mesa de Jogo" (Chips) */}
+      <div className={styles.tableControls}>
+        <div className={styles.chipToggleContainer}>
+          <button 
+            className={`${styles.chipTab} ${activeTab === 'active' ? styles.chipActiveGold : ''}`}
+            onClick={() => setActiveTab('active')}
+          >
+            <GiDart className={styles.tabIcon} />
+            <span className={styles.tabText}>EM JOGO</span>
+          </button>
+          
+          <button 
+            className={`${styles.chipTab} ${activeTab === 'completed' ? styles.chipActiveGreen : ''}`}
+            onClick={() => setActiveTab('completed')}
+          >
+            <GiTrophyCup className={styles.tabIcon} />
+            <span className={styles.tabText}>CONQUISTAS</span>
+          </button>
+        </div>
       </div>
 
-      <main className={styles.content}>
+      <main className={styles.contentTable}>
         {/* Botão de Ação Principal (Só na aba ativa) */}
         {activeTab === 'active' && (
-          <button className={styles.addObjectiveButton} onClick={() => setObjectiveModalVisible(true)}>
-            <MdAdd size={20} /> DEFINIR NOVO OBJETIVO
+          <button className={styles.addBetButton} onClick={() => setObjectiveModalVisible(true)}>
+            <MdAddCircleOutline size={22} />
+            <span>NOVA META</span>
           </button>
         )}
         
-        {/* Lista de Objetivos (Container interno estilizado pelo componente filho, 
-            mas o pai controla o layout geral) */}
-        <div style={{ width: '100%', maxWidth: '800px' }}>
+        {/* Lista de Objetivos */}
+        <div className={styles.listWrapper}>
             <ObjectivesList showCompleted={activeTab === 'completed'} />
         </div>
       </main>

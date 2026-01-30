@@ -3,7 +3,7 @@ import {
   MdShield,
   MdSecurity,
   MdWarning,
-  MdDangerous,
+  MdGppBad,
   MdLockOutline
 } from 'react-icons/md';
 import styles from './StopLossCard.module.css';
@@ -14,7 +14,6 @@ const StopLossCard = React.memo(({
   formatCurrency,
   stopLossPercentage = 0,
   onStopLossChange,
-  onEdit // Função opcional para abrir modal de edição se necessário
 }) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -33,40 +32,40 @@ const StopLossCard = React.memo(({
     return loss > 0 ? loss : 0;
   }, [validInitialBalance, validBalance]);
 
-  // Lógica de Cores e Ícones (Tema Cassino)
-  // 0-3%: Azul (Safe/Defense)
-  // 4-7%: Dourado (Caution/Mid)
-  // 8-10%: Vermelho (Critical/Attack)
+  // Lógica de Cores e Ícones (Tema Elite)
+  // 0-3%: Esmeralda (Safe/Conservador)
+  // 4-7%: Ouro (Caution/Moderado)
+  // 8-10%: Sangue (Danger/Agressivo)
   const statusInfo = useMemo(() => {
     if (stopLossPercentage === 0) {
       return {
         color: '#666',
         icon: <MdLockOutline />,
-        message: 'Proteção Desativada',
-        description: 'Sua banca está exposta a variações totais.'
+        title: 'DESATIVADO',
+        description: 'Sem proteção ativa.'
       };
     }
     if (stopLossPercentage <= 3) {
       return {
-        color: '#2979FF', // Azul Neon
+        color: '#2E7D32', // Esmeralda Escura
         icon: <MdShield />,
-        message: 'Modo Defensivo',
-        description: 'Alta proteção. Ideal para estratégias conservadoras.'
+        title: 'CONSERVADOR',
+        description: 'Proteção máxima de capital.'
       };
     }
     if (stopLossPercentage <= 7) {
       return {
-        color: '#D4AF37', // Dourado
+        color: '#D4AF37', // Ouro
         icon: <MdSecurity />,
-        message: 'Modo Equilibrado',
-        description: 'Balanço entre proteção e margem de operação.'
+        title: 'MODERADO',
+        description: 'Equilíbrio entre risco e retorno.'
       };
     }
     return {
-      color: '#FF4D4D', // Vermelho Neon
-      icon: <MdDangerous />,
-      message: 'Modo Agressivo',
-      description: 'Alta exposição. Risco elevado de atingir o limite.'
+      color: '#8B0000', // Vermelho Sangue
+      icon: <MdGppBad />,
+      title: 'AGRESSIVO',
+      description: 'Alta exposição ao risco.'
     };
   }, [stopLossPercentage]);
 
@@ -75,9 +74,9 @@ const StopLossCard = React.memo(({
     setIsAnimating(true);
     const timer = setTimeout(() => setIsAnimating(false), 300);
     return () => clearTimeout(timer);
-  }, [statusInfo.message]);
+  }, [statusInfo.title]);
 
-  // Porcentagem de consumo do Stop Loss (Barra de Vida)
+  // Porcentagem de consumo do Stop Loss
   const progressWidth = useMemo(() => {
     if (stopLossValue === 0) return 0;
     const pct = (currentLoss / stopLossValue) * 100;
@@ -85,7 +84,7 @@ const StopLossCard = React.memo(({
   }, [currentLoss, stopLossValue]);
 
   return (
-    <fieldset 
+    <div 
       className={styles.container}
       style={{ '--status-color': statusInfo.color }}
     >
@@ -94,80 +93,77 @@ const StopLossCard = React.memo(({
           <div className={styles.iconWrapper}>
             {statusInfo.icon}
           </div>
-          <h3 className={styles.title}>Sistema de Defesa</h3>
+          <span className={styles.labelTitle}>Gestão de Risco</span>
+        </div>
+        <div className={styles.statusBadge}>
+          {statusInfo.title}
         </div>
       </div>
 
       <div className={styles.content}>
         
-        {/* Mostrador Principal */}
-        <div className={styles.percentageItem}>
-          <span className={styles.percentageLabel}>Limite Definido</span>
-          <span className={styles.percentageValue}>
+        {/* Mostrador Principal (Display Digital Luxo) */}
+        <div className={styles.displaySection}>
+          <span className={styles.displayValue}>
             {stopLossPercentage}%
           </span>
+          <span className={styles.displayLabel}>Stop Loss</span>
         </div>
 
-        {/* Slider */}
+        {/* Slider Físico */}
         <div className={styles.sliderSection}>
-          <div className={styles.sliderHeader}>
-            <span className={styles.sliderTitle}>Ajuste Fino</span>
+          <div className={styles.sliderTrackBackground}>
+             <div className={styles.sliderTrackFill} style={{width: `${stopLossPercentage * 10}%`}}></div>
           </div>
+          <input
+            type="range"
+            min="0"
+            max="10"
+            step="1"
+            value={stopLossPercentage}
+            onChange={(e) => onStopLossChange(Number(e.target.value))}
+            className={styles.sliderInput}
+          />
           
-          <div className={styles.sliderContainer}>
-            <input
-              type="range"
-              min="0"
-              max="10"
-              step="1"
-              value={stopLossPercentage}
-              onChange={(e) => onStopLossChange(Number(e.target.value))}
-              className={styles.slider}
-            />
-          </div>
-
-          <div className={styles.numberRuler}>
+          {/* Marcadores de Régua */}
+          <div className={styles.rulerContainer}>
             {[0, 2, 4, 6, 8, 10].map((num) => (
-              <span 
-                key={num} 
-                className={`${styles.numberMark} ${stopLossPercentage === num ? styles.activeNumber : ''}`}
-                onClick={() => onStopLossChange(num)}
-              >
-                {num}
-              </span>
+               <div key={num} className={styles.rulerMark} onClick={() => onStopLossChange(num)}>
+                 <span className={styles.rulerLine}></span>
+                 <span className={styles.rulerNumber}>{num}</span>
+               </div>
             ))}
           </div>
         </div>
 
-        {/* Barra de Consumo (Dano) */}
-        <div className={styles.progressSection}>
-          <div className={styles.progressBar}>
-            <div 
-              className={styles.progressFill}
-              style={{ width: `${progressWidth}%` }}
-            />
-          </div>
-          <p className={styles.progressText}>
-            Integridade da Banca: {progressWidth > 0 ? `-${progressWidth.toFixed(1)}%` : '100%'}
-          </p>
+        {/* Info Financeira e Barra de Dano */}
+        <div className={styles.infoGrid}>
+           <div className={styles.infoItem}>
+              <span className={styles.infoLabel}>Valor Protegido</span>
+              <span className={styles.infoValue}>{stopLossPercentage > 0 ? formatCurrency(stopLossValue) : '---'}</span>
+           </div>
+           
+           <div className={styles.infoItem}>
+              <span className={styles.infoLabel}>Integridade</span>
+              <div className={styles.miniProgressBar}>
+                 <div 
+                    className={styles.miniProgressFill} 
+                    style={{ 
+                       width: `${Math.max(0, 100 - progressWidth)}%`,
+                       backgroundColor: progressWidth > 90 ? '#8B0000' : 'var(--status-color)'
+                    }} 
+                 />
+              </div>
+           </div>
         </div>
 
-        {/* Valor Monetário */}
-        <div className={styles.amountSection}>
-          <span className={styles.amountLabel}>Valor de Proteção</span>
-          <span className={styles.amountValue}>
-            {stopLossPercentage > 0 ? formatCurrency(stopLossValue) : '---'}
-          </span>
-        </div>
-
-        {/* Mensagem Contextual */}
-        <div className={`${styles.statusMessage} ${isAnimating ? styles.messageSlide : ''}`}>
-          <p className={styles.messageText}>{statusInfo.message}</p>
-          <p className={styles.descriptionText}>{statusInfo.description}</p>
+        {/* Descrição Dinâmica */}
+        <div className={`${styles.footerMessage} ${isAnimating ? styles.fadeEffect : ''}`}>
+           {statusInfo.description}
         </div>
 
       </div>
-    </fieldset>
+    </div>
   );
 });
 

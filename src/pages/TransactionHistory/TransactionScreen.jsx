@@ -1,215 +1,216 @@
-import React, { useState, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useFinancial } from '../../contexts/FinancialContext';
 
-// --- Icons (Atualizados para tema Cassino) ---
-import { IoArrowBack, IoCalendar, IoCheckmark } from 'react-icons/io5';
-import { FaArrowUp, FaArrowDown, FaTrophy, FaChartLine } from 'react-icons/fa';
+// --- Icons ---
+import { MdArrowBack, MdCalendarToday, MdCheck } from 'react-icons/md';
+import { GiToken, GiPayMoney, GiTrophyCup, GiSkullCrossedBones } from 'react-icons/gi';
 
 // --- CSS Module ---
 import styles from './TransactionScreen.module.css';
 
-// --- Constants & Utilities ---
 const TRANSACTION_TYPES = [
   { 
-    name: 'Depósito', 
-    key: 'deposit', 
-    icon: <FaArrowUp />, 
-    color: '#00E0FF', // Azul Neon
-    glow: 'rgba(0, 224, 255, 0.4)',
-    description: 'Adicionar saldo' 
+    id: 'deposit', 
+    label: 'DEPÓSITO', 
+    subLabel: 'Depósito',
+    icon: GiToken, 
+    color: '#00E676', // Verde Neon
+    activeClass: styles.typeDeposit 
   },
   { 
-    name: 'Saque', 
-    key: 'withdraw', 
-    icon: <FaArrowDown />, 
-    color: '#FFA500', // Laranja
-    glow: 'rgba(255, 165, 0, 0.4)',
-    description: 'Retirar saldo' 
+    id: 'withdraw', 
+    label: 'SAQUE', 
+    subLabel: 'Saque',
+    icon: GiPayMoney, 
+    color: '#FF9100', // Laranja Ouro
+    activeClass: styles.typeWithdraw 
   },
   { 
-    name: 'Vitória', 
-    key: 'gains', 
-    icon: <FaTrophy />, 
-    color: '#00FF88', // Verde Neon
-    glow: 'rgba(0, 255, 136, 0.4)',
-    description: 'Lucro (Green)' 
+    id: 'gains', 
+    label: 'GREEN (WIN)', 
+    subLabel: 'Lucro',
+    icon: GiTrophyCup, 
+    color: '#D4AF37', // Ouro
+    activeClass: styles.typeWin 
   },
   { 
-    name: 'Derrota', 
-    key: 'losses', 
-    icon: <FaChartLine style={{transform: 'scaleY(-1)'}} />, // Gráfico descendo
-    color: '#FF4D4D', // Vermelho Neon
-    glow: 'rgba(255, 77, 77, 0.4)',
-    description: 'Prejuízo (Red)' 
+    id: 'losses', 
+    label: 'RED (LOSS)', 
+    subLabel: 'Prejuízo',
+    icon: GiSkullCrossedBones, 
+    color: '#D50000', // Sangue
+    activeClass: styles.typeLoss 
   }
 ];
 
-const getCurrentDate = () => new Date().toISOString().split('T')[0];
-
-// --- Reusable Sub-Components ---
-const DatePicker = ({ visible, onClose, onDateSelect, selectedDate }) => {
-  if (!visible) return null;
-  return (
-    <div className={styles.datePickerOverlay} onClick={onClose}>
-      <div className={styles.datePickerContainer} onClick={e => e.stopPropagation()}>
-        <h3>DATA DA OPERAÇÃO</h3>
-        <input 
-          type="date" 
-          value={selectedDate || ''} 
-          onChange={e => onDateSelect(e.target.value)} 
-        />
-        <button onClick={onClose}>Confirmar</button>
-      </div>
-    </div>
-  );
-};
-
-const DateInput = ({ value, onDateChange }) => {
-  const [pickerVisible, setPickerVisible] = useState(false);
-  const displayDate = value ? new Date(value).toLocaleDateString('pt-BR', { timeZone: 'UTC', day: '2-digit', month: 'long', year: 'numeric' }) : '';
-  
-  return (
-    <div className={styles.dateInputContainer}>
-      <input 
-        type="text" 
-        readOnly 
-        value={displayDate} 
-        onClick={() => setPickerVisible(true)} 
-        placeholder="SELECIONE UMA DATA" 
-        className={styles.input} 
-      />
-      <button type="button" className={styles.calendarIcon} onClick={() => setPickerVisible(true)}>
-        <IoCalendar />
-      </button>
-      <DatePicker 
-        visible={pickerVisible} 
-        onClose={() => setPickerVisible(false)} 
-        onDateSelect={(newDate) => {
-          onDateChange(newDate);
-          setPickerVisible(false);
-        }} 
-        selectedDate={value} 
-      />
-    </div>
-  );
-};
-
-// --- Main Screen Component ---
 const TransactionScreen = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const { addTransaction } = useFinancial();
+  const location = useLocation();
+  const { addTransaction, loading } = useFinancial();
 
-  const params = new URLSearchParams(location.search);
-  const typeParam = params.get('type');
-  const dateParam = params.get('defaultDate');
+  // Tenta pegar o tipo da URL (ex: ?type=deposit)
+  const queryParams = new URLSearchParams(location.search);
+  const initialType = queryParams.get('type') || 'gains';
 
-  const [transactionType, setTransactionType] = useState(typeParam || 'deposit');
+  const [type, setType] = useState(initialType);
   const [amount, setAmount] = useState('');
-  const [date, setDate] = useState(dateParam || getCurrentDate());
-  const [loading, setLoading] = useState(false);
+  const [description, setDescription] = useState('');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [isInitialBank, setIsInitialBank] = useState(false);
-  
-  const isValid = useMemo(() => amount && parseFloat(amount.replace(',', '.')) > 0 && date && transactionType, [amount, date, transactionType]);
 
-  const handleAddTransaction = async (e) => {
+  // Formatação de Moeda
+  const handleAmountChange = (e) => {
+    let value = e.target.value.replace(/\D/g, "");
+    value = (Number(value) / 100).toFixed(2) + "";
+    value = value.replace(".", ",");
+    value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    setAmount(value);
+  };
+
+  const getNumericAmount = () => {
+    return parseFloat(amount.replace(/\./g, '').replace(',', '.')) || 0;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isValid) return alert('Por favor, preencha todos os campos corretamente.');
-    
-    setLoading(true);
-    const numericAmount = parseFloat(amount.replace(',', '.'));
-    const selectedType = TRANSACTION_TYPES.find(type => type.key === transactionType);
+    const numericAmount = getNumericAmount();
 
-    const result = await addTransaction({
-      type: transactionType,
+    if (numericAmount <= 0) {
+      alert("O valor deve ser maior que zero.");
+      return;
+    }
+
+    // Mapear para categorias legíveis
+    let category = 'Outros';
+    if (type === 'deposit') category = isInitialBank ? 'Banca Inicial' : 'Aporte';
+    if (type === 'withdraw') category = 'Retirada';
+    if (type === 'gains') category = 'Operação (Win)';
+    if (type === 'losses') category = 'Operação (Loss)';
+
+    const payload = {
+      type,
       amount: numericAmount,
-      description: selectedType.name,
-      category: selectedType.name,
-      date,
-      isInitialBank,
-    });
-    
-    setLoading(false);
-    
-    if (result?.success) {
-      navigate('/dashboard');
+      date: new Date(date).toISOString(),
+      description: description.trim() || category,
+      category,
+      is_initial_bank: type === 'deposit' && isInitialBank
+    };
+
+    const result = await addTransaction(payload);
+    if (result.success) {
+      navigate(-1);
     } else {
-      alert(result?.error || 'Erro ao adicionar transação');
+      alert("Erro ao salvar: " + result.error);
     }
   };
+
+  const currentTypeConfig = TRANSACTION_TYPES.find(t => t.id === type);
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <button className={styles.backButton} onClick={() => navigate(-1)}>
-          <IoArrowBack size={18} /> VOLTAR
+        <button onClick={() => navigate(-1)} className={styles.backButton}>
+          <MdArrowBack /> <span>CANCELAR</span>
         </button>
-        <h1>TERMINAL</h1>
-        <div className={styles.headerSpacer} />
+        <h1 className={styles.headerTitle}>NOVA OPERAÇÃO</h1>
+        <div style={{width: 32}}></div>
       </header>
 
       <main className={styles.content}>
-        <form onSubmit={handleAddTransaction} className={styles.formContainer}>
-          
-          <div className={styles.inputGroup}>
-            <label>TIPO DE OPERAÇÃO</label>
-            <div className={styles.typeGrid}>
-              {TRANSACTION_TYPES.map((type) => (
-                <button
-                  key={type.key}
-                  type="button"
-                  className={`${styles.typeButton} ${transactionType === type.key ? styles.typeButtonActive : ''}`}
-                  onClick={() => setTransactionType(type.key)}
-                  style={{
-                    '--type-color': type.color,
-                    '--type-color-glow': type.glow
-                  }}
-                >
-                  <div className={styles.typeButtonIcon}>{type.icon}</div>
-                  <div className={styles.typeButtonText}>
-                    <strong>{type.name}</strong>
-                    <span>{type.description}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
+        
+        {/* Seletor de Tipo (Estilo Botões de Máquina) */}
+        <div className={styles.typeGrid}>
+          {TRANSACTION_TYPES.map((t) => {
+            const Icon = t.icon;
+            const isActive = type === t.id;
+            return (
+              <button
+                key={t.id}
+                type="button"
+                className={`${styles.typeButton} ${isActive ? t.activeClass : ''}`}
+                onClick={() => setType(t.id)}
+              >
+                <Icon className={styles.typeIcon} />
+                <span className={styles.typeLabel}>{t.label}</span>
+                {isActive && <div className={styles.activeIndicator} />}
+              </button>
+            );
+          })}
+        </div>
 
-          <div className={styles.inputGroup}>
-            <label htmlFor="amount">VALOR (R$)</label>
-            <input 
-              id="amount" 
-              type="text" 
-              inputMode="decimal" 
-              value={amount} 
-              onChange={(e) => setAmount(e.target.value)} 
-              placeholder="0,00" 
-              className={styles.input} 
+        <form onSubmit={handleSubmit} className={styles.formContainer}>
+          
+          {/* Display de Valor (Estilo Calculadora/Display) */}
+          <div className={styles.amountDisplay} style={{ borderColor: currentTypeConfig.color }}>
+            <span className={styles.currencySymbol}>R$</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={amount}
+              onChange={handleAmountChange}
+              placeholder="0,00"
+              className={styles.amountInput}
               autoFocus
             />
           </div>
 
-          <div className={styles.inputGroup}>
-            <label>DATA</label>
-            <DateInput value={date} onDateChange={setDate} />
-          </div>
-          
-          {transactionType === 'deposit' && (
-            <div className={styles.checkboxContainer} onClick={() => setIsInitialBank(!isInitialBank)}>
-              <div className={`${styles.checkbox} ${isInitialBank ? styles.checkboxActive : ''}`}>
-                {isInitialBank && <IoCheckmark />}
-              </div>
-              <div>
-                <label className={styles.checkboxLabel}>BANCA INICIAL</label>
-                <p className={styles.checkboxDescription}>Marque se este é o seu depósito inicial.</p>
+          {/* Campos Adicionais */}
+          <div className={styles.fieldsGroup}>
+            
+            <div className={styles.inputRow}>
+              <label>Data</label>
+              <div className={styles.dateWrapper}>
+                <input 
+                  type="date" 
+                  value={date} 
+                  onChange={(e) => setDate(e.target.value)}
+                  className={styles.dateInput}
+                />
+                <MdCalendarToday className={styles.calendarIcon} />
               </div>
             </div>
-          )}
 
-          <button type="submit" className={styles.submitButton} disabled={!isValid || loading}>
-            {loading ? 'PROCESSANDO...' : `CONFIRMAR ${TRANSACTION_TYPES.find(t => t.key === transactionType)?.name.toUpperCase()}`}
+            <div className={styles.inputRow}>
+              <label>Nota</label>
+              <input 
+                type="text" 
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Ex: Alavancagem, Saque parcial..."
+                className={styles.textInput}
+                maxLength={30}
+              />
+            </div>
+
+            {/* Checkbox Banca Inicial (Apenas Depósito) */}
+            {type === 'deposit' && (
+              <div 
+                className={`${styles.checkboxRow} ${isInitialBank ? styles.checked : ''}`}
+                onClick={() => setIsInitialBank(!isInitialBank)}
+              >
+                <div className={styles.checkbox}>
+                  {isInitialBank && <MdCheck />}
+                </div>
+                <span>Marcar como Banca Inicial</span>
+              </div>
+            )}
+
+          </div>
+
+          {/* Botão de Ação (Alavanca) */}
+          <button 
+            type="submit" 
+            className={styles.submitButton}
+            disabled={loading}
+            style={{ 
+              background: `linear-gradient(135deg, ${currentTypeConfig.color} 0%, #000 150%)`,
+              borderColor: currentTypeConfig.color
+            }}
+          >
+            {loading ? 'PROCESSANDO...' : 'CONFIRMAR AÇÃO'}
           </button>
+
         </form>
       </main>
     </div>

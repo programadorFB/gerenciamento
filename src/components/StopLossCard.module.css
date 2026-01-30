@@ -1,40 +1,38 @@
 /* ========================================
-   TEMA: CASSINO ROYAL / FOOTBALL STUDIO
-   StopLossCard.module.css
+   STOP LOSS CARD - ELITE EDITION
+   Instrument Panel Style
    ======================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;600;700&display=swap');
-
-/* --- Container Principal (Painel de Segurança) --- */
 .container {
-  background: #15191E;
-  border: 1px solid #333;
+  background: radial-gradient(circle at center, #121212 0%, #050505 100%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   padding: 24px;
   position: relative;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   transition: all 0.3s ease;
 }
 
-/* Borda luminosa no topo baseada na cor do estado */
-.container::before {
+/* Brilho superior colorido baseado no status */
+.container::after {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 3px;
-  background: var(--status-color, #2979FF);
-  box-shadow: 0 0 15px var(--status-color, #2979FF);
-  transition: background 0.3s, box-shadow 0.3s;
+  height: 2px;
+  background: var(--status-color, #444);
+  box-shadow: 0 0 15px var(--status-color, #444);
+  opacity: 0.6;
+  transition: background 0.5s;
 }
 
-/* Header */
+/* --- Header --- */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .headerLeft {
@@ -44,222 +42,208 @@
 }
 
 .iconWrapper {
-  font-size: 24px;
+  font-size: 18px;
   color: var(--status-color);
-  background: rgba(255,255,255,0.05);
-  width: 40px;
-  height: 40px;
+  background: rgba(255, 255, 255, 0.03);
+  width: 32px;
+  height: 32px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 8px;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-  transition: color 0.3s;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s;
 }
 
-.title {
-  font-family: 'Cinzel', serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: #FFF;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin: 0;
-}
-
-/* Conteúdo Central */
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* Display da Porcentagem (Grande) */
-.percentageItem {
-  text-align: center;
-  padding: 10px 0;
-}
-
-.percentageLabel {
+.labelTitle {
   font-size: 11px;
-  color: #8B949E;
   text-transform: uppercase;
-  font-weight: 700;
   letter-spacing: 1px;
-  margin-bottom: 5px;
+  color: #888;
+  font-weight: 600;
+}
+
+.statusBadge {
+  font-size: 9px;
+  color: var(--status-color);
+  border: 1px solid var(--status-color);
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+/* --- Display Principal --- */
+.displaySection {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+}
+
+.displayValue {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: 42px;
+  color: #FFF;
+  font-weight: 400;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+  line-height: 1;
+}
+
+.displayLabel {
+  font-size: 9px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 4px;
   display: block;
 }
 
-.percentageValue {
-  font-family: 'Cinzel', serif;
-  font-size: 48px;
-  font-weight: 900;
-  color: #FFF;
-  text-shadow: 0 0 20px var(--status-color);
-  line-height: 1;
-  transition: text-shadow 0.3s;
-}
-
-/* --- Slider Customizado (Trilho) --- */
+/* --- Slider Customizado (Estilo Fader de Mesa de Som) --- */
 .sliderSection {
-  margin: 10px 0;
   position: relative;
+  height: 40px;
+  margin-bottom: 24px;
 }
 
-.sliderHeader {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
+.sliderTrackBackground {
+  position: absolute;
+  top: 19px;
+  left: 0; right: 0;
+  height: 2px;
+  background: #222;
+  border-radius: 2px;
 }
 
-.sliderTitle {
-  font-size: 11px;
-  color: #FFF;
-  font-weight: 700;
-  text-transform: uppercase;
+.sliderTrackFill {
+  height: 100%;
+  background: var(--status-color);
+  box-shadow: 0 0 8px var(--status-color);
+  transition: width 0.1s linear, background 0.3s;
 }
 
-.sliderContainer {
-  position: relative;
-  height: 40px; /* Altura para toque */
-  display: flex;
-  align-items: center;
-}
-
-.slider {
+.sliderInput {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 40px;
   -webkit-appearance: none;
-  width: 100%;
-  height: 8px;
-  background: #0F1216;
-  border-radius: 4px;
-  border: 1px solid #333;
-  outline: none;
-  position: relative;
-  z-index: 2;
-}
-
-/* Thumb (O Seletor Metálico) */
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 24px;
-  height: 24px;
-  background: #E0E0E0; /* Metal */
-  border: 2px solid var(--status-color);
-  border-radius: 50%;
+  background: transparent;
+  z-index: 10;
   cursor: pointer;
-  box-shadow: 0 0 15px var(--status-color);
-  margin-top: -9px; /* Centralizar no track (8px height) */
-  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-/* Régua Numérica */
-.numberRuler {
+.sliderInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 12px;
+  background: #111;
+  border: 1px solid #666;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  margin-top: -9px; /* Ajuste para centralizar no track */
+  top: 50%;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.sliderInput::-webkit-slider-thumb:hover {
+  border-color: #FFF;
+  background: #333;
+}
+
+/* Régua */
+.rulerContainer {
   display: flex;
   justify-content: space-between;
-  margin-top: 8px;
+  margin-top: 24px;
   padding: 0 4px;
 }
 
-.numberMark {
-  font-size: 10px;
-  color: #444;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 20px;
-  text-align: center;
-}
-
-.numberMark:hover { color: #FFF; }
-
-.activeNumber {
-  color: var(--status-color);
-  font-weight: 800;
-  transform: scale(1.2);
-  text-shadow: 0 0 5px var(--status-color);
-}
-
-/* --- Barra de Progresso (Dano Recebido) --- */
-.progressSection {
-  background: rgba(0,0,0,0.3);
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.05);
-}
-
-.progressBar {
-  height: 6px;
-  background: #0F1216;
-  border-radius: 3px;
-  overflow: hidden;
-  margin-bottom: 6px;
-}
-
-.progressFill {
-  height: 100%;
-  background: var(--status-color);
-  transition: width 0.5s ease;
-  box-shadow: 0 0 10px var(--status-color);
-}
-
-.progressText {
-  font-size: 10px;
-  color: #8B949E;
-  text-align: right;
-  margin: 0;
-}
-
-/* Info Financeira */
-.amountSection {
+.rulerMark {
   display: flex;
-  justify-content: space-between;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  padding-top: 12px;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.rulerLine {
+  width: 1px;
+  height: 4px;
+  background: #444;
+  margin-bottom: 4px;
+}
+
+.rulerNumber {
+  font-size: 9px;
+  color: #444;
+  font-weight: 500;
+}
+
+.rulerMark:hover .rulerNumber { color: #888; }
+
+/* --- Grid de Informações --- */
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.infoLabel {
+  font-size: 9px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.infoValue {
+  font-size: 13px;
+  color: #E0E0E0;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Mini Barra de Progresso */
+.miniProgressBar {
+  height: 4px;
+  background: #1a1a1a;
+  border-radius: 2px;
+  overflow: hidden;
   margin-top: 4px;
 }
 
-.amountLabel {
-  font-size: 11px;
-  color: #8B949E;
-  text-transform: uppercase;
+.miniProgressFill {
+  height: 100%;
+  transition: width 0.4s ease, background-color 0.3s;
 }
 
-.amountValue {
-  font-size: 13px;
-  font-weight: 700;
-  color: #FFF;
-  font-family: 'Montserrat', sans-serif;
+/* --- Footer Texto --- */
+.footerMessage {
+  margin-top: 16px;
+  font-size: 10px;
+  color: #555;
+  text-align: center;
+  font-style: italic;
+  min-height: 15px;
 }
 
-/* Mensagens de Status */
-.statusMessage {
-  margin-top: 10px;
-  padding: 12px;
-  background: rgba(255,255,255,0.03);
-  border-left: 3px solid var(--status-color);
-  border-radius: 0 8px 8px 0;
+.fadeEffect {
+  animation: fadeIn 0.3s ease;
 }
 
-.messageText {
-  color: #FFF;
-  font-size: 12px;
-  font-weight: 700;
-  margin: 0 0 4px 0;
-}
-
-.descriptionText {
-  color: #8B949E;
-  font-size: 11px;
-  margin: 0;
-  line-height: 1.4;
-}
-
-/* Animação */
-.messageSlide {
-  animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(-10px); }
-  to { opacity: 1; transform: translateX(0); }
-}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+} 

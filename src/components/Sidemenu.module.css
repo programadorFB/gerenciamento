@@ -1,19 +1,17 @@
 /* ========================================
-   TEMA: CASSINO ROYAL / FOOTBALL STUDIO
-   Sidemenu.module.css
+   SIDE MENU - ELITE DARK LUXURY
+   Executive Lounge Style
    ======================================== */
-
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;600;700&display=swap');
 
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.85); /* Escurecido para foco total */
+  backdrop-filter: blur(6px);
   z-index: 999;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
 }
 
 .overlay.visible {
@@ -28,137 +26,142 @@
   left: 0;
   bottom: 0;
   width: 280px;
-  background-color: #0F1216;
-  /* Textura de mesa de feltro */
-  background-image: 
-    radial-gradient(circle at 0% 0%, #1c2530 0%, #0F1216 70%),
-    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-color: #050505;
+  /* Gradiente sutil simulando iluminação de ambiente escuro */
+  background-image: radial-gradient(circle at top right, #1a1a1a 0%, #050505 40%);
   z-index: 1000;
-  /* Sombra Dourada na borda direita */
-  box-shadow: 5px 0 30px rgba(0, 0, 0, 0.8);
-  border-right: 1px solid rgba(212, 175, 55, 0.2); /* Borda Dourada sutil */
+  box-shadow: 20px 0 50px rgba(0, 0, 0, 0.9);
+  border-right: 1px solid rgba(212, 175, 55, 0.1); /* Borda Dourada muito sutil */
   
   display: flex;
   flex-direction: column;
   transform: translateX(-100%);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s ease;
-  font-family: 'Montserrat', sans-serif;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s ease;
+  font-family: 'Inter', sans-serif;
 }
 
 .container.visible {
   transform: translateX(0);
 }
 
-/* Detalhe de Luz Dourada Vertical */
-.container::after {
-  content: '';
-  position: absolute;
-  top: 0; right: 0; bottom: 0; width: 1px;
-  background: linear-gradient(to bottom, transparent, #D4AF37, transparent);
-  opacity: 0.5;
-}
-
-/* --- Seção de Perfil (Ficha do Jogador) --- */
+/* --- Seção de Perfil (VIP Badge) --- */
 .profileSection {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 40px 20px 30px 20px;
-  background: linear-gradient(180deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 60px 20px 40px 20px;
+  background: linear-gradient(180deg, rgba(20, 20, 20, 0.5) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
   position: relative;
 }
 
-/* Avatar Placeholder (Círculo Dourado) */
+/* Avatar Frame (Círculo de Ouro) */
 .profileSection::before {
   content: '';
-  width: 64px;
-  height: 64px;
-  background: #1A1E24;
+  width: 72px;
+  height: 72px;
+  background: #000;
   border-radius: 50%;
   margin-bottom: 16px;
-  border: 2px solid #D4AF37;
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
-  /* Ícone de Usuário via CSS (opcional, ou imagem) */
+  border: 1px solid #D4AF37; /* Ouro Puro */
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+  /* Ícone SVG interno simulado */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23D4AF37'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");
-  background-size: 50%;
+  background-size: 40%;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 .userName {
-  font-family: 'Cinzel', serif;
+  font-family: 'Cinzel', serif; /* Fonte Clássica */
   font-size: 16px;
-  font-weight: 700;
-  color: #FFFFFF;
+  font-weight: 600;
+  color: #D4AF37;
   margin: 0 0 4px 0;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 .userEmail {
-  font-size: 11px;
-  color: #8B949E;
+  font-size: 10px;
+  color: #666;
   margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
 }
 
-/* Botão Fechar (X) */
+/* Botão Fechar (Discreto) */
 .closeButton {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 20px;
+  right: 20px;
   background: transparent;
   border: none;
-  color: #6E7681;
+  color: #444;
   cursor: pointer;
-  padding: 8px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 .closeButton:hover {
-  color: #FFF;
+  color: #D4AF37;
   transform: rotate(90deg);
 }
 
 /* --- Menu de Navegação --- */
 .menuItems {
   flex-grow: 1;
-  padding: 20px 0;
+  padding: 24px 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 4px; /* Espaçamento menor para visual compacto */
   overflow-y: auto;
 }
 
 .menuItem {
   display: flex;
   align-items: center;
-  padding: 14px 24px;
-  margin: 2px 0;
+  padding: 14px 32px;
   background-color: transparent;
-  color: #B0B8C3;
+  color: #888;
   border: none;
-  border-left: 3px solid transparent;
   width: 100%;
   cursor: pointer;
   text-align: left;
-  font-size: 13px;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.2s ease;
   position: relative;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1.5px;
 }
 
-/* Hover Effect (Luz Lateral) */
+/* Hover Effect (Barra Lateral Dourada) */
 .menuItem:hover {
-  background: linear-gradient(90deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
-  color: #FFFFFF;
-  border-left-color: #D4AF37;
-  padding-left: 30px; /* Deslocamento suave */
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.08) 0%, transparent 100%);
+  color: #F5F5F5;
+  padding-left: 38px; /* Leve movimento */
+}
+
+.menuItem::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #D4AF37;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+.menuItem:hover::before {
+  opacity: 1;
 }
 
 .menuIcon {
@@ -168,87 +171,88 @@
   align-items: center;
   margin-right: 16px;
   font-size: 18px;
-  transition: all 0.3s;
-  color: #6E7681;
+  transition: all 0.2s;
+  color: #555;
 }
 
 .menuItem:hover .menuIcon {
-  color: #D4AF37; /* Ícone fica dourado */
-  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4));
-  transform: scale(1.1);
+  color: #D4AF37;
 }
 
 .menuText {
   flex-grow: 1;
 }
 
-/* --- Logout (Zona de Perigo) --- */
+/* --- Logout (Sangue) --- */
 .logoutItem {
   margin-top: auto;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  color: #FF4D4D; /* Vermelho */
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
 }
 
 .logoutItem:hover {
-  background: linear-gradient(90deg, rgba(255, 77, 77, 0.1) 0%, transparent 100%);
+  background: linear-gradient(90deg, rgba(139, 0, 0, 0.15) 0%, transparent 100%);
   color: #FF4D4D;
-  border-left-color: #FF4D4D;
 }
 
-.logoutItem .menuIcon { color: #FF4D4D; }
-.logoutItem:hover .menuIcon { 
+.logoutItem:hover::before {
+  background: #8B0000;
+  box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+}
+
+.logoutItem:hover .menuIcon {
   color: #FF4D4D;
-  filter: drop-shadow(0 0 8px rgba(255, 77, 77, 0.4));
 }
 
 /* --- Footer --- */
 .footer {
   padding: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
   text-align: center;
-  background: rgba(0, 0, 0, 0.2);
+  background: #020202;
 }
 
-/* Botão Recolher (Opcional se for mobile-first, mas estilizado) */
 .collapseButton {
   display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid #333;
-  border-radius: 8px;
-  color: #8B949E;
+  border: 1px solid #222;
+  border-radius: 4px;
+  color: #666;
   padding: 10px;
   margin-bottom: 12px;
   width: 100%;
   cursor: pointer;
-  transition: all 0.2s;
-  font-size: 11px;
+  transition: all 0.3s;
+  font-size: 10px;
   text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .collapseButton:hover {
-  border-color: #D4AF37;
-  color: #D4AF37;
+  border-color: #444;
+  color: #FFF;
+  background: #0F0F0F;
 }
 
 .footerText {
-  font-size: 10px;
-  color: #484F58;
+  font-size: 8px;
+  color: #333;
   margin: 0;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   font-family: 'Cinzel', serif;
+  text-transform: uppercase;
 }
 
-/* --- Estado Recolhido (Desktop) --- */
+/* --- Estado Recolhido --- */
 .container.collapsed {
   width: 80px;
 }
 .container.collapsed .profileSection {
-  padding: 20px 10px;
+  padding: 30px 0;
 }
 .container.collapsed .profileSection::before {
-  width: 40px; height: 40px;
+  width: 40px; height: 40px; margin-bottom: 0;
 }
 .container.collapsed .userName,
 .container.collapsed .userEmail,
@@ -259,12 +263,12 @@
 }
 .container.collapsed .menuItem {
   justify-content: center;
-  padding: 16px 0;
+  padding: 20px 0;
 }
 .container.collapsed .menuItem:hover {
   padding-left: 0;
 }
 .container.collapsed .menuIcon {
   margin-right: 0;
-  font-size: 22px;
+  font-size: 20px;
 }

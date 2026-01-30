@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFinancial } from '../../contexts/FinancialContext';
 import { useNavigate } from 'react-router-dom';
 
 // --- Charting Library Imports ---
-import { Line, Scatter, Doughnut } from 'react-chartjs-2';
+import { Line, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -23,12 +23,12 @@ import {
   FaChartLine,
   FaTrophy,
   FaFire,
-  FaShieldAlt,
   FaArrowUp,
   FaArrowDown
 } from 'react-icons/fa';
-import { FaArrowTrendUp, FaChartPie } from 'react-icons/fa6';
-import { GiDiamonds, GiPokerHand } from 'react-icons/gi';
+import { FaChartPie } from 'react-icons/fa6';
+import { GiPokerHand, GiDiamonds } from 'react-icons/gi';
+import { MdTimeline } from 'react-icons/md';
 
 // --- CSS Module ---
 import styles from './ChartsScreen.module.css';
@@ -39,13 +39,16 @@ ChartJS.register(
   Title, Tooltip, Legend, Filler, ArcElement
 );
 
-// --- Configurações de Estilo do Gráfico (Dark Mode) ---
-const CHART_COLORS = {
+// --- Configurações de Estilo (Theme Elite) ---
+const THEME = {
   gold: '#D4AF37',
-  green: '#00FF88',
-  red: '#FF4D4D',
-  grid: 'rgba(255, 255, 255, 0.05)',
-  text: '#B0B8C3'
+  goldDim: 'rgba(212, 175, 55, 0.2)',
+  red: '#8B0000',
+  redDim: 'rgba(139, 0, 0, 0.2)',
+  green: '#2E7D32',
+  greenDim: 'rgba(46, 125, 50, 0.2)',
+  text: '#E0E0E0',
+  grid: 'rgba(255, 255, 255, 0.03)'
 };
 
 const commonOptions = {
@@ -53,33 +56,49 @@ const commonOptions = {
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      labels: { color: '#FFF', font: { family: 'Montserrat', size: 11 } }
+      display: false // Legenda customizada via HTML/CSS para mais controle
     },
     tooltip: {
-      backgroundColor: 'rgba(21, 25, 30, 0.95)',
-      titleColor: '#D4AF37',
+      backgroundColor: 'rgba(5, 5, 5, 0.95)',
+      titleColor: THEME.gold,
       bodyColor: '#FFF',
       borderColor: '#333',
       borderWidth: 1,
-      padding: 10,
-      titleFont: { family: 'Cinzel', size: 13 },
-      bodyFont: { family: 'Montserrat' }
+      padding: 12,
+      titleFont: { family: 'Cinzel', size: 14 },
+      bodyFont: { family: 'Inter', size: 12 },
+      displayColors: false,
+      callbacks: {
+        label: (context) => `Saldo: R$ ${context.parsed.y.toFixed(2)}`
+      }
     }
   },
   scales: {
     x: {
-      grid: { color: CHART_COLORS.grid },
-      ticks: { color: CHART_COLORS.text, font: { size: 10 } }
+      grid: { color: THEME.grid, borderColor: THEME.grid },
+      ticks: { color: '#666', font: { family: 'Inter', size: 10 } }
     },
     y: {
-      grid: { color: CHART_COLORS.grid },
-      ticks: { color: CHART_COLORS.text, font: { size: 10 } }
+      grid: { color: THEME.grid, borderColor: THEME.grid },
+      ticks: { 
+        color: '#666', 
+        font: { family: 'Inter', size: 10 },
+        callback: (value) => `R$ ${value}`
+      }
+    }
+  },
+  elements: {
+    point: {
+      radius: 4,
+      hoverRadius: 6,
+      borderWidth: 2,
+      hoverBorderWidth: 3
     }
   }
 };
 
-const CHART_TYPES = [
-  { key: 'performance', label: 'Evolução', icon: <FaArrowTrendUp /> },
+const TABS = [
+  { key: 'performance', label: 'Evolução', icon: <MdTimeline /> },
   { key: 'distribution', label: 'Distribuição', icon: <FaChartPie /> },
   { key: 'stats', label: 'Placar', icon: <GiPokerHand /> },
 ];
@@ -87,7 +106,7 @@ const CHART_TYPES = [
 const ChartsScreen = () => {
   const { transactions, loading, getEffectiveInitialBalance } = useFinancial();
   const navigate = useNavigate();
-  const [selectedChart, setSelectedChart] = useState('performance');
+  const [selectedTab, setSelectedTab] = useState('performance');
   const [chartData, setChartData] = useState(null);
   const [stats, setStats] = useState(null);
 
@@ -95,26 +114,20 @@ const ChartsScreen = () => {
 
   // Processamento de Dados
   useEffect(() => {
-    if (transactions.length > 0) {
+    if (transactions.length > 0 || initialBalance > 0) {
       const sortedTx = [...transactions].sort((a, b) => new Date(a.date) - new Date(b.date));
       
       let currentBalance = initialBalance;
-      const balanceHistory = [];
-      const labels = [];
-      const scatterPoints = []; // Para vitórias/derrotas
+      const balanceHistory = [initialBalance];
+      const labels = ['Início'];
       
       let wins = 0;
       let losses = 0;
       let totalGains = 0;
       let totalLosses = 0;
 
-      // Adiciona ponto inicial
-      labels.push('Início');
-      balanceHistory.push(initialBalance);
-
       sortedTx.forEach(tx => {
         const amount = parseFloat(tx.amount);
-        const isGain = ['deposit', 'gains'].includes(tx.type) || (!tx.type && amount >= 0);
         
         // Atualiza saldo
         if (['deposit', 'gains'].includes(tx.type)) {
@@ -126,48 +139,52 @@ const ChartsScreen = () => {
         }
 
         // Pontos para o gráfico
-        const dateLabel = new Date(tx.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-        labels.push(dateLabel);
-        balanceHistory.push(currentBalance);
-
-        // Pontos de Scatter (apenas jogadas)
-        if (tx.type === 'gains' || tx.type === 'losses') {
-            scatterPoints.push({
-                x: dateLabel,
-                y: Math.abs(amount),
-                type: tx.type
-            });
+        const dateObj = new Date(tx.date);
+        const dateLabel = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+        
+        // Evitar labels duplicadas se houver muitas transações no mesmo dia (simplificação visual)
+        if (labels[labels.length - 1] !== dateLabel) {
+            labels.push(dateLabel);
+            balanceHistory.push(currentBalance);
+        } else {
+            // Atualiza o último valor do dia
+            balanceHistory[balanceHistory.length - 1] = currentBalance;
         }
       });
 
-      // Configuração do Gráfico de Linha (Performance)
+      // Configuração Gráfico de Linha (Ouro)
       const lineData = {
         labels,
         datasets: [
           {
-            label: 'Banca Total',
+            label: 'Banca',
             data: balanceHistory,
-            borderColor: CHART_COLORS.gold,
-            backgroundColor: 'rgba(212, 175, 55, 0.1)',
+            borderColor: THEME.gold,
+            backgroundColor: (context) => {
+              const ctx = context.chart.ctx;
+              const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+              gradient.addColorStop(0, 'rgba(212, 175, 55, 0.4)');
+              gradient.addColorStop(1, 'rgba(212, 175, 55, 0.0)');
+              return gradient;
+            },
             borderWidth: 2,
             pointBackgroundColor: '#000',
-            pointBorderColor: CHART_COLORS.gold,
-            pointRadius: 3,
-            tension: 0.3,
+            pointBorderColor: THEME.gold,
             fill: true,
+            tension: 0.4 // Curva suave
           }
         ]
       };
 
-      // Configuração do Gráfico de Rosca (Win/Loss)
+      // Configuração Gráfico de Rosca (Fichas)
       const doughnutData = {
         labels: ['Vitórias', 'Derrotas'],
         datasets: [{
             data: [wins, losses],
-            backgroundColor: [CHART_COLORS.green, CHART_COLORS.red],
-            borderColor: '#0F1216',
-            borderWidth: 4,
-            hoverOffset: 10
+            backgroundColor: [THEME.green, THEME.red],
+            borderColor: '#050505',
+            borderWidth: 5,
+            hoverOffset: 4
         }]
       };
 
@@ -177,8 +194,9 @@ const ChartsScreen = () => {
           losses, 
           totalGains, 
           totalLosses,
-          winRate: (wins + losses) > 0 ? (wins / (wins + losses) * 100).toFixed(1) : 0,
-          currentBalance
+          winRate: (wins + losses) > 0 ? ((wins / (wins + losses)) * 100).toFixed(1) : 0,
+          currentBalance,
+          netProfit: totalGains - totalLosses
       });
     }
   }, [transactions, initialBalance]);
@@ -188,22 +206,27 @@ const ChartsScreen = () => {
   const renderContent = () => {
     if (loading || !chartData) {
         return (
-            <div className={styles.loadingContainer}>
+            <div className={styles.loadingState}>
                 <div className={styles.spinner}></div>
-                <p>Carregando dados da mesa...</p>
+                <p>Analisando dados da mesa...</p>
             </div>
         );
     }
 
-    switch (selectedChart) {
+    switch (selectedTab) {
       case 'performance':
         return (
-          <div className={styles.chartWrapper}>
-            <div className={styles.chartTitleArea}>
-                <h2><FaChartLine /> Evolução da Banca</h2>
-                <span style={{color: '#FFF', fontWeight: 'bold'}}>{formatCurrency(stats.currentBalance)}</span>
+          <div className={styles.chartCard}>
+            <div className={styles.chartHeader}>
+                <div className={styles.chartTitleBlock}>
+                    <h2>Evolução Patrimonial</h2>
+                    <span className={styles.chartSubtitle}>Histórico de Banca</span>
+                </div>
+                <div className={styles.chartValueHighlight}>
+                    {formatCurrency(stats.currentBalance)}
+                </div>
             </div>
-            <div style={{height: '300px'}}>
+            <div className={styles.chartCanvasContainer}>
                 <Line data={chartData.line} options={commonOptions} />
             </div>
           </div>
@@ -211,26 +234,36 @@ const ChartsScreen = () => {
 
       case 'distribution':
         return (
-          <div className={styles.chartWrapper} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-             <div className={styles.chartTitleArea} style={{width: '100%'}}>
-                <h2><FaChartPie /> Distribuição de Resultados</h2>
-            </div>
-            <div style={{height: '300px', width: '300px', position: 'relative'}}>
-                <Doughnut 
-                    data={chartData.doughnut} 
-                    options={{
-                        ...commonOptions, 
-                        cutout: '70%',
-                        plugins: { legend: { position: 'bottom', labels: { color: '#FFF' } } }
-                    }} 
-                />
-                {/* Texto central da rosca */}
-                <div style={{
-                    position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -60%)',
-                    textAlign: 'center', color: '#FFF'
-                }}>
-                    <div style={{fontSize: '24px', fontWeight: 'bold'}}>{stats.winRate}%</div>
-                    <div style={{fontSize: '10px', color: '#888'}}>Win Rate</div>
+          <div className={styles.distributionContainer}>
+             <div className={styles.chartCard} style={{ alignItems: 'center', textAlign: 'center' }}>
+                <h2 className={styles.chartTitleCenter}>Ratio de Resultados</h2>
+                <div className={styles.doughnutWrapper}>
+                    <Doughnut 
+                        data={chartData.doughnut} 
+                        options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '75%',
+                            plugins: { tooltip: { enabled: false } } // Tooltip customizada ou desativada para visual limpo
+                        }} 
+                    />
+                    {/* Centro da Rosca */}
+                    <div className={styles.doughnutCenter}>
+                        <div className={styles.winRateValue}>{stats.winRate}%</div>
+                        <div className={styles.winRateLabel}>Win Rate</div>
+                    </div>
+                </div>
+                
+                {/* Legenda Customizada */}
+                <div className={styles.customLegend}>
+                    <div className={styles.legendItem}>
+                        <span className={styles.dot} style={{ background: THEME.green }}></span>
+                        <span>Vitórias ({stats.wins})</span>
+                    </div>
+                    <div className={styles.legendItem}>
+                        <span className={styles.dot} style={{ background: THEME.red }}></span>
+                        <span>Derrotas ({stats.losses})</span>
+                    </div>
                 </div>
             </div>
           </div>
@@ -238,45 +271,62 @@ const ChartsScreen = () => {
 
       case 'stats':
         return (
-          <>
-            <div className={styles.chartTitleArea}>
-                <h2><GiDiamonds /> Estatísticas da Sessão</h2>
-            </div>
-            
-            <div className={styles.casinoScoreboard}>
-                <div className={`${styles.scoreSide} ${styles.scoreWins}`}>
-                    <span className={styles.scoreLabel}>VITÓRIAS</span>
-                    <span className={`${styles.scoreValue} ${styles.win}`}>{stats.wins}</span>
-                    <span className={styles.statSubtext} style={{color: CHART_COLORS.green}}>
-                        {formatCurrency(stats.totalGains)}
-                    </span>
+          <div className={styles.statsLayout}>
+            {/* Placar Principal */}
+            <div className={styles.scoreboardPanel}>
+                <div className={styles.scoreSide}>
+                    <span className={styles.scoreLabel}>GREEN</span>
+                    <span className={styles.scoreValue} style={{ color: THEME.green }}>{stats.wins}</span>
+                    <span className={styles.scoreMoney} style={{ color: THEME.green }}>+{formatCurrency(stats.totalGains)}</span>
                 </div>
-                <div className={`${styles.scoreSide} ${styles.scoreLosses}`}>
-                    <span className={styles.scoreLabel}>DERROTAS</span>
-                    <span className={`${styles.scoreValue} ${styles.loss}`}>{stats.losses}</span>
-                    <span className={styles.statSubtext} style={{color: CHART_COLORS.red}}>
-                        -{formatCurrency(stats.totalLosses)}
-                    </span>
+                <div className={styles.scoreDivider}></div>
+                <div className={styles.scoreSide}>
+                    <span className={styles.scoreLabel}>RED</span>
+                    <span className={styles.scoreValue} style={{ color: THEME.red }}>{stats.losses}</span>
+                    <span className={styles.scoreMoney} style={{ color: THEME.red }}>-{formatCurrency(stats.totalLosses)}</span>
                 </div>
             </div>
 
-            <div className={styles.statsGrid} style={{marginTop: '20px'}}>
-                <div className={styles.casinoStatCard} style={{'--stat-color': CHART_COLORS.gold}}>
-                    <span className={styles.statLabel}><FaTrophy /> Taxa de Acerto</span>
-                    <span className={styles.statValue}>{stats.winRate}%</span>
+            {/* Cards de Métricas */}
+            <div className={styles.metricsGrid}>
+                <div className={styles.metricCard}>
+                    <div className={styles.metricIcon} style={{ color: THEME.gold }}><FaTrophy /></div>
+                    <div className={styles.metricInfo}>
+                        <span className={styles.metricLabel}>Taxa de Acerto</span>
+                        <span className={styles.metricNumber}>{stats.winRate}%</span>
+                    </div>
                 </div>
-                <div className={styles.casinoStatCard} style={{'--stat-color': '#00E0FF'}}>
-                    <span className={styles.statLabel}><FaFire /> Total de Jogos</span>
-                    <span className={styles.statValue}>{stats.wins + stats.losses}</span>
+                
+                <div className={styles.metricCard}>
+                    <div className={styles.metricIcon} style={{ color: '#00E0FF' }}><GiDiamonds /></div>
+                    <div className={styles.metricInfo}>
+                        <span className={styles.metricLabel}>Total de Jogos</span>
+                        <span className={styles.metricNumber}>{stats.wins + stats.losses}</span>
+                    </div>
                 </div>
-                <div className={styles.casinoStatCard} style={{'--stat-color': CHART_COLORS.green}}>
-                    <span className={styles.statLabel}><FaArrowUp /> Lucro Líquido</span>
-                    <span className={styles.statValue} style={{color: (stats.totalGains - stats.totalLosses) >= 0 ? CHART_COLORS.green : CHART_COLORS.red}}>
-                        {formatCurrency(stats.totalGains - stats.totalLosses)}
-                    </span>
+
+                <div className={styles.metricCard}>
+                    <div className={styles.metricIcon} style={{ color: stats.netProfit >= 0 ? THEME.green : THEME.red }}>
+                         {stats.netProfit >= 0 ? <FaArrowUp /> : <FaArrowDown />}
+                    </div>
+                    <div className={styles.metricInfo}>
+                        <span className={styles.metricLabel}>Lucro Líquido</span>
+                        <span className={styles.metricNumber} style={{ color: stats.netProfit >= 0 ? THEME.green : THEME.red }}>
+                            {formatCurrency(stats.netProfit)}
+                        </span>
+                    </div>
+                </div>
+                 <div className={styles.metricCard}>
+                    <div className={styles.metricIcon} style={{ color: '#FFA500' }}><FaFire /></div>
+                    <div className={styles.metricInfo}>
+                        <span className={styles.metricLabel}>Fator de Lucro</span>
+                        <span className={styles.metricNumber}>
+                            {stats.totalLosses > 0 ? (stats.totalGains / stats.totalLosses).toFixed(2) : '∞'}
+                        </span>
+                    </div>
                 </div>
             </div>
-          </>
+          </div>
         );
 
       default: return null;
@@ -284,28 +334,29 @@ const ChartsScreen = () => {
   };
 
   return (
-    <div className={styles.casinoContainer}>
-      <header className={styles.casinoHeader}>
-        <button onClick={() => navigate(-1)} className={styles.casinoBackButton}>
-          <FaArrowLeft /> VOLTAR À MESA
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <button onClick={() => navigate(-1)} className={styles.backButton}>
+          <FaArrowLeft />
         </button>
-
-        <div className={styles.casinoNav}>
-          {CHART_TYPES.map(chart => (
-            <button
-              key={chart.key}
-              className={`${styles.casinoNavButton} ${selectedChart === chart.key ? styles.casinoNavActive : ''}`}
-              onClick={() => setSelectedChart(chart.key)}
-            >
-              {chart.icon}
-              <span>{chart.label}</span>
-              {selectedChart === chart.key && <div className={styles.activeGlow}></div>}
-            </button>
-          ))}
-        </div>
+        <h1 className={styles.headerTitle}>Sala de Análise</h1>
+        <div style={{ width: 32 }}></div>
       </header>
 
-      <main className={styles.casinoMain}>
+      <div className={styles.navContainer}>
+        {TABS.map(tab => (
+            <button
+              key={tab.key}
+              className={`${styles.navButton} ${selectedTab === tab.key ? styles.navButtonActive : ''}`}
+              onClick={() => setSelectedTab(tab.key)}
+            >
+              {tab.icon}
+              <span>{tab.label}</span>
+            </button>
+        ))}
+      </div>
+
+      <main className={styles.mainContent}>
         {renderContent()}
       </main>
     </div>

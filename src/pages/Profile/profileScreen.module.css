@@ -1,414 +1,376 @@
 /* ========================================
-   TEMA: CASSINO ROYAL / FOOTBALL STUDIO
-   profileScreen.module.css
+   PROFILE SCREEN - HIGH STAKES DOSSIER
    ======================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;600;700&display=swap');
-
-@keyframes cardFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-
-@keyframes spin { 
-    from { transform: rotate(0deg); } 
-    to { transform: rotate(360deg); } 
-}
-
-/* --- Container Principal (Mesa de Jogo) --- */
 .container {
-    min-height: 100vh;
-    width: 100%;
-    background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
-    /* Textura de mesa de feltro */
-        display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Alinha ao topo para scroll */
-    padding: 20px;
-    font-family: 'Montserrat', sans-serif;
-    overflow-x: hidden;
+  background: radial-gradient(circle at top, #111 0%, #000 100%);
+  color: #E0E0E0;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
 }
 
-/* Scroll Container para centralizar o cartão */
-.scrollContainer {
-    width: 100%;
-    max-width: 500px;
-    margin-top: 20px;
-    margin-bottom: 80px;
-}
-
-/* =========================================================
-   CARTÃO DE MEMBRO (Card Style)
-   ========================================================= */
-
-/* Borda Branca Grossa (Papel da Carta) */
-.profileCardWrapper {
-    background: #E0E0E0; 
-    padding: 12px; /* Espessura da borda */
-    border-radius: 24px;
-    box-shadow: 
-        0 30px 60px -10px rgba(0,0,0,0.9), 
-        0 0 0 1px rgba(0,0,0,0.5);
-    position: relative;
-}
-
-/* Miolo Escuro e Texturizado */
-.form {
-    background: #0F1216;
-    border-radius: 16px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid #000;
-
-    /* Textura Royal */
-    background-image: 
-        radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.1) 0%, transparent 60%),
-        repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 10px);
-}
-
-/* --- Header --- */
+/* === HEADER === */
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 2px solid #D4AF37;
+  background: rgba(10, 10, 10, 0.95);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(5px);
 }
 
 .backButton {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    color: #FFF;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 4px;
+  color: #D4AF37;
+  cursor: pointer;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
 }
+
 .backButton:hover {
-    border-color: #D4AF37;
-    color: #D4AF37;
+  background: rgba(212, 175, 55, 0.1);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
 }
 
 .title {
-    font-family: 'Cinzel', serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: #D4AF37;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #F5F5F5;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
-.headerSpacer { width: 36px; }
+.headerSpacer { width: 80px; } /* Equilibra o botão de voltar */
 
-/* --- Seção de Avatar (Ficha de Poker) --- */
-.imageSection {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px 20px;
-    background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 70%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+/* === MAIN LAYOUT === */
+.scrollContainer {
+  flex-grow: 1;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
 }
 
-.imageContainer {
-    position: relative;
-    margin-bottom: 20px;
+.profileCardWrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  width: 100%;
+  max-width: 1000px;
 }
 
-/* Moldura do Avatar (Ficha) */
-.imageContainer::before {
-    content: '';
-    position: absolute;
-    inset: -8px;
-    border-radius: 50%;
-    border: 2px dashed #D4AF37; /* Borda tracejada dourada */
-    animation: spin 60s linear infinite;
-    opacity: 0.5;
+/* === VISUAL SECTION (Esquerda) === */
+.visualSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  background: linear-gradient(145deg, #151515 0%, #0A0A0A 100%);
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.profileImage {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 4px solid #1A1E24;
-    box-shadow: 0 0 0 2px #D4AF37, 0 10px 30px rgba(0,0,0,0.5); /* Borda interna e externa */
-    object-fit: cover;
-    background-color: #0F1216;
+.avatarRing {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(135deg, #D4AF37 0%, #8B7355 100%); /* Ouro Metálico */
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+}
+
+.profileImage, .profileImagePlaceholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #000;
+  background: #111;
 }
 
 .profileImagePlaceholder {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #1A1E24 0%, #0F1216 100%);
-    border: 4px solid #1A1E24;
-    box-shadow: 0 0 0 2px #D4AF37;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .profileImagePlaceholder span {
-    font-family: 'Cinzel', serif;
-    font-size: 48px;
-    font-weight: 700;
-    color: #D4AF37;
+  font-family: 'Cinzel', serif;
+  font-size: 48px;
+  color: #D4AF37;
 }
 
-.imageButtons {
-    margin-top: 10px;
+.vipBadge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #8B0000;
+  color: #FFF;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #D4AF37;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
-.removeButton {
-    background: transparent;
-    border: 1px solid rgba(255, 77, 77, 0.3);
-    color: #FF4D4D;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.removeButton:hover {
-    background: rgba(255, 77, 77, 0.1);
-    border-color: #FF4D4D;
+/* Chip Selector */
+.chipSelector {
+  width: 100%;
+  text-align: center;
 }
 
-/* --- Seletor de Avatar (Grid de Fichas) --- */
-.avatarSelector {
-    width: 100%;
-    margin-top: 20px;
+.selectorTitle {
+  font-size: 12px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  font-weight: 600;
 }
 
-.avatarSelectorTitle {
-    font-size: 11px;
-    color: #8B949E;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 15px;
-    font-weight: 700;
+.chipsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
-.avatarGrid {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 12px;
+.chipOption {
+  background: #080808;
+  border: 1px solid #333;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  padding: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
+  overflow: hidden;
 }
 
-.avatarOption {
-    background: transparent;
-    padding: 4px; /* Espaço para a borda */
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    cursor: pointer;
-    width: 64px;
-    height: 64px;
-    position: relative;
-    transition: all 0.2s;
+.chipOption:hover {
+  transform: translateY(-2px);
+  border-color: #D4AF37;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
 }
 
-.avatarOption:hover {
-    border-color: rgba(212, 175, 55, 0.5);
-    transform: translateY(-2px);
+.chipSelected {
+  border-color: #D4AF37;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
 }
 
-.avatarOptionSelected {
-    border-color: #D4AF37; /* Ouro */
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+.chipOption img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  opacity: 0.7;
+  transition: opacity 0.3s;
 }
 
-.avatarOptionImage {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    display: block;
+.chipOption:hover img, .chipSelected img {
+  opacity: 1;
 }
 
-.avatarCheckmark {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 20px;
-    height: 20px;
-    background: #D4AF37;
-    border-radius: 50%;
-    color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    border: 2px solid #0F1216;
+.checkOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #D4AF37;
+  font-size: 20px;
 }
 
-/* --- Seções de Inputs --- */
-.section {
-    padding: 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+/* === FORM SECTION (Direita) === */
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.sectionTitle {
-    font-family: 'Cinzel', serif;
-    font-size: 14px;
-    color: #FFF;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.sectionTitle::before {
-    content: '';
-    display: block;
-    width: 4px;
-    height: 16px;
-    background: #D4AF37;
-    border-radius: 2px;
+.sectionBlock {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 24px;
 }
 
-.inputContainer {
-    margin-bottom: 20px;
+.blockTitle {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: #D4AF37;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  padding-bottom: 8px;
 }
 
-.label {
-    display: flex;
-    align-items: center;
-    font-size: 11px;
-    color: #8B949E;
-    margin-bottom: 8px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.inputGroup {
+  margin-bottom: 16px;
 }
 
-/* Input Premium */
+.inputGroup label {
+  display: block;
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .input {
-    width: 100%;
-    background: #1A1E24;
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 14px 16px;
-    font-size: 14px;
-    color: #FFF;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    transition: all 0.3s;
+  width: 100%;
+  background: #050505;
+  border: 1px solid #333;
+  padding: 14px;
+  padding-right: 40px; /* Espaço para ícone */
+  border-radius: 6px;
+  color: #F5F5F5;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  transition: all 0.3s;
 }
 
 .input:focus {
-    outline: none;
-    border-color: #D4AF37;
-    background: #21262D;
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+  border-color: #D4AF37;
+  outline: none;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+  background: #080808;
 }
 
-.input:disabled,
-.disabledInput {
-    background: #0F1216;
-    color: #666;
-    border-color: #222;
-    cursor: not-allowed;
+.input.disabled {
+  color: #666;
+  border-color: #222;
+  background: #0F0F0F;
+  cursor: not-allowed;
 }
 
-/* Input de Moeda */
-.currencyInputWrapper {
-    display: flex;
-    align-items: center;
-    position: relative;
+.inputIcon {
+  position: absolute;
+  right: 12px;
+  color: #555;
+  pointer-events: none;
 }
 
-.currencySymbol {
-    position: absolute;
-    left: 16px;
-    color: #D4AF37;
-    font-weight: 700;
-    font-size: 14px;
-    z-index: 2;
+.prefix {
+  position: absolute;
+  left: 12px;
+  color: #D4AF37;
+  font-weight: 700;
+  font-size: 14px;
+  z-index: 2;
 }
 
-.currencyInput {
-    flex: 1;
-    background: #1A1E24;
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 14px 16px 14px 45px; /* Padding extra para o símbolo */
-    font-size: 14px;
-    color: #FFF;
-    font-weight: 600;
-    outline: none;
-    transition: all 0.3s;
+/* Grid de Senhas */
+.passwordGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
 }
 
-.currencyInput:focus {
-    border-color: #D4AF37;
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
-}
-
-/* Botões Finais */
-.buttonSection {
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.button {
-    padding: 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 800;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border: none;
-    transition: all 0.2s;
+/* === FOOTER ACTION === */
+.actionFooter {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
 }
 
 .saveButton {
-    /* Gradiente Dourado */
-    background: linear-gradient(135deg, #D4AF37 0%, #AA8A25 100%);
-    color: #000;
-    font-family: 'Cinzel', serif;
-    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+  flex: 2;
+  background: linear-gradient(180deg, #D4AF37 0%, #AA8A1E 100%);
+  border: 1px solid #FEE184;
+  color: #000;
+  padding: 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
 }
 
-.saveButton:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
-    filter: brightness(1.1);
+.saveButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(212, 175, 55, 0.5);
+  background: #FEE184;
 }
 
 .saveButton:disabled {
-    background: #333;
-    color: #666;
-    cursor: not-allowed;
-    box-shadow: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .logoutButton {
-    background: transparent;
-    border: 1px solid #333;
-    color: #8B949E;
+  flex: 1;
+  background: transparent;
+  border: 1px solid #333;
+  color: #888;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
 .logoutButton:hover {
-    border-color: #FF4D4D;
-    color: #FF4D4D;
-    background: rgba(255, 77, 77, 0.05);
+  border-color: #8B0000;
+  color: #FF4D4D;
+  background: rgba(139, 0, 0, 0.1);
+}
+
+/* === RESPONSIVE === */
+@media (min-width: 768px) {
+  .profileCardWrapper {
+    grid-template-columns: 300px 1fr;
+    align-items: start;
+  }
+  
+  .visualSection {
+    position: sticky;
+    top: 100px;
+  }
+
+  .passwordGrid {
+    grid-template-columns: 1fr 1fr; /* Senhas lado a lado */
+  }
+  
+  .inputGroup:last-child {
+    grid-column: span 2;
+  }
 }

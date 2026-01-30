@@ -1,334 +1,259 @@
-/* ========================================
-   TEMA: CASSINO ROYAL / FOOTBALL STUDIO
-   DashboardScreen.module.css
-   ======================================== */
+/* ═══════════════════════════════════════════════════════════════════════════
+   DASHBOARD SCREEN - ELEGANCE EDITION (Vanta Black & Gold)
+   ═══════════════════════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600;800&display=swap');
+/* --- VARIÁVEIS & RESET --- */
+:root {
+  --bg-deep: #020202;
+  --bg-card: rgba(15, 15, 15, 0.7);
+  --gold-main: #D4AF37;
+  --gold-brilliant: #FEE184;
+  --red-blood: #8B0000;
+  --text-main: #F5F5F5;
+  --text-muted: #888888;
+  --font-display: 'Cinzel', serif;
+  --font-body: 'Inter', sans-serif;
+}
 
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;600;700&display=swap');
-
-/* --- RESET & GERAL --- */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  font-family: 'Montserrat', sans-serif;
-  background-color: #0F1216;
-  color: #E0E0E0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-main);
 }
 
-/* --- Container Principal (Mesa de Jogo) --- */
+/* === CONTAINER PRINCIPAL === */
 .dashboardContainer {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
+  background: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #020202 70%);
   position: relative;
-  overflow-x: hidden;
-  padding-bottom: 90px; /* Espaço para menu flutuante */
+  padding-bottom: 40px;
 }
 
-/* --- HEADER (Barra Superior) --- */
+/* === HEADER (Barra de Navegação) === */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(5, 5, 5, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
 .menuButton {
-  background: transparent;
+  background: none;
   border: none;
   cursor: pointer;
   padding: 8px;
-  display: flex;
-  align-items: center;
-  color: #D4AF37; /* Dourado */
 }
 
-.menuIcon {
+.menuIcon, .menuIcon::before, .menuIcon::after {
   width: 24px;
-  height: 2px;
-  background: #D4AF37;
+  height: 1px; /* Linha ultra-fina para elegância */
+  background: var(--gold-main);
   display: block;
   position: relative;
-  border-radius: 2px;
-  box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+  transition: transform 0.3s ease;
 }
-.menuIcon::before, .menuIcon::after {
-  content: ''; position: absolute; width: 24px; height: 2px; background: #D4AF37; left: 0; border-radius: 2px;
-  box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
-}
-.menuIcon::before { top: -8px; }
-.menuIcon::after { top: 8px; }
+
+.menuIcon::before { content: ''; position: absolute; top: -6px; left: 0; width: 16px; }
+.menuIcon::after { content: ''; position: absolute; top: 6px; left: 0; width: 24px; }
 
 .greetingContainer {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
   gap: 12px;
 }
 
 .greeting {
-  font-family: 'Cinzel', serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: #FFF;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-family: 'Cinzel', serif; /* Se não tiver a fonte, fallback para serif */
+  font-size: 14px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  letter-spacing: 2px;
+  color: var(--gold-main);
+  font-weight: 400;
 }
 
 .logoImg {
-  width: 24px;
-  height: 24px;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+  width: 20px;
+  height: 20px;
+  filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5));
 }
 
-/* Avatar do Perfil */
 .profileWrapper {
   position: relative;
-  display: flex;
-  align-items: center;
   cursor: pointer;
 }
 
 .profileAvatar {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background-color: #1A1E24;
-  border: 2px solid #D4AF37;
+  border: 1px solid var(--gold-main);
+  padding: 2px; /* Espaço entre borda e imagem */
+  background: transparent;
   object-fit: cover;
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
 .profileAvatarPlaceholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #D4AF37;
-  font-size: 14px;
-  font-weight: 700;
-  background: #0F1216;
-  font-family: 'Cinzel', serif;
+  color: var(--gold-main);
+  font-size: 12px;
+  background: rgba(212, 175, 55, 0.1);
 }
 
 .profileIconBadge {
   position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 18px;
-  height: 18px;
-  background: #0F1216;
+  bottom: 0;
+  right: -4px;
+  background: #000;
+  border: 1px solid var(--gold-main);
   border-radius: 50%;
-  border: 1px solid #D4AF37;
+  width: 16px;
+  height: 16px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 10px;
-  color: #D4AF37;
+  align-items: center;
+  font-size: 8px;
 }
 
-/* --- SCROLL VIEW --- */
+/* === LAYOUT DE CONTEÚDO === */
 .scrollView {
-  padding: 20px;
-  max-width: 1200px;
+  padding: 24px 16px;
+  max-width: 1000px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
 }
 
-/* --- SEÇÃO DE SALDO (PLAQUETAS VIP) --- */
+/* === SEÇÃO DE SALDO (Plaquetas) === */
 .balanceSection {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
 }
 
-/* Estilo Base da Plaqueta */
 .balanceCard {
-  background: linear-gradient(135deg, #000000 0%, #000000 100%);
-  border: 1px solid #333;
-  border-radius: 12px;
-  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 20px;
   text-align: center;
   position: relative;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  /* Textura sutil */
-  /* background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 1px, transparent 1px, transparent 10px); */
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-/* Plaqueta Principal (Ouro) */
+/* O card principal recebe destaque especial */
 .balanceCard.main {
-  background: linear-gradient(135deg, #1A1E24 0%, #000 100%);
-  border: 1px solid #D4AF37;
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.15), inset 0 0 20px rgba(212, 175, 55, 0.05);
   order: -1;
-  padding: 24px 16px;
+  background: linear-gradient(180deg, rgba(30, 30, 30, 0.9) 0%, rgba(10, 10, 10, 0.95) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  padding: 28px 20px;
 }
 
-/* Cantos decorativos da plaqueta main */
-.balanceCard.main::before, .balanceCard.main::after {
-  content: '';
-  position: absolute;
-  width: 10px; height: 10px;
-  border: 2px solid #D4AF37;
-  transition: all 0.3s;
+.balanceCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(212, 175, 55, 0.2);
 }
-.balanceCard.main::before { top: 8px; left: 8px; border-right: none; border-bottom: none; }
-.balanceCard.main::after { bottom: 8px; right: 8px; border-left: none; border-top: none; }
 
 .cardHeader {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #8B949E;
-  margin-bottom: 8px;
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
 }
 
-.balanceCard.main .cardHeader { color: #D4AF37; }
-.balanceCard.main .cardHeader svg { color: #D4AF37 !important; }
-
 .balanceAmount {
-  font-family: 'Cinzel', serif;
-  font-size: 24px;
-  font-weight: 700;
-  color: #FFFFFF;
-  letter-spacing: 0.5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+  font-weight: 300;
+  color: #fff;
 }
 
 .balanceAmount.main { 
-  font-size: 36px; 
-  color: #FFFFFF; 
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  font-size: 36px;
+  font-weight: 500;
+  /* Efeito de Ouro Metílico no Texto */
+  background: linear-gradient(to bottom, #FFF 20%, #D4AF37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
 }
 
-.balanceAmount.initial { color: #8B949E; font-size: 20px; }
-.balanceAmount.positive { color: #00FF88; text-shadow: 0 0 5px rgba(0,255,136,0.3); }
-.balanceAmount.negative { color: #FF4D4D; text-shadow: 0 0 5px rgba(255,77,77,0.3); }
+.balanceAmount.initial { color: var(--gold-dim); opacity: 0.8; }
+.balanceAmount.positive { color: #4CAF50; }
+.balanceAmount.negative { color: var(--red-alert); }
 
 .performance {
-  font-size: 11px;
-  font-weight: 700;
   margin-top: 8px;
-  padding: 4px 10px;
-  border-radius: 12px;
-  display: inline-block;
-  background: rgba(255,255,255,0.05);
-}
-.performance.positive { color: #00FF88; border: 1px solid rgba(0,255,136,0.3); }
-.performance.negative { color: #FF4D4D; border: 1px solid rgba(255,77,77,0.3); }
-
-/* --- AÇÕES RÁPIDAS (Botões de Aposta) --- */
-.quickActions {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.actionButton {
-  padding: 16px;
-  background: linear-gradient(180deg, #2C333A 0%, #1A1E24 100%);
-  border: 1px solid #333;
-  border-bottom: 3px solid #0F1216; /* Efeito 3D */
-  border-radius: 8px;
-  color: #B0B8C3;
   font-size: 11px;
-  font-weight: 800;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.1s;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  display: inline-block;
 }
 
-.actionButton:active {
-  transform: translateY(2px);
-  border-bottom-width: 1px;
-  background: #15191E;
-}
+.performance.positive { color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.2); }
+.performance.negative { color: var(--red-alert); border: 1px solid rgba(255, 77, 77, 0.2); }
 
-/* Cores específicas por ação (Hover) */
-.actionButton:hover { color: #FFF; border-color: #555; }
-.actionButton:nth-child(1):hover { border-color: #00E0FF; color: #00E0FF; box-shadow: 0 0 10px rgba(0,224,255,0.2); } /* Depósito */
-.actionButton:nth-child(2):hover { border-color: #FFA500; color: #FFA500; box-shadow: 0 0 10px rgba(255,165,0,0.2); } /* Saque */
-.actionButton:nth-child(3):hover { border-color: #00FF88; color: #00FF88; box-shadow: 0 0 10px rgba(0,255,136,0.2); } /* Ganhos */
-.actionButton:nth-child(4):hover { border-color: #FF4D4D; color: #FF4D4D; box-shadow: 0 0 10px rgba(255,77,77,0.2); } /* Loss */
-
-/* --- SEÇÕES GERAIS --- */
+/* === TÍTULOS DE SEÇÃO === */
 .sectionHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
-  padding: 0 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .sectionTitle {
-  font-family: 'Cinzel', serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: #D4AF37;
+  font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.sectionTitle::before {
-  content: '';
-  display: block;
-  width: 3px; height: 14px;
-  background: #D4AF37;
-  box-shadow: 0 0 5px #D4AF37;
+  letter-spacing: 2px;
+  color: var(--gold-main);
+  font-weight: 600;
 }
 
 .seeAllButton {
   background: none;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 4px;
-  padding: 4px 10px;
-  color: #8B949E;
-  font-size: 10px;
-  font-weight: 600;
+  border: none;
+  color: var(--text-muted);
+  font-size: 11px;
   cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.2s;
-}
-.seeAllButton:hover { 
-  border-color: #FFF; 
-  color: #FFF; 
+  transition: color 0.2s;
 }
 
-/* --- GESTÃO DE RISCO (Cards) --- */
+.seeAllButton:hover { color: #fff; }
+
+/* === GESTÃO DE RISCO === */
 .riskManagementSection {
   display: flex;
   flex-direction: column;
-  gap: 16px;
 }
 
 .riskCardsContainer {
@@ -338,116 +263,97 @@ body {
 }
 
 .riskCard {
-  background: #15191E;
-  border: 1px solid #2C333A;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .riskCardHeader {
-  background: rgba(0,0,0,0.2);
-  padding: 12px 16px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.02);
   display: flex;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid #2C333A;
+  border-bottom: 1px solid var(--glass-border);
 }
 
 .riskCardTitle {
-  font-size: 12px;
-  font-weight: 700;
-  color: #B0B8C3;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  color: #DDD;
 }
 
-.riskCardBody { padding: 16px; }
+.riskCardBody {
+  padding: 20px;
+}
 
 .riskCardValue {
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .riskMainValue {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: #FFFFFF;
+  font-size: 18px;
+  color: #FFF;
+  font-weight: 500;
 }
 
-.riskPercentage {
-  font-size: 11px;
-  color: #6E7681;
-}
-
-/* Barras de Progresso Neon */
-.progressBarContainer { margin-top: 12px; }
+.progressBarContainer { margin-top: 8px; }
 
 .progressBar {
-  height: 6px;
-  background: #0F1216;
-  border-radius: 3px;
+  height: 4px; /* Barra fina e elegante */
+  background: #222;
+  border-radius: 2px;
   overflow: hidden;
-  border: 1px solid #2C333A;
 }
 
 .progressBarFill {
   height: 100%;
-  background: #00FF88;
-  width: 0;
-  transition: width 0.5s ease;
-  box-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+  background: var(--gold-main);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  border-radius: 2px;
+  transition: width 0.5s ease-out;
 }
 
 .progressInfo {
   display: flex;
   justify-content: space-between;
   font-size: 10px;
-  margin-top: 6px;
-  color: #8B949E;
-  font-weight: 600;
-}
-
-.riskCardEmpty {
-  text-align: center;
-  padding: 20px;
-  font-size: 11px;
-  color: #6E7681;
+  margin-top: 8px;
+  color: var(--text-muted);
 }
 
 .configureButton {
   margin-top: 10px;
-  padding: 8px 16px;
-  background: transparent;
-  color: #D4AF37;
-  border: 1px solid #D4AF37;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: 700;
-  cursor: pointer;
   width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px dashed var(--glass-border);
+  color: var(--text-muted);
+  font-size: 11px;
   text-transform: uppercase;
+  border-radius: 6px;
+  cursor: pointer;
 }
-.configureButton:hover { background: rgba(212, 175, 55, 0.1); }
 
-/* --- RESUMO FINANCEIRO --- */
+/* === RESUMO (Tabela Minimalista) === */
 .summaryCardUnified {
-  background: #15191E;
-  border: 1px solid #2C333A;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
   border-radius: 12px;
-  overflow: hidden;
 }
 
 .summaryRow {
   display: flex;
   justify-content: space-between;
-  padding: 16px;
-  border-bottom: 1px solid #2C333A;
-  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
 }
+
 .summaryRow:last-child { border-bottom: none; }
 
 .summaryLabel {
@@ -455,67 +361,114 @@ body {
   align-items: center;
   gap: 12px;
   font-size: 12px;
-  color: #8B949E;
+  color: var(--text-muted);
   font-weight: 500;
 }
-.summaryLabel svg { color: #D4AF37 !important; font-size: 16px; }
+
+.summaryLabel svg { color: var(--gold-main) !important; opacity: 0.7; }
 
 .summaryValue {
-  font-weight: 700;
   font-size: 13px;
-  font-family: 'Montserrat', sans-serif;
-  color: #FFFFFF;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
-.summaryValue.positive { color: #00FF88; text-shadow: 0 0 5px rgba(0,255,136,0.3); }
-.summaryValue.negative { color: #FF4D4D; text-shadow: 0 0 5px rgba(255,77,77,0.3); }
 
-/* --- CALENDÁRIO --- */
+/* === AÇÕES RÁPIDAS (Botões Modernos) === */
+.quickActions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.actionButton {
+  padding: 18px 12px;
+  background: linear-gradient(145deg, #151515, #0a0a0a);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: #E0E0E0;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+/* Efeito de "Veludo" no Hover */
+.actionButton:hover {
+  background: var(--red-blood);
+  border-color: #550000;
+  color: #FFF;
+  box-shadow: 0 4px 15px rgba(100, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.actionButton:active {
+  transform: scale(0.98);
+}
+
+/* === CALENDÁRIO === */
 .calendarSection {
-  background: #15191E;
-  border: 1px solid #2C333A;
-  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
   border-radius: 12px;
+  padding: 12px;
 }
 
-/* --- ESTADO VAZIO --- */
+/* === ESTADOS VAZIOS === */
 .emptyState {
   text-align: center;
-  padding: 40px 20px;
-  color: #6E7681;
+  padding: 30px;
+  color: var(--text-muted);
   font-size: 12px;
-  background: rgba(255,255,255,0.02);
-  border: 1px dashed #333;
+  background: rgba(255, 255, 255, 0.01);
   border-radius: 8px;
+  border: 1px dashed var(--glass-border);
 }
 
-/* --- Modal Overlay --- */
+/* === MODAIS === */
 .modalOverlay {
   position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.9);
-  z-index: 1000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
-  backdrop-filter: blur(5px);
+  z-index: 1000;
 }
 
-.resetModalContainer {
-  /* Estilos inline no JSX, mas definidos aqui para referência */
-  box-shadow: 0 0 50px rgba(255, 68, 68, 0.2);
-  border: 1px solid #333;
+/* === ALERTAS === */
+.alertBanner {
+  margin-top: 12px;
+  padding: 10px;
+  font-size: 11px;
+  background: rgba(255, 77, 77, 0.1);
+  color: var(--red-alert);
+  border: 1px solid rgba(255, 77, 77, 0.2);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* ========================================
-   MEDIA QUERIES (TABLET & DESKTOP)
-   ======================================== */
+/* ═══════════════════════════════════════════════════════════════════════════
+   MEDIA QUERIES (Responsividade)
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 @media (min-width: 600px) {
   .balanceSection {
     grid-template-columns: repeat(3, 1fr);
   }
-  .balanceCard.main { order: 0; }
+  
+  .balanceCard.main { order: 0; } /* Volta para o meio ou início no desktop */
 
   .quickActions {
     grid-template-columns: repeat(4, 1fr);
@@ -531,9 +484,8 @@ body {
     padding: 40px;
     gap: 40px;
   }
-  
-  .greeting { font-size: 20px; }
-  
-  .balanceAmount { font-size: 32px; }
-  .balanceAmount.main { font-size: 48px; }
+
+  .header {
+    padding: 20px 40px;
+  }
 }

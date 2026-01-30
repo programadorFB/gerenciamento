@@ -1,408 +1,317 @@
 /* ========================================
-   TEMA CASINO / TIPSTER (Breathtaking)
-   ObjectiveList.module.css
+   OBJECTIVE LIST - ELEGANCE EDITION
    ======================================== */
 
 .container {
-  width: 100%;
-  padding: 0;
-  font-family: 'Inter', sans-serif;
-  background-color: transparent;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
+  padding-bottom: 40px;
 }
 
-/* --- CARD DO OBJETIVO --- */
+/* === CARD DO OBJETIVO (Vidro Negro) === */
 .objectiveItem {
-  background: linear-gradient(145deg, #1A1E24 0%, #15191E 100%);
-  border: 1px solid #2C333A;
+  background: linear-gradient(160deg, rgba(20, 20, 20, 0.8) 0%, rgba(5, 5, 5, 0.95) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
   border-radius: 16px;
-  margin-bottom: 0;
+  padding: 24px;
+  cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
+/* Brilho Dourado Sutil no Hover */
 .objectiveItem:hover {
-  transform: translateY(-2px);
-  border-color: #00FF88;
-  box-shadow: 0 8px 30px rgba(0, 255, 136, 0.15);
+  transform: translateY(-4px);
+  border-color: rgba(212, 175, 55, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(212, 175, 55, 0.05);
 }
 
-.objectiveItem::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; width: 4px; height: 100%;
-  background: linear-gradient(to bottom, #00FF88, #009624);
-  opacity: 0.8;
-}
-
-/* Cabeçalho do Card */
+/* === HEADER === */
 .objectiveHeader {
-  background: rgba(255, 255, 255, 0.03);
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  align-items: flex-start;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding-bottom: 16px;
 }
 
 .objectiveTitle {
-  font-size: 14px;
-  font-weight: 700;
-  color: #FFFFFF;
+  font-family: 'Cinzel', serif; /* Fonte de Título Premium */
+  font-size: 16px;
+  font-weight: 500;
+  color: #E0E0E0;
   margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 1px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .objectiveProgress {
-  font-size: 12px;
-  font-weight: 800;
-  color: #00FF88;
-  background-color: rgba(0, 255, 136, 0.1);
-  padding: 4px 8px;
-  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #D4AF37;
+  background: rgba(212, 175, 55, 0.08);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(212, 175, 55, 0.15);
 }
 
-/* Conteúdo */
+/* Checkbox Estilizado */
+.checkboxContainer {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.checkboxInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkboxCheckmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: transparent;
+  border: 1px solid #555;
+  border-radius: 50%; /* Checkbox redondo é mais elegante */
+  transition: all 0.3s;
+}
+
+.checkboxContainer:hover .checkboxInput ~ .checkboxCheckmark {
+  border-color: #D4AF37;
+}
+
+.checkboxInput:checked ~ .checkboxCheckmark {
+  background-color: #D4AF37;
+  border-color: #D4AF37;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+}
+
+/* === CONTEÚDO === */
 .contentWrapper {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px;
+  gap: 24px;
 }
 
-.donutContainer { display: none; }
-.objectiveDetails { flex: 1; }
-
-/* Barra de Progresso (Laser Style) */
-.progressBarBackground {
-  width: 100%;
-  height: 8px;
-  background-color: #0F1216;
-  border-radius: 4px;
-  border: none;
-  overflow: hidden;
-  margin-bottom: 12px;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
-}
-
-.progressBarFill {
-  height: 100%;
-  background: linear-gradient(90deg, #00FF88, #00C853);
-  border-radius: 4px;
-  box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+/* Gráfico Donut */
+.donutContainer {
   position: relative;
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
 }
 
-/* Brilho correndo na barra */
-.progressBarFill::after {
-  content: '';
+.donutTextOverlay {
   position: absolute;
-  top: 0; left: 0; bottom: 0; right: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  transform: translateX(-100%);
-  animation: shimmer 2s infinite;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-@keyframes shimmer {
-  100% { transform: translateX(100%); }
+.donutTextPercent {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFF;
+}
+
+.donutTextLabel {
+  font-size: 8px;
+  text-transform: uppercase;
+  color: #666;
+  letter-spacing: 1.5px;
+  margin-top: 2px;
+}
+
+/* Detalhes Financeiros */
+.objectiveDetails {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .currentAmount {
-  font-size: 20px;
-  font-weight: 700;
-  color: #FFFFFF;
-  margin: 0 0 4px 0;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
+  font-size: 26px;
+  font-weight: 300;
+  color: #FFF;
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.currentAmount.negativeProfit {
+  color: #FF4D4D;
+  text-shadow: 0 0 10px rgba(255, 77, 77, 0.2);
 }
 
 .targetAmount {
-  font-size: 12px;
-  color: #8B949E;
-  margin: 0 0 8px 0;
+  font-size: 11px;
+  color: #666;
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.profitLabel {
+  font-size: 10px;
+  color: #D4AF37;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  opacity: 0.8;
 }
 
 .deadlineDateContainer {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 11px;
-  color: #6E7681;
-  margin-bottom: 0;
-  background: rgba(0,0,0,0.2);
-  padding: 4px 8px;
-  border-radius: 4px;
-  width: fit-content;
+  color: #888;
+  margin-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  padding-top: 8px;
 }
 
 .deadline {
   font-size: 11px;
-  font-weight: 600;
-  color: #FFD700; /* Dourado */
+  color: #555;
+  margin-left: auto;
+  font-style: italic;
 }
 
-/* Ações (Botões) */
+/* === AÇÕES (Deslizante) === */
 .actionButtonsContainer {
-  background-color: transparent;
-  padding: 0 16px 16px 16px;
   display: flex;
-  gap: 10px;
+  gap: 16px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding-top: 0;
   margin-top: 0;
-  border: none;
+}
+
+.actionsVisible {
+  max-height: 60px;
+  opacity: 1;
+  padding-top: 20px;
+  margin-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .actionButtonsContainer button {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #E0E0E0;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  transition: all 0.2s;
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.3s;
 }
 
-.actionButtonsContainer button:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
-  border-color: #FFFFFF;
+/* Botão Editar */
+.actionButtonsContainer button:first-child {
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #D4AF37;
 }
 
-.actionButtonsContainer .deleteButton {
-  background: rgba(255, 77, 77, 0.1);
-  color: #FF4D4D;
-  border-color: rgba(255, 77, 77, 0.3);
+.actionButtonsContainer button:first-child:hover {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: #D4AF37;
+  color: #FFF;
 }
 
-.actionButtonsContainer .deleteButton:hover {
-  background: rgba(255, 77, 77, 0.2);
-  box-shadow: 0 0 10px rgba(255, 77, 77, 0.2);
+/* Botão Excluir */
+.deleteButton {
+  border: 1px solid rgba(139, 0, 0, 0.4) !important;
+  color: #FF4D4D !important;
 }
 
-/* --- ESTADO VAZIO --- */
+.deleteButton:hover {
+  background: rgba(139, 0, 0, 0.2) !important;
+  border-color: #FF4D4D !important;
+  color: #FFF !important;
+}
+
+/* === ESTADOS === */
+.completedItem {
+  opacity: 0.6;
+  filter: grayscale(0.8);
+  border-color: rgba(76, 175, 80, 0.2);
+}
+
+.isDeleting {
+  transform: scale(0.95);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+/* === VAZIO === */
 .emptyContainer {
-  text-align: center;
-  padding: 40px;
-  color: #8B949E;
-  background: #15191E;
-  border: 1px dashed #2C333A;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
   border-radius: 16px;
+  text-align: center;
 }
 
 .emptyText {
-  font-size: 18px;
-  color: #FFFFFF;
-  font-weight: 700;
-  margin-bottom: 8px;
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  color: #D4AF37;
+  margin-top: 16px;
+}
+
+.emptySubtext {
+  font-size: 12px;
+  color: #666;
+  margin: 8px 0 20px 0;
 }
 
 .tipContainer {
-  display: inline-flex;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
   align-items: center;
-  gap: 12px;
-  background: rgba(255, 215, 0, 0.1); /* Dourado translúcido */
-  padding: 12px 20px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  color: #FFD700;
+  gap: 8px;
 }
 
-/* --- MODAL (Dark Glass) --- */
-.modalOverlay {
-  background-color: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(8px);
-}
-
-.modalContainer {
-  background: #15191E;
-  border-radius: 16px;
-  border: 1px solid #2C333A;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-  color: #E0E0E0;
-}
-
-.modalHeader {
-  background: #1A1E24;
-  border-bottom: 1px solid #2C333A;
-  padding: 16px;
-  border-radius: 16px 16px 0 0;
-}
-
-.modalTitle {
-  color: #FFFFFF;
-  font-size: 16px;
-  font-weight: 700;
-  font-family: 'Montserrat', sans-serif;
-  text-transform: uppercase;
-}
-
-.closeButton {
-  background: transparent;
-  border: 1px solid #2C333A;
-  color: #8B949E;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  font-family: sans-serif;
-  font-weight: normal;
-  transition: all 0.2s;
-}
-.closeButton:hover {
-  background: #2C333A;
-  color: #FFFFFF;
-}
-
-.modalContent {
-  background: #15191E;
-  padding: 20px;
-}
-
-.inputLabel {
-  color: #8B949E;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.textInput {
-  background-color: #0F1216;
-  border: 1px solid #2C333A;
-  border-radius: 8px;
-  padding: 12px;
-  color: #FFFFFF;
-  font-size: 14px;
-}
-
-.textInput:focus {
-  border-color: #00FF88;
-  box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.1);
-}
-
-/* Preview Section */
-.previewContainer {
-  margin: 20px 0;
-  padding: 16px;
-  background: #0F1216;
-  border-radius: 12px;
-  border: 1px solid #2C333A;
-}
-
-.previewLabel {
-  color: #00FF88;
-  margin-bottom: 12px;
-}
-
-.previewCard {
-  border: none;
-  background: #1A1E24;
-  border-radius: 8px;
-  padding: 16px;
-}
-
-.previewTitle {
-  color: #FFFFFF;
-  font-size: 16px;
-}
-
-.previewPercentage {
-  color: #00FF88;
-  text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
-}
-
-/* Botões do Modal */
-.modalActions {
-  border-top: 1px solid #2C333A;
-  background: #1A1E24;
-  padding: 16px;
-  gap: 12px;
-  border-radius: 0 0 16px 16px;
-}
-
-.cancelButton, .saveButton {
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  flex: 1;
-  text-transform: uppercase;
-  border: none;
-}
-
-.cancelButton {
-  background: #2C333A;
-  color: #FFFFFF;
-  border: 1px solid transparent;
-}
-.cancelButton:hover {
-  background: #363D47;
-}
-
-.saveButton {
-  background: linear-gradient(90deg, #00C853 0%, #009624 100%);
-  color: #FFFFFF;
-  font-weight: 800;
-  box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3);
-}
-.saveButton:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0, 200, 83, 0.4);
-}
-
-/* Checkbox Customizado */
-.checkboxContainer {
-  color: #FFFFFF;
-  font-size: 13px;
-  padding-left: 30px;
-}
-
-.checkboxCheckmark {
-  height: 20px;
-  width: 20px;
-  background-color: #0F1216;
-  border: 1px solid #2C333A;
-  border-radius: 4px;
-}
-
-.checkboxContainer:hover .checkboxCheckmark {
-  border-color: #00FF88;
-}
-
-.checkboxInput:checked ~ .checkboxCheckmark {
-  background-color: #00FF88;
-  border-color: #00FF88;
-  box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
-}
-
-.checkboxCheckmark:after {
-  content: "";
-  left: 6px;
-  top: 2px;
-  width: 5px;
-  height: 10px;
-  border: solid #000;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-  display: none;
-}
-.checkboxInput:checked ~ .checkboxCheckmark:after {
-  display: block;
-}
-
-/* Badge de Completo */
-.completedBadge {
-  background: #00FF88;
-  color: #000;
-  box-shadow: 0 0 10px #00FF88;
-  width: 24px;
-  height: 24px;
+.tipText {
+  font-size: 10px;
+  color: #888;
 }

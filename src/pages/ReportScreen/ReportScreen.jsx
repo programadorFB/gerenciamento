@@ -6,9 +6,9 @@ import { useFinancial } from '../../contexts/FinancialContext';
 import { useAuth } from '../../contexts/AuthContext';
 import FinancialReportPDF from '../../components/FinancialReportPDF';
 
-// --- Icons (Atualizados para tema) ---
-import { IoArrowBack, IoDocumentText } from 'react-icons/io5';
-import { FaFilePdf, FaFileExcel, FaDownload } from 'react-icons/fa';
+// --- Icons (Substituídos por fontes mais estáveis) ---
+import { MdArrowBack, MdSecurity, MdFileDownload, MdPictureAsPdf } from 'react-icons/md';
+import { FaFileExcel, FaStamp, FaFilePdf } from 'react-icons/fa';
 
 // --- CSS Module ---
 import styles from './ReportScreen.module.css';
@@ -26,122 +26,109 @@ const ReportScreen = () => {
     totalLosses
   } = useFinancial();
 
-  // Função para exportar para Excel (Lógica mantida)
   const handleExportToExcel = () => {
     const summaryData = [
-      ['RESUMO FINANCEIRO - CASSINO ROYAL'],
+      ['RELATÓRIO OFICIAL - ROYAL CLUB'],
       [''],
-      ['Jogador:', user?.name || 'N/A'],
-      ['Email:', user?.email || 'N/A'],
-      ['Data de Emissão:', new Date().toLocaleDateString('pt-BR')],
+      ['Jogador:', user?.name || 'Anônimo'],
+      ['Emissão:', new Date().toLocaleString('pt-BR')],
       [''],
-      ['Saldo Inicial:', initialBankBalance],
+      ['RESUMO DE BANCA'],
       ['Saldo Atual:', balance],
-      ['Lucro Total:', totalGains],
-      ['Prejuízo Total:', totalLosses],
-      ['Depósitos:', totalDeposits],
-      ['Saques:', totalWithdraws],
+      ['Lucro Real:', totalGains - totalLosses],
       [''],
-      ['HISTÓRICO DETALHADO'],
-      ['Data', 'Tipo', 'Categoria', 'Valor', 'Descrição']
+      ['DETALHAMENTO'],
+      ['Data', 'Tipo', 'Categoria', 'Valor']
     ];
 
     const transactionData = transactions.map(t => [
       new Date(t.date).toLocaleDateString('pt-BR'),
-      t.type === 'deposit' ? 'Depósito' : 
-      t.type === 'withdraw' ? 'Saque' : 
-      t.type === 'gains' ? 'Vitória' : 
-      t.type === 'losses' ? 'Derrota' : 'Outro',
+      t.type,
       t.category,
-      t.amount,
-      t.description
+      t.amount
     ]);
 
     const finalData = [...summaryData, ...transactionData];
     const ws = XLSX.utils.aoa_to_sheet(finalData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Extrato");
-    XLSX.writeFile(wb, `Extrato_${user?.name || 'Jogadas'}.xlsx`);
+    XLSX.writeFile(wb, `Extrato_RoyalClub.xlsx`);
   };
 
-  // Dados para o PDF
   const reportData = {
     user,
     transactions,
     balance,
     initialBankBalance,
-    summary: {
-      totalDeposits,
-      totalWithdraws,
-      totalGains,
-      totalLosses
-    }
+    summary: { totalDeposits, totalWithdraws, totalGains, totalLosses }
   };
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <button className={styles.backButton} onClick={() => navigate(-1)}>
-          <IoArrowBack size={18} /> VOLTAR
+          <MdArrowBack size={18} /> <span>MESA</span>
         </button>
-        <h1>Extrato Oficial</h1>
+        <div className={styles.headerTitleContainer}>
+            <MdSecurity className={styles.securityIcon} />
+            <h1>AUDITORIA DA BANCA</h1>
+        </div>
         <div className={styles.headerSpacer} />
       </header>
 
       <main className={styles.content}>
-        
-        {/* Painel Lateral de Controle */}
         <section className={styles.controlPanel}>
-          <h2 style={{ fontFamily: 'Cinzel, serif', color: '#FFF', margin: '0 0 10px 0', fontSize: '16px' }}>
-            <IoDocumentText style={{marginRight: '8px', color: '#D4AF37'}}/>
-            Exportação
-          </h2>
-          <p className={styles.introText}>
-            Emita o relatório completo de suas operações na mesa. Disponível em planilha digital ou documento oficial.
-          </p>
+          <div className={styles.panelHeader}>
+            <h2><FaStamp /> EXPORTAR EXTRATO</h2>
+            <p>Selecione o formato para emissão dos registros oficiais da mesa.</p>
+          </div>
 
           <div className={styles.actionsContainer}>
-            {/* Excel */}
-            <button 
-              className={styles.excelButton}
-              onClick={handleExportToExcel}
-            >
-              <FaFileExcel size={20} />
-              Baixar Excel
+            {/* Excel Card - Usando FaFileExcel */}
+            <button className={`${styles.exportCard} ${styles.excelCard}`} onClick={handleExportToExcel}>
+              <div className={styles.iconBoxExcel}>
+                <FaFileExcel size={24} />
+              </div>
+              <div className={styles.cardText}>
+                <span className={styles.cardTitle}>Planilha Analítica</span>
+                <span className={styles.cardSub}>Formato .XLSX</span>
+              </div>
+              <MdFileDownload className={styles.downloadIcon} />
             </button>
 
-            {/* PDF Download */}
+            {/* PDF Card - Usando FaFilePdf */}
             <PDFDownloadLink
               document={<FinancialReportPDF data={reportData} />}
-              fileName={`Extrato_Oficial_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.pdf`}
-              style={{ textDecoration: 'none' }}
+              fileName="Extrato_Oficial.pdf"
+              className={styles.pdfLinkWrapper}
             >
-              {({ loading }) =>
-                loading ? (
-                  <span className={styles.loadingText}>Processando documento...</span>
-                ) : (
-                  <button className={styles.pdfButton}>
-                    <FaFilePdf size={20} />
-                    Baixar PDF
-                  </button>
-                )
-              }
+              {({ loading }) => (
+                <button className={`${styles.exportCard} ${styles.pdfCard}`} disabled={loading}>
+                  <div className={styles.iconBoxPdf}>
+                    <FaFilePdf size={24} />
+                  </div>
+                  <div className={styles.cardText}>
+                    <span className={styles.cardTitle}>Documento PDF</span>
+                    <span className={styles.cardSub}>{loading ? 'Gerando...' : 'Formato .PDF'}</span>
+                  </div>
+                  <MdFileDownload className={styles.downloadIcon} />
+                </button>
+              )}
             </PDFDownloadLink>
           </div>
         </section>
 
-        {/* Área de Visualização */}
         <section className={styles.viewerSection}>
-          <h2 className={styles.viewerTitle}>
-            Pré-visualização do Documento
-          </h2>
-          <div className={styles.viewerWrapper}>
-            <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
+          <div className={styles.viewerHeader}>
+            <span className={styles.liveIndicator}></span>
+            <h2>PRÉ-VISUALIZAÇÃO</h2>
+          </div>
+          <div className={styles.viewerFrame}>
+            <PDFViewer width="100%" height="100%" className={styles.pdfFrame}>
               <FinancialReportPDF data={reportData} />
             </PDFViewer>
           </div>
         </section>
-
       </main>
     </div>
   );

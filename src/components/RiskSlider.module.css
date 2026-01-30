@@ -1,317 +1,232 @@
 /* ========================================
-   TEMA CASINO / TIPSTER (Breathtaking)
-   RiskSlider.module.css
+   RISK SLIDER - ELITE EDITION
+   Industrial Luxury Design
    ======================================== */
 
 .sliderContainer {
-  padding: 30px;
-  background: #15191E;
-  margin: 20px;
-  border-radius: 16px;
-  border: 1px solid #2C333A;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  padding: 24px;
+  background: radial-gradient(circle at center, #141414 0%, #080808 100%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   font-family: 'Inter', sans-serif;
   position: relative;
-  overflow: hidden;
-}
-
-/* Efeito de luz ambiente no fundo */
-.sliderContainer::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(0, 255, 136, 0.03) 0%, transparent 60%);
-  pointer-events: none;
+  user-select: none;
 }
 
 .compactContainer {
-  padding: 20px;
-  margin: 20px 0;
-  background: #1A1E24;
-  border: 1px solid #2C333A;
-  border-radius: 12px;
+  padding: 16px;
+  background: #0A0A0A;
 }
 
-.sliderHeader, .compactHeader {
-  text-align: center;
-  margin-bottom: 30px;
-  position: relative;
-  z-index: 2;
-}
-
-.sliderTitle, .compactTitle {
-  font-weight: 800;
-  color: #FFFFFF;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-family: 'Montserrat', sans-serif;
-}
-
-.sliderTitle {
-  font-size: 16px;
-  margin-bottom: 20px;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-}
-.compactTitle {
-  font-size: 13px;
-  margin-bottom: 12px;
-}
-
-/* Indicador do Perfil Atual (Chip) */
-.currentProfileIndicator, .compactProfileDisplay {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-weight: 700;
-  transition: all 0.3s ease;
-}
-
-.compactProfileDisplay {
-  padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 11px;
-}
-
-.currentProfileIndicator span,
-.compactProfileDisplay span {
-  color: #E0E0E0 !important;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.currentProfileIndicator svg,
-.compactProfileDisplay svg {
-  color: #FFD700 !important; /* Ícone Dourado */
-  filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.4));
-}
-
-/* Labels Superiores (Ícones) */
-.sliderLabels {
+/* --- Header --- */
+.header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 30px;
-  padding: 0 10px;
-  position: relative;
-  z-index: 2;
-}
-.labelContainer {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  flex: 1;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-.labelContainer:hover {
-  transform: translateY(-2px);
+  margin-bottom: 24px;
 }
 
-.sliderLabel {
-  font-size: 10px;
-  color: #6E7681;
-  font-weight: 600;
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerIconWrapper {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid; /* Cor dinâmica */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+
+.headerTitle {
+  font-size: 11px;
   text-transform: uppercase;
-  transition: all 0.3s;
-}
-.activeLabel {
-  color: #FFFFFF;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  letter-spacing: 1.5px;
+  color: #888;
+  font-weight: 600;
 }
 
-.sliderLabels svg {
-  color: #484F58 !important; /* Ícone Escuro Inativo */
-  font-size: 20px;
-  transition: all 0.3s;
-}
-/* Ícone Ativo ganha cor baseada no contexto (controlado via JS seria ideal, mas aqui forçamos um padrão neon) */
-.activeLabel svg {
-  color: #00FF88 !important; /* Verde Neon Padrão ou sobrescrito */
-  filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.6));
-  transform: scale(1.2);
+.statusBadge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid; /* Cor dinâmica */
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
 }
 
-/* Área do Slider */
+/* --- Slider Area --- */
 .sliderWrapper {
   position: relative;
-  padding-top: 60px; /* Espaço para HUD */
-  margin-bottom: 20px;
-  z-index: 5;
-}
-.compactSliderWrapper {
-  padding-top: 50px;
+  padding: 20px 0; /* Espaço para o knob não cortar */
+  margin-bottom: 8px;
+  z-index: 10;
 }
 
-/* Âncora e Wrapper do Ícone Flutuante (HUD) */
+/* Tooltip HUD */
 .floatingIconAnchor {
   position: absolute;
-  top: 60px; 
+  top: 0; 
   left: 0;
   pointer-events: none;
-  width: 100%; 
+  /* Não defina width 100% aqui, o 'x' do framer já move o elemento */
+  z-index: 20;
 }
 
-.floatingIconWrapper {
+.tooltipContainer {
   position: absolute;
-  bottom: 0;
   left: 0;
-  transform: translate(-50%, -100%) translateY(-20px); 
-  z-index: 10;
+  bottom: 10px; /* Acima do trilho */
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  pointer-events: none;
-  transition: left 0.1s linear; /* Movimento suave */
 }
 
-/* Tooltip Estilo HUD */
-.iconBubble {
-  background: rgba(15, 18, 22, 0.9) !important;
-  backdrop-filter: blur(4px);
-  border-radius: 8px;
-  padding: 8px 12px;
-  border: 1px solid #00FF88 !important; /* Borda Neon */
-  box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 60px;
+.tooltipBox {
+  background: #000;
+  border: 1px solid; /* Cor dinâmica */
+  border-radius: 4px;
+  padding: 4px 8px;
+  min-width: 30px;
+  text-align: center;
 }
-.iconValue {
+
+.tooltipValue {
+  font-family: 'Cinzel', serif;
   font-size: 14px;
-  font-weight: 800;
-  margin-left: 8px;
-  color: #FFFFFF !important;
-  font-family: 'Montserrat', sans-serif;
-}
-.iconBubble svg {
-  color: #00FF88 !important;
+  font-weight: 700;
 }
 
-.iconArrow {
+.tooltipArrow {
   width: 0;
   height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 6px solid #00FF88 !important; /* Seta Neon */
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid; /* Cor dinâmica */
   margin-top: -1px;
 }
 
 /* Trilho (Track) */
 .sliderTrack {
-  height: 8px;
-  background-color: #0F1216; /* Fundo do trilho bem escuro */
-  border: 1px solid #2C333A;
-  border-radius: 4px;
+  height: 6px;
   position: relative;
   cursor: pointer;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.trackBackground {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #111;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.05);
 }
 
 .sliderTrackFill {
-  height: 100%;
-  border-radius: 4px;
-  /* Gradiente dinâmico será aplicado via inline-style, mas aqui definimos o base */
-  background: linear-gradient(90deg, #00FF88, #00C853) !important;
-  box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  border-radius: 3px;
+  /* Largura e Cor via JS */
 }
 
-/* Knob (Seletor) */
+/* Knob (Botão Físico) */
 .sliderKnob {
   position: absolute;
-  top: -16px; 
+  top: 50%;
   left: 0;
-  transform: translateX(-50%); 
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
+  margin-top: -16px; /* Centralizar verticalmente */
+  margin-left: -16px; /* Centralizar horizontalmente no ponto X */
+  cursor: grab;
+  z-index: 30;
+  /* Sombra realista de botão elevado */
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
+}
+
+.sliderKnob:active {
+  cursor: grabbing;
+}
+
+.knobInner {
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
+  /* Gradiente metálico radial */
+  background: radial-gradient(circle at 30% 30%, #555, #111);
+  border: 1px solid #333;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), inset 0 -1px 1px rgba(0,0,0,0.5);
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 15;
-  cursor: grab;
-  /* Efeito de halo ao redor do knob */
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-}
-.sliderKnob:active {
-  cursor: grabbing;
-  transform: translateX(-50%) scale(1.1);
 }
 
-.knobCenter {
-  width: 24px;
-  height: 24px;
+/* Indicador de posição no botão */
+.knobIndicator {
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  background: #E0E0E0 !important; /* Metal */
-  border: 2px solid #FFFFFF;
-  box-shadow: 
-    0 0 10px rgba(0,0,0,0.5),
-    inset 0 -2px 5px rgba(0,0,0,0.3);
-  position: relative;
-}
-/* Brilho interno do knob */
-.knobCenter::after {
-  content: '';
-  position: absolute;
-  top: 25%;
-  left: 25%;
-  width: 50%;
-  height: 50%;
-  background: #00FF88; /* Miolo Neon */
-  border-radius: 50%;
-  box-shadow: 0 0 5px #00FF88;
+  box-shadow: 0 0 5px currentColor;
 }
 
-/* Números da Escala */
-.scaleNumbers {
+/* --- Régua --- */
+.scaleContainer {
   display: flex;
   justify-content: space-between;
-  padding: 0 2px;
-  margin-top: 16px;
-  position: relative;
-  z-index: 2;
-}
-.compactScaleNumbers {
-  margin-top: 10px;
-}
-.scaleNumber {
-  font-size: 12px;
-  color: #484F58;
-  font-weight: 600;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  transition: all 0.2s;
-  font-family: 'Inter', sans-serif;
-}
-.compactScaleNumber {
-  font-size: 10px;
-}
-.scaleNumber:hover {
-  color: #E0E0E0;
-}
-.activeScaleNumber {
-  color: #00FF88;
-  font-size: 14px;
-  font-weight: 800;
-  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
-  transform: scale(1.1);
+  margin-top: 4px;
+  padding: 0 10px; /* Alinhar visualmente com o centro do knob nas pontas */
 }
 
-.compactDescriptionText {
-  font-size: 12px;
-  color: #8B949E;
-  text-align: center;
-  line-height: 1.6;
-  margin-top: 24px;
-  padding-top: 16px;
-  border-top: 1px solid #2C333A;
+.scaleItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  width: 20px; /* Área de clique */
+}
+
+.scaleMark {
+  width: 1px;
+  background: #333;
+  margin-bottom: 6px;
+  transition: all 0.3s;
+}
+
+.scaleNumber {
+  font-size: 10px;
+  color: #444;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s;
+}
+
+.scaleItem:hover .scaleNumber { color: #888; }
+.scaleItem:hover .scaleMark { background: #666; }
+
+/* --- Descrição --- */
+.descriptionContainer {
+  margin-top: 20px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 2px solid; /* Cor dinâmica */
+  border-radius: 0 4px 4px 0;
+}
+
+.descriptionText {
+  font-size: 11px;
+  color: #888;
+  font-style: italic;
+  margin: 0;
+  line-height: 1.4;
 }

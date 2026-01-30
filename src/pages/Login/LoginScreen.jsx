@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSpinner, FaEye, FaEyeSlash, FaCheck, FaTimes } from 'react-icons/fa';
-import { GiHearts, GiDiamonds, GiClubs, GiSpades } from 'react-icons/gi';
+import { FaSpinner, FaEye, FaEyeSlash, FaCheck, FaTimes, FaLock } from 'react-icons/fa';
+import { GiHearts, GiDiamonds, GiClubs, GiSpades, GiPokerHand } from 'react-icons/gi';
 
 import { useAuth } from '../../contexts/AuthContext';
-import RiskSlider from '../../components/RiskSlider'; // Certifique-se que o slider existe
+import RiskSlider from '../../components/RiskSlider';
 
 import styles from './LoginScreen.module.css';
 
@@ -100,7 +100,6 @@ const LoginScreen = () => {
             }
         } catch (err) {
             console.error('Erro no login/cadastro:', err);
-            alert('Erro na autenticação. Verifique os dados.');
             shouldRedirect.current = false;
         }
     };
@@ -128,8 +127,7 @@ const LoginScreen = () => {
             await resetPassword(resetEmail.trim().toLowerCase());
             setResetSuccess(true);
         } catch (err) {
-            console.error('Erro ao enviar email:', err);
-            setResetError('Erro ao enviar email. Verifique se o endereço está correto.');
+            setResetError('Erro ao enviar email. Verifique o endereço.');
         } finally {
             setResetLoading(false);
         }
@@ -137,197 +135,177 @@ const LoginScreen = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.scrollContainer}>
-                
-                <div className={styles.loginCardWrapper}>
-                    <div className={styles.form}>
-                        
-                        <div className={styles.header}>
-                            <div className={styles.suitIcons}>
-                                <GiSpades />
-                                <GiHearts />
-                                <GiDiamonds />
-                                <GiClubs />
+            <div className={styles.backgroundEffects}></div>
+            
+            <div className={styles.loginCardWrapper}>
+                <div className={styles.formContent}>
+                    
+                    {/* Cabeçalho com Naipes Animados */}
+                    <div className={styles.header}>
+                        <div className={styles.suitContainer}>
+                            <GiSpades className={styles.suitIcon} />
+                            <GiHearts className={`${styles.suitIcon} ${styles.redSuit}`} />
+                            <GiClubs className={styles.suitIcon} />
+                            <GiDiamonds className={`${styles.suitIcon} ${styles.redSuit}`} />
+                        </div>
+                        <h1 className={styles.title}>PHANTOM GERENCIAMENTO </h1>
+                        <div className={styles.divider}>
+                            <div className={styles.line}></div>
+                            <span className={styles.subtitle}>{isLogin ? 'VIP ACCESS' : 'NOVO JOGADOR'}</span>
+                            <div className={styles.line}></div>
+                        </div>
+                    </div>
+
+                    {error && <div className={styles.errorContainer}><FaTimes /> {error}</div>}
+
+                    <form className={styles.formBody} onSubmit={handleSubmit}>
+                        {!isLogin && (
+                            <div className={styles.inputGroup}>
+                                <label className={styles.inputLabel}>NOME DO JOGADOR</label>
+                                <input
+                                    type="text"
+                                    className={styles.inputField}
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder="Como quer ser chamado?"
+                                    required={!isLogin}
+                                />
                             </div>
-                            <h1 className={styles.title}>FUTEBOL STUDIO</h1>
-                            <p className={styles.subtitle}>{isLogin ? 'ACESSO VIP' : 'NOVO JOGADOR'}</p>
+                        )}
+
+                        <div className={styles.inputGroup}>
+                            <label className={styles.inputLabel}>EMAIL</label>
+                            <input
+                                type="email"
+                                className={styles.inputField}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="seu@email.com"
+                                required
+                            />
                         </div>
 
-                        {error && <div className={styles.errorContainer}>{error}</div>}
+                        <div className={styles.inputGroup}>
+                            <label className={styles.inputLabel}>SENHA</label>
+                            <div className={styles.passwordWrapper}>
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    className={styles.inputField}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className={styles.eyeButton}
+                                >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </button>
+                            </div>
+                            {isLogin && (
+                                <button 
+                                    type="button"
+                                    onClick={() => {
+                                        setShowResetModal(true);
+                                        setResetSuccess(false);
+                                        setResetEmail('');
+                                        setResetError('');
+                                    }}
+                                    className={styles.forgotPasswordLink}
+                                >
+                                    Esqueceu a senha?
+                                </button>
+                            )}
+                        </div>
 
-                        <form style={{width: '100%'}} onSubmit={handleSubmit}>
-                            {!isLogin && (
+                        {!isLogin && (
+                            <>
                                 <div className={styles.inputGroup}>
-                                    <label htmlFor="name">NOME</label>
-                                    <div className={styles.inputWrapper}>
+                                    <label className={styles.inputLabel}>BANCA INICIAL</label>
+                                    <div className={styles.currencyWrapper}>
+                                        <span className={styles.currencySymbol}>R$</span>
                                         <input
-                                            id="name"
                                             type="text"
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                            placeholder="Ex: João Silva"
-                                            required
-                                            minLength="2"
+                                            inputMode="decimal"
+                                            value={initialBank}
+                                            onChange={handleInitialBankChange}
+                                            placeholder="100,00"
+                                            className={styles.inputField}
+                                            style={{paddingLeft: '40px'}}
+                                            required={!isLogin}
                                         />
                                     </div>
                                 </div>
-                            )}
 
-                            <div className={styles.inputGroup}>
-                                <label htmlFor="email">EMAIL</label>
-                                <div className={styles.inputWrapper}>
-                                    <input
-                                        id="email"
-                                        type="email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        placeholder="seu@email.com"
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            <div className={styles.inputGroup}>
-                                <label htmlFor="password">SENHA</label>
-                                <div className={styles.inputWrapper}>
-                                    <input
-                                        id="password"
-                                        type={showPassword ? 'text' : 'password'}
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        placeholder=".........."
-                                        required
-                                        minLength="6"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className={styles.passwordToggle}
-                                    >
-                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                    </button>
-                                </div>
-                                {isLogin && (
-                                    <button 
-                                        type="button"
-                                        onClick={() => {
-                                            setShowResetModal(true);
-                                            setResetSuccess(false);
-                                            setResetEmail('');
-                                            setResetError('');
-                                        }}
-                                        className={styles.forgotPassword}
-                                    >
-                                        Esqueceu a senha?
-                                    </button>
-                                )}
-                            </div>
-
-                            {!isLogin && (
-                                <>
-                                    <div className={styles.inputGroup}>
-                                        <label htmlFor="initialBank">BANCA INICIAL</label>
-                                        <div className={styles.inputWrapper}>
-                                            <span className={styles.currencyPrefix}>R$</span>
-                                            <input
-                                                id="initialBank"
-                                                type="text"
-                                                inputMode="decimal"
-                                                value={initialBank}
-                                                onChange={handleInitialBankChange}
-                                                placeholder="100,00"
-                                                className={styles.currencyInput}
-                                                required
-                                            />
-                                        </div>
+                                <div className={styles.sliderGroup}>
+                                    <label className={styles.inputLabel}>ESTILO DE JOGO</label>
+                                    <div className={styles.sliderWrapper}>
+                                        <RiskSlider value={riskValue} onValueChange={setRiskValue} compact={true} />
                                     </div>
-
-                                    <div className={styles.inputGroup}>
-                                        <label>ESTILO DE JOGO</label>
-                                        <RiskSlider value={riskValue} onValueChange={setRiskValue} />
-                                    </div>
-                                </>
-                            )}
-
-                            <button 
-                                type="submit" 
-                                className={styles.submitButton} 
-                                disabled={isLoading || !validateForm()}
-                            >
-                                <div className={styles.goldGradient}>
-                                    {isLoading ? <FaSpinner className={styles.spinner} /> : (isLogin ? 'ENTRAR' : 'REGISTRAR')}
                                 </div>
-                            </button>
-                        </form>
+                            </>
+                        )}
 
+                        <button 
+                            type="submit" 
+                            className={styles.submitButton} 
+                            disabled={isLoading}
+                        >
+                            {isLoading ? <FaSpinner className={styles.spinner} /> : (isLogin ? 'ENTRAR NA MESA' : 'CRIAR CONTA')}
+                        </button>
+                    </form>
+
+                    <div className={styles.footer}>
+                        <p>{isLogin ? "Não tem ficha?" : "Já está no jogo?"}</p>
                         <button onClick={toggleMode} className={styles.toggleButton}>
-                            {isLogin ? "Novo por aqui?" : 'Já possui conta?'}
-                            <span>{isLogin ? 'CADASTRE-SE' : 'FAÇA LOGIN'}</span>
+                            {isLogin ? 'CADASTRE-SE' : 'FAÇA LOGIN'}
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Modal de Reset de Senha */}
+            {/* Modal de Reset (Estilo Black/Gold) */}
             {showResetModal && (
                 <div className={styles.modalOverlay} onClick={() => setShowResetModal(false)}>
                     <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                        <button 
-                            className={styles.closeButton}
-                            onClick={() => setShowResetModal(false)}
-                        >
+                        <button className={styles.modalClose} onClick={() => setShowResetModal(false)}>
                             <FaTimes />
                         </button>
                         
+                        <div className={styles.modalHeader}>
+                            <FaLock size={24} color="#D4AF37" />
+                            <h2>RECUPERAR ACESSO</h2>
+                        </div>
+
                         {resetSuccess ? (
-                            <div style={{textAlign: 'center'}}>
-                                <div className={styles.successIcon}><FaCheck /></div>
-                                <div className={styles.modalHeader}>
-                                    <h2>Email Enviado!</h2>
-                                    <p>Verifique sua caixa de entrada para redefinir a senha.</p>
-                                </div>
-                                <button 
-                                    onClick={() => setShowResetModal(false)}
-                                    className={styles.submitButton}
-                                >
-                                    <div className={styles.goldGradient}>OK</div>
+                            <div className={styles.successMessage}>
+                                <FaCheck size={40} />
+                                <p>Link enviado para seu email!</p>
+                                <button onClick={() => setShowResetModal(false)} className={styles.modalButton}>
+                                    OK
                                 </button>
                             </div>
                         ) : (
-                            <div style={{width: '100%'}}>
-                                <div className={styles.modalHeader}>
-                                    <h2>RECUPERAR ACESSO</h2>
-                                    <p>Digite seu email para receber o link</p>
-                                </div>
-
-                                {resetError && <div className={styles.errorContainer}>{resetError}</div>}
+                            <form onSubmit={handleResetPassword} className={styles.modalForm}>
+                                <p className={styles.modalText}>Informe seu email para receber o link de redefinição.</p>
                                 
-                                <form onSubmit={handleResetPassword}>
-                                    <div className={styles.inputGroup}>
-                                        <label>EMAIL CADASTRADO</label>
-                                        <div className={styles.inputWrapper}>
-                                            <input
-                                                type="email"
-                                                value={resetEmail}
-                                                onChange={(e) => setResetEmail(e.target.value)}
-                                                placeholder="seu@email.com"
-                                                required
-                                                autoFocus
-                                            />
-                                        </div>
-                                    </div>
+                                <input
+                                    type="email"
+                                    className={styles.modalInput}
+                                    value={resetEmail}
+                                    onChange={(e) => setResetEmail(e.target.value)}
+                                    placeholder="seu@email.com"
+                                    required
+                                    autoFocus
+                                />
+                                {resetError && <p className={styles.modalError}>{resetError}</p>}
 
-                                    <button 
-                                        type="submit"
-                                        className={styles.submitButton}
-                                        disabled={resetLoading}
-                                    >
-                                        <div className={styles.goldGradient}>
-                                            {resetLoading ? <FaSpinner className={styles.spinner} /> : 'ENVIAR LINK'}
-                                        </div>
-                                    </button>
-                                </form>
-                            </div>
+                                <button type="submit" className={styles.modalButton} disabled={resetLoading}>
+                                    {resetLoading ? <FaSpinner className={styles.spinner} /> : 'ENVIAR LINK'}
+                                </button>
+                            </form>
                         )}
                     </div>
                 </div>

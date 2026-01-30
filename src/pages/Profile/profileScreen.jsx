@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { MdArrowBack, MdCheck, MdLock, MdPerson, MdEmail } from 'react-icons/md';
-import { FaCoins, FaUserEdit } from 'react-icons/fa';
+import { MdArrowBack, MdLock, MdEmail, MdEdit } from 'react-icons/md';
+import { FaUserTie, FaCoins, FaCheckCircle } from 'react-icons/fa';
+import { GiPokerHand } from 'react-icons/gi';
 import styles from './profileScreen.module.css';
 
 // 1. Importar imagens locais
@@ -13,7 +14,6 @@ import avatar4 from '../../assets/avatares/4.png';
 import avatar5 from '../../assets/avatares/5.png';
 import avatar6 from '../../assets/avatares/6.png';
 
-// 2. Mapa de Avatares
 const AVATAR_MAP = {
   'avatar1': avatar1,
   'avatar2': avatar2,
@@ -24,12 +24,12 @@ const AVATAR_MAP = {
 };
 
 const AVATAR_OPTIONS = [
-  { id: 'avatar1', name: 'Avatar 1' },
-  { id: 'avatar2', name: 'Avatar 2' },
-  { id: 'avatar3', name: 'Avatar 3' },
-  { id: 'avatar4', name: 'Avatar 4' },
-  { id: 'avatar5', name: 'Avatar 5' },
-  { id: 'avatar6', name: 'Avatar 6' }
+  { id: 'avatar1', name: 'Dealer' },
+  { id: 'avatar2', name: 'Shark' },
+  { id: 'avatar3', name: 'High Roller' },
+  { id: 'avatar4', name: 'Ace' },
+  { id: 'avatar5', name: 'King' },
+  { id: 'avatar6', name: 'Queen' }
 ];
 
 const ProfileScreen = () => {
@@ -123,125 +123,111 @@ const ProfileScreen = () => {
   };
 
   const getInitials = () => {
-    return name ? name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'MP';
+    return name ? name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'JG';
   };
 
   const mainImageSrc = selectedAvatarId ? AVATAR_MAP[selectedAvatarId] : null;
 
   return (
     <div className={styles.container}>
+      <header className={styles.header}>
+        <button type="button" onClick={() => navigate(-1)} className={styles.backButton}>
+          <MdArrowBack size={20} /> <span>MESA</span>
+        </button>
+        <h1 className={styles.title}>Dossiê do Jogador</h1>
+        <div className={styles.headerSpacer}></div>
+      </header>
+
       <div className={styles.scrollContainer}>
         <div className={styles.profileCardWrapper}>
-          <div className={styles.form}>
-            
-            <header className={styles.header}>
-              <button type="button" onClick={() => navigate(-1)} className={styles.backButton}>
-                <MdArrowBack size={20} />
-              </button>
-              <h1 className={styles.title}>Cartão de Membro</h1>
-              <div className={styles.headerSpacer}></div>
-            </header>
-
-            <form onSubmit={handleUpdateProfile}>
-              {/* SEÇÃO DE IMAGEM */}
-              <section className={styles.imageSection}>
-                <div className={styles.imageContainer}>
-                  {mainImageSrc ? (
-                    <img 
-                      src={mainImageSrc} 
-                      alt="Avatar Selecionado" 
-                      className={styles.profileImage} 
-                    />
-                  ) : (
-                    <div className={styles.profileImagePlaceholder}>
-                      <span>{getInitials()}</span>
-                    </div>
-                  )}
-                </div>
-
-                {selectedAvatarId && (
-                  <div className={styles.imageButtons}>
-                    <button 
-                      type="button"
-                      className={styles.removeButton}
-                      onClick={() => setSelectedAvatarId(null)}
-                    >
-                      Remover
-                    </button>
+          
+          {/* Seção Visual (Esquerda/Topo) */}
+          <div className={styles.visualSection}>
+            <div className={styles.avatarDisplay}>
+              <div className={styles.avatarRing}>
+                {mainImageSrc ? (
+                  <img src={mainImageSrc} alt="Avatar" className={styles.profileImage} />
+                ) : (
+                  <div className={styles.profileImagePlaceholder}>
+                    <span>{getInitials()}</span>
                   </div>
                 )}
+                <div className={styles.vipBadge}>VIP</div>
+              </div>
+            </div>
+            
+            <div className={styles.chipSelector}>
+              <h3 className={styles.selectorTitle}>Escolha sua Identidade</h3>
+              <div className={styles.chipsGrid}>
+                {AVATAR_OPTIONS.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    className={`${styles.chipOption} ${selectedAvatarId === option.id ? styles.chipSelected : ''}`}
+                    onClick={() => handleSelectAvatar(option.id)}
+                    title={option.name}
+                  >
+                    <img src={AVATAR_MAP[option.id]} alt={option.name} />
+                    {selectedAvatarId === option.id && <div className={styles.checkOverlay}><FaCheckCircle /></div>}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
 
-                <div className={styles.avatarSelector}>
-                  <h3 className={styles.avatarSelectorTitle}>Selecione sua Ficha</h3>
-                  <div className={styles.avatarGrid}>
-                    {AVATAR_OPTIONS.map((option) => (
-                      <button
-                        key={option.id}
-                        type="button"
-                        className={`${styles.avatarOption} ${
-                          selectedAvatarId === option.id ? styles.avatarOptionSelected : ''
-                        }`}
-                        onClick={() => handleSelectAvatar(option.id)}
-                      >
-                        <img 
-                          src={AVATAR_MAP[option.id]} 
-                          alt={option.name} 
-                          className={styles.avatarOptionImage} 
-                        />
-                        {selectedAvatarId === option.id && (
-                          <div className={styles.avatarCheckmark}>
-                            <MdCheck size={14} />
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              {/* DADOS PESSOAIS */}
-              <section className={styles.section}>
-                <h2 className={styles.sectionTitle}><MdPerson /> Dados do Jogador</h2>
-                
-                <div className={styles.inputContainer}>
-                  <label className={styles.label}>Nome</label>
+          {/* Seção Formulário (Direita/Baixo) */}
+          <form onSubmit={handleUpdateProfile} className={styles.formSection}>
+            
+            <div className={styles.sectionBlock}>
+              <h2 className={styles.blockTitle}><FaUserTie /> Credenciais</h2>
+              
+              <div className={styles.inputGroup}>
+                <label>Nome do Jogador</label>
+                <div className={styles.inputWrapper}>
                   <input 
                     className={styles.input} 
                     value={name} 
                     onChange={e => setName(e.target.value)} 
+                    placeholder="Seu nome na mesa"
                   />
+                  <MdEdit className={styles.inputIcon} />
                 </div>
+              </div>
 
-                <div className={styles.inputContainer}>
-                  <label className={styles.label}>
-                    <FaCoins style={{marginRight: 5, color: '#D4AF37'}}/> Banca Inicial
-                  </label>
-                  <div className={styles.currencyInputWrapper}>
-                    <span className={styles.currencySymbol}>R$</span>
-                    <input 
-                      className={styles.currencyInput} 
-                      value={initialBank}
-                      onChange={e => setInitialBank(formatCurrency(e.target.value))}
-                      placeholder="0,00"
-                    />
-                  </div>
-                </div>
-
-                <div className={styles.inputContainer}>
-                  <label className={styles.label}><MdEmail style={{marginRight: 5}}/> Email</label>
+              <div className={styles.inputGroup}>
+                <label>Email Cadastrado</label>
+                <div className={styles.inputWrapper}>
                   <input 
-                    className={`${styles.input} ${styles.disabledInput}`} 
+                    className={`${styles.input} ${styles.disabled}`} 
                     value={user?.email || ''} 
                     disabled 
                   />
+                  <MdEmail className={styles.inputIcon} />
                 </div>
-              </section>
+              </div>
 
-              {/* SEGURANÇA */}
-              <section className={styles.section}>
-                <h2 className={styles.sectionTitle}><MdLock /> Credenciais</h2>
-                <div className={styles.inputContainer}>
-                  <label className={styles.label}>Senha Atual</label>
+              <div className={styles.inputGroup}>
+                <label>Banca Inicial (Buy-in)</label>
+                <div className={styles.inputWrapper}>
+                  <span className={styles.prefix}>R$</span>
+                  <input 
+                    className={styles.input} 
+                    value={initialBank}
+                    onChange={e => setInitialBank(formatCurrency(e.target.value))}
+                    placeholder="0,00"
+                    style={{paddingLeft: '35px'}}
+                  />
+                  <FaCoins className={styles.inputIcon} style={{color: '#D4AF37'}} />
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.sectionBlock}>
+              <h2 className={styles.blockTitle}><MdLock /> Segurança</h2>
+              
+              <div className={styles.passwordGrid}>
+                <div className={styles.inputGroup}>
+                  <label>Senha Atual</label>
                   <input 
                     type="password"
                     className={styles.input}
@@ -250,8 +236,8 @@ const ProfileScreen = () => {
                     placeholder="••••••"
                   />
                 </div>
-                <div className={styles.inputContainer}>
-                  <label className={styles.label}>Nova Senha</label>
+                <div className={styles.inputGroup}>
+                  <label>Nova Senha</label>
                   <input 
                     type="password"
                     className={styles.input}
@@ -260,8 +246,8 @@ const ProfileScreen = () => {
                     placeholder="••••••"
                   />
                 </div>
-                <div className={styles.inputContainer}>
-                  <label className={styles.label}>Confirmar Nova Senha</label>
+                <div className={styles.inputGroup}>
+                  <label>Confirmar</label>
                   <input 
                     type="password"
                     className={styles.input}
@@ -270,18 +256,19 @@ const ProfileScreen = () => {
                     placeholder="••••••"
                   />
                 </div>
-              </section>
+              </div>
+            </div>
 
-              <section className={styles.buttonSection}>
-                <button type="submit" className={styles.saveButton} disabled={loading}>
-                  {loading ? 'Salvando...' : 'ATUALIZAR PERFIL'}
-                </button>
-                <button type="button" onClick={() => logout()} className={styles.logoutButton}>
-                  SAIR DO SISTEMA
-                </button>
-              </section>
-            </form>
-          </div>
+            <div className={styles.actionFooter}>
+              <button type="button" onClick={() => logout()} className={styles.logoutButton}>
+                SAIR
+              </button>
+              <button type="submit" className={styles.saveButton} disabled={loading}>
+                {loading ? 'PROCESSANDO...' : 'ATUALIZAR DADOS'}
+              </button>
+            </div>
+
+          </form>
         </div>
       </div>
     </div>

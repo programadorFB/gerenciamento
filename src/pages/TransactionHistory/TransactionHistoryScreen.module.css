@@ -1,392 +1,347 @@
-/* ========================================
-   TEMA: CASSINO ROYAL / FOOTBALL STUDIO
-   TransactionHistoryScreen.module.css
-   ======================================== */
+/* ═══════════════════════════════════════════════════════════════════════════
+   TRANSACTION HISTORY SCREEN - VANTA BLACK + BLOOD RED + BRUSHED GOLD
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;500;700&display=swap');
-
-/* --- Container Principal (Mesa de Jogo) --- */
 .container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    width: 100%;
-    background-color: #0F1216;
-    /* Textura de mesa */
-    background-image: 
-        radial-gradient(circle at 50% 30%, #1c2530 0%, #0F1216 70%),
-        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    color: #E0E0E0;
-    font-family: 'Montserrat', sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-width: 100vw;
+  background-color: #050505;
+  color: #F5F5F5;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
-/* --- Header --- */
+/* === HEADER === */
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 20px;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    position: sticky;
-    top: 0;
-    z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+  border-bottom: 2px solid #C9A227;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .header h1 { 
-    font-family: 'Cinzel', serif;
-    font-size: 16px; 
-    font-weight: 700; 
-    margin: 0; 
-    color: #D4AF37; /* Dourado */
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  font-size: 14px; 
+  font-weight: 700; 
+  margin: 0; 
+  color: #D4AF37;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .backButton, .infoButton {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    color: #FFF;
-    cursor: pointer;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
+  background: linear-gradient(180deg, #121212 0%, #0A0A0A 100%);
+  border: 1px solid #C9A227;
+  border-radius: 4px;
+  color: #D4AF37;
+  cursor: pointer;
+  padding: 8px;
+  transition: all 0.3s ease;
 }
 
 .backButton:hover, .infoButton:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: #D4AF37;
-    color: #D4AF37;
+  background: linear-gradient(180deg, #1A1A1A 0%, #121212 100%);
+  box-shadow: 0 0 15px rgba(201, 162, 39, 0.3);
 }
 
-/* --- Filtros (Estilo Fichas de Cassino) --- */
+/* === FILTERS === */
 .filterContainer {
-    display: flex;
-    gap: 10px;
-    padding: 16px 20px;
-    overflow-x: auto;
-    background: transparent;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 16px;
+  background-color: #0A0A0A;
+  border-bottom: 1px solid #2A2A2A;
+  gap: 8px;
+  overflow-x: auto;
 }
-.filterContainer::-webkit-scrollbar { display: none; }
 
 .filterContainer button {
-    padding: 8px 16px;
-    border-radius: 20px;
-    background: #1A1E24;
-    border: 1px solid #333;
-    color: #8B949E;
-    font-weight: 700;
-    font-size: 11px;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    transition: all 0.2s;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  padding: 10px 16px;
+  border-radius: 4px;
+  background-color: #121212;
+  border: 1px solid #2A2A2A;
+  color: #B0B0B0;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* Ficha Ativa (Dourada) */
+.filterContainer button:hover {
+  border-color: #C9A227;
+  color: #D4AF37;
+}
+
 .filterContainer .filterActive {
-    background: linear-gradient(135deg, #D4AF37 0%, #AA8A25 100%);
-    color: #000;
-    border-color: #FFD700;
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
-    transform: translateY(-1px);
+  background: rgba(139, 0, 0, 0.2);
+  color: #D4AF37;
+  border: 1px solid #C9A227;
+  box-shadow: 0 0 10px rgba(201, 162, 39, 0.2);
 }
 
-/* --- Lista (Tickets) --- */
+/* === LIST CONTAINER === */
 .listContainer {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 10px 20px 80px 20px; /* Espaço extra embaixo */
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 16px;
+  background: #050505;
 }
 
-/* Item da Lista (O Ticket) */
+/* === LIST ITEM === */
 .itemContainer {
-    margin-bottom: 12px;
-    background-color: #15191E;
-    border-radius: 12px;
-    border: 1px solid #2C333A;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s;
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  background: linear-gradient(180deg, #121212 0%, #0A0A0A 100%);
+  border-radius: 8px;
+  border: 1px solid #2A2A2A;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
 .itemContainer:hover {
-    transform: translateX(4px);
-    border-color: #444;
-}
-
-/* Barra lateral colorida indicando tipo */
-.itemContainer::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 4px;
-    background: var(--tx-color, #888);
+  border-color: #C9A227;
+  box-shadow: 0 0 15px rgba(201, 162, 39, 0.15);
 }
 
 .itemTouchable {
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    gap: 16px;
-    cursor: pointer;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
 }
 
 .iconContainer {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255,255,255,0.1);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(201, 162, 39, 0.1) !important;
+  border: 1px solid #C9A227;
 }
 
 .iconContainer svg {
-    filter: drop-shadow(0 0 5px currentColor);
+  color: #C9A227 !important; 
 }
 
-.detailsContainer { flex-grow: 1; min-width: 0; }
-
-.categoryRow {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
-}
+.detailsContainer { flex-grow: 1; }
 
 .itemCategory { 
-    font-size: 14px; 
-    font-weight: 700; 
-    color: #FFF;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.typeBadge {
-    font-size: 9px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.1);
-    color: #AAA;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  font-size: 14px; 
+  font-weight: 600; 
+  margin: 0; 
+  color: #F5F5F5; 
 }
 
 .itemDate { 
-    font-size: 11px; 
-    color: #8B949E; 
-    margin: 0; 
-    font-weight: 500;
+  font-size: 12px; 
+  color: #707070; 
+  margin: 4px 0; 
 }
 
 .itemDescription { 
-    font-size: 11px; 
-    color: #666; 
-    font-style: italic;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-top: 2px;
+  font-size: 12px; 
+  color: #B0B0B0; 
+  font-style: italic; 
 }
 
 .itemAmount { 
-    font-size: 14px; 
-    font-weight: 700; 
-    font-family: 'Montserrat', sans-serif;
-    text-shadow: 0 0 10px rgba(0,0,0,0.5);
-    white-space: nowrap;
+  font-size: 14px; 
+  font-weight: 700; 
 }
 
-/* Cores Neon para Valores */
-.amountPositive { color: #00FF88 !important; text-shadow: 0 0 8px rgba(0,255,136,0.3); }
-.amountNegative { color: #FF4D4D !important; text-shadow: 0 0 8px rgba(255,77,77,0.3); }
+.itemAmount[style*="rgb(90, 138, 106)"],
+.itemAmount[style*="#5A8A6A"] {
+  color: #4CAF50 !important;
+}
 
-/* Ações Permanentes (Desktop ou sempre visíveis) */
+.itemAmount[style*="rgb(164, 74, 74)"],
+.itemAmount[style*="#A44A4A"] {
+  color: #AA0000 !important;
+}
+
+/* === ACTION BUTTONS === */
 .permanentActions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding-right: 12px;
-    border-left: 1px solid #2C333A;
-    padding-left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 12px;
 }
 
 .editButton, .deleteButton {
-    background: transparent;
-    border: none;
-    padding: 6px;
-    cursor: pointer;
-    color: #6E7681;
-    transition: color 0.2s;
+  background: transparent;
+  border: 1px solid #2A2A2A;
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+  color: #B0B0B0;
+  transition: all 0.3s ease;
 }
 
-.editButton:hover { color: #FFF; }
-.deleteButton:hover { color: #FF4D4D; }
-
-/* --- Estado Vazio --- */
-.emptyContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-    color: #666;
-    border: 1px dashed #333;
-    border-radius: 12px;
-    margin-top: 20px;
-}
-.emptyContainer svg { color: #333; margin-bottom: 10px; }
-
-/* Loading */
-.loadingContainer {
-    text-align: center;
-    color: #D4AF37;
-    margin-top: 40px;
-    font-family: 'Cinzel', serif;
+.editButton:hover {
+  border-color: #C9A227;
+  color: #D4AF37;
+  background: rgba(201, 162, 39, 0.1);
 }
 
-/* --- Modal (Dark Glass) --- */
+.deleteButton:hover {
+  border-color: #8B0000;
+  color: #AA0000;
+  background: rgba(139, 0, 0, 0.1);
+}
+
+/* === MODAL === */
 .modalOverlay { 
-    position: fixed; 
-    inset: 0; 
-    background: rgba(0, 0, 0, 0.9);
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    backdrop-filter: blur(5px);
-    z-index: 1000;
+  position: fixed; 
+  inset: 0; 
+  background: rgba(5, 5, 5, 0.9);
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  backdrop-filter: blur(4px);
+  padding: 20px;
 }
 
 .modalContainer { 
-    background: #15191E; 
-    border-radius: 16px;
-    border: 1px solid #333;
-    width: 90%; 
-    max-width: 450px; 
-    max-height: 90vh; 
-    display: flex; 
-    flex-direction: column;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-    position: relative;
-    overflow: hidden;
-}
-
-/* Barra Dourada */
-.modalContainer::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #D4AF37, #FFF, #D4AF37);
+  background: linear-gradient(180deg, #121212 0%, #0A0A0A 100%);
+  border-radius: 8px; 
+  border: 2px solid #C9A227;
+  width: 95%; 
+  max-width: 450px; 
+  max-height: 90vh; 
+  display: flex; 
+  flex-direction: column;
+  box-shadow: 0 0 40px rgba(201, 162, 39, 0.2);
+  overflow: hidden;
 }
 
 .modalHeader { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-    padding: 20px 24px; 
-    border-bottom: 1px solid #2C333A;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  padding: 12px 16px; 
+  background: linear-gradient(180deg, #8B0000 0%, #660000 100%);
+  border-bottom: 1px solid #C9A227;
 }
 
 .modalHeader h3 {
-    font-family: 'Cinzel', serif;
-    font-size: 16px;
-    color: #FFF;
-    margin: 0;
-    text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 700;
+  color: #F5F5F5;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .modalHeader button { 
-    background: transparent;
-    border: none;
-    color: #666; 
-    cursor: pointer; 
-    transition: color 0.2s;
+  background: transparent;
+  border: 1px solid #C9A227;
+  border-radius: 4px;
+  color: #D4AF37; 
+  cursor: pointer; 
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
-.modalHeader button:hover { color: #FFF; }
+
+.modalHeader button:hover {
+  background: rgba(201, 162, 39, 0.2);
+}
 
 .modalContent { 
-    overflow-y: auto; 
-    padding: 24px; 
-    background: #15191E;
+  overflow-y: auto; 
+  padding: 20px; 
+  background: transparent;
 }
 
-.inputGroup { margin-bottom: 20px; }
+.modalActions { 
+  display: flex; 
+  gap: 12px; 
+  padding: 16px; 
+  border-top: 1px solid #2A2A2A; 
+  background: #0A0A0A;
+}
+
+/* === FORM INPUTS === */
+.inputGroup { margin: 16px 0; }
+
 .inputGroup label { 
-    display: block; 
-    margin-bottom: 8px; 
-    font-weight: 700; 
-    color: #8B949E; 
-    font-size: 11px;
-    text-transform: uppercase;
+  display: block; 
+  margin-bottom: 8px; 
+  font-weight: 600; 
+  color: #D4AF37;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* Inputs Dark */
 .inputGroup input, .inputGroup textarea, .inputGroup select { 
-    width: 100%; 
-    background: #0F1216; 
-    border: 1px solid #333; 
-    border-radius: 8px; 
-    padding: 12px; 
-    color: #FFF; 
-    font-size: 14px; 
-    font-family: 'Montserrat', sans-serif;
-    outline: none;
+  width: 100%; 
+  background: #0A0A0A; 
+  border: 1px solid #2A2A2A; 
+  border-radius: 4px; 
+  padding: 12px 14px; 
+  color: #F5F5F5; 
+  font-size: 14px; 
+  box-sizing: border-box; 
+  transition: all 0.3s ease;
 }
-.inputGroup input:focus, .inputGroup textarea:focus, .inputGroup select:focus {
-    border-color: #D4AF37;
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+
+.inputGroup input:focus, 
+.inputGroup textarea:focus, 
+.inputGroup select:focus { 
+  outline: none;
+  border-color: #C9A227;
+  background: #121212;
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15);
 }
 
 .dateTimeContainer { display: flex; gap: 12px; }
 .dateTimeContainer input { flex: 1; }
 
-.modalActions { 
-    display: flex; 
-    gap: 12px; 
-    padding: 20px 24px; 
-    border-top: 1px solid #2C333A; 
-    background: #1A1E24;
-}
-
+/* === MODAL BUTTONS === */
 .cancelButton, .saveButton { 
-    flex: 1; 
-    padding: 14px; 
-    border-radius: 8px; 
-    font-weight: 800; 
-    cursor: pointer; 
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  flex: 1; 
+  padding: 12px 16px; 
+  border-radius: 4px; 
+  border: 1px solid #2A2A2A; 
+  font-weight: 700; 
+  cursor: pointer; 
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
 }
 
 .cancelButton { 
-    background: #2C333A; 
-    color: #FFF; 
-    border: none;
+  background: linear-gradient(180deg, #1A1A1A 0%, #121212 100%); 
+  color: #B0B0B0; 
 }
+
+.cancelButton:hover {
+  border-color: #C9A227;
+  color: #D4AF37;
+}
+
 .saveButton { 
-    background: linear-gradient(135deg, #D4AF37 0%, #AA8A25 100%);
-    color: #000; 
-    border: none;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+  background: linear-gradient(180deg, #AA0000 0%, #8B0000 50%, #660000 100%);
+  color: #F5F5F5; 
+  border-color: #C9A227;
 }
+
 .saveButton:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
+  background: linear-gradient(180deg, #CC0000 0%, #AA0000 50%, #8B0000 100%);
+  box-shadow: 0 0 15px rgba(201, 162, 39, 0.3);
 }

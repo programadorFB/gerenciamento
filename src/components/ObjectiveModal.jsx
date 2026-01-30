@@ -4,6 +4,7 @@ import { ptBR } from 'date-fns/locale';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useFinancial } from '../contexts/FinancialContext';
 import styles from './ObjectiveModal.module.css';
+import { FaCalendarAlt, FaTimes } from 'react-icons/fa'; // Ícones opcionais para polimento
 
 // Registrar locale português
 registerLocale('pt-BR', ptBR);
@@ -60,16 +61,16 @@ const ObjectiveModal = ({ visible, onClose, objective = null }) => {
     const newErrors = {};
     
     if (!formData.title.trim()) {
-      newErrors.title = 'Título é obrigatório';
+      newErrors.title = 'Título obrigatório';
     }
     
     const amount = parseFloat(formData.targetAmount.replace(',', '.'));
     if (!formData.targetAmount || isNaN(amount) || amount <= 0) {
-      newErrors.targetAmount = 'Valor deve ser maior que zero';
+      newErrors.targetAmount = 'Valor inválido';
     }
     
     if (!formData.deadline) {
-      newErrors.deadline = 'Data é obrigatória';
+      newErrors.deadline = 'Data obrigatória';
     }
     
     setErrors(newErrors);
@@ -98,7 +99,6 @@ const ObjectiveModal = ({ visible, onClose, objective = null }) => {
     setLoading(false);
 
     if (response.success) {
-      alert(objective?.id ? 'Objetivo atualizado!' : 'Objetivo criado!');
       onClose();
     } else {
       alert(`Erro: ${response.error || 'Não foi possível salvar'}`);
@@ -106,17 +106,7 @@ const ObjectiveModal = ({ visible, onClose, objective = null }) => {
   };
 
   const handleModalClose = () => {
-    const hasChanges = formData.title || formData.targetAmount || 
-                       (formData.currentAmount && formData.currentAmount !== '0') || 
-                       formData.deadline;
-    
-    if (hasChanges) {
-      if (window.confirm('Descartar alterações?')) {
-        onClose();
-      }
-    } else {
-      onClose();
-    }
+    onClose();
   };
 
   const setQuickDate = (months) => {
@@ -145,19 +135,11 @@ const ObjectiveModal = ({ visible, onClose, objective = null }) => {
       <div className={styles.modal}>
         {/* Header */}
         <div className={styles.modalHeader}>
-          <button type="button" onClick={handleModalClose} className={styles.btnCancel}>
-            Cancelar
-          </button>
           <h2 className={styles.modalTitle}>
             {objective?.id ? 'Editar Objetivo' : 'Novo Objetivo'}
           </h2>
-          <button 
-            type="button" 
-            onClick={handleSave} 
-            disabled={!canSave}
-            className={styles.btnSave}
-          >
-            {loading || contextLoading ? 'Salvando...' : 'Salvar'}
+          <button type="button" onClick={handleModalClose} className={styles.closeIconBtn}>
+            <FaTimes />
           </button>
         </div>
 
@@ -165,10 +147,7 @@ const ObjectiveModal = ({ visible, onClose, objective = null }) => {
         <div className={styles.modalBody}>
           {/* Título */}
           <div className={styles.field}>
-            <label className={styles.fieldLabel}>
-              Título do Objetivo *
-              {errors.title && <span className={styles.fieldError}> - {errors.title}</span>}
-            </label>
+            <label className={styles.fieldLabel}>Título</label>
             <input
               type="text"
               value={formData.title}
@@ -176,57 +155,50 @@ const ObjectiveModal = ({ visible, onClose, objective = null }) => {
               placeholder="Ex: Reserva de Emergência"
               className={`${styles.fieldInput} ${errors.title ? styles.fieldInputError : ''}`}
             />
+            {errors.title && <span className={styles.errorMessage}>{errors.title}</span>}
           </div>
 
           {/* Valor Meta */}
           <div className={styles.field}>
-            <label className={styles.fieldLabel}>
-              Valor Meta *
-              {errors.targetAmount && <span className={styles.fieldError}> - {errors.targetAmount}</span>}
-            </label>
+            <label className={styles.fieldLabel}>Valor Meta (R$)</label>
             <input
-              type="text"
+              type="number"
               value={formData.targetAmount}
               onChange={(e) => handleInputChange('targetAmount', e.target.value)}
-              placeholder="1000,00"
-              className={styles.fieldInput}
+              placeholder="0,00"
+              className={`${styles.fieldInput} ${errors.targetAmount ? styles.fieldInputError : ''}`}
             />
           </div>
 
-
-
-          {/* Data Meta com DatePicker */}
+          {/* Data Meta */}
           <div className={styles.field}>
-            <label className={styles.fieldLabel}>
-              Data Meta *
-              {errors.deadline && <span className={styles.fieldError}> - {errors.deadline}</span>}
-            </label>
+            <label className={styles.fieldLabel}>Prazo Final</label>
             <div className={styles.datePickerWrapper}>
               <DatePicker
                 selected={formData.deadline}
                 onChange={handleDateChange}
                 dateFormat="dd/MM/yyyy"
-                placeholderText="Selecione uma data"
+                placeholderText="Selecionar data"
                 className={styles.datePickerInput}
                 calendarClassName={styles.customCalendar}
                 minDate={new Date()}
                 showPopperArrow={false}
                 locale="pt-BR"
               />
-              
+              <FaCalendarAlt className={styles.calendarIcon} />
             </div>
+             {errors.deadline && <span className={styles.errorMessage}>{errors.deadline}</span>}
             
-            {/* Atalhos de data */}
-            <div className={styles.quickDateButtons}>
-              <span className={styles.quickDateLabel}>Rápido:</span>
-              <button type="button" onClick={() => setQuickDate(3)} className={styles.quickDateBtn}>
-                3 meses
+            {/* Atalhos de data (Chips) */}
+            <div className={styles.quickDateContainer}>
+              <button type="button" onClick={() => setQuickDate(3)} className={styles.chipButton}>
+                +3 Meses
               </button>
-              <button type="button" onClick={() => setQuickDate(6)} className={styles.quickDateBtn}>
-                6 meses
+              <button type="button" onClick={() => setQuickDate(6)} className={styles.chipButton}>
+                +6 Meses
               </button>
-              <button type="button" onClick={() => setQuickDate(12)} className={styles.quickDateBtn}>
-                1 ano
+              <button type="button" onClick={() => setQuickDate(12)} className={styles.chipButton}>
+                +1 Ano
               </button>
             </div>
           </div>
@@ -234,18 +206,33 @@ const ObjectiveModal = ({ visible, onClose, objective = null }) => {
           {/* Preview de Progresso */}
           {progress.valid && (
             <div className={styles.progressPreview}>
-              <h3 className={styles.progressTitle}>Prévia do Progresso</h3>
+              <div className={styles.progressHeader}>
+                 <span className={styles.progressLabel}>Simulação</span>
+                 <span className={styles.progressValue}>{progress.percentage.toFixed(1)}%</span>
+              </div>
               <div className={styles.progressBarContainer}>
                 <div 
                   className={styles.progressBarFill} 
                   style={{ width: `${progress.percentage}%` }}
                 />
               </div>
-              <p className={styles.progressPercentage}>
-                {progress.percentage.toFixed(1)}% concluído
-              </p>
             </div>
           )}
+        </div>
+
+        {/* Footer Actions */}
+        <div className={styles.modalFooter}>
+          <button type="button" onClick={handleModalClose} className={styles.btnCancel}>
+            Cancelar
+          </button>
+          <button 
+            type="button" 
+            onClick={handleSave} 
+            disabled={!canSave}
+            className={styles.btnSave}
+          >
+            {loading || contextLoading ? 'Salvando...' : 'Confirmar'}
+          </button>
         </div>
       </div>
     </div>
