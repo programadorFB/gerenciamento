@@ -1,11 +1,9 @@
-/* ========================================
-   TEMA CASINO / TIPSTER (Dark, Neon, Gold)
-   App.module.css
-   ======================================== */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;700&display=swap');
+/* Dark Luxury Theme - App.module.css */
+/* Vanta Black (#050505) | Blood Red (#8B0000) | Brushed Gold (#C9A227) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 * {
-  font-family: 'Inter', 'Montserrat', sans-serif;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
   box-sizing: border-box;
 }
 
@@ -14,209 +12,375 @@
   margin: 0;
   padding: 0;
   text-align: center;
-  /* Fundo Dark Premium (Estilo Mesa/App) */
-background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
-  /* background-image: radial-gradient(circle at 50% 0%, #1a2c38 0%, #0F1216 60%); */
+  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
   min-height: 100vh;
-  padding-bottom: 80px; /* Espaço para o menu flutuante */
-  color: #E0E0E0;
+  padding-bottom: 40px;
 }
 
-/* --- Tela de Carregamento --- */
+/* --- Loading Screen --- */
 .loadingScreen {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #0F1216;
-  color: #3a1116; /* Verde Neon */
-  font-family: 'Montserrat', sans-serif;
-  letter-spacing: 1px;
+  background: radial-gradient(ellipse at center, #0A0A0A 0%, #050505 100%);
+  color: #C9A227;
+  font-family: 'Inter', sans-serif;
+  width: 100%;
 }
 
 .spinner {
-  width: 60px;
-  height: 60px;
-  border: 4px solid rgba(0, 255, 136, 0.1);
-  border-left-color: #00FF88;
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(201, 162, 39, 0.15);
+  border-left-color: #C9A227;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin-bottom: 24px;
-  box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); /* Glow */
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
 }
 
-/* --- Layout Principal --- */
 .appContent {
-  padding: 20px;
+  padding: 1rem;
+  background: #050505;
   min-height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 600px; /* Foco em mobile (App View) */
-  margin: 0 auto;
-  background: transparent; /* Remove gradiente antigo */
 }
 
-/* --- Botões de Ação (Estilo "Apostar") --- */
+/* Dark Luxury Button Style */
 .button {
-  padding: 14px 24px;
-  border-radius: 8px;
-  border: none;
-  /* Gradiente Verde Vibrante */
-  background: linear-gradient(90deg, #00C853 0%, #009624 100%);
-  color: #FFFFFF;
+  padding: 10px 24px;
+  border-radius: 6px;
+  border: 1px solid #C9A227;
+  background: linear-gradient(180deg, #1A1A1A 0%, #0F0F0F 50%, #0A0A0A 100%);
+  color: #F5F5F5;
   cursor: pointer;
-  font-weight: 800; /* Extra bold */
-  font-size: 14px;
-  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3); /* Sombra neon */
   width: 100%;
-  max-width: 100%;
-  text-shadow: none;
+  max-width: 200px;
 }
 
 .button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(0, 200, 83, 0.5);
-  filter: brightness(1.1);
+  background: linear-gradient(180deg, #252525 0%, #1A1A1A 50%, #0F0F0F 100%);
+  border-color: #D4AF37;
+  box-shadow: 0 0 15px rgba(201, 162, 39, 0.3);
+  color: #C9A227;
 }
 
 .button:active {
-  transform: translateY(1px);
-  box-shadow: 0 2px 10px rgba(0, 200, 83, 0.2);
+  background: linear-gradient(180deg, #8B0000 0%, #660000 100%);
+  border-color: #C9A227;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .button:disabled {
-  background: #2C333A;
-  color: #6E7681;
-  box-shadow: none;
+  background: linear-gradient(180deg, #1A1A1A 0%, #121212 100%);
+  color: #505050;
   cursor: not-allowed;
-  transform: none;
+  border-color: #2A2A2A;
+  box-shadow: none;
 }
 
-/* --- Inputs Modernos Dark --- */
+/* Dark Input Style */
 .input {
-  padding: 14px 16px;
-  border: 1px solid #2C333A;
-  background-color: #1A1E24;
-  color: #FFFFFF;
+  padding: 12px 14px;
+  border: 1px solid #2A2A2A;
+  background-color: #0A0A0A;
+  color: #F5F5F5;
   font-size: 14px;
   font-family: 'Inter', sans-serif;
-  border-radius: 8px;
   width: 100%;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  box-shadow: none; /* Remove efeito 3D antigo */
+  border-radius: 6px;
+  transition: all 0.3s ease;
 }
 
 .input:focus {
   outline: none;
-  border-color: #00FF88;
-  box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.1);
+  border-color: #C9A227;
+  box-shadow: 0 0 10px rgba(201, 162, 39, 0.2);
+  background-color: #0F0F0F;
 }
 
-/* --- Formulário de Login (Card Glass) --- */
+.input::placeholder {
+  color: #606060;
+}
+
+/* Dark Form Style */
 .loginForm {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 30px;
-  /* Fundo Glassmorphism */
-  background: rgba(30, 35, 41, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  width: 100%;
-  max-width: 400px;
-  margin: 40px auto;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  padding: 24px;
+  background: linear-gradient(180deg, #121212 0%, #0A0A0A 100%);
+  border: 2px solid #C9A227;
+  border-radius: 8px;
+  width: 95%;
+  max-width: 380px;
+  margin: 0 auto;
+  box-shadow: 
+    0 0 20px rgba(201, 162, 39, 0.1),
+    0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
 .errorText {
-  color: #FF4D4D;
-  background-color: rgba(255, 77, 77, 0.1);
-  border: 1px solid rgba(255, 77, 77, 0.2);
-  padding: 10px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
+  color: #F5F5F5;
   text-align: center;
+  font-size: 12px;
+  background: linear-gradient(180deg, rgba(139, 0, 0, 0.3) 0%, rgba(102, 0, 0, 0.2) 100%);
+  padding: 12px;
+  border: 1px solid #8B0000;
+  border-left: 3px solid #AA0000;
+  border-radius: 4px;
+  word-wrap: break-word;
 }
 
-/* --- Dashboard Header --- */
+/* Dark Header */
 .dashboardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding: 16px 20px;
-  background: #1A1E24;
-  border: 1px solid #2C333A;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  color: #FFFFFF;
-  width: 100%;
-  flex-wrap: nowrap;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, #1A1A1A 0%, #0F0F0F 100%);
+  border: 1px solid #C9A227;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  color: #F5F5F5;
+  font-weight: 600;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-/* --- Animações --- */
+/* --- Animations --- */
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-/* --- Logo com Efeito Neon --- */
+/* --- Logo Styles --- */
 .logo {
-  height: 80px;
-  padding: 10px;
-  /* Glow Verde Suave */
-  filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.2));
-  transition: filter 0.3s;
+  height: 5em;
+  padding: 1em;
+  filter: drop-shadow(0 0 8px rgba(201, 162, 39, 0.4));
+  transition: all 0.3s ease;
   max-width: 100%;
 }
 
 .logo:hover {
-  filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.5));
+  filter: drop-shadow(0 0 16px rgba(201, 162, 39, 0.6));
+  transform: scale(1.02);
 }
 
-/* --- Cards Genéricos --- */
+/* Dark Card/Panel Style */
 .card {
-  padding: 24px;
-  background: #15191E;
-  border: 1px solid #2C333A;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  margin-bottom: 20px;
+  padding: 20px;
+  background: linear-gradient(180deg, #121212 0%, #0A0A0A 100%);
+  border: 1px solid #2A2A2A;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  margin-bottom: 12px;
   width: 100%;
-  color: #E0E0E0;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-/* ============================================================
-   ELEMENTOS REMOVIDOS / OCULTOS (Estilo Desktop XP)
-   Ocultamos estes elementos para manter a estética de App Moderno
-   ============================================================ */
+.card:hover {
+  border-color: #C9A227;
+  box-shadow: 0 0 20px rgba(201, 162, 39, 0.15);
+}
 
-.taskbar,
-.startButton,
-.windowTitleBar,
-.windowControls,
-.desktopGrid,
-.desktopIcon,
+/* Dark Taskbar */
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+  border-top: 1px solid #C9A227;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  padding-right: 8px;
+}
+
+/* Start Button - Blood Red */
+.startButton {
+  height: 36px;
+  padding: 0 18px 0 12px;
+  background: linear-gradient(180deg, #AA0000 0%, #8B0000 50%, #660000 100%);
+  border: 1px solid #C9A227;
+  border-radius: 0 8px 8px 0;
+  color: #F5F5F5;
+  font-weight: 600;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(139, 0, 0, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.startButton:hover {
+  background: linear-gradient(180deg, #BB1111 0%, #9A0000 50%, #770000 100%);
+  box-shadow: 0 0 15px rgba(139, 0, 0, 0.5);
+}
+
+.startButton:active {
+  background: linear-gradient(180deg, #660000 0%, #4A0000 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Window Title Bar */
+.windowTitleBar {
+  background: linear-gradient(180deg, #1A1A1A 0%, #0F0F0F 100%);
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #8B0000;
+  color: #C9A227;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.windowControls {
+  display: flex;
+  gap: 6px;
+}
+
+.windowButton {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #2A2A2A;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #C9A227;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.windowButton:hover {
+  background: #8B0000;
+  border-color: #C9A227;
+  color: #F5F5F5;
+}
+
+/* Desktop Icons Grid System */
+.desktopGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 20px;
+  padding: 24px;
+  width: 100%;
+}
+
+.desktopIcon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.desktopIcon:hover {
+  background: rgba(201, 162, 39, 0.08);
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  box-shadow: 0 0 15px rgba(201, 162, 39, 0.1);
+}
+
+.desktopIcon:active {
+  background: rgba(139, 0, 0, 0.2);
+  border-color: #8B0000;
+}
+
+.desktopIconText {
+  color: #F5F5F5;
+  font-size: 11px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-align: center;
+  word-break: break-word;
+}
+
+/* Status Bar */
 .statusBar {
-  display: none !important;
+  height: 28px;
+  background: linear-gradient(180deg, #121212 0%, #0A0A0A 100%);
+  border-top: 1px solid #2A2A2A;
+  display: none;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 11px;
+  color: #808080;
+  gap: 16px;
 }
 
-/* Caso precise adaptar para tablets/desktop mantendo o layout centralizado */
+.read-the-docs {
+  color: #C9A227;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.read-the-docs:hover {
+  color: #D4AF37;
+  text-decoration: underline;
+}
+
+/* --- Media Queries --- */
 @media (min-width: 768px) {
   .appContent {
-    padding-top: 40px;
+    padding: 2rem;
   }
-  
+
   .loginForm {
-    max-width: 420px;
+    width: 380px;
+    padding: 32px;
+  }
+
+  .logo {
+    height: 6em;
+  }
+
+  .taskbar {
+    height: 36px;
+  }
+
+  .startButton {
+    height: 30px;
+    font-size: 12px;
+  }
+
+  .statusBar {
+    display: flex;
+  }
+
+  .button {
+    font-size: 14px;
   }
 }

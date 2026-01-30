@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
   position: relative;
   overflow: hidden;
   padding: 20px;

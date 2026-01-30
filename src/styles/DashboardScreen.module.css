@@ -4,8 +4,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600;800&display=swap');
 /* --- VARIÁVEIS & RESET --- */
 :root {
-  --bg-deep: #020202;
-  --bg-card: rgba(15, 15, 15, 0.7);
+  --bg-deep: #02020254;
+  --bg-card: rgba(15, 15, 15, 0.4);
   --gold-main: #D4AF37;
   --gold-brilliant: #FEE184;
   --red-blood: #8B0000;
@@ -32,7 +32,7 @@ body {
 .dashboardContainer {
   min-height: 100vh;
   width: 100%;
-  background: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #020202 70%);
+  background:  #2a110f ;
   position: relative;
   padding-bottom: 40px;
 }
@@ -151,9 +151,10 @@ body {
 }
 
 .balanceCard {
-  background: var(--bg-card);
-  border: 1px solid var(--glass-border);
+  background: linear-gradient(135deg, rgba(87, 87, 87, 0.3), rgba(87, 87, 87, 0.1));
+  border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: 16px;
+  backdrop-filter: blur(100px);
   padding: 20px;
   text-align: center;
   position: relative;
@@ -168,8 +169,8 @@ body {
   border: 1px solid rgba(212, 175, 55, 0.3);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
   padding: 28px 20px;
+  backdrop-filter: blur(20px);
 }
-
 .balanceCard:hover {
   transform: translateY(-2px);
   border-color: rgba(212, 175, 55, 0.2);
@@ -413,10 +414,11 @@ body {
 
 /* === CALENDÁRIO === */
 .calendarSection {
-  background: var(--bg-card);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  padding: 12px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  overflow: visible;
 }
 
 /* === ESTADOS VAZIOS === */

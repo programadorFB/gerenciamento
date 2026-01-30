@@ -4,10 +4,11 @@
    ======================================== */
 
 .container {
-  background: radial-gradient(circle at top, #111 0%, #000 100%);
+  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
   color: #F5F5F5;
   min-height: 100vh;
   display: flex;
+  
   flex-direction: column;
   font-family: 'Inter', sans-serif;
 }

@@ -7,7 +7,7 @@
   flex-direction: column;
   min-height: 100vh;
   min-width: 100vw;
-  background-color: #050505;
+  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
   color: #F5F5F5;
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
