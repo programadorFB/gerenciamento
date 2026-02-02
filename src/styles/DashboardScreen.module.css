@@ -32,7 +32,7 @@ body {
 .dashboardContainer {
   min-height: 100vh;
   width: 100%;
-  background:  #2a110f ;
+  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
   position: relative;
   padding-bottom: 40px;
 }

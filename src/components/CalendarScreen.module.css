@@ -1,5 +1,6 @@
 /* ========================================
-   Tema Glass Modern - CalendarScreen.module.css
+   TEMA CASINO / TIPSTER (Dark, Neon, Gold)
+   CalendarScreen.module.css
    ======================================== */
 
 .container {
@@ -7,25 +8,28 @@
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background-color: #0F1216;
+  background-image: radial-gradient(circle at 50% 0%, #1a2c38 0%, #0F1216 60%);
+  color: #E0E0E0;
+  font-family: 'Inter', 'Montserrat', sans-serif;
   overflow-x: hidden;
-  padding: 0;
+  padding-bottom: 80px; /* Espaço para menu */
 }
 
-/* --- CabeÃ§alho --- */
+/* ========================================
+   CABEÇALHO
+   ======================================== */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  flex-wrap: wrap;
+  padding: 16px 20px;
+  background: rgba(21, 25, 30, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #2C333A;
+  flex-wrap: nowrap;
   gap: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -33,175 +37,167 @@
 
 .backButton,
 .navButton {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  color: white;
+  background: #1A1E24;
+  border: 1px solid #2C333A;
+  border-radius: 8px;
+  color: #FFFFFF;
   cursor: pointer;
-  padding: 8px 16px;
+  padding: 8px 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  font-weight: 500;
-  backdrop-filter: blur(10px);
-  transition: all 0.2s ease;
-  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s;
 }
 
 .backButton:hover,
 .navButton:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #21262D;
+  border-color: #00FF88;
+  color: #00FF88;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
 }
 
 .headerControls {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
   flex-grow: 1;
-  min-width: 0;
 }
 
 .monthTitle {
-  font-size: 18px;
-  font-weight: 700;
-  color: #ffffff;
+  font-size: 16px;
+  font-weight: 800;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Montserrat', sans-serif;
+  min-width: 140px;
   text-align: center;
-  text-transform: capitalize;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  margin: 0 12px;
-  min-width: 180px;
-  white-space: nowrap;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
-/* BotÃ£o de Reset */
+/* ========================================
+   BOTÃO DE RESET (Danger Zone)
+   ======================================== */
 .resetButton {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-  border: none;
-  border-radius: 12px;
-  color: white;
-  cursor: pointer;
   padding: 8px 16px;
+  background: rgba(255, 77, 77, 0.1);
+  color: #FF4D4D;
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 12px;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+  text-transform: uppercase;
 }
 
-.resetButton:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ff5252 0%, #e53935 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 82, 82, 0.4);
+.resetButton:hover {
+  background: rgba(255, 77, 77, 0.2);
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.2);
+  transform: translateY(-1px);
 }
 
-.resetButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* --- ConteÃºdo --- */
+/* ========================================
+   CONTEÚDO
+   ======================================== */
 .content {
   flex-grow: 1;
-  padding: 20px 16px;
+  padding: 16px;
   overflow-y: auto;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 
-/* --- Grid do Calendário --- */
+/* ========================================
+   GRID DO CALENDÁRIO
+   ======================================== */
 .calendarGrid {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate; 
+  border-spacing: 4px; /* Espaço entre células estilo app */
   background: transparent;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: none;
-  border: none;
   table-layout: fixed;
 }
 
 .dayHeader {
   background: transparent;
-  padding: 12px 4px;
+  padding: 10px 0;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   text-align: center;
-  color: rgba(255, 255, 255, 0.5);
+  color: #8B949E;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: none;
+  border: none;
 }
 
-/* Célula do Dia */
 .dayCell {
   width: 14.28%;
-  height: 80px;
-  padding: 8px 4px;
+  height: 80px; /* Mais alto para toque */
+  border: 1px solid #2C333A;
+  background-color: #15191E;
+  border-radius: 8px;
+  padding: 6px;
   vertical-align: top;
   position: relative;
-  background: transparent;
-  border: none;
   transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.dayCell:hover:not(.otherMonth) {
-  background: rgba(255, 255, 255, 0.05);
 }
 
 .dayNumber {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: #8B949E;
   display: block;
-  text-align: center;
+  text-align: right;
   margin-bottom: 4px;
 }
 
 .otherMonth {
-  background: rgba(255, 255, 255, 0.03);
-  cursor: default;
+  background-color: #0F1216; /* Mais escuro */
+  border-color: transparent;
+  opacity: 0.5;
 }
 
 .otherMonth .dayNumber {
-  color: rgba(255, 255, 255, 0.3);
+  color: #484F58;
 }
 
+/* Dia Atual: Destaque Neon */
 .today {
-  background: rgba(56, 182, 255, 0.15);
+  border: 1px solid #00FF88;
+  background: rgba(0, 255, 136, 0.05);
+  box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.1);
 }
 
 .today .dayNumber {
-  color: #38b6ff;
+  color: #00FF88;
   font-weight: 800;
-  position: relative;
-}
-
-.today .dayNumber::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 20px;
-  height: 2px;
-  background: #38b6ff;
-  border-radius: 1px;
 }
 
 .dayWithData {
-  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  background-color: #1A1E24;
+  border-color: #30363D;
 }
 
 .dayWithData:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background-color: #21262D;
+  border-color: #8B949E;
+  transform: scale(1.02);
+  z-index: 5;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
-/* --- RESUMO DO DIA --- */
+/* ========================================
+   RESUMO DO DIA (Barras Neon)
+   ======================================== */
 .daySummary {
   display: flex;
   flex-direction: column;
@@ -210,394 +206,289 @@
   align-items: center;
 }
 
-.summaryItem {
+.summaryGain,
+.summaryLoss,
+.summaryDeposit,
+.summaryWithdrawal {
   font-size: 0;
-  height: 3px;
-  width: 60%;
-  border-radius: 1.5px;
+  height: 4px;
+  width: 90%;
+  border-radius: 2px;
   display: block;
-  transition: width 0.2s ease;
+  box-shadow: 0 0 4px currentColor; /* Glow baseado na cor */
 }
 
-.dayCell:hover .summaryItem {
-  width: 80%;
-}
-
-.summaryGain { background: linear-gradient(90deg, #4CAF50, #8BC34A); }
-.summaryLoss { background: linear-gradient(90deg, #F44336, #FF5722); }
-.summaryDeposit { background: linear-gradient(90deg, #2196F3, #03A9F4); }
-.summaryWithdrawal { background: linear-gradient(90deg, #FF9800, #FFC107); }
+.summaryGain { background-color: #00FF88; color: rgba(0, 255, 136, 0.4); }
+.summaryLoss { background-color: #FF4D4D; color: rgba(255, 77, 77, 0.4); }
+.summaryDeposit { background-color: #00E0FF; color: rgba(0, 224, 255, 0.4); } /* Ciano */
+.summaryWithdrawal { background-color: #FFA500; color: rgba(255, 165, 0, 0.4); } /* Laranja */
 
 /* ========================================
-   MODAL DE TRANSAÃ‡Ã•ES DO DIA
+   MODAL DE TRANSAÇÕES (Dark Glass)
    ======================================== */
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.85); /* Fundo bem escuro */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 16px;
   backdrop-filter: blur(5px);
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 .modalContainer {
-  background: rgba(30, 30, 40, 0.95);
-  backdrop-filter: blur(40px);
+  background: #15191E;
   width: 100%;
-  max-width: 600px;
-  max-height: 85vh;
+  max-width: 500px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
-  border-radius: 24px;
+  border: 1px solid #2C333A;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+  border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-  from { 
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to { 
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  background: #1A1E24;
+  border-bottom: 1px solid #2C333A;
 }
 
 .modalTitle {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .closeButton {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 12px;
+  background: transparent;
+  border: 1px solid #2C333A;
   cursor: pointer;
-  padding: 8px;
+  padding: 6px;
+  border-radius: 50%;
+  color: #8B949E;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
 }
-
 .closeButton:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: rotate(90deg);
+  color: #FFFFFF;
+  background: #2C333A;
 }
 
 .notesSection {
-  padding: 20px 24px;
+  padding: 16px;
+  background: #0F1216;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 10px;
+  border-bottom: 1px solid #2C333A;
 }
 
 .notesTitle {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: #8B949E;
   margin: 0;
+  text-transform: uppercase;
 }
 
 .notesTextarea {
   width: 100%;
-  min-height: 80px;
-  resize: vertical;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 12px;
-  color: white;
+  height: 80px;
+  resize: none;
+  background: #1A1E24;
+  color: #FFFFFF;
   font-family: inherit;
+  border: 1px solid #2C333A;
+  padding: 12px;
+  border-radius: 8px;
   font-size: 14px;
-  transition: all 0.2s ease;
 }
-
 .notesTextarea:focus {
   outline: none;
-  border-color: #667eea;
-  background: rgba(255, 255, 255, 0.08);
+  border-color: #00FF88;
 }
 
 .saveNoteButton {
   align-self: flex-start;
-  background: rgba(102, 126, 234, 0.2);
-  border: 1px solid rgba(102, 126, 234, 0.3);
-  border-radius: 12px;
-  color: white;
-  padding: 8px 20px;
-  font-size: 13px;
-  font-weight: 500;
+  padding: 8px 16px;
+  background: #1A1E24;
+  border: 1px solid #2C333A;
+  color: #00FF88;
   cursor: pointer;
-  transition: all 0.2s ease;
+  font-weight: 600;
+  border-radius: 6px;
+  font-size: 12px;
 }
-
-.saveNoteButton:hover:not(:disabled) {
-  background: rgba(102, 126, 234, 0.3);
-  transform: translateY(-1px);
-}
-
-.saveNoteButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.saveNoteButton:hover {
+  background: rgba(0, 255, 136, 0.1);
 }
 
 .modalContent {
   flex: 1;
   overflow-y: auto;
-  padding: 20px 24px;
-  background: rgba(255, 255, 255, 0.02);
+  padding: 16px;
+  background: #15191E;
+  min-height: 200px;
 }
 
 .modalActions {
-  padding: 20px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  border-top: 1px solid #2C333A;
+  background: #1A1E24;
 }
 
 .addTransactionButton {
   width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 14px;
+  background: linear-gradient(90deg, #00C853 0%, #009624 100%);
   border: none;
-  border-radius: 16px;
-  color: white;
-  padding: 16px;
-  font-size: 15px;
-  font-weight: 600;
+  font-weight: 800;
+  color: #FFFFFF;
   cursor: pointer;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  text-transform: uppercase;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 1px;
 }
 
 .addTransactionButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-}
-
-/* ========================================
-   MODAL DE CONFIRMAÃ‡ÃƒO DE RESET
-   ======================================== */
-.resetModalContainer {
-  background: rgba(30, 30, 40, 0.95);
-  backdrop-filter: blur(40px);
-  width: 100%;
-  max-width: 500px;
-  border-radius: 24px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 0, 0, 0.1);
-  box-shadow: 0 20px 60px rgba(255, 0, 0, 0.1);
-}
-
-.resetModalContent {
-  padding: 24px;
-}
-
-.warningText {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 15px;
-  line-height: 1.5;
-  margin-bottom: 16px;
-}
-
-.warningList {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 20px 0;
-}
-
-.warningList li {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-  padding: 8px 0 8px 24px;
-  position: relative;
-  line-height: 1.4;
-}
-
-.warningList li::before {
-  content: 'âœ“';
-  position: absolute;
-  left: 0;
-  color: #ff6b6b;
-}
-
-.dangerText {
-  color: #ff6b6b;
-  font-size: 14px;
-  text-align: center;
-  padding: 12px;
-  background: rgba(255, 107, 107, 0.1);
-  border-radius: 12px;
-  margin: 0;
-}
-
-.resetModalActions {
-  display: flex;
-  gap: 12px;
-  padding: 20px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.cancelButton {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  color: white;
-  padding: 14px;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.cancelButton:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.confirmResetButton {
-  flex: 1;
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-  border: none;
-  border-radius: 16px;
-  color: white;
-  padding: 14px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.confirmResetButton:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ff5252 0%, #e53935 100%);
+  box-shadow: 0 0 15px rgba(0, 200, 83, 0.4);
   transform: translateY(-1px);
 }
 
-.confirmResetButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+/* ========================================
+   MODAL DE CONFIRMAÇÃO DE RESET
+   ======================================== */
+.resetModalContainer {
+  background: #1A1E24;
+  border: 1px solid #FF4D4D;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 520px;
+  width: 90%;
+  box-shadow: 0 0 50px rgba(255, 77, 77, 0.2);
+  color: #E0E0E0;
+}
+
+.warningText {
+  font-size: 16px;
+  color: #E0E0E0;
+  margin-bottom: 24px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.warningText strong {
+  color: #FF4D4D;
+  font-weight: 700;
+}
+
+.warningList {
+  background: rgba(255, 77, 77, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 77, 77, 0.1);
+}
+
+.warningList li {
+  color: #B0B0B0;
+  font-size: 14px;
+}
+
+.warningList li::before {
+  background: #FF4D4D;
+}
+
+.dangerText {
+  background: rgba(255, 77, 77, 0.1);
+  border-left: 4px solid #FF4D4D;
+  padding: 16px;
+  border-radius: 8px;
+  color: #FF4D4D;
+  font-size: 14px;
+  margin-top: 24px;
+  text-align: center;
+}
+
+.cancelButton {
+  background: #15191E;
+  border: 1px solid #2C333A;
+  color: #8B949E;
+  border-radius: 8px;
+}
+.cancelButton:hover:not(:disabled) {
+  background: #2C333A;
+  color: #FFFFFF;
+}
+
+.confirmResetButton {
+  background: #FF4D4D;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
+}
+.confirmResetButton:hover:not(:disabled) {
+  background: #FF3333;
+  box-shadow: 0 0 25px rgba(255, 77, 77, 0.5);
 }
 
 /* ========================================
-   RESPONSIVIDADE
+   RESPONSIVIDADE (Desktop)
    ======================================== */
 @media (min-width: 768px) {
-
-  .header {
-    padding: 16px 24px;
-  }
-
-  .backButton,
-  .navButton {
-    padding: 10px 20px;
-    font-size: 14px;
-  }
-
-  .monthTitle {
-    font-size: 22px;
-    min-width: 240px;
-  }
-
-  .content {
-    padding: 24px;
+  .container {
+    padding-bottom: 20px; /* Menu não é fixo em desktop geralmente */
   }
 
   .dayCell {
-    height: 100px;
-    padding: 12px 8px;
-  }
-
-  .dayNumber {
-    font-size: 16px;
-  }
-
-  /* Desktop: Mostra valores numÃ©ricos */
-  .summaryItem {
-    font-size: 9px;
-    height: auto;
-    width: auto;
-    background: transparent !important;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 2px 4px;
-    border-radius: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-
-  .summaryGain { color: #4CAF50; background: rgba(76, 175, 80, 0.1) !important; }
-  .summaryLoss { color: #F44336; background: rgba(244, 67, 54, 0.1) !important; }
-  .summaryDeposit { color: #2196F3; background: rgba(33, 150, 243, 0.1) !important; }
-  .summaryWithdrawal { color: #FF9800; background: rgba(255, 152, 0, 0.1) !important; }
-
-  .dayCell:hover .summaryItem {
-    width: auto;
-  }
-}
-
-@media (max-width: 480px) {
-  .headerControls {
-    order: 3;
-    width: 100%;
-    margin-top: 8px;
-  }
-
-  .header {
-    gap: 8px;
-  }
-
-  .dayCell {
-    height: 70px;
+    height: 120px;
+    padding: 10px;
   }
 
   .daySummary {
-    gap: 2px;
+    align-items: flex-start;
   }
 
-  .summaryItem {
-    width: 70%;
+  /* Exibe valores numéricos no Desktop */
+  .summaryGain,
+  .summaryLoss,
+  .summaryDeposit,
+  .summaryWithdrawal {
+    font-size: 11px;
+    height: auto;
+    width: auto;
+    background-color: transparent;
+    display: inline-block;
+    border-radius: 4px;
+    padding: 2px 6px;
+    white-space: nowrap;
+    box-shadow: none;
+    font-weight: 600;
   }
-}
 
-/* AnimaÃ§Ãµes para itens com dados */
-@keyframes pulse {
-  0% { opacity: 0.7; }
-  50% { opacity: 1; }
-  100% { opacity: 0.7; }
-}
-
-.dayWithData {
-  animation: pulse 2s infinite;
-}
-
-.dayWithData:hover {
-  animation: none;
+  .summaryGain { background: rgba(0, 255, 136, 0.1); color: #00FF88; border: 1px solid rgba(0, 255, 136, 0.2); }
+  .summaryLoss { background: rgba(255, 77, 77, 0.1); color: #FF4D4D; border: 1px solid rgba(255, 77, 77, 0.2); }
+  .summaryDeposit { background: rgba(0, 224, 255, 0.1); color: #00E0FF; }
+  .summaryWithdrawal { background: rgba(255, 165, 0, 0.1); color: #FFA500; }
+  
+  .addTransactionButton {
+    width: auto;
+    padding: 12px 24px;
+  }
 }

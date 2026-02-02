@@ -13,7 +13,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Reset básico para garantir responsividade */
+/* Reset bÃ¡sico para garantir responsividade */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -24,12 +24,15 @@ body {
   min-width: 100vw;
   min-height: 100vh;
   overflow-x: hidden; /* Evita rolagem horizontal indesejada no mobile */
+  overflow-y: auto;
 }
 
-/* Removemos o display: flex centralizado do body original para permitir layout fluido */
+/* Garante que o root não tenha elementos vazando */
 #root {
   width: 100%;
   height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 a {
