@@ -82,18 +82,30 @@ const InvestmentProfile = () => {
         }
     }, [bettingProfile]);
 
-    // Lógica atualizada para salvar e navegar
-    const handleSaveProfile = async () => {
+const handleSaveProfile = async () => {
         try {
-            await updateBettingProfile({
+            // 1. CÁLCULO EXPLÍCITO DO VALOR MONETÁRIO
+            // O contexto de atualização não calcula isso sozinho, precisamos enviar pronto.
+            const calculatedStopLossValue = effectiveInitialBalance * (stopLossPercentage / 100);
+
+            console.log("Salvando Perfil:", {
+                percentual: stopLossPercentage,
+                valorMonetario: calculatedStopLossValue,
+                bancaBase: effectiveInitialBalance
+            });
+
+            const result = await updateBettingProfile({
                 riskLevel: riskValue,
                 stopLossPercentage: stopLossPercentage,
+                stopLoss: calculatedStopLossValue, // <--- ESTA ERA A LINHA FALTANTE
                 isInitialized: true
             });
             
-            // Navega para a dashboard após o sucesso do salvamento
-            navigate('/dashboard'); 
-            
+            if (result.success) {
+                navigate('/dashboard'); 
+            } else {
+                console.error("Erro ao salvar perfil:", result.error);
+            }
         } catch (err) {
             console.error("Erro ao salvar perfil:", err);
         }
