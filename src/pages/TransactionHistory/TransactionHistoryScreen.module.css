@@ -1,347 +1,396 @@
-/* ═══════════════════════════════════════════════════════════════════════════
-   TRANSACTION HISTORY SCREEN - VANTA BLACK + BLOOD RED + BRUSHED GOLD
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ========================================
+   Tema Aviator - Dark Premium
+   TransactionHistoryScreen.module.css - Ajustado para JSX
+   ======================================== */
 
 .container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  min-width: 100vw;
-  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
-  color: #F5F5F5;
-  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 100vw;
+    background-color: #0e0e0e;
+    color: #ffffff;
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
-/* === HEADER === */
+/* --- Header --- */
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
-  border-bottom: 2px solid #C9A227;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: linear-gradient(135deg, #1a0808 0%, #1a1a2e 100%);
+    border-bottom: 1px solid #2a2a3e;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 
 .header h1 { 
-  font-size: 14px; 
-  font-weight: 700; 
-  margin: 0; 
-  color: #D4AF37;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+    font-size: 16px; 
+    font-weight: 700; 
+    margin: 0; 
+    color: #ffd700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .backButton, .infoButton {
-  background: linear-gradient(180deg, #121212 0%, #0A0A0A 100%);
-  border: 1px solid #C9A227;
-  border-radius: 4px;
-  color: #D4AF37;
-  cursor: pointer;
-  padding: 8px;
-  transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #2a2a3e;
+    border-radius: 8px;
+    color: #8a8a9a;
+    cursor: pointer;
+    padding: 8px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
 .backButton:hover, .infoButton:hover {
-  background: linear-gradient(180deg, #1A1A1A 0%, #121212 100%);
-  box-shadow: 0 0 15px rgba(201, 162, 39, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: #ffd700;
 }
 
-/* === FILTERS === */
+/* --- Filtros --- */
 .filterContainer {
-  display: flex;
-  justify-content: space-around;
-  padding: 12px 16px;
-  background-color: #0A0A0A;
-  border-bottom: 1px solid #2A2A2A;
-  gap: 8px;
-  overflow-x: auto;
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    background-color: #0e0e0e;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    border-bottom: 1px solid #2a2a3e;
 }
+/* Esconder scrollbar */
+.filterContainer::-webkit-scrollbar { display: none; }
 
 .filterContainer button {
-  padding: 10px 16px;
-  border-radius: 4px;
-  background-color: #121212;
-  border: 1px solid #2A2A2A;
-  color: #B0B0B0;
-  font-weight: 600;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-color: #161625;
+    border: 1px solid #2a2a3e;
+    color: #8a8a9a;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
 }
 
 .filterContainer button:hover {
-  border-color: #C9A227;
-  color: #D4AF37;
+    border-color: #ffd700;
+    color: #ffffff;
 }
 
 .filterContainer .filterActive {
-  background: rgba(139, 0, 0, 0.2);
-  color: #D4AF37;
-  border: 1px solid #C9A227;
-  box-shadow: 0 0 10px rgba(201, 162, 39, 0.2);
+    background: #ffd700;
+    color: #000000;
+    border-color: #ffd700;
+    font-weight: 800;
 }
 
-/* === LIST CONTAINER === */
+/* --- Lista --- */
 .listContainer {
-  flex-grow: 1;
-  overflow-y: auto;
-  padding: 16px;
-  background: #050505;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 16px;
+    background: #0e0e0e;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-/* === LIST ITEM === */
+.loadingContainer, .emptyContainer {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #8a8a9a;
+    gap: 12px;
+    min-height: 200px;
+}
+.emptyContainer svg { opacity: 0.5; }
+
+/* --- Item da Transação --- */
 .itemContainer {
-  display: flex;
-  align-items: center;
-  margin-bottom: 12px;
-  background: linear-gradient(180deg, #121212 0%, #0A0A0A 100%);
-  border-radius: 8px;
-  border: 1px solid #2A2A2A;
-  position: relative;
-  transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    background-color: #161625;
+    border-radius: 12px;
+    border: 1px solid #2a2a3e;
+    /* Usa a variável CSS passada no style={{ '--tx-color': info.borderColor }} */
+    border-left: 4px solid var(--tx-color, #2a2a3e); 
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .itemContainer:hover {
-  border-color: #C9A227;
-  box-shadow: 0 0 15px rgba(201, 162, 39, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .itemTouchable {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  padding: 16px;
-  gap: 16px;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    gap: 16px;
+    cursor: default;
 }
 
 .iconContainer {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(201, 162, 39, 0.1) !important;
-  border: 1px solid #C9A227;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1a1a1a;
+    border: 1px solid #2a2a3e;
+    flex-shrink: 0;
 }
-
+/* Removido o SVG override para permitir as cores do JSX (THEME_COLORS) */
 .iconContainer svg {
-  color: #C9A227 !important; 
+    filter: drop-shadow(0 0 5px currentColor);
 }
 
-.detailsContainer { flex-grow: 1; }
+.detailsContainer { 
+    flex-grow: 1; 
+    display: flex; 
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden;
+}
+
+.categoryRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
 .itemCategory { 
-  font-size: 14px; 
-  font-weight: 600; 
-  margin: 0; 
-  color: #F5F5F5; 
+    font-size: 14px; 
+    font-weight: 700; 
+    color: #ffffff; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.typeBadge {
+    font-size: 10px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #8a8a9a;
+    letter-spacing: 0.5px;
 }
 
 .itemDate { 
-  font-size: 12px; 
-  color: #707070; 
-  margin: 4px 0; 
+    font-size: 11px; 
+    color: #666; 
+    margin: 0;
 }
 
 .itemDescription { 
-  font-size: 12px; 
-  color: #B0B0B0; 
-  font-style: italic; 
+    font-size: 12px; 
+    color: #8a8a9a; 
+    font-style: italic; 
+    margin: 2px 0 0 0;
 }
 
+/* Valores e Cores */
 .itemAmount { 
-  font-size: 14px; 
-  font-weight: 700; 
+    font-size: 15px; 
+    font-weight: 700; 
+    font-family: 'Inter', monospace;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
 }
 
-.itemAmount[style*="rgb(90, 138, 106)"],
-.itemAmount[style*="#5A8A6A"] {
-  color: #4CAF50 !important;
+.amountPositive {
+    color: #00FF88; /* neonGreen */
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.15);
 }
 
-.itemAmount[style*="rgb(164, 74, 74)"],
-.itemAmount[style*="#A44A4A"] {
-  color: #AA0000 !important;
+.amountNegative {
+    color: #FF4D4D; /* neonRed */
+    text-shadow: 0 0 10px rgba(255, 77, 77, 0.15);
 }
 
-/* === ACTION BUTTONS === */
+/* Ações (Editar/Excluir) */
 .permanentActions {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-right: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-right: 12px;
+    border-left: 1px solid #2a2a3e;
+    padding-left: 12px;
+    height: 100%;
+    justify-content: center;
 }
 
 .editButton, .deleteButton {
-  background: transparent;
-  border: 1px solid #2A2A2A;
-  border-radius: 4px;
-  padding: 8px;
-  cursor: pointer;
-  color: #B0B0B0;
-  transition: all 0.3s ease;
+    background: transparent;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    color: #4a4a5e;
+    transition: all 0.2s;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.editButton:hover {
-  border-color: #C9A227;
-  color: #D4AF37;
-  background: rgba(201, 162, 39, 0.1);
+.editButton:hover { 
+    background: rgba(255, 215, 0, 0.1);
+    color: #ffd700; 
+}
+.deleteButton:hover { 
+    background: rgba(255, 77, 77, 0.1);
+    color: #ff4d4d; 
 }
 
-.deleteButton:hover {
-  border-color: #8B0000;
-  color: #AA0000;
-  background: rgba(139, 0, 0, 0.1);
-}
-
-/* === MODAL === */
+/* --- Modal --- */
 .modalOverlay { 
-  position: fixed; 
-  inset: 0; 
-  background: rgba(5, 5, 5, 0.9);
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  backdrop-filter: blur(4px);
-  padding: 20px;
+    position: fixed; 
+    inset: 0; 
+    background: rgba(0, 0, 0, 0.85);
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .modalContainer { 
-  background: linear-gradient(180deg, #121212 0%, #0A0A0A 100%);
-  border-radius: 8px; 
-  border: 2px solid #C9A227;
-  width: 95%; 
-  max-width: 450px; 
-  max-height: 90vh; 
-  display: flex; 
-  flex-direction: column;
-  box-shadow: 0 0 40px rgba(201, 162, 39, 0.2);
-  overflow: hidden;
+    background: #161625; 
+    border-radius: 16px; 
+    border: 1px solid #2a2a3e;
+    width: 90%; 
+    max-width: 400px; 
+    display: flex; 
+    flex-direction: column;
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 .modalHeader { 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center;
-  padding: 12px 16px; 
-  background: linear-gradient(180deg, #8B0000 0%, #660000 100%);
-  border-bottom: 1px solid #C9A227;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 16px; 
+    background: #1a1a2e;
+    border-bottom: 1px solid #2a2a3e;
 }
-
 .modalHeader h3 {
-  font-size: 14px;
-  font-weight: 700;
-  color: #F5F5F5;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
 }
-
 .modalHeader button { 
-  background: transparent;
-  border: 1px solid #C9A227;
-  border-radius: 4px;
-  color: #D4AF37; 
-  cursor: pointer; 
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+    background: transparent;
+    border: none;
+    color: #8a8a9a; 
+    cursor: pointer; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
-.modalHeader button:hover {
-  background: rgba(201, 162, 39, 0.2);
-}
+.modalHeader button:hover { color: #fff; }
 
 .modalContent { 
-  overflow-y: auto; 
-  padding: 20px; 
-  background: transparent;
+    padding: 20px; 
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.modalActions { 
-  display: flex; 
-  gap: 12px; 
-  padding: 16px; 
-  border-top: 1px solid #2A2A2A; 
-  background: #0A0A0A;
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
-
-/* === FORM INPUTS === */
-.inputGroup { margin: 16px 0; }
-
 .inputGroup label { 
-  display: block; 
-  margin-bottom: 8px; 
-  font-weight: 600; 
-  color: #D4AF37;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+    font-size: 11px;
+    font-weight: 700; 
+    color: #8a8a9a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
-
 .inputGroup input, .inputGroup textarea, .inputGroup select { 
-  width: 100%; 
-  background: #0A0A0A; 
-  border: 1px solid #2A2A2A; 
-  border-radius: 4px; 
-  padding: 12px 14px; 
-  color: #F5F5F5; 
-  font-size: 14px; 
-  box-sizing: border-box; 
-  transition: all 0.3s ease;
+    width: 100%; 
+    background: #0e0e0e; 
+    border: 1px solid #2a2a3e; 
+    border-radius: 8px; 
+    padding: 12px; 
+    color: #ffffff; 
+    font-size: 14px; 
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
 }
-
-.inputGroup input:focus, 
-.inputGroup textarea:focus, 
-.inputGroup select:focus { 
-  outline: none;
-  border-color: #C9A227;
-  background: #121212;
-  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15);
+.inputGroup input:focus, .inputGroup textarea:focus, .inputGroup select:focus {
+    outline: none;
+    border-color: #ffd700;
 }
 
 .dateTimeContainer { display: flex; gap: 12px; }
 .dateTimeContainer input { flex: 1; }
 
-/* === MODAL BUTTONS === */
+.modalActions { 
+    display: flex; 
+    gap: 12px; 
+    padding: 20px; 
+    border-top: 1px solid #2a2a3e; 
+    background: #1a1a2e;
+}
+
 .cancelButton, .saveButton { 
-  flex: 1; 
-  padding: 12px 16px; 
-  border-radius: 4px; 
-  border: 1px solid #2A2A2A; 
-  font-weight: 700; 
-  cursor: pointer; 
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.3s ease;
+    flex: 1; 
+    padding: 14px; 
+    border-radius: 8px; 
+    font-weight: 700; 
+    cursor: pointer; 
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
-
 .cancelButton { 
-  background: linear-gradient(180deg, #1A1A1A 0%, #121212 100%); 
-  color: #B0B0B0; 
+    background: transparent; 
+    border: 1px solid #2a2a3e;
+    color: #8a8a9a; 
 }
-
-.cancelButton:hover {
-  border-color: #C9A227;
-  color: #D4AF37;
+.cancelButton:hover { 
+    background: rgba(255,255,255,0.05);
+    color: #fff;
 }
-
 .saveButton { 
-  background: linear-gradient(180deg, #AA0000 0%, #8B0000 50%, #660000 100%);
-  color: #F5F5F5; 
-  border-color: #C9A227;
+    background: #ffd700;
+    color: #000; 
+    border: none;
 }
-
-.saveButton:hover {
-  background: linear-gradient(180deg, #CC0000 0%, #AA0000 50%, #8B0000 100%);
-  box-shadow: 0 0 15px rgba(201, 162, 39, 0.3);
+.saveButton:hover { 
+    background: #ffea00;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
 }

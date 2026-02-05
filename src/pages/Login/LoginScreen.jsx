@@ -148,7 +148,7 @@ const LoginScreen = () => {
                             <GiClubs className={styles.suitIcon} />
                             <GiDiamonds className={`${styles.suitIcon} ${styles.redSuit}`} />
                         </div>
-                        <h1 className={styles.title}>PHANTOM GERENCIAMENTO </h1>
+                        <h1 className={styles.title}>GERENCIAMENTO DO TITÃ </h1>
                         <div className={styles.divider}>
                             <div className={styles.line}></div>
                             <span className={styles.subtitle}>{isLogin ? 'VIP ACCESS' : 'NOVO JOGADOR'}</span>

@@ -1,32 +1,64 @@
 /* ========================================
-   REPORT SCREEN - THE VAULT (AUDIT)
-   Theme: Vanta Black | Gold | Cyber Security
+   Tema Aviator - Dark Premium
+   ReportScreen.module.css - Ajustado para JSX
    ======================================== */
 
-.container {
-  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
-  color: #F5F5F5;
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;600;800&display=swap');
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* === HEADER === */
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(0, 255, 136, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+}
+
+.container {
+  background-color: #0e0e0e;
+  color: #ffffff;
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Header --- */
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
-  background: rgba(10, 10, 10, 0.95);
-  border-bottom: 2px solid #D4AF37;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #1a0808 0%, #1a1a2e 100%);
+  border-bottom: 1px solid #2a2a3e;
   position: sticky;
   top: 0;
-  z-index: 100;
-  backdrop-filter: blur(10px);
+  z-index: 10;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.backButton {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #2a2a3e;
+  border-radius: 8px;
+  color: #8a8a9a;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: #ffd700;
 }
 
 .headerTitleContainer {
@@ -36,88 +68,69 @@
 }
 
 .securityIcon {
-  color: #D4AF37;
-  font-size: 18px;
+  color: #e52d27;
+  font-size: 20px;
 }
 
 .header h1 {
-  font-family: 'Cinzel', serif;
   font-size: 16px;
   font-weight: 700;
-  color: #D4AF37;
+  color: #ffd700;
   margin: 0;
-  letter-spacing: 2px;
-  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-}
-
-.backButton {
-  background: transparent;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 4px;
-  color: #D4AF37;
-  cursor: pointer;
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  transition: all 0.3s ease;
-}
-
-.backButton:hover {
-  background: rgba(212, 175, 55, 0.1);
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
 }
 
 .headerSpacer { width: 80px; }
 
-/* === MAIN LAYOUT === */
+/* --- Content Layout --- */
 .content {
   flex-grow: 1;
-  display: flex;
-  flex-direction: column;
   padding: 24px;
-  gap: 32px;
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-/* === PAINEL DE CONTROLE (Esquerda no desktop) === */
-.controlPanel {
-  background: linear-gradient(145deg, #151515 0%, #0A0A0A 100%);
-  border: 1px solid #333;
-  border-radius: 12px;
-  padding: 30px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* --- Control Panel (Export Section) --- */
+.controlPanel {
+  background: #161625;
+  border: 1px solid #2a2a3e;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.panelHeader {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #2a2a3e;
+  padding-bottom: 16px;
 }
 
 .panelHeader h2 {
-  font-family: 'Cinzel', serif;
-  font-size: 18px;
-  color: #F5F5F5;
-  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-
-.panelHeader h2 svg { color: #D4AF37; }
+.panelHeader h2 svg { color: #8a8a9a; }
 
 .panelHeader p {
-  font-size: 13px;
-  color: #888;
-  line-height: 1.5;
+  font-size: 12px;
+  color: #8a8a9a;
   margin: 0;
 }
 
-/* Botões de Exportação (Cards) */
+/* --- Export Cards --- */
 .actionsContainer {
   display: grid;
   grid-template-columns: 1fr;
@@ -126,7 +139,7 @@
 
 .pdfLinkWrapper {
   text-decoration: none;
-  display: block;
+  width: 100%;
 }
 
 .exportCard {
@@ -134,166 +147,147 @@
   display: flex;
   align-items: center;
   padding: 16px;
-  background: #0F0F0F;
-  border: 1px solid #333;
-  border-radius: 8px;
+  background: #0e0e0e;
+  border: 1px solid #2a2a3e;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
   position: relative;
   overflow: hidden;
 }
 
 .exportCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  border-color: #444;
+  background: #1a1a1a;
 }
+.exportCard:active { transform: scale(0.99); }
+.exportCard:disabled { opacity: 0.6; cursor: wait; }
 
+/* Estilos Específicos Excel */
 .excelCard:hover { border-color: #1D6F42; }
-.pdfCard:hover { border-color: #B30B00; }
+.excelCard:hover .iconBoxExcel { background: #1D6F42; color: #fff; }
 
-.iconBoxExcel, .iconBoxPdf {
+.iconBoxExcel {
   width: 48px;
   height: 48px;
-  border-radius: 8px;
+  background: rgba(29, 111, 66, 0.15);
+  border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #1D6F42;
   margin-right: 16px;
-  flex-shrink: 0;
+  transition: all 0.2s;
 }
 
-.iconBoxExcel { background: rgba(29, 111, 66, 0.2); color: #1D6F42; }
-.iconBoxPdf { background: rgba(179, 11, 0, 0.2); color: #B30B00; }
+/* Estilos Específicos PDF */
+.pdfCard:hover { border-color: #e52d27; }
+.pdfCard:hover .iconBoxPdf { background: #e52d27; color: #fff; }
+
+.iconBoxPdf {
+  width: 48px;
+  height: 48px;
+  background: rgba(229, 45, 39, 0.15);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #e52d27;
+  margin-right: 16px;
+  transition: all 0.2s;
+}
 
 .cardText {
-  flex: 1;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  text-align: left;
 }
 
 .cardTitle {
   font-size: 14px;
   font-weight: 700;
-  color: #E0E0E0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: #fff;
+  margin-bottom: 2px;
 }
 
 .cardSub {
   font-size: 11px;
-  color: #666;
-  margin-top: 2px;
+  color: #8a8a9a;
 }
 
 .downloadIcon {
   color: #444;
   font-size: 20px;
-  transition: color 0.3s;
+  transition: color 0.2s;
 }
+.exportCard:hover .downloadIcon { color: #fff; }
 
-.exportCard:hover .downloadIcon { color: #D4AF37; }
-
-/* Security Badge */
-.securityBadge {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
-  background: rgba(212, 175, 55, 0.05);
-  border: 1px dashed rgba(212, 175, 55, 0.3);
-  border-radius: 6px;
-  color: #888;
-  font-size: 10px;
-}
-
-.securityBadge svg { color: #D4AF37; flex-shrink: 0; }
-
-/* === VIEWER SECTION (Direita no desktop) === */
+/* --- PDF Viewer Section --- */
 .viewerSection {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  flex-grow: 1;
+  background: #161625;
+  border: 1px solid #2a2a3e;
+  border-radius: 16px;
+  padding: 24px;
+  min-height: 500px;
 }
 
 .viewerHeader {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-bottom: 16px;
+  padding-left: 4px;
 }
 
 .liveIndicator {
   width: 8px;
   height: 8px;
-  background: #4CAF50;
+  background: #00FF88;
   border-radius: 50%;
-  box-shadow: 0 0 8px #4CAF50;
   animation: pulse 2s infinite;
 }
 
 .viewerHeader h2 {
   font-size: 12px;
-  color: #D4AF37;
-  margin: 0;
-  letter-spacing: 2px;
   font-weight: 700;
+  color: #8a8a9a;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .viewerFrame {
   flex-grow: 1;
-  background: #222;
-  border: 4px solid #1A1A1A;
+  background: #525659; /* Cor padrão de fundo de visualizadores PDF */
   border-radius: 8px;
-  position: relative;
-  min-height: 500px;
-  box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
   overflow: hidden;
+  border: 1px solid #000;
+  position: relative;
 }
 
 .pdfFrame {
+  display: block;
+  width: 100%;
+  height: 100%;
   border: none;
-  background: #555; /* Cor de fundo do viewer nativo */
 }
 
-/* Spinner */
-.miniSpinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255,255,255,0.1);
-  border-top-color: #B30B00;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes pulse { 
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
-}
-
-/* ========================================
-   RESPONSIVE LAYOUT
-   ======================================== */
-@media (min-width: 1024px) {
-  .content {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-
-  .controlPanel {
-    width: 380px;
-    position: sticky;
-    top: 100px;
-  }
-
-  .viewerSection {
-    height: calc(100vh - 120px);
+/* --- Responsive --- */
+@media (min-width: 768px) {
+  .actionsContainer {
+    grid-template-columns: 1fr 1fr;
   }
   
-  .viewerFrame {
-    height: 100%;
+  .content {
+    padding: 30px;
+  }
+  
+  .viewerSection {
+    height: 800px; /* Altura fixa em desktop para melhor visualização */
   }
 }

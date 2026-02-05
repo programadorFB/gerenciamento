@@ -1,16 +1,60 @@
 /* ========================================
-   PROFILE SCREEN - HIGH STAKES DOSSIER
+   Tema Aviator - Cockpit Profile
+   profileScreen.module.css
    ======================================== */
 
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;600;800&display=swap');
+
+@keyframes gridMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 40px; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scanline {
+  0% { top: 0%; opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { top: 100%; opacity: 0; }
+}
+
 .container {
-  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
-  color: #E0E0E0;
+  background-color: #050505;
+  color: #e0e0e0;
   min-height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   overflow-x: hidden;
+  position: relative;
+}
+
+/* Fundo Tecnológico (Radar/Grid) */
+.container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(229, 45, 39, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(229, 45, 39, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridMove 20s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Vinheta */
+.container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, #050505 90%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* === HEADER === */
@@ -19,25 +63,26 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  border-bottom: 2px solid #D4AF37;
+  border-bottom: 2px solid #e52d27;
   background: rgba(10, 10, 10, 0.95);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 4px 20px rgba(229, 45, 39, 0.1);
   position: sticky;
   top: 0;
   z-index: 100;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(10px);
 }
 
 .backButton {
-  background: transparent;
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #333;
   border-radius: 4px;
-  color: #D4AF37;
+  color: #8a8a9a;
   cursor: pointer;
   padding: 8px 12px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  font-family: 'Orbitron', sans-serif;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -46,22 +91,24 @@
 }
 
 .backButton:hover {
-  background: rgba(212, 175, 55, 0.1);
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+  background: #e52d27;
+  color: #fff;
+  border-color: #e52d27;
+  box-shadow: 0 0 10px rgba(229, 45, 39, 0.4);
 }
 
 .title {
-  font-family: 'Cinzel', serif;
+  font-family: 'Orbitron', sans-serif;
   font-size: 16px;
-  font-weight: 700;
-  color: #F5F5F5;
+  font-weight: 900;
+  color: #fff;
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 2px;
-  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+  text-shadow: 0 0 10px rgba(229, 45, 39, 0.5);
 }
 
-.headerSpacer { width: 80px; } /* Equilibra o botão de voltar */
+.headerSpacer { width: 80px; }
 
 /* === MAIN LAYOUT === */
 .scrollContainer {
@@ -69,27 +116,44 @@
   padding: 24px;
   display: flex;
   justify-content: center;
+  position: relative;
+  z-index: 1;
+  overflow-y: auto;
 }
 
 .profileCardWrapper {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 32px;
+  gap: 24px;
   width: 100%;
-  max-width: 1000px;
+  max-width: 900px;
+  animation: fadeIn 0.4s ease-out;
 }
 
-/* === VISUAL SECTION (Esquerda) === */
+/* === VISUAL SECTION (Avatar) === */
 .visualSection {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
-  background: linear-gradient(145deg, #151515 0%, #0A0A0A 100%);
+  gap: 24px;
+  background: #111;
   border: 1px solid #333;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 30px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Linha de scan decorativa */
+.visualSection::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: rgba(229, 45, 39, 0.3);
+  animation: scanline 3s linear infinite;
+  pointer-events: none;
 }
 
 .avatarRing {
@@ -97,9 +161,13 @@
   width: 140px;
   height: 140px;
   border-radius: 50%;
-  padding: 4px;
-  background: linear-gradient(135deg, #D4AF37 0%, #8B7355 100%); /* Ouro Metálico */
-  box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+  padding: 6px;
+  background: #000;
+  border: 2px dashed #e52d27; /* Borda técnica tracejada */
+  box-shadow: 0 0 20px rgba(229, 45, 39, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .profileImage, .profileImagePlaceholder {
@@ -107,8 +175,8 @@
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #000;
-  background: #111;
+  border: 2px solid #333;
+  background: #050505;
 }
 
 .profileImagePlaceholder {
@@ -118,23 +186,25 @@
 }
 
 .profileImagePlaceholder span {
-  font-family: 'Cinzel', serif;
-  font-size: 48px;
-  color: #D4AF37;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: #e52d27;
 }
 
 .vipBadge {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  background: #8B0000;
+  bottom: -5px;
+  background: linear-gradient(90deg, #e52d27, #b71c1c);
   color: #FFF;
+  font-family: 'Orbitron', sans-serif;
   font-size: 10px;
   font-weight: 800;
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: 1px solid #D4AF37;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: 1px solid #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+  letter-spacing: 1px;
 }
 
 /* Chip Selector */
@@ -144,12 +214,13 @@
 }
 
 .selectorTitle {
-  font-size: 12px;
-  color: #888;
+  font-size: 11px;
+  color: #8a8a9a;
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 16px;
-  font-weight: 600;
+  margin-bottom: 12px;
+  font-weight: 700;
+  font-family: 'Orbitron', sans-serif;
 }
 
 .chipsGrid {
@@ -161,34 +232,36 @@
 .chipOption {
   background: #080808;
   border: 1px solid #333;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  padding: 2px;
+  border-radius: 12px; /* Quadrado arredondado tech */
+  padding: 4px;
   cursor: pointer;
   position: relative;
-  transition: all 0.3s;
-  overflow: hidden;
+  transition: all 0.2s;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .chipOption:hover {
+  border-color: #e52d27;
   transform: translateY(-2px);
-  border-color: #D4AF37;
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+  box-shadow: 0 0 10px rgba(229, 45, 39, 0.2);
 }
 
 .chipSelected {
-  border-color: #D4AF37;
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+  border-color: #e52d27;
+  box-shadow: 0 0 15px rgba(229, 45, 39, 0.4);
+  background: rgba(229, 45, 39, 0.05);
 }
 
 .chipOption img {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  opacity: 0.7;
-  transition: opacity 0.3s;
+  object-fit: contain;
+  border-radius: 8px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
 }
 
 .chipOption:hover img, .chipSelected img {
@@ -197,39 +270,47 @@
 
 .checkOverlay {
   position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
+  top: -5px;
+  right: -5px;
+  background: #000;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #D4AF37;
-  font-size: 20px;
+  color: #e52d27;
+  font-size: 14px;
+  border: 1px solid #e52d27;
+  z-index: 2;
 }
 
-/* === FORM SECTION (Direita) === */
+/* === FORM SECTION === */
 .formSection {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
 .sectionBlock {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: #111;
+  border: 1px solid #333;
   border-radius: 12px;
   padding: 24px;
 }
 
 .blockTitle {
-  font-family: 'Cinzel', serif;
-  font-size: 14px;
-  color: #D4AF37;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  color: #e52d27;
   margin: 0 0 20px 0;
   display: flex;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-  padding-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #2a2a3e;
+  padding-bottom: 10px;
 }
 
 .inputGroup {
@@ -238,11 +319,12 @@
 
 .inputGroup label {
   display: block;
-  font-size: 11px;
-  color: #888;
+  font-size: 10px;
+  color: #8a8a9a;
   margin-bottom: 6px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .inputWrapper {
@@ -255,26 +337,27 @@
   width: 100%;
   background: #050505;
   border: 1px solid #333;
-  padding: 14px;
-  padding-right: 40px; /* Espaço para ícone */
-  border-radius: 6px;
-  color: #F5F5F5;
+  padding: 12px;
+  padding-right: 40px;
+  border-radius: 8px;
+  color: #fff;
   font-family: 'Inter', sans-serif;
   font-size: 14px;
-  transition: all 0.3s;
+  transition: all 0.2s;
+  box-sizing: border-box;
 }
 
 .input:focus {
-  border-color: #D4AF37;
+  border-color: #e52d27;
   outline: none;
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 0 10px rgba(229, 45, 39, 0.2);
   background: #080808;
 }
 
 .input.disabled {
   color: #666;
   border-color: #222;
-  background: #0F0F0F;
+  background: #0e0e0e;
   cursor: not-allowed;
 }
 
@@ -288,13 +371,13 @@
 .prefix {
   position: absolute;
   left: 12px;
-  color: #D4AF37;
+  color: #ffd700; /* Ouro para dinheiro */
   font-weight: 700;
+  font-family: 'Orbitron', monospace;
   font-size: 14px;
   z-index: 2;
 }
 
-/* Grid de Senhas */
 .passwordGrid {
   display: grid;
   grid-template-columns: 1fr;
@@ -304,35 +387,38 @@
 /* === FOOTER ACTION === */
 .actionFooter {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   margin-top: 10px;
 }
 
 .saveButton {
   flex: 2;
-  background: linear-gradient(180deg, #D4AF37 0%, #AA8A1E 100%);
-  border: 1px solid #FEE184;
-  color: #000;
+  background: linear-gradient(135deg, #e52d27 0%, #b71c1c 100%);
+  border: none;
+  color: #fff;
   padding: 16px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 13px;
+  font-family: 'Orbitron', sans-serif;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
   cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(229, 45, 39, 0.3);
 }
 
 .saveButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 30px rgba(212, 175, 55, 0.5);
-  background: #FEE184;
+  box-shadow: 0 6px 25px rgba(229, 45, 39, 0.5);
+  filter: brightness(1.1);
 }
 
 .saveButton:disabled {
-  opacity: 0.5;
+  background: #333;
+  color: #666;
   cursor: not-allowed;
+  box-shadow: none;
   transform: none;
 }
 
@@ -340,18 +426,19 @@
   flex: 1;
   background: transparent;
   border: 1px solid #333;
-  color: #888;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 13px;
+  color: #8a8a9a;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 12px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
+  text-transform: uppercase;
 }
 
 .logoutButton:hover {
-  border-color: #8B0000;
-  color: #FF4D4D;
-  background: rgba(139, 0, 0, 0.1);
+  border-color: #e52d27;
+  color: #fff;
+  background: rgba(229, 45, 39, 0.1);
 }
 
 /* === RESPONSIVE === */
@@ -367,7 +454,7 @@
   }
 
   .passwordGrid {
-    grid-template-columns: 1fr 1fr; /* Senhas lado a lado */
+    grid-template-columns: 1fr 1fr;
   }
   
   .inputGroup:last-child {

@@ -1,9 +1,10 @@
-/* Dark Luxury Theme - App.module.css */
-/* Vanta Black (#050505) | Blood Red (#8B0000) | Brushed Gold (#C9A227) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* ========================================
+   Tema Aviator - Dark Premium
+   App.module.css
+   ======================================== */
 
 * {
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   box-sizing: border-box;
 }
 
@@ -12,7 +13,7 @@
   margin: 0;
   padding: 0;
   text-align: center;
-  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
+  background: #0e0e0e;
   min-height: 100vh;
   padding-bottom: 40px;
 }
@@ -24,17 +25,16 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: radial-gradient(ellipse at center, #0A0A0A 0%, #050505 100%);
-  color: #C9A227;
-  font-family: 'Inter', sans-serif;
+  background: #0e0e0e;
+  color: #ffd700;
   width: 100%;
 }
 
 .spinner {
   width: 50px;
   height: 50px;
-  border: 3px solid rgba(201, 162, 39, 0.15);
-  border-left-color: #C9A227;
+  border: 4px solid rgba(229, 45, 39, 0.2);
+  border-left-color: #e52d27;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 20px;
@@ -42,7 +42,7 @@
 
 .appContent {
   padding: 1rem;
-  background: #050505;
+  background: #0e0e0e;
   min-height: 100vh;
   width: 100%;
   display: flex;
@@ -50,249 +50,214 @@
   align-items: center;
 }
 
-/* Dark Luxury Button Style */
+/* Aviator Button Style */
 .button {
   padding: 10px 24px;
-  border-radius: 6px;
-  border: 1px solid #C9A227;
-  background: linear-gradient(180deg, #1A1A1A 0%, #0F0F0F 50%, #0A0A0A 100%);
-  color: #F5F5F5;
+  border-radius: 8px;
+  border: 1px solid #2a2a3e;
+  background: linear-gradient(180deg, #1e1e30 0%, #161625 100%);
+  color: #ffffff;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 13px;
-  font-family: 'Inter', sans-serif;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
   width: 100%;
   max-width: 200px;
 }
 
 .button:hover {
-  background: linear-gradient(180deg, #252525 0%, #1A1A1A 50%, #0F0F0F 100%);
-  border-color: #D4AF37;
-  box-shadow: 0 0 15px rgba(201, 162, 39, 0.3);
-  color: #C9A227;
+  border-color: #e52d27;
+  box-shadow: 0 0 15px rgba(229, 45, 39, 0.2);
 }
 
 .button:active {
-  background: linear-gradient(180deg, #8B0000 0%, #660000 100%);
-  border-color: #C9A227;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(180deg, #e52d27 0%, #b71c1c 100%);
+  border-color: #e52d27;
 }
 
 .button:disabled {
-  background: linear-gradient(180deg, #1A1A1A 0%, #121212 100%);
-  color: #505050;
+  background: #1a1a1a;
+  color: #555;
   cursor: not-allowed;
-  border-color: #2A2A2A;
-  box-shadow: none;
+  border-color: #222;
 }
 
-/* Dark Input Style */
+/* Input Style */
 .input {
-  padding: 12px 14px;
-  border: 1px solid #2A2A2A;
-  background-color: #0A0A0A;
-  color: #F5F5F5;
-  font-size: 14px;
-  font-family: 'Inter', sans-serif;
+  padding: 10px 12px;
+  border: 1px solid #2a2a3e;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-size: 13px;
   width: 100%;
   border-radius: 6px;
-  transition: all 0.3s ease;
+  transition: border-color 0.2s;
 }
 
 .input:focus {
   outline: none;
-  border-color: #C9A227;
-  box-shadow: 0 0 10px rgba(201, 162, 39, 0.2);
-  background-color: #0F0F0F;
+  border-color: #e52d27;
+  box-shadow: 0 0 10px rgba(229, 45, 39, 0.15);
 }
 
-.input::placeholder {
-  color: #606060;
-}
-
-/* Dark Form Style */
+/* Login Form */
 .loginForm {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   padding: 24px;
-  background: linear-gradient(180deg, #121212 0%, #0A0A0A 100%);
-  border: 2px solid #C9A227;
-  border-radius: 8px;
+  background: #161625;
+  border: 1px solid #2a2a3e;
+  border-radius: 12px;
   width: 95%;
-  max-width: 380px;
+  max-width: 400px;
   margin: 0 auto;
-  box-shadow: 
-    0 0 20px rgba(201, 162, 39, 0.1),
-    0 8px 32px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
 .errorText {
-  color: #F5F5F5;
+  color: #ff4444;
   text-align: center;
   font-size: 12px;
-  background: linear-gradient(180deg, rgba(139, 0, 0, 0.3) 0%, rgba(102, 0, 0, 0.2) 100%);
-  padding: 12px;
-  border: 1px solid #8B0000;
-  border-left: 3px solid #AA0000;
-  border-radius: 4px;
+  background-color: rgba(255, 68, 68, 0.1);
+  padding: 10px;
+  border: 1px solid rgba(255, 68, 68, 0.3);
+  border-radius: 6px;
   word-wrap: break-word;
 }
 
-/* Dark Header */
+/* Dashboard Header */
 .dashboardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
   padding: 12px 16px;
-  background: linear-gradient(180deg, #1A1A1A 0%, #0F0F0F 100%);
-  border: 1px solid #C9A227;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  color: #F5F5F5;
-  font-weight: 600;
+  background: linear-gradient(135deg, #1a0a0a 0%, #2a0a0a 50%, #1a1a2e 100%);
+  border: 1px solid #2a2a3e;
+  border-radius: 12px;
+  color: #ffffff;
+  font-weight: bold;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-/* --- Animations --- */
+/* Animations */
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-/* --- Logo Styles --- */
+/* Logo */
 .logo {
   height: 5em;
   padding: 1em;
-  filter: drop-shadow(0 0 8px rgba(201, 162, 39, 0.4));
-  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 10px rgba(229, 45, 39, 0.5));
+  transition: filter 300ms;
   max-width: 100%;
 }
 
 .logo:hover {
-  filter: drop-shadow(0 0 16px rgba(201, 162, 39, 0.6));
-  transform: scale(1.02);
+  filter: drop-shadow(0 0 20px rgba(229, 45, 39, 0.8));
 }
 
-/* Dark Card/Panel Style */
+/* Card */
 .card {
-  padding: 20px;
-  background: linear-gradient(180deg, #121212 0%, #0A0A0A 100%);
-  border: 1px solid #2A2A2A;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  padding: 18px;
+  background: #161625;
+  border: 1px solid #2a2a3e;
+  border-radius: 12px;
   margin-bottom: 12px;
   width: 100%;
   overflow: hidden;
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
-.card:hover {
-  border-color: #C9A227;
-  box-shadow: 0 0 20px rgba(201, 162, 39, 0.15);
-}
-
-/* Dark Taskbar */
+/* Taskbar (Bottom Nav) */
 .taskbar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 44px;
-  background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
-  border-top: 1px solid #C9A227;
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.6);
+  height: 56px;
+  background: linear-gradient(180deg, #1a1a2e 0%, #0e0e0e 100%);
+  border-top: 1px solid #2a2a3e;
   z-index: 9999;
   display: flex;
   align-items: center;
-  padding-right: 8px;
+  padding-right: 5px;
 }
 
-/* Start Button - Blood Red */
+/* Start Button */
 .startButton {
-  height: 36px;
-  padding: 0 18px 0 12px;
-  background: linear-gradient(180deg, #AA0000 0%, #8B0000 50%, #660000 100%);
-  border: 1px solid #C9A227;
-  border-radius: 0 8px 8px 0;
-  color: #F5F5F5;
-  font-weight: 600;
-  font-size: 13px;
+  height: 44px;
+  padding: 0 18px 0 8px;
+  background: linear-gradient(180deg, #e52d27 0%, #b71c1c 100%);
+  border: none;
+  border-radius: 0 12px 12px 0;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 14px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(139, 0, 0, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  box-shadow: 0 2px 10px rgba(229, 45, 39, 0.4);
   flex-shrink: 0;
-  transition: all 0.3s ease;
 }
 
 .startButton:hover {
-  background: linear-gradient(180deg, #BB1111 0%, #9A0000 50%, #770000 100%);
-  box-shadow: 0 0 15px rgba(139, 0, 0, 0.5);
+  background: linear-gradient(180deg, #ff3d3d 0%, #d32f2f 100%);
 }
 
 .startButton:active {
-  background: linear-gradient(180deg, #660000 0%, #4A0000 100%);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(180deg, #b71c1c 0%, #8e0000 100%);
 }
 
 /* Window Title Bar */
 .windowTitleBar {
-  background: linear-gradient(180deg, #1A1A1A 0%, #0F0F0F 100%);
-  padding: 8px 12px;
+  background: linear-gradient(135deg, #1a0a0a 0%, #2a0a0a 100%);
+  padding: 6px 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #8B0000;
-  color: #C9A227;
+  border-bottom: 1px solid #e52d27;
+  color: #ffffff;
   font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-weight: bold;
 }
 
 .windowControls {
   display: flex;
-  gap: 6px;
+  gap: 4px;
 }
 
 .windowButton {
   width: 24px;
   height: 24px;
-  border: 1px solid #2A2A2A;
-  background: transparent;
+  border: 1px solid #2a2a3e;
+  background: #161625;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  color: #C9A227;
-  font-weight: bold;
+  color: #8a8a9a;
   border-radius: 4px;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
 }
 
 .windowButton:hover {
-  background: #8B0000;
-  border-color: #C9A227;
-  color: #F5F5F5;
+  background: #e52d27;
+  color: #fff;
 }
 
-/* Desktop Icons Grid System */
+/* Desktop Icons Grid */
 .desktopGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-  gap: 20px;
-  padding: 24px;
+  gap: 16px;
+  padding: 20px;
   width: 100%;
 }
 
@@ -300,59 +265,50 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 12px;
+  gap: 6px;
+  padding: 10px;
   cursor: pointer;
   border: 1px solid transparent;
   background: transparent;
-  transition: all 0.3s ease;
   border-radius: 8px;
+  transition: all 0.2s;
 }
 
 .desktopIcon:hover {
-  background: rgba(201, 162, 39, 0.08);
-  border: 1px solid rgba(201, 162, 39, 0.3);
-  box-shadow: 0 0 15px rgba(201, 162, 39, 0.1);
+  background: rgba(229, 45, 39, 0.1);
+  border: 1px solid rgba(229, 45, 39, 0.3);
 }
 
 .desktopIcon:active {
-  background: rgba(139, 0, 0, 0.2);
-  border-color: #8B0000;
+  background: rgba(229, 45, 39, 0.2);
 }
 
 .desktopIconText {
-  color: #F5F5F5;
+  color: #ffffff;
   font-size: 11px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   text-align: center;
   word-break: break-word;
 }
 
 /* Status Bar */
 .statusBar {
-  height: 28px;
-  background: linear-gradient(180deg, #121212 0%, #0A0A0A 100%);
-  border-top: 1px solid #2A2A2A;
+  height: 24px;
+  background: #161625;
+  border-top: 1px solid #2a2a3e;
   display: none;
   align-items: center;
   padding: 0 12px;
   font-size: 11px;
-  color: #808080;
-  gap: 16px;
+  color: #8a8a9a;
+  gap: 12px;
 }
 
 .read-the-docs {
-  color: #C9A227;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.read-the-docs:hover {
-  color: #D4AF37;
+  color: #e52d27;
   text-decoration: underline;
 }
 
-/* --- Media Queries --- */
+/* Media Queries */
 @media (min-width: 768px) {
   .appContent {
     padding: 2rem;
@@ -360,7 +316,6 @@
 
   .loginForm {
     width: 380px;
-    padding: 32px;
   }
 
   .logo {
@@ -368,19 +323,15 @@
   }
 
   .taskbar {
-    height: 36px;
+    height: 48px;
   }
 
   .startButton {
-    height: 30px;
-    font-size: 12px;
+    height: 40px;
+    font-size: 13px;
   }
 
   .statusBar {
     display: flex;
-  }
-
-  .button {
-    font-size: 14px;
   }
 }

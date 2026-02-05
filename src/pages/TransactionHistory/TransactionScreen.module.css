@@ -1,268 +1,354 @@
 /* ========================================
-   TRANSACTION SCREEN - BETTING TERMINAL
-   Vanta Black | Neon Accents
+   Tema Aviator - Dark Premium
+   TransactionScreen.module.css - Ajustado para JSX
    ======================================== */
 
-.container {
-  background: linear-gradient(to bottom, #2a110f 0%, #000000 100%);
-  color: #F5F5F5;
-  min-height: 100vh;
-  display: flex;
-  
-  flex-direction: column;
-  font-family: 'Inter', sans-serif;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* === HEADER === */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #0e0e0e;
+  color: #ffffff;
+  animation: fadeIn 0.3s ease-out;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* --- Header --- */
 .header {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  background: rgba(10, 10, 10, 0.95);
-  border-bottom: 2px solid #333;
-  backdrop-filter: blur(10px);
+  padding: 16px;
+  background: linear-gradient(135deg, #1a0808 0%, #1a1a2e 100%);
+  border-bottom: 1px solid #2a2a3e;
   position: sticky;
   top: 0;
   z-index: 10;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 
 .headerTitle {
-  font-family: 'Cinzel', serif;
   font-size: 16px;
-  color: #D4AF37;
-  letter-spacing: 2px;
+  font-weight: 700;
+  color: #ffd700;
   margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
 }
 
 .backButton {
-  background: transparent;
-  border: 1px solid #333;
-  border-radius: 4px;
-  color: #888;
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 12px;
-  font-size: 10px;
-  font-weight: 700;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #2a2a3e;
+  border-radius: 8px;
+  color: #8a8a9a;
+  font-size: 11px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
+  padding: 8px 12px;
+  transition: all 0.2s;
 }
-
 .backButton:hover {
-  border-color: #D4AF37;
-  color: #D4AF37;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
-/* === CONTENT === */
+/* --- Content & Layout --- */
 .content {
-  flex: 1;
-  padding: 24px;
+  flex-grow: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
   max-width: 600px;
   margin: 0 auto;
-  width: 100%;
 }
 
-/* === GRID DE TIPOS === */
+/* --- Type Selector (Grid) --- */
 .typeGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  margin-bottom: 30px;
+  width: 100%;
+  margin-bottom: 24px;
 }
 
 .typeButton {
-  background: linear-gradient(145deg, #151515, #0A0A0A);
-  border: 1px solid #222;
+  position: relative;
+  background: #161625;
+  border: 1px solid #2a2a3e;
   border-radius: 12px;
-  padding: 20px 10px;
+  padding: 16px;
+  cursor: pointer;
+  color: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  position: relative;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
 
-.typeIcon { font-size: 28px; color: #666; transition: color 0.3s; }
-.typeLabel { font-size: 11px; font-weight: 700; color: #666; transition: color 0.3s; letter-spacing: 1px; }
+.typeButton:hover {
+  transform: translateY(-2px);
+  background: #1e1e30;
+}
 
-/* Estados Ativos */
-.typeDeposit { border-color: #00E676; box-shadow: 0 0 15px rgba(0, 230, 118, 0.2); }
+.typeIcon {
+  font-size: 24px;
+  color: #8a8a9a;
+  transition: color 0.2s;
+}
+
+.typeLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8a8a9a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Classes ativas específicas (baseadas no array JS) */
+.typeDeposit, .typeWithdraw, .typeWin, .typeLoss {
+  background: #1a1a1a;
+  border-width: 1px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+/* Cores específicas quando ativo */
+.typeDeposit { border-color: #00E676; background: rgba(0, 230, 118, 0.05); }
 .typeDeposit .typeIcon, .typeDeposit .typeLabel { color: #00E676; }
 
-.typeWithdraw { border-color: #FF9100; box-shadow: 0 0 15px rgba(255, 145, 0, 0.2); }
+.typeWithdraw { border-color: #FF9100; background: rgba(255, 145, 0, 0.05); }
 .typeWithdraw .typeIcon, .typeWithdraw .typeLabel { color: #FF9100; }
 
-.typeWin { border-color: #D4AF37; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+.typeWin { border-color: #D4AF37; background: rgba(212, 175, 55, 0.05); }
 .typeWin .typeIcon, .typeWin .typeLabel { color: #D4AF37; }
 
-.typeLoss { border-color: #D50000; box-shadow: 0 0 15px rgba(213, 0, 0, 0.2); }
+.typeLoss { border-color: #D50000; background: rgba(213, 0, 0, 0.05); }
 .typeLoss .typeIcon, .typeLoss .typeLabel { color: #D50000; }
 
 .activeIndicator {
   position: absolute;
-  top: 0; left: 0; right: 0; height: 3px;
-  background: currentColor;
-  box-shadow: 0 2px 10px currentColor;
+  top: 8px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor; /* Pega a cor do texto do pai */
+  box-shadow: 0 0 8px currentColor;
 }
 
-/* === FORMULÁRIO === */
+/* --- Form Container --- */
 .formContainer {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  animation: slideUp 0.4s ease-out;
+  gap: 20px;
 }
 
-/* Display de Valor */
+/* --- Display de Valor (Calculadora) --- */
 .amountDisplay {
-  background: #000;
-  border: 2px solid #333;
-  border-radius: 12px;
-  padding: 20px;
+  background: #000000;
+  border: 2px solid #2a2a3e; /* Cor padrão, sobrescrita pelo inline style */
+  border-radius: 16px;
+  padding: 24px 20px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 8px;
   position: relative;
-  box-shadow: inset 0 0 30px rgba(255,255,255,0.05);
   transition: border-color 0.3s;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.8);
 }
 
 .currencySymbol {
-  font-family: 'Cinzel', serif;
-  font-size: 24px;
   color: #666;
-  margin-right: 10px;
+  font-size: 20px;
+  font-weight: 500;
 }
 
 .amountInput {
   background: transparent;
   border: none;
-  font-family: 'Inter', sans-serif; /* Fonte Mono para números */
-  font-size: 40px;
-  color: #FFF;
-  width: 100%;
-  text-align: left;
-  outline: none;
+  color: #fff;
+  font-size: 36px;
   font-weight: 700;
-  letter-spacing: -1px;
+  text-align: right;
+  width: 100%;
+  font-family: 'Inter', monospace;
+  outline: none;
+  padding: 0;
+  margin: 0;
 }
 
-.amountInput::placeholder { color: #333; }
+.amountInput::placeholder {
+  color: #333;
+}
 
-/* Campos */
+/* --- Input Fields --- */
 .fieldsGroup {
-  background: rgba(255, 255, 255, 0.03);
+  background: #161625;
   border-radius: 12px;
-  padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid #2a2a3e;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .inputRow {
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
-
-.inputRow:last-child { margin-bottom: 0; }
 
 .inputRow label {
-  display: block;
   font-size: 11px;
+  color: #8a8a9a;
   text-transform: uppercase;
-  color: #888;
-  margin-bottom: 8px;
-  letter-spacing: 1px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
-.dateWrapper { position: relative; }
-
-.dateInput, .textInput {
-  width: 100%;
-  background: #080808;
-  border: 1px solid #333;
-  color: #FFF;
-  padding: 14px;
-  border-radius: 6px;
-  font-family: 'Inter', sans-serif;
+.textInput, .dateInput {
+  background: #0e0e0e;
+  border: 1px solid #2a2a3e;
+  border-radius: 8px;
+  padding: 12px;
+  color: #fff;
   font-size: 14px;
-  transition: border 0.3s;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
 }
 
-.dateInput:focus, .textInput:focus {
-  border-color: #D4AF37;
-  outline: none;
+.textInput:focus, .dateInput:focus {
+  border-color: #888;
+}
+
+/* Wrapper para o ícone de calendário */
+.dateWrapper {
+  position: relative;
+  width: 100%;
 }
 
 .calendarIcon {
   position: absolute;
-  right: 14px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #D4AF37;
+  color: #e52d27;
   pointer-events: none;
 }
 
-/* Checkbox */
+/* Ocultar ícone nativo do calendário para estilização customizada (opcional) */
+.dateInput::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+/* --- Checkbox Row --- */
 .checkboxRow {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: rgba(0, 230, 118, 0.05);
-  border: 1px dashed rgba(0, 230, 118, 0.3);
-  border-radius: 6px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a3e;
+  border-radius: 8px;
   cursor: pointer;
-  margin-top: 10px;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+
+.checkboxRow.checked {
+  background: rgba(0, 230, 118, 0.1);
+  border-color: #00E676;
 }
 
 .checkbox {
   width: 20px;
   height: 20px;
-  border: 2px solid #00E676;
+  border: 2px solid #444;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #000;
-  background: transparent;
+  color: #00E676;
+  font-size: 16px;
+  background: #000;
+  transition: all 0.2s;
 }
 
-.checked .checkbox { background: #00E676; }
-.checkboxRow span { font-size: 12px; color: #00E676; font-weight: 600; }
+.checkboxRow.checked .checkbox {
+  border-color: #00E676;
+}
 
-/* Submit Button */
+.checkboxRow span {
+  font-size: 13px;
+  color: #ccc;
+  font-weight: 500;
+}
+.checkboxRow.checked span {
+  color: #fff;
+}
+
+/* --- Submit Button --- */
 .submitButton {
-  width: 100%;
-  padding: 18px;
-  border-radius: 8px;
-  color: #FFF; /* Texto Branco no botão colorido */
-  font-family: 'Cinzel', serif;
-  font-size: 16px;
-  font-weight: 700;
-  border: 1px solid;
+  margin-top: 10px;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  color: #000; /* Texto preto para contraste no gradiente */
+  font-size: 14px;
+  font-weight: 800;
   cursor: pointer;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  letter-spacing: 1px;
   transition: transform 0.2s, box-shadow 0.2s;
-  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  /* Background é definido inline no JS para combinar com o tipo */
 }
 
 .submitButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
   filter: brightness(1.1);
 }
 
 .submitButton:active {
-  transform: translateY(1px);
+  transform: scale(0.98);
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* --- Responsive --- */
+@media (min-width: 600px) {
+  .typeGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }

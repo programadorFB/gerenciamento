@@ -66,8 +66,10 @@ const StopLossEditModal = React.memo(({ visible, onClose, onSave, currentPercent
 
 const InvestmentProfile = () => {
     const navigate = useNavigate();
-    const { bettingProfile, updateBettingProfile, isSaving } = useBetting();
-    const { balance, initialBank } = useFinancial();
+    const { bettingProfile, updateBettingProfile, isLoading: isSaving } = useBetting();
+    
+    // ✅ CORREÇÃO: Nome correto é initialBankBalance (não initialBank)
+    const { balance, initialBankBalance, dailyLosses } = useFinancial();
 
     const [riskValue, setRiskValue] = useState(5);
     const [stopLossPercentage, setStopLossPercentage] = useState(5);
@@ -82,22 +84,37 @@ const InvestmentProfile = () => {
         }
     }, [bettingProfile]);
 
-    // Lógica atualizada para salvar e navegar
-    const handleSaveProfile = async () => {
+const handleSaveProfile = async () => {
         try {
-            await updateBettingProfile({
+            // 1. CÁLCULO EXPLÍCITO DO VALOR MONETÁRIO
+            // O contexto de atualização não calcula isso sozinho, precisamos enviar pronto.
+            const calculatedStopLossValue = effectiveInitialBalance * (stopLossPercentage / 100);
+
+            console.log("Salvando Perfil:", {
+                percentual: stopLossPercentage,
+                valorMonetario: calculatedStopLossValue,
+                bancaBase: effectiveInitialBalance
+            });
+
+            const result = await updateBettingProfile({
                 riskLevel: riskValue,
                 stopLossPercentage: stopLossPercentage,
+                stopLoss: calculatedStopLossValue, // <--- ESTA ERA A LINHA FALTANTE
                 isInitialized: true
             });
             
-            // Navega para a dashboard após o sucesso do salvamento
-            navigate('/dashboard'); 
-            
+            if (result.success) {
+                navigate('/dashboard'); 
+            } else {
+                console.error("Erro ao salvar perfil:", result.error);
+            }
         } catch (err) {
             console.error("Erro ao salvar perfil:", err);
         }
     };
+
+    // ✅ Usar initialBankBalance corretamente
+    const effectiveInitialBalance = initialBankBalance || balance || 0;
 
     return (
         <div className={styles.container}>
@@ -157,11 +174,12 @@ const InvestmentProfile = () => {
                         <div className={styles.stopLossSection}>
                             <StopLossCard
                                 balance={balance}
-                                initialBalance={initialBank || balance}
+                                initialBalance={effectiveInitialBalance}
                                 stopLossPercentage={stopLossPercentage}
                                 onStopLossChange={setStopLossPercentage}
                                 formatCurrency={(v) => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
                                 onEdit={() => setStopLossModalVisible(true)}
+                                currentLossValue={dailyLosses} 
                             />
                         </div>
 

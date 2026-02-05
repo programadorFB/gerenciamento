@@ -1,11 +1,44 @@
+/* ========================================
+   Tema Aviator - Dark Premium
+   index.css - Global Styles
+   ======================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
 :root {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  /* === Aviator Color Palette === */
+  --av-bg-main: #0e0e0e;
+  --av-bg-surface: #1a1a2e;
+  --av-bg-card: #161625;
+  --av-bg-input: #1a1a1a;
+  --av-bg-elevated: #1e1e30;
+
+  --av-red: #e52d27;
+  --av-red-dark: #b71c1c;
+  --av-red-glow: rgba(229, 45, 39, 0.3);
+
+  --av-green: #00c853;
+  --av-green-dark: #00a844;
+  --av-green-glow: rgba(0, 200, 83, 0.3);
+
+  --av-gold: #ffd700;
+  --av-gold-dark: #f5a623;
+  --av-gold-glow: rgba(255, 215, 0, 0.2);
+
+  --av-text: #ffffff;
+  --av-text-muted: #8a8a9a;
+  --av-text-dim: #555566;
+
+  --av-border: #2a2a3e;
+  --av-border-light: #333348;
+
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-   background: linear-gradient(145deg, #551915 0%, #160605 100%);
+  color-scheme: dark;
+  color: var(--av-text);
+  background-color: var(--av-bg-main);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,7 +46,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Reset bÃ¡sico para garantir responsividade */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -23,45 +55,54 @@ body {
   padding: 0;
   min-width: 100vw;
   min-height: 100vh;
-  overflow-x: hidden; /* Evita rolagem horizontal indesejada no mobile */
-  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--av-bg-main);
 }
 
-/* Garante que o root não tenha elementos vazando */
 #root {
   width: 100%;
   height: 100%;
-  position: relative;
-  overflow: hidden;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--av-red);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--av-gold);
 }
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 1px solid var(--av-border);
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--av-bg-surface);
+  color: var(--av-text);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.2s ease;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+button:hover {
+  border-color: var(--av-red);
+  background-color: var(--av-bg-elevated);
+}
+
+/* Scrollbar Custom */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--av-bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--av-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--av-red);
 }

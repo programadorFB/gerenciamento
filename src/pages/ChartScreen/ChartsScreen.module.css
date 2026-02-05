@@ -1,240 +1,228 @@
 /* ========================================
-   CHARTS SCREEN - ROULETTE THEME
-   Black, Gold, Roulette Green/Red
+   Tema Aviator - Dark Elite (Charts)
+   ChartsScreen.module.css - Ajustado para JSX
    ======================================== */
 
-.container {
-  min-height: 100vh;
-  width: 100%;
-  background: radial-gradient(circle at top, #111 0%, #050505 100%);
-  color: #F5F5F5;
-  font-family: 'Inter', sans-serif;
-  display: flex;
-  flex-direction: column;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* === HEADER === */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #0e0e0e;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* --- Header --- */
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
-  background: rgba(10, 10, 10, 0.95);
-  border-bottom: 2px solid #D4AF37; /* Borda Dourada Forte */
-  backdrop-filter: blur(8px);
+  justify-content: space-between;
+  padding: 16px;
+  background: linear-gradient(135deg, #1a0808 0%, #1a1a2e 100%);
+  border-bottom: 1px solid #2a2a3e;
   position: sticky;
   top: 0;
-  z-index: 100;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+  z-index: 10;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 
 .headerTitle {
-  font-family: 'Cinzel', serif;
   font-size: 16px;
-  color: #D4AF37;
+  font-weight: 700;
+  color: #ffd700;
+  margin: 0;
   text-transform: uppercase;
   letter-spacing: 2px;
-  margin: 0;
-  text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
 }
 
 .backButton {
-  background: transparent;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  color: #D4AF37;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #2a2a3e;
+  border-radius: 8px;
+  color: #8a8a9a;
+  cursor: pointer;
+  padding: 8px;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s;
 }
-
 .backButton:hover {
-  background: rgba(212, 175, 55, 0.1);
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: #ffd700;
 }
 
-/* === TABS === */
+/* --- Navigation Tabs --- */
 .navContainer {
   display: flex;
-  justify-content: center;
-  gap: 12px;
-  padding: 16px 20px;
-  background: #080808;
-  border-bottom: 1px solid #222;
+  padding: 0 8px;
+  background: #0e0e0e;
+  border-bottom: 1px solid #2a2a3e;
+  overflow-x: auto;
+  gap: 4px;
 }
+/* Hide scrollbar */
+.navContainer::-webkit-scrollbar { display: none; }
 
 .navButton {
+  flex: 1;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 10px 18px;
-  background: #151515;
-  border: 1px solid #333;
-  border-radius: 20px; /* Estilo Ficha */
-  color: #888;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
+  padding: 14px 10px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #666;
+  font-size: 12px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.3s ease;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
 }
 
-.navButton:hover {
-  border-color: #D4AF37;
-  color: #D4AF37;
-}
+.navButton svg { font-size: 16px; margin-bottom: 2px; }
+
+.navButton:hover { color: #aaa; }
 
 .navButtonActive {
-  background: linear-gradient(180deg, #D4AF37 0%, #AA8A1E 100%);
-  border-color: #FEE184;
-  color: #000;
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+  color: #D4AF37;
+  border-bottom-color: #D4AF37;
+  background: linear-gradient(to top, rgba(212, 175, 55, 0.05), transparent);
 }
 
-/* === MAIN CONTENT === */
+/* --- Main Content --- */
 .mainContent {
-  flex: 1;
-  padding: 24px;
-  max-width: 1000px;
+  flex-grow: 1;
+  padding: 20px;
   width: 100%;
+  max-width: 800px; /* Limite para telas grandes */
   margin: 0 auto;
+  animation: fadeIn 0.4s ease-out;
 }
 
-/* === CARD GENERICS === */
-.chartCard, .chartCardCentered {
-  background: linear-gradient(145deg, #151515 0%, #0A0A0A 100%);
-  border: 1px solid #333;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-}
-
-.chartCardCentered {
+/* --- Loading State --- */
+.loadingState {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
+  justify-content: center;
+  height: 300px;
+  color: #8a8a9a;
+  gap: 16px;
+}
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #2a2a3e;
+  border-top-color: #D4AF37;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-.cardTitle {
-  font-family: 'Cinzel', serif;
-  font-size: 18px;
-  color: #F5F5F5;
-  margin: 0 0 4px 0;
+/* --- Charts Card General --- */
+.chartCard {
+  background: #161625;
+  border: 1px solid #2a2a3e;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-.cardSubtitle {
-  font-size: 11px;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* === PERFORMANCE CHART === */
 .chartHeader {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   padding-bottom: 16px;
 }
 
-.highlightValue {
-  font-family: 'Cinzel', serif;
-  font-size: 20px;
-  color: #D4AF37;
+.chartTitleBlock h2, .chartTitleCenter {
+  font-size: 14px;
   font-weight: 700;
-  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+  color: #fff;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.chartSubtitle {
+  font-size: 11px;
+  color: #8a8a9a;
+}
+
+.chartValueHighlight {
+  font-family: 'Inter', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: #D4AF37;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
 }
 
 .chartCanvasContainer {
-  height: 320px;
+  height: 300px;
   width: 100%;
-}
-
-/* === ROULETTE CHART (DISTRIBUTION) === */
-.rouletteChartContainer {
-  display: flex;
-  justify-content: center;
-}
-
-.wheelWrapper {
   position: relative;
-  width: 280px;
-  height: 280px;
-  margin: 30px auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-/* O Aro Externo da Roleta */
-.outerRim {
-  position: absolute;
-  inset: -15px;
-  border-radius: 50%;
-  background: conic-gradient(#8B5A2B, #D4AF37, #8B5A2B, #D4AF37, #8B5A2B); /* Efeito Madeira/Ouro */
-  box-shadow: 
-    inset 0 0 20px rgba(0,0,0,0.8),
-    0 10px 30px rgba(0,0,0,0.5);
-  z-index: 0;
+/* --- Doughnut / Distribution Specific --- */
+.distributionContainer {
+  display: flex;
+  justify-content: center;
 }
 
 .doughnutWrapper {
   position: relative;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
+  height: 260px;
+  width: 260px;
+  margin: 10px 0;
 }
 
-/* O Hub Central da Roleta */
-.wheelHub {
+.doughnutCenter {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100px;
-  height: 100px;
-  background: radial-gradient(circle at center, #333 0%, #000 100%);
-  border-radius: 50%;
-  border: 4px solid #D4AF37;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 0 20px rgba(0,0,0,0.8);
-  /* Detalhes do Hub (raios) */
-  background-image: repeating-conic-gradient(rgba(255,255,255,0.05) 0 15deg, transparent 15deg 30deg);
-}
-
-.hubContent {
   text-align: center;
+  pointer-events: none; /* Deixa o clique passar para o gráfico */
 }
 
-.hubValue {
-  display: block;
-  font-family: 'Cinzel', serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: #D4AF37;
+.winRateValue {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
 }
 
-.hubLabel {
-  font-size: 9px;
+.winRateLabel {
+  font-size: 10px;
   text-transform: uppercase;
-  color: #AAA;
+  color: #8a8a9a;
   letter-spacing: 1px;
+  margin-top: 4px;
 }
 
-.legendContainer {
+.customLegend {
   display: flex;
+  gap: 20px;
   justify-content: center;
-  gap: 24px;
   margin-top: 10px;
 }
 
@@ -243,154 +231,138 @@
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #CCC;
+  color: #ccc;
 }
 
-.chipIcon {
-  width: 24px;
-  height: 24px;
+.dot {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 10px;
-  font-weight: 700;
-  color: #FFF;
-  border: 2px dashed rgba(255,255,255,0.3); /* Borda estilo ficha */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  box-shadow: 0 0 8px currentColor;
 }
 
-/* === STATS (HISTORY BOARD) === */
+/* --- Stats / Scoreboard Layout --- */
 .statsLayout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-}
-
-/* Placar Vertical estilo Cassino */
-.historyBoard {
-  background: #000;
-  border: 4px solid #333;
-  border-radius: 8px;
-  padding: 4px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-  max-width: 400px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.boardHeader {
-  background: #111;
-  color: #D4AF37;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 8px;
-  letter-spacing: 2px;
-  border-bottom: 2px solid #333;
-  margin-bottom: 4px;
-}
-
-.boardRow {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: #080808;
-  margin-bottom: 2px;
-}
-
-.boardLabel {
-  color: #666;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-/* Estilo LED para números */
-.boardValueGold, .boardValueGreen, .boardValueRed, .boardValue {
-  font-family: 'Inter', sans-serif; /* Ou uma fonte mono se preferir */
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.boardValueGold { color: #FFD700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
-.boardValueGreen { color: #00C853; text-shadow: 0 0 8px rgba(0, 200, 83, 0.4); }
-.boardValueRed { color: #D32F2F; text-shadow: 0 0 8px rgba(211, 47, 47, 0.4); }
-.textGreen { color: #00C853; }
-.textRed { color: #D32F2F; }
-
-.boardDivider {
-  height: 2px;
-  background: #222;
-  margin: 4px 0;
-}
-
-/* Cards de Fichas (Ganhos/Perdas) */
-.chipsGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  flex-direction: column;
   gap: 16px;
 }
 
-.chipCard {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
+.scoreboardPanel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #121212;
+  border: 1px solid #2a2a3e;
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+/* Efeito de brilho de fundo */
+.scoreboardPanel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, rgba(46, 125, 50, 0.1) 0%, rgba(139, 0, 0, 0.1) 100%);
+  z-index: 0;
+}
+
+.scoreSide {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  gap: 4px;
+}
+
+.scoreLabel {
+  font-size: 10px;
+  font-weight: 700;
+  color: #8a8a9a;
+  letter-spacing: 1px;
+}
+
+.scoreValue {
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+  font-family: 'Inter', sans-serif; /* Fonte numérica forte */
+}
+
+.scoreMoney {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.scoreDivider {
+  width: 1px;
+  height: 40px;
+  background: #333;
+  margin: 0 10px;
+  z-index: 1;
+}
+
+/* --- Metrics Grid --- */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.metricCard {
+  background: #161625;
+  border: 1px solid #2a2a3e;
+  border-radius: 12px;
   padding: 16px;
   display: flex;
   align-items: center;
   gap: 12px;
+  transition: transform 0.2s;
 }
 
-.chipInfo {
-  display: flex;
-  flex-direction: column;
-  font-size: 11px;
+.metricCard:hover {
+  border-color: #444;
+  transform: translateY(-2px);
 }
 
-.chipInfo span { color: #888; text-transform: uppercase; }
-.chipInfo strong { font-size: 14px; margin-top: 2px; }
-
-/* === Loading === */
-.loadingState {
+.metricIcon {
+  font-size: 20px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 300px;
-  color: #D4AF37;
-  font-size: 12px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+}
+
+.metricInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.metricLabel {
+  font-size: 10px;
+  color: #8a8a9a;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  font-weight: 600;
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(212, 175, 55, 0.1);
-  border-top-color: #D4AF37;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 16px;
+.metricNumber {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 2px;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Media Queries */
-@media (min-width: 768px) {
-  .statsLayout {
-    grid-template-columns: 1fr 1fr;
-    align-items: start;
-  }
-  
-  .historyBoard {
-    margin: 0;
-    max-width: none;
-  }
-  
-  .chipsGrid {
-    grid-template-columns: 1fr;
+/* --- Responsive --- */
+@media (min-width: 600px) {
+  .metricsGrid {
+    grid-template-columns: repeat(4, 1fr);
   }
   
   .chartCanvasContainer {
