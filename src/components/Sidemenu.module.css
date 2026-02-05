@@ -31,176 +31,140 @@
   background-image: radial-gradient(circle at top right, #1a1a1a 0%, #050505 40%);
   z-index: 1000;
   box-shadow: 20px 0 50px rgba(0, 0, 0, 0.9);
-  border-right: 1px solid rgba(212, 175, 55, 0.1); /* Borda Dourada muito sutil */
+  border-right: 1px solid rgba(212, 175, 55, 0.15); /* Borda Dourada muito sutil */
+  
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   
   display: flex;
   flex-direction: column;
-  transform: translateX(-100%);
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s ease;
-  font-family: 'Inter', sans-serif;
+  padding: 0;
+  overflow: hidden;
 }
 
 .container.visible {
   transform: translateX(0);
 }
 
-/* --- Seção de Perfil (VIP Badge) --- */
-.profileSection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 60px 20px 40px 20px;
-  background: linear-gradient(180deg, rgba(20, 20, 20, 0.5) 0%, transparent 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-  position: relative;
+/* Botão Fechar */
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  z-index: 2;
+}
+.closeButton:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
 }
 
-/* Avatar Frame (Círculo de Ouro) */
-.profileSection::before {
-  content: '';
-  width: 72px;
-  height: 72px;
-  background: #000;
-  border-radius: 50%;
-  margin-bottom: 16px;
-  border: 1px solid #D4AF37; /* Ouro Puro */
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
-  /* Ícone SVG interno simulado */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23D4AF37'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");
-  background-size: 40%;
-  background-position: center;
-  background-repeat: no-repeat;
+/* --- Perfil no Topo --- */
+.profileSection {
+  padding: 40px 24px 30px;
+  background: linear-gradient(180deg, #111 0%, #050505 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .userName {
-  font-family: 'Cinzel', serif; /* Fonte Clássica */
-  font-size: 16px;
-  font-weight: 600;
-  color: #D4AF37;
-  margin: 0 0 4px 0;
+  font-family: 'Orbitron', sans-serif;
+  color: #FFF;
+  font-size: 18px;
+  margin: 0 0 4px;
+  font-weight: 700;
   letter-spacing: 1px;
-  text-transform: uppercase;
 }
 
 .userEmail {
-  font-size: 10px;
+  font-size: 12px;
   color: #666;
   margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
+  font-family: 'Inter', sans-serif;
 }
 
-/* Botão Fechar (Discreto) */
-.closeButton {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: transparent;
-  border: none;
-  color: #444;
-  cursor: pointer;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-.closeButton:hover {
-  color: #D4AF37;
-  transform: rotate(90deg);
-}
-
-/* --- Menu de Navegação --- */
+/* --- Itens do Menu --- */
 .menuItems {
-  flex-grow: 1;
-  padding: 24px 0;
+  flex: 1;
+  padding: 20px 16px;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 4px; /* Espaçamento menor para visual compacto */
-  overflow-y: auto;
+  gap: 8px;
 }
 
 .menuItem {
   display: flex;
   align-items: center;
-  padding: 14px 32px;
-  background-color: transparent;
+  padding: 14px 16px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
   color: #888;
-  border: none;
-  width: 100%;
-  cursor: pointer;
-  text-align: left;
-  font-size: 11px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  position: relative;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-}
-
-/* Hover Effect (Barra Lateral Dourada) */
-.menuItem:hover {
-  background: linear-gradient(90deg, rgba(212, 175, 55, 0.08) 0%, transparent 100%);
-  color: #F5F5F5;
-  padding-left: 38px; /* Leve movimento */
-}
-
-.menuItem::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: #D4AF37;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-}
-
-.menuItem:hover::before {
-  opacity: 1;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
 }
 
 .menuIcon {
-  width: 24px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
   margin-right: 16px;
   font-size: 18px;
-  transition: all 0.2s;
+  display: flex;
+  align-items: center;
   color: #555;
-}
-
-.menuItem:hover .menuIcon {
-  color: #D4AF37;
+  transition: color 0.2s;
 }
 
 .menuText {
-  flex-grow: 1;
+  flex: 1;
 }
 
-/* --- Logout (Sangue) --- */
+/* Hover States */
+.menuItem:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: #FFF;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.menuItem:hover .menuIcon {
+  color: #D4AF37; /* Ícone fica dourado */
+  filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4));
+}
+
+/* Item de Logout (Vermelho) */
 .logoutItem {
   margin-top: auto;
-  border-top: 1px solid rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0;
 }
 
 .logoutItem:hover {
-  background: linear-gradient(90deg, rgba(139, 0, 0, 0.15) 0%, transparent 100%);
   color: #FF4D4D;
-}
-
-.logoutItem:hover::before {
-  background: #8B0000;
-  box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+  background: rgba(139, 0, 0, 0.1);
+  border-color: rgba(139, 0, 0, 0.3);
 }
 
 .logoutItem:hover .menuIcon {
   color: #FF4D4D;
+  filter: drop-shadow(0 0 5px rgba(255, 77, 77, 0.4));
+}
+
+/* Separador */
+.separator {
+  height: 1px;
+  background: #222;
+  margin: 10px 0;
 }
 
 /* --- Footer --- */
@@ -212,63 +176,73 @@
 }
 
 .collapseButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 1px solid #222;
-  border-radius: 4px;
-  color: #666;
-  padding: 10px;
-  margin-bottom: 12px;
-  width: 100%;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-
-.collapseButton:hover {
-  border-color: #444;
-  color: #FFF;
-  background: #0F0F0F;
+  display: none; /* Escondido por padrão no mobile */
 }
 
 .footerText {
-  font-size: 8px;
+  font-size: 9px;
   color: #333;
   margin: 0;
   letter-spacing: 2px;
-  font-family: 'Cinzel', serif;
+  font-family: monospace;
   text-transform: uppercase;
 }
 
-/* --- Estado Recolhido --- */
-.container.collapsed {
-  width: 80px;
-}
-.container.collapsed .profileSection {
-  padding: 30px 0;
-}
-.container.collapsed .profileSection::before {
-  width: 40px; height: 40px; margin-bottom: 0;
-}
-.container.collapsed .userName,
-.container.collapsed .userEmail,
-.container.collapsed .menuText,
-.container.collapsed .footerText,
-.container.collapsed .closeButton {
-  display: none;
-}
-.container.collapsed .menuItem {
-  justify-content: center;
-  padding: 20px 0;
-}
-.container.collapsed .menuItem:hover {
-  padding-left: 0;
-}
-.container.collapsed .menuIcon {
-  margin-right: 0;
-  font-size: 20px;
+/* Responsivo / Desktop Colapsado */
+@media (min-width: 768px) {
+  .container {
+    transform: translateX(0); /* Sempre visível em desktop se desejar */
+    position: fixed;
+    border-right: 1px solid #222;
+  }
+  
+  .container.collapsed {
+    width: 80px;
+  }
+  
+  .container.collapsed .profileSection {
+    padding: 20px 10px;
+    text-align: center;
+  }
+  
+  .container.collapsed .userName,
+  .container.collapsed .userEmail,
+  .container.collapsed .menuText,
+  .container.collapsed .footerText {
+    display: none;
+  }
+  
+  .container.collapsed .menuItem {
+    justify-content: center;
+    padding: 16px;
+  }
+  
+  .container.collapsed .menuIcon {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  .collapseButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid #222;
+    border-radius: 4px;
+    color: #666;
+    padding: 10px;
+    margin-bottom: 12px;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  .collapseButton:hover {
+    border-color: #444;
+    color: #FFF;
+    background: #0F0F0F;
+  }
 }
