@@ -1,0 +1,120 @@
+2026-02-27 16:58:46,759 - app - INFO - [run.py:90] - BETTING MANAGEMENT APPLICATION starting in development mode
+2026-02-27 16:58:46,844 - app - ERROR - [run.py:97] - Failed to create tables: (psycopg2.OperationalError) 
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-02-27 16:58:46,845 - app - INFO - [run.py:419] - ============================================================
+2026-02-27 16:58:46,845 - app - INFO - [run.py:420] - BETTING MANAGEMENT APPLICATION STARTUP
+2026-02-27 16:58:46,846 - app - INFO - [run.py:421] - Started at: 2026-02-27 16:58:46
+2026-02-27 16:58:46,847 - app - INFO - [run.py:422] - Environment: DEVELOPMENT
+2026-02-27 16:58:46,848 - app - INFO - [run.py:423] - Python: 3.10.8
+2026-02-27 16:58:46,849 - app - INFO - [run.py:424] - Flask: v1
+2026-02-27 16:58:46,850 - app - INFO - [run.py:425] - Database: POSTGRESQL
+2026-02-27 16:58:46,850 - app - INFO - [run.py:426] - ============================================================
+2026-02-27 16:58:46,851 - app - INFO - [run.py:441] - Server starting on 127.0.0.1:5000
+2026-02-27 16:58:46,851 - app - INFO - [run.py:442] - Debug mode: ON
+2026-02-27 16:58:46,852 - app - INFO - [run.py:443] - Security features: DEVELOPMENT
+2026-02-27 16:58:48,237 - app - INFO - [run.py:90] - BETTING MANAGEMENT APPLICATION starting in development mode
+2026-02-27 16:58:48,313 - app - ERROR - [run.py:97] - Failed to create tables: (psycopg2.OperationalError) 
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-02-27 16:58:48,314 - app - INFO - [run.py:419] - ============================================================
+2026-02-27 16:58:48,314 - app - INFO - [run.py:420] - BETTING MANAGEMENT APPLICATION STARTUP
+2026-02-27 16:58:48,315 - app - INFO - [run.py:421] - Started at: 2026-02-27 16:58:48
+2026-02-27 16:58:48,316 - app - INFO - [run.py:422] - Environment: DEVELOPMENT
+2026-02-27 16:58:48,317 - app - INFO - [run.py:423] - Python: 3.10.8
+2026-02-27 16:58:48,318 - app - INFO - [run.py:424] - Flask: v1
+2026-02-27 16:58:48,319 - app - INFO - [run.py:425] - Database: POSTGRESQL
+2026-02-27 16:58:48,319 - app - INFO - [run.py:426] - ============================================================
+2026-02-27 16:58:48,320 - app - INFO - [run.py:441] - Server starting on 127.0.0.1:5000
+2026-02-27 16:58:48,321 - app - INFO - [run.py:442] - Debug mode: ON
+2026-02-27 16:58:48,321 - app - INFO - [run.py:443] - Security features: DEVELOPMENT
+2026-02-27 17:01:52,840 - app - INFO - [run.py:400] - Received signal 2, shutting down gracefully...
+2026-02-27 17:01:52,841 - app - INFO - [run.py:490] - Performing cleanup...
+2026-02-27 17:01:52,842 - app - INFO - [run.py:497] - Application shutdown complete
+2026-02-27 17:01:53,005 - app - INFO - [run.py:400] - Received signal 2, shutting down gracefully...
+2026-02-27 17:01:53,006 - app - INFO - [run.py:490] - Performing cleanup...
+2026-02-27 17:01:53,007 - app - INFO - [run.py:497] - Application shutdown complete
+2026-02-27 17:01:55,109 - app - INFO - [run.py:90] - BETTING MANAGEMENT APPLICATION starting in development mode
+2026-02-27 17:01:55,500 - app - INFO - [run.py:95] - Database tables verified/created
+2026-02-27 17:01:55,500 - app - INFO - [run.py:419] - ============================================================
+2026-02-27 17:01:55,501 - app - INFO - [run.py:420] - BETTING MANAGEMENT APPLICATION STARTUP
+2026-02-27 17:01:55,502 - app - INFO - [run.py:421] - Started at: 2026-02-27 17:01:55
+2026-02-27 17:01:55,502 - app - INFO - [run.py:422] - Environment: DEVELOPMENT
+2026-02-27 17:01:55,503 - app - INFO - [run.py:423] - Python: 3.10.8
+2026-02-27 17:01:55,504 - app - INFO - [run.py:424] - Flask: v1
+2026-02-27 17:01:55,504 - app - INFO - [run.py:425] - Database: POSTGRESQL
+2026-02-27 17:01:55,505 - app - INFO - [run.py:426] - ============================================================
+2026-02-27 17:01:55,505 - app - INFO - [run.py:441] - Server starting on 127.0.0.1:5000
+2026-02-27 17:01:55,506 - app - INFO - [run.py:442] - Debug mode: ON
+2026-02-27 17:01:55,506 - app - INFO - [run.py:443] - Security features: DEVELOPMENT
+2026-02-27 17:01:56,744 - app - INFO - [run.py:90] - BETTING MANAGEMENT APPLICATION starting in development mode
+2026-02-27 17:01:57,096 - app - INFO - [run.py:95] - Database tables verified/created
+2026-02-27 17:01:57,097 - app - INFO - [run.py:419] - ============================================================
+2026-02-27 17:01:57,098 - app - INFO - [run.py:420] - BETTING MANAGEMENT APPLICATION STARTUP
+2026-02-27 17:01:57,099 - app - INFO - [run.py:421] - Started at: 2026-02-27 17:01:57
+2026-02-27 17:01:57,099 - app - INFO - [run.py:422] - Environment: DEVELOPMENT
+2026-02-27 17:01:57,100 - app - INFO - [run.py:423] - Python: 3.10.8
+2026-02-27 17:01:57,101 - app - INFO - [run.py:424] - Flask: v1
+2026-02-27 17:01:57,102 - app - INFO - [run.py:425] - Database: POSTGRESQL
+2026-02-27 17:01:57,103 - app - INFO - [run.py:426] - ============================================================
+2026-02-27 17:01:57,104 - app - INFO - [run.py:441] - Server starting on 127.0.0.1:5000
+2026-02-27 17:01:57,105 - app - INFO - [run.py:442] - Debug mode: ON
+2026-02-27 17:01:57,105 - app - INFO - [run.py:443] - Security features: DEVELOPMENT
+2026-02-27 17:02:36,825 - app - INFO - [run.py:490] - Performing cleanup...
+2026-02-27 17:02:36,825 - app - INFO - [run.py:497] - Application shutdown complete
+2026-02-27 17:02:38,277 - app - INFO - [run.py:90] - BETTING MANAGEMENT APPLICATION starting in development mode
+2026-02-27 17:02:38,606 - app - INFO - [run.py:95] - Database tables verified/created
+2026-02-27 17:02:38,607 - app - INFO - [run.py:419] - ============================================================
+2026-02-27 17:02:38,607 - app - INFO - [run.py:420] - BETTING MANAGEMENT APPLICATION STARTUP
+2026-02-27 17:02:38,608 - app - INFO - [run.py:421] - Started at: 2026-02-27 17:02:38
+2026-02-27 17:02:38,609 - app - INFO - [run.py:422] - Environment: DEVELOPMENT
+2026-02-27 17:02:38,609 - app - INFO - [run.py:423] - Python: 3.10.8
+2026-02-27 17:02:38,610 - app - INFO - [run.py:424] - Flask: v1
+2026-02-27 17:02:38,611 - app - INFO - [run.py:425] - Database: POSTGRESQL
+2026-02-27 17:02:38,612 - app - INFO - [run.py:426] - ============================================================
+2026-02-27 17:02:38,612 - app - INFO - [run.py:441] - Server starting on 127.0.0.1:5000
+2026-02-27 17:02:38,613 - app - INFO - [run.py:442] - Debug mode: ON
+2026-02-27 17:02:38,614 - app - INFO - [run.py:443] - Security features: DEVELOPMENT
+2026-02-27 17:03:24,537 - app - INFO - [run.py:490] - Performing cleanup...
+2026-02-27 17:03:24,538 - app - INFO - [run.py:497] - Application shutdown complete
+2026-02-27 17:03:26,463 - app - INFO - [run.py:490] - Performing cleanup...
+2026-02-27 17:03:26,463 - app - INFO - [run.py:497] - Application shutdown complete
+2026-02-27 17:05:39,023 - app - INFO - [run.py:90] - BETTING MANAGEMENT APPLICATION starting in development mode
+2026-02-27 17:05:39,373 - app - INFO - [run.py:95] - Database tables verified/created
+2026-02-27 17:05:39,374 - app - INFO - [run.py:419] - ============================================================
+2026-02-27 17:05:39,375 - app - INFO - [run.py:420] - BETTING MANAGEMENT APPLICATION STARTUP
+2026-02-27 17:05:39,375 - app - INFO - [run.py:421] - Started at: 2026-02-27 17:05:39
+2026-02-27 17:05:39,376 - app - INFO - [run.py:422] - Environment: DEVELOPMENT
+2026-02-27 17:05:39,377 - app - INFO - [run.py:423] - Python: 3.10.8
+2026-02-27 17:05:39,377 - app - INFO - [run.py:424] - Flask: v1
+2026-02-27 17:05:39,378 - app - INFO - [run.py:425] - Database: POSTGRESQL
+2026-02-27 17:05:39,378 - app - INFO - [run.py:426] - ============================================================
+2026-02-27 17:05:39,379 - app - INFO - [run.py:441] - Server starting on 127.0.0.1:5000
+2026-02-27 17:05:39,380 - app - INFO - [run.py:442] - Debug mode: ON
+2026-02-27 17:05:39,381 - app - INFO - [run.py:443] - Security features: DEVELOPMENT
+2026-02-27 17:05:40,831 - app - INFO - [run.py:90] - BETTING MANAGEMENT APPLICATION starting in development mode
+2026-02-27 17:05:41,164 - app - INFO - [run.py:95] - Database tables verified/created
+2026-02-27 17:05:41,165 - app - INFO - [run.py:419] - ============================================================
+2026-02-27 17:05:41,166 - app - INFO - [run.py:420] - BETTING MANAGEMENT APPLICATION STARTUP
+2026-02-27 17:05:41,166 - app - INFO - [run.py:421] - Started at: 2026-02-27 17:05:41
+2026-02-27 17:05:41,167 - app - INFO - [run.py:422] - Environment: DEVELOPMENT
+2026-02-27 17:05:41,168 - app - INFO - [run.py:423] - Python: 3.10.8
+2026-02-27 17:05:41,168 - app - INFO - [run.py:424] - Flask: v1
+2026-02-27 17:05:41,169 - app - INFO - [run.py:425] - Database: POSTGRESQL
+2026-02-27 17:05:41,170 - app - INFO - [run.py:426] - ============================================================
+2026-02-27 17:05:41,171 - app - INFO - [run.py:441] - Server starting on 127.0.0.1:5000
+2026-02-27 17:05:41,172 - app - INFO - [run.py:442] - Debug mode: ON
+2026-02-27 17:05:41,173 - app - INFO - [run.py:443] - Security features: DEVELOPMENT
+2026-02-27 17:06:05,641 - app - INFO - [run.py:490] - Performing cleanup...
+2026-02-27 17:06:05,642 - app - INFO - [run.py:497] - Application shutdown complete
+2026-02-27 17:06:07,031 - app - INFO - [run.py:90] - BETTING MANAGEMENT APPLICATION starting in development mode
+2026-02-27 17:06:07,369 - app - INFO - [run.py:95] - Database tables verified/created
+2026-02-27 17:06:07,370 - app - INFO - [run.py:419] - ============================================================
+2026-02-27 17:06:07,371 - app - INFO - [run.py:420] - BETTING MANAGEMENT APPLICATION STARTUP
+2026-02-27 17:06:07,371 - app - INFO - [run.py:421] - Started at: 2026-02-27 17:06:07
+2026-02-27 17:06:07,372 - app - INFO - [run.py:422] - Environment: DEVELOPMENT
+2026-02-27 17:06:07,373 - app - INFO - [run.py:423] - Python: 3.10.8
+2026-02-27 17:06:07,374 - app - INFO - [run.py:424] - Flask: v1
+2026-02-27 17:06:07,375 - app - INFO - [run.py:425] - Database: POSTGRESQL
+2026-02-27 17:06:07,376 - app - INFO - [run.py:426] - ============================================================
+2026-02-27 17:06:07,377 - app - INFO - [run.py:441] - Server starting on 127.0.0.1:5000
+2026-02-27 17:06:07,377 - app - INFO - [run.py:442] - Debug mode: ON
+2026-02-27 17:06:07,378 - app - INFO - [run.py:443] - Security features: DEVELOPMENT

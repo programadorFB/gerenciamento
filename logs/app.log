@@ -1,0 +1,26 @@
+2026-02-27 17:32:56,105 - app - INFO - [run.py:90] - BETTING MANAGEMENT APPLICATION starting in development mode
+2026-02-27 17:32:56,421 - app - INFO - [run.py:95] - Database tables verified/created
+2026-02-27 17:32:56,422 - app - INFO - [run.py:419] - ============================================================
+2026-02-27 17:32:56,423 - app - INFO - [run.py:420] - BETTING MANAGEMENT APPLICATION STARTUP
+2026-02-27 17:32:56,423 - app - INFO - [run.py:421] - Started at: 2026-02-27 17:32:56
+2026-02-27 17:32:56,424 - app - INFO - [run.py:422] - Environment: DEVELOPMENT
+2026-02-27 17:32:56,424 - app - INFO - [run.py:423] - Python: 3.10.8
+2026-02-27 17:32:56,425 - app - INFO - [run.py:424] - Flask: v1
+2026-02-27 17:32:56,425 - app - INFO - [run.py:425] - Database: POSTGRESQL
+2026-02-27 17:32:56,426 - app - INFO - [run.py:426] - ============================================================
+2026-02-27 17:32:56,427 - app - INFO - [run.py:441] - Server starting on 127.0.0.1:5000
+2026-02-27 17:32:56,427 - app - INFO - [run.py:442] - Debug mode: ON
+2026-02-27 17:32:56,428 - app - INFO - [run.py:443] - Security features: DEVELOPMENT
+2026-02-27 17:32:57,605 - app - INFO - [run.py:90] - BETTING MANAGEMENT APPLICATION starting in development mode
+2026-02-27 17:32:57,945 - app - INFO - [run.py:95] - Database tables verified/created
+2026-02-27 17:32:57,946 - app - INFO - [run.py:419] - ============================================================
+2026-02-27 17:32:57,946 - app - INFO - [run.py:420] - BETTING MANAGEMENT APPLICATION STARTUP
+2026-02-27 17:32:57,947 - app - INFO - [run.py:421] - Started at: 2026-02-27 17:32:57
+2026-02-27 17:32:57,948 - app - INFO - [run.py:422] - Environment: DEVELOPMENT
+2026-02-27 17:32:57,948 - app - INFO - [run.py:423] - Python: 3.10.8
+2026-02-27 17:32:57,949 - app - INFO - [run.py:424] - Flask: v1
+2026-02-27 17:32:57,949 - app - INFO - [run.py:425] - Database: POSTGRESQL
+2026-02-27 17:32:57,950 - app - INFO - [run.py:426] - ============================================================
+2026-02-27 17:32:57,950 - app - INFO - [run.py:441] - Server starting on 127.0.0.1:5000
+2026-02-27 17:32:57,951 - app - INFO - [run.py:442] - Debug mode: ON
+2026-02-27 17:32:57,952 - app - INFO - [run.py:443] - Security features: DEVELOPMENT

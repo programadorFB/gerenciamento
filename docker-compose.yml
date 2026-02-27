@@ -1,0 +1,37 @@
+services:
+  gerenciamento_banca_frontend:
+    build:
+      context: ./gerenciamento/frontend/
+      args:
+        VITE_API_URL: "gerenciamento_banca_backend:5004"
+    container_name: gerenciamento_banca_frontend
+    restart: always
+    ports:
+      - "84:84"
+    networks:
+      - rede_externa
+
+  gerenciamento_banca_backend:
+    build:
+      context: ./gerenciamento/backend/
+    container_name: gerenciamento_banca_backend
+    restart: always
+    ports:
+      - "5004:5004"
+    env_file:
+      - ./gerenciamento/backend/.env
+    networks:
+      - rede_externa
+      
+  # cloudflared:
+  #   container_name: gerenciamento_tunnel
+  #   image: cloudflare/cloudflared:latest
+  #   command: tunnel --no-autoupdate run --token eyJhIjoiOGQ2YTZmYWY4YzMwM2EzNDU2YzNlZDUwMGYzNjBlNDciLCJ0IjoiYzYwMTUzMTYtNmIzNC00MzE5LThlNzEtNTZlZjQ1MjdmZjBhIiwicyI6Ik9EQTJabUZqTVdZdE4yTmxOQzAwT0dZNUxUazJPR1F0TWpSaU5EaGxPR1EzTWpFdyJ9
+  #   restart: unless-stopped
+  #   networks:
+  #     - rede_externa
+
+networks:
+  rede_externa:
+    external: true
+    name: rede_externa

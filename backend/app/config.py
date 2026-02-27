@@ -144,10 +144,7 @@ class DevelopmentConfig(Config):
     ENABLE_BETTING_SESSIONS = True
     
     # PostgreSQL para desenvolvimento
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        'DATABASE_URL',
-        'postgresql://postgres:1234@localhost:5432/betting_tracker'
-    )
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
 
 class TestingConfig(Config):
     """Testing configuration"""
@@ -155,9 +152,13 @@ class TestingConfig(Config):
     DEBUG = True
     
     # PostgreSQL para testes (com database separado)
+    # SQLALCHEMY_DATABASE_URI = os.getenv(
+    #     'TEST_DATABASE_URL',
+    #     'postgresql://postgres:1234@localhost:5432/betting_tracker_test'
+    # )
     SQLALCHEMY_DATABASE_URI = os.getenv(
         'TEST_DATABASE_URL',
-        'postgresql://postgres:1234@localhost:5432/betting_tracker_test'
+        'postgresql://postgres:1234@76.13.174.229:5432/betting_tracker_test'
     )
     
     # Disable external services during testing
