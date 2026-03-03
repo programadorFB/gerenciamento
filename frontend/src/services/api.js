@@ -2,15 +2,10 @@
 import axios from 'axios';
 
 const getBaseURL = () => {
-  if (import.meta.env.DEV) {
-    return 'https://area-backend.sortehub.online';
-  } else {
-    return 'https://area-backend.sortehub.online';
-  }
+  return import.meta.env.VITE_API_URL;
 };
-const STATIC_BASE_URL = 'https://area-backend.sortehub.online';
-// const API_BASE_URL = getBaseURL();
-const API_BASE_URL = "http://localhost:5000"
+
+const API_BASE_URL = getBaseURL();
 
 const api = axios.create({
   baseURL: API_BASE_URL,

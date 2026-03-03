@@ -16,6 +16,7 @@ class Config:
     
     # === SECURITY CONFIGURATION ===
     SECRET_KEY = os.getenv('SECRET_KEY', 'your-super-secret-key-change-in-production')
+    FRONTEND_URL = os.getenv('FRONTEND_URL')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', SECRET_KEY)
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=30)
     BCRYPT_LOG_ROUNDS = 13
@@ -28,7 +29,7 @@ class Config:
     
     # === CORS CONFIGURATION ===
     CORS_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:5173,http://localhost:19006,https://gerenciamento-1.onrender.com/').split(',')
-    
+    CORS_ORIGINS.append(FRONTEND_URL)  # Adiciona FRONTEND_URL às origens permitidas
     # === BETTING APP SPECIFIC CONFIGURATION ===
     
     # Default betting profile settings

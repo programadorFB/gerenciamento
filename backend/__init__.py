@@ -42,7 +42,10 @@ def create_app(config_name=None):
     # --- FIM DA CONFIGURAÇÃO DE LOGGING ---
 
     # Aplicar CORS após carregar config para pegar a origem certa
+    
     origins = app.config.get("CORS_ORIGINS", ["http://localhost:5173","https://gerenciamento-1.onrender.com","https://area-backend.sortehub.online"])
+    origins.append(os.environ.get('FRONTEND_URL'))  # Adiciona FRONTEND_URL 
+    print(f"Configuring CORS with origins: {origins}")
     CORS(app, origins=origins, supports_credentials=True)
 
     db.init_app(app)
