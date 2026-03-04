@@ -3,7 +3,7 @@ services:
     build:
       context: ./frontend/
       args:
-        VITE_API_URL: "https://gerenciamento_api_vps.sortehub.online"
+        VITE_API_URL: "https://appgerenciamento-api-smartanalise.sortehub.online"
     container_name: gerenciamento_banca_frontend
     restart: unless-stopped
     ports:
