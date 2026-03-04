@@ -28,7 +28,7 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(days=30)
     
     # === CORS CONFIGURATION ===
-    CORS_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:5173,http://localhost:19006,https://gerenciamento-1.onrender.com/').split(',')
+    CORS_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:5173,http://localhost:19006,https://gerenciamento-1.onrender.com/,https://appgerenciamento.smartanalise.com.br/').split(',')
     CORS_ORIGINS.append(FRONTEND_URL)  # Adiciona FRONTEND_URL às origens permitidas
     # === BETTING APP SPECIFIC CONFIGURATION ===
     
