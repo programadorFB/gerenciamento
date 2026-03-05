@@ -9,8 +9,8 @@ services:
     ports:
       - "84:84"
     networks:
+      - interna
       - rede_externa
-
   gerenciamento_banca_backend:
     build:
       context: ./backend/
@@ -19,17 +19,21 @@ services:
     ports:
       - "5004:5004"
     networks:
+      - interna
       - rede_externa
-      
   cloudflared:
     container_name: gerenciamento_tunnel
     image: cloudflare/cloudflared:latest
     command: tunnel --no-autoupdate run --token eyJhIjoiOGQ2YTZmYWY4YzMwM2EzNDU2YzNlZDUwMGYzNjBlNDciLCJ0IjoiYzYwMTUzMTYtNmIzNC00MzE5LThlNzEtNTZlZjQ1MjdmZjBhIiwicyI6Ik9EQTJabUZqTVdZdE4yTmxOQzAwT0dZNUxUazJPR1F0TWpSaU5EaGxPR1EzTWpFdyJ9
     restart: unless-stopped
+    dns:
+      - 127.0.0.11
     networks:
-      - rede_externa
-
+      interna:
+      rede_externa:
 networks:
+  interna:
+    driver: bridge
   rede_externa:
     external: true
     name: rede_externa
