@@ -7,6 +7,9 @@ for different environments (development, testing, production).
 """
 import os
 import sys
+if sys.platform == 'win32':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 import click
 import logging
 from datetime import datetime, timedelta
@@ -15,6 +18,16 @@ from logging.handlers import RotatingFileHandler
 
 # Add the app directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+# Carrega .env.dev se existir (desenvolvimento local), senão carrega .env (produção)
+from dotenv import load_dotenv
+_base_dir = os.path.dirname(os.path.abspath(__file__))
+_env_dev = os.path.join(_base_dir, '.env.dev')
+_env_prod = os.path.join(_base_dir, '.env')
+if os.path.exists(_env_dev):
+    load_dotenv(_env_dev, override=True)
+elif os.path.exists(_env_prod):
+    load_dotenv(_env_prod, override=True)
 
 from app import create_app, db
 

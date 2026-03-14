@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify
 from . import db
 from .models import User, Transaction, BettingProfile, Objective, BettingSession, BettingStats
 from sqlalchemy import desc, func, and_, extract
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from datetime import datetime, date, timedelta
 import uuid
 import hashlib
@@ -232,7 +232,7 @@ def register():
     # ✅ CORREÇÃO: A banca inicial não deve ser zero ou negativa
     try:
         initial_bank_decimal = Decimal(str(initial_bank))
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, InvalidOperation):
         return jsonify({'error': 'Valor da banca inicial inválido'}), 400
     
     if initial_bank_decimal <= 0:
@@ -310,8 +310,8 @@ def register():
         
     except Exception as e:
         db.session.rollback()
-        # Isso imprimirá o erro no console do servidor, o que ajuda na depuração
-        print(f"❌ Erro ao registrar usuário: {str(e)}")
+        import logging
+        logging.getLogger(__name__).error(f"Erro ao registrar usuário: {str(e)}", exc_info=True)
         return jsonify({'error': 'Erro interno do servidor'}), 500
 
 @main.route('/auth/login', methods=['POST'])
@@ -1320,7 +1320,7 @@ def get_risk_analysis(current_user_id):
     risk_status = 'safe'
     if stop_loss > 0 and current_balance <= stop_loss:
         risk_status = 'stop_loss_hit'
-    elif stop_loss > 0 and stop_loss_distance and stop_loss_distance < (initial_bank * 0.1):
+    elif stop_loss > 0 and stop_loss_distance and stop_loss_distance < (initial_bank * Decimal('0.1')):
         risk_status = 'high_risk'
     elif profit_target > 0 and current_balance >= target_balance:
         risk_status = 'target_achieved'

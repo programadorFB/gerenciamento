@@ -16,7 +16,7 @@ class User(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    profile_photo = db.Column(db.String(500), nullable=True)
+    profile_photo = db.Column(db.String(50), nullable=True)
     
     # ✅ NOVO CAMPO PARA RESET AUTOMÁTICO
     last_bank_reset = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
@@ -117,7 +117,7 @@ class Objective(db.Model):
     
     # Configuration
     category = db.Column(db.String(50))  # withdrawal, equipment, vacation, etc
-    color = db.Column(db.String(7), default='#2f00ffff')
+    color = db.Column(db.String(9), default='#2f00ffff')
     icon_name = db.Column(db.String(50), default='flag')
     
     # Metadata
