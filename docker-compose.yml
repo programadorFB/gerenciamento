@@ -3,7 +3,7 @@ services:
     build:
       context: ./frontend/
       args:
-        VITE_API_URL: "https://appgerenciamento-api-smartanalise.sortehub.online"
+        VITE_API_URL: "https://appgerenciamento-api.smartanalise.com.br"
     container_name: gerenciamento_banca_frontend
     restart: unless-stopped
     ports:
@@ -26,8 +26,6 @@ services:
     image: cloudflare/cloudflared:latest
     command: tunnel --no-autoupdate run --token eyJhIjoiOGQ2YTZmYWY4YzMwM2EzNDU2YzNlZDUwMGYzNjBlNDciLCJ0IjoiYzYwMTUzMTYtNmIzNC00MzE5LThlNzEtNTZlZjQ1MjdmZjBhIiwicyI6Ik9EQTJabUZqTVdZdE4yTmxOQzAwT0dZNUxUazJPR1F0TWpSaU5EaGxPR1EzTWpFdyJ9
     restart: unless-stopped
-    dns:
-      - 127.0.0.11
     networks:
       interna:
       rede_externa:
