@@ -20,6 +20,20 @@ services:
       - default
       - infra
 
+  tipster_frontend:
+    build:
+      context: .
+      args:
+        VITE_API_URL: ${VITE_API_URL:-https://area-backend.sortehub.online}
+    container_name: tipster_frontend
+    restart: unless-stopped
+    ports:
+      - "91:91"
+    depends_on:
+      - tipster_backend
+    networks:
+      - default
+
   tipster_tunnel:
     image: cloudflare/cloudflared:latest
     container_name: tipster_tunnel
@@ -29,6 +43,7 @@ services:
       TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
     depends_on:
       - tipster_backend
+      - tipster_frontend
     networks:
       - default
 
@@ -40,4 +55,4 @@ networks:
     driver: bridge
   infra:
     external: true
-    name: ${INFRA_NETWORK:-backend_default}
+    name: ${INFRA_NETWORK:-rede_externa}
