@@ -13,6 +13,6 @@ COPY . .
 
 RUN mkdir -p uploads logs
 
-EXPOSE 5004
+EXPOSE 5001
 
-CMD ["gunicorn", "run:app", "--bind", "0.0.0.0:5004", "--workers", "4", "--timeout", "120", "--access-logfile", "-"]
+CMD ["gunicorn", "run:app", "--bind", "0.0.0.0:5001", "--workers", "4", "--timeout", "120", "--access-logfile", "-"]

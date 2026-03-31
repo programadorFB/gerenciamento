@@ -1,7 +1,7 @@
 services:
-  gerenciamento_banca_backend:
+  tipster_backend:
     build: ./backend
-    container_name: gerenciamento_banca_backend
+    container_name: tipster_backend
     restart: unless-stopped
     environment:
       FLASK_ENV: production
@@ -15,20 +15,20 @@ services:
     volumes:
       - uploads:/app/uploads
     ports:
-      - "5004:5004"
+      - "5001:5001"
     networks:
       - default
       - infra
 
-  gerenciamento_tunnel:
+  tipster_tunnel:
     image: cloudflare/cloudflared:latest
-    container_name: gerenciamento_tunnel
+    container_name: tipster_tunnel
     restart: unless-stopped
     command: tunnel run
     environment:
       TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
     depends_on:
-      - gerenciamento_banca_backend
+      - tipster_backend
     networks:
       - default
 
