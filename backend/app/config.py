@@ -27,7 +27,7 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(days=30)
     
     # === CORS CONFIGURATION ===
-    CORS_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:5173,http://localhost:19006,https://gerenciamento-1.onrender.com/').split(',')
+    CORS_ORIGINS = [o.strip().rstrip('/') for o in os.getenv('CORS_ORIGINS', 'http://localhost:5173,http://localhost:19006,https://gerenciamento-1.onrender.com').split(',')]
     
     # === BETTING APP SPECIFIC CONFIGURATION ===
     

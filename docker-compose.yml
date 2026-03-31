@@ -1,0 +1,43 @@
+services:
+  gerenciamento_banca_backend:
+    build: ./backend
+    container_name: gerenciamento_banca_backend
+    restart: unless-stopped
+    environment:
+      FLASK_ENV: production
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-1234}@postgres_principal:5432/betting_tracker
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-me-in-production}
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://gerenciamento.sortehub.online,https://gerenciamento-1.onrender.com,http://localhost:5173}
+    volumes:
+      - uploads:/app/uploads
+    ports:
+      - "5004:5004"
+    networks:
+      - default
+      - infra
+
+  gerenciamento_tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: gerenciamento_tunnel
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - gerenciamento_banca_backend
+    networks:
+      - default
+
+volumes:
+  uploads:
+
+networks:
+  default:
+    driver: bridge
+  infra:
+    external: true
+    name: ${INFRA_NETWORK:-backend_default}

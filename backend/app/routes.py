@@ -580,7 +580,7 @@ def create_transaction(current_user_id):
         amount=amount,
         category=data.get('category'),
         description=data.get('description'),
-        is_initial_bank=data.get('isInitialBank', False),
+        is_initial_bank=data.get('is_initial_bank', data.get('isInitialBank', False)),
         betting_session_id=data.get('bettingSessionId'),
         game_type=data.get('gameType'),
         balance_before=current_balance,
@@ -717,10 +717,10 @@ def update_transaction(current_user_id, transaction_id):
                     'error': 'Valor inválido'
                 }), 400
         
-        if 'type' in data and data['type'] not in ['deposit', 'withdraw']:
+        if 'type' in data and data['type'] not in ['deposit', 'withdraw', 'gains', 'losses']:
             return jsonify({
-                'success': False, 
-                'error': 'Tipo deve ser "deposit" ou "withdraw"'
+                'success': False,
+                'error': 'Tipo deve ser "deposit", "withdraw", "gains" ou "losses"'
             }), 400
         
         if 'category' in data and not data['category'].strip():

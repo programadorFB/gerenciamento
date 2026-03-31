@@ -1,15 +1,8 @@
 // Enhanced api.js ported for React-Vite with unified transaction system support
 import axios from 'axios';
 
-const getBaseURL = () => {
-  if (import.meta.env.DEV) {
-    return 'https://area-backend.sortehub.online';
-  } else {
-    return 'https://area-backend.sortehub.online';
-  }
-};
-const STATIC_BASE_URL = 'https://area-backend.sortehub.online';
-const API_BASE_URL = getBaseURL();
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://area-backend.sortehub.online';
+const STATIC_BASE_URL = API_BASE_URL;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
