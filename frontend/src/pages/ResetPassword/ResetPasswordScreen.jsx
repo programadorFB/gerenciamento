@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { FaSpinner, FaEye, FaEyeSlash, FaCheck } from 'react-icons/fa';
-import { GiHearts, GiDiamonds, GiClubs, GiSpades } from 'react-icons/gi';
 
 import { useAuth } from '../../contexts/AuthContext';
 import apiService from '../../services/api';
+import logo from '../../assets/logo.png';
 import styles from '../Login/LoginScreen.module.css';
 
 const ResetPasswordScreen = () => {
@@ -78,117 +77,111 @@ const ResetPasswordScreen = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.scrollContainer}>
-                <div className={styles.loginCardWrapper}>
-                    <div className={styles.form}>
-                        <div className={styles.header}>
-                            <div className={styles.suitIcons}>
-                                <GiSpades />
-                                <GiHearts />
-                                <GiDiamonds />
-                                <GiClubs />
-                            </div>
-                            <h1 className={styles.title}>FUTEBOL STUDIO</h1>
-                            <p className={styles.subtitle}>NOVA SENHA</p>
-                        </div>
-
-                        {verifying && (
-                            <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                                <FaSpinner className={styles.spinner} />
-                                <p style={{ marginTop: 12 }}>Verificando link...</p>
-                            </div>
-                        )}
-
-                        {!verifying && !tokenValid && (
-                            <div style={{ width: '100%' }}>
-                                <div className={styles.errorContainer}>{tokenError}</div>
-                                <button
-                                    type="button"
-                                    onClick={() => navigate('/login')}
-                                    className={styles.submitButton}
-                                >
-                                    <div className={styles.goldGradient}>VOLTAR AO LOGIN</div>
-                                </button>
-                            </div>
-                        )}
-
-                        {!verifying && tokenValid && success && (
-                            <div style={{ textAlign: 'center', width: '100%' }}>
-                                <div className={styles.successIcon}><FaCheck /></div>
-                                <h2 style={{ margin: '12px 0' }}>Senha alterada!</h2>
-                                <p style={{ marginBottom: 20 }}>Você já pode entrar com sua nova senha.</p>
-                                <button
-                                    type="button"
-                                    onClick={() => navigate('/login')}
-                                    className={styles.submitButton}
-                                >
-                                    <div className={styles.goldGradient}>IR PARA LOGIN</div>
-                                </button>
-                            </div>
-                        )}
-
-                        {!verifying && tokenValid && !success && (
-                            <form style={{ width: '100%' }} onSubmit={handleSubmit}>
-                                {tokenEmail && (
-                                    <p style={{ textAlign: 'center', marginBottom: 16, opacity: 0.8 }}>
-                                        Redefinindo senha de <strong>{tokenEmail}</strong>
-                                    </p>
-                                )}
-
-                                {error && <div className={styles.errorContainer}>{error}</div>}
-
-                                <div className={styles.inputGroup}>
-                                    <label htmlFor="password">NOVA SENHA</label>
-                                    <div className={styles.inputWrapper}>
-                                        <input
-                                            id="password"
-                                            type={showPassword ? 'text' : 'password'}
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            placeholder=".........."
-                                            required
-                                            minLength="6"
-                                            autoFocus
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            className={styles.passwordToggle}
-                                        >
-                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className={styles.inputGroup}>
-                                    <label htmlFor="confirmPassword">CONFIRMAR SENHA</label>
-                                    <div className={styles.inputWrapper}>
-                                        <input
-                                            id="confirmPassword"
-                                            type={showPassword ? 'text' : 'password'}
-                                            value={confirmPassword}
-                                            onChange={(e) => setConfirmPassword(e.target.value)}
-                                            placeholder=".........."
-                                            required
-                                            minLength="6"
-                                        />
-                                    </div>
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    className={styles.submitButton}
-                                    disabled={submitting || password.length < 6 || password !== confirmPassword}
-                                >
-                                    <div className={styles.goldGradient}>
-                                        {submitting ? <FaSpinner className={styles.spinner} /> : 'REDEFINIR SENHA'}
-                                    </div>
-                                </button>
-                            </form>
-                        )}
+            <div className={styles.overlayGradient} />
+            <main className={styles.scrollContainer}>
+                <div className={styles.header}>
+                    <div className={styles.logoContainer}>
+                        <img src={logo} alt="Logo" className={styles.logo} />
                     </div>
+                    <h1>Gerenciamento Premium</h1>
+                    <p>
+                        {verifying && 'Verificando link...'}
+                        {!verifying && !tokenValid && 'Link inválido ou expirado'}
+                        {!verifying && tokenValid && success && 'Senha alterada com sucesso!'}
+                        {!verifying && tokenValid && !success && 'Defina uma nova senha'}
+                    </p>
                 </div>
-            </div>
+
+                {!verifying && !tokenValid && (
+                    <>
+                        <div className={styles.errorContainer}>{tokenError}</div>
+                        <button
+                            type="button"
+                            onClick={() => navigate('/login')}
+                            className={styles.submitButton}
+                        >
+                            <div className={styles.goldGradient}>Voltar ao login</div>
+                        </button>
+                    </>
+                )}
+
+                {!verifying && tokenValid && success && (
+                    <div className={styles.successMessage}>
+                        <div className={styles.successIcon}>✓</div>
+                        <h3>Tudo certo!</h3>
+                        <p>Você já pode entrar com sua nova senha.</p>
+                        <button
+                            type="button"
+                            onClick={() => navigate('/login')}
+                            className={styles.okButton}
+                        >
+                            <div className={styles.goldGradient}>Ir para login</div>
+                        </button>
+                    </div>
+                )}
+
+                {!verifying && tokenValid && !success && (
+                    <>
+                        {tokenEmail && (
+                            <p style={{ textAlign: 'center', margin: '0 0 16px 0', fontSize: 14, color: '#555' }}>
+                                Redefinindo senha de <strong>{tokenEmail}</strong>
+                            </p>
+                        )}
+
+                        {error && <div className={styles.errorContainer}>{error}</div>}
+
+                        <form className={styles.form} onSubmit={handleSubmit}>
+                            <div className={styles.inputGroup}>
+                                <label htmlFor="password">Nova senha</label>
+                                <div className={styles.passwordWrapper}>
+                                    <input
+                                        id="password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="Pelo menos 6 caracteres"
+                                        required
+                                        minLength="6"
+                                        autoFocus
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className={styles.passwordToggle}
+                                    >
+                                        {showPassword ? 'ABC' : '***'}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className={styles.inputGroup}>
+                                <label htmlFor="confirmPassword">Confirmar senha</label>
+                                <div className={styles.passwordWrapper}>
+                                    <input
+                                        id="confirmPassword"
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        placeholder="Repita a nova senha"
+                                        required
+                                        minLength="6"
+                                    />
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                className={styles.submitButton}
+                                disabled={submitting || password.length < 6 || password !== confirmPassword}
+                            >
+                                <div className={styles.goldGradient}>
+                                    {submitting ? 'Salvando...' : 'Redefinir senha'}
+                                </div>
+                            </button>
+                        </form>
+                    </>
+                )}
+            </main>
         </div>
     );
 };
