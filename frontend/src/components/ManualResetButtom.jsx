@@ -307,4 +307,133 @@ export const ManualResetButton = ({ onResetComplete }) => {
       setShowConfirm(false);
     } catch (error) {
       console.error('Erro:', error);
-      alert('Erro ao realizar reset manual');}}}
+      alert('Erro ao realizar reset manual');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (showConfirm) {
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(0, 0, 0, 0.85)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+        padding: '20px'
+      }}>
+        <div style={{
+          background: 'linear-gradient(145deg, #1c1c1e 0%, #2c2c2e 100%)',
+          borderRadius: '20px',
+          padding: '32px',
+          maxWidth: '420px',
+          width: '100%',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
+          border: '1px solid rgba(212, 175, 55, 0.2)',
+          textAlign: 'center'
+        }}>
+          <div style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #d4af37 0%, #f9d971 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 20px',
+            boxShadow: '0 8px 24px rgba(212, 175, 55, 0.3)'
+          }}>
+            <MdAutorenew size={32} color="#1a1a1a" />
+          </div>
+
+          <h3 style={{
+            fontSize: '20px',
+            fontWeight: '700',
+            color: '#e8e8e8',
+            marginBottom: '12px'
+          }}>
+            Resetar Banca?
+          </h3>
+
+          <p style={{
+            fontSize: '14px',
+            color: '#b8b8b8',
+            lineHeight: '1.6',
+            marginBottom: '24px'
+          }}>
+            Seu saldo atual se tornará sua nova banca inicial.
+            Todas as transações anteriores serão arquivadas e um novo ciclo de 30 dias começará.
+          </p>
+
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button
+              onClick={() => setShowConfirm(false)}
+              disabled={loading}
+              style={{
+                flex: 1,
+                padding: '12px',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '12px',
+                color: '#b8b8b8',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleForceReset}
+              disabled={loading}
+              style={{
+                flex: 1,
+                padding: '12px',
+                background: 'linear-gradient(135deg, #d4af37 0%, #f9d971 100%)',
+                border: 'none',
+                borderRadius: '12px',
+                color: '#1a1a1a',
+                fontSize: '14px',
+                fontWeight: '700',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.7 : 1
+              }}
+            >
+              {loading ? 'Resetando...' : 'Confirmar Reset'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      onClick={() => setShowConfirm(true)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        padding: '10px 18px',
+        background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%)',
+        border: '1px solid rgba(212, 175, 55, 0.3)',
+        borderRadius: '12px',
+        color: '#d4af37',
+        fontSize: '13px',
+        fontWeight: '600',
+        cursor: 'pointer',
+        transition: 'all 0.3s ease'
+      }}
+    >
+      <MdAutorenew size={18} />
+      Resetar Banca
+    </button>
+  );
+};

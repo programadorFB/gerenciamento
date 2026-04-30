@@ -190,11 +190,52 @@ def update_user_profile(current_user_id):
                     'error': 'ID de avatar inválido'
                 }), 400
         
+        # 4. Atualizar banca inicial (se enviada)
+        initial_bank_value = data.get('initial_bank')
+        if initial_bank_value is not None:
+            try:
+                new_bank = Decimal(str(initial_bank_value))
+                if new_bank > 0:
+                    # Atualizar transação is_initial_bank
+                    initial_tx = Transaction.query.filter_by(
+                        user_id=current_user_id,
+                        is_initial_bank=True
+                    ).first()
+                    if initial_tx:
+                        initial_tx.amount = new_bank
+                        initial_tx.balance_after = new_bank
+                        initial_tx.updated_at = datetime.utcnow()
+                    else:
+                        # Criar se não existir
+                        new_tx = Transaction(
+                            user_id=current_user_id,
+                            type='deposit',
+                            amount=new_bank,
+                            category='initial_bank',
+                            description='Banca Inicial',
+                            is_initial_bank=True,
+                            balance_before=Decimal('0.00'),
+                            balance_after=new_bank,
+                            date=datetime.utcnow()
+                        )
+                        db.session.add(new_tx)
+
+                    # Sincronizar BettingProfile
+                    active_profile = BettingProfile.query.filter_by(
+                        user_id=current_user_id,
+                        is_active=True
+                    ).first()
+                    if active_profile:
+                        active_profile.initial_balance = new_bank
+                    print(f"✅ Banca inicial atualizada para: {new_bank}")
+            except (ValueError, TypeError, InvalidOperation):
+                pass  # Ignora valor inválido silenciosamente
+
         user.updated_at = datetime.utcnow()
         db.session.commit()
-        
+
         print(f"✅ Perfil atualizado com sucesso para usuário {user.id}")
-        
+
         return jsonify({
             'success': True,
             'message': 'Perfil atualizado com sucesso',
@@ -202,7 +243,8 @@ def update_user_profile(current_user_id):
                 'id': user.id,
                 'name': user.name,
                 'email': user.email,
-                'profile_photo': user.profile_photo
+                'profile_photo': user.profile_photo,
+                'initial_bank': str(_get_user_initial_bank(current_user_id))
             }
         })
         
@@ -345,6 +387,25 @@ def login():
             'initial_bank': str(initial_bank),
             'current_balance': str(current_balance)
         }
+    })
+
+@main.route('/auth/reset-password', methods=['POST'])
+def reset_password():
+    """
+    Solicita reset de senha. Por enquanto sem envio de email,
+    apenas valida que o email existe e retorna sucesso para a UI não quebrar.
+    """
+    data = request.json
+    email = data.get('email', '').strip().lower() if data else ''
+
+    if not email:
+        return jsonify({'success': False, 'error': 'Email é obrigatório'}), 400
+
+    user = User.query.filter_by(email=email).first()
+    # Retorna sucesso mesmo se não encontrar, para não expor quais emails existem
+    return jsonify({
+        'success': True,
+        'message': 'Se o email estiver cadastrado, você receberá instruções para redefinir sua senha.'
     })
 
 # === BETTING PROFILE ROUTES ===
@@ -693,39 +754,85 @@ def update_transaction(current_user_id, transaction_id):
                 'error': 'Transação não encontrada'
             }), 404
         
-        # Não permitir editar transação inicial da banca
-        if transaction.is_initial_bank:
-            return jsonify({
-                'success': False, 
-                'error': 'Não é possível editar a transação inicial da banca'
-            }), 400
-        
         data = request.json
-        
-        # Validações básicas
+
+        # Transação de banca inicial: permitir apenas edição do amount
+        if transaction.is_initial_bank:
+            if 'amount' not in data:
+                return jsonify({
+                    'success': False,
+                    'error': 'Informe o novo valor da banca inicial'
+                }), 400
+            try:
+                new_amount = Decimal(str(data['amount']))
+                if new_amount <= 0:
+                    return jsonify({
+                        'success': False,
+                        'error': 'Valor deve ser maior que zero'
+                    }), 400
+            except (ValueError, TypeError, InvalidOperation):
+                return jsonify({
+                    'success': False,
+                    'error': 'Valor inválido'
+                }), 400
+
+            transaction.amount = new_amount
+            transaction.balance_after = new_amount
+            if 'description' in data:
+                transaction.description = data['description']
+            transaction.updated_at = datetime.utcnow()
+
+            # Manter BettingProfile sincronizado
+            active_profile = BettingProfile.query.filter_by(
+                user_id=current_user_id,
+                is_active=True
+            ).first()
+            if active_profile:
+                active_profile.initial_balance = new_amount
+
+            db.session.commit()
+
+            return jsonify({
+                'success': True,
+                'message': 'Banca inicial atualizada com sucesso',
+                'data': {
+                    'id': transaction.id,
+                    'type': transaction.type,
+                    'amount': str(transaction.amount),
+                    'category': transaction.category,
+                    'description': transaction.description,
+                    'date': transaction.date.isoformat(),
+                    'balance_before': str(transaction.balance_before or 0),
+                    'balance_after': str(transaction.balance_after),
+                    'is_initial_bank': True,
+                    'updated_at': transaction.updated_at.isoformat()
+                }
+            })
+
+        # Validações básicas para transações normais
         if 'amount' in data:
             try:
                 new_amount = Decimal(str(data['amount']))
                 if new_amount <= 0:
                     return jsonify({
-                        'success': False, 
+                        'success': False,
                         'error': 'Valor deve ser maior que zero'
                     }), 400
-            except (ValueError, TypeError):
+            except (ValueError, TypeError, InvalidOperation):
                 return jsonify({
-                    'success': False, 
+                    'success': False,
                     'error': 'Valor inválido'
                 }), 400
-        
-        if 'type' in data and data['type'] not in ['deposit', 'withdraw']:
+
+        if 'type' in data and data['type'] not in ['deposit', 'withdraw', 'gains', 'losses']:
             return jsonify({
-                'success': False, 
-                'error': 'Tipo deve ser "deposit" ou "withdraw"'
+                'success': False,
+                'error': 'Tipo de transação inválido'
             }), 400
-        
-        if 'category' in data and not data['category'].strip():
+
+        if 'category' in data and data.get('category') and not data['category'].strip():
             return jsonify({
-                'success': False, 
+                'success': False,
                 'error': 'Categoria é obrigatória'
             }), 400
         
@@ -894,6 +1001,97 @@ def get_balance(current_user_id):
         'initial_bank': str(initial_bank),
         'profit_loss': str(current_balance - initial_bank)
     })
+
+# === BANK RESET ROUTES ===
+
+@main.route('/user/bank-reset-status', methods=['GET'])
+@token_required
+def get_bank_reset_status(current_user_id):
+    """
+    Retorna o status do reset de banca (ciclo de 30 dias).
+    """
+    try:
+        user = User.query.get(current_user_id)
+        if not user:
+            return jsonify({'success': False, 'error': 'Usuário não encontrado'}), 404
+
+        last_reset = user.last_bank_reset or user.created_at
+        now = datetime.utcnow()
+        days_since_reset = (now - last_reset).days
+        days_until_reset = max(0, 30 - days_since_reset)
+        reset_due = days_until_reset == 0
+
+        return jsonify({
+            'success': True,
+            'days_until_reset': days_until_reset,
+            'days_since_reset': days_since_reset,
+            'reset_due': reset_due,
+            'last_reset_date': last_reset.isoformat()
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@main.route('/users/reset-bank', methods=['POST'])
+@token_required
+def force_reset_bank(current_user_id):
+    """
+    Força o reset da banca: o saldo atual se torna a nova banca inicial.
+    - Atualiza a transação is_initial_bank com o saldo atual
+    - Deleta todas as transações que NÃO são is_initial_bank
+    - Atualiza last_bank_reset no User
+    """
+    try:
+        user = User.query.get(current_user_id)
+        if not user:
+            return jsonify({'success': False, 'error': 'Usuário não encontrado'}), 404
+
+        current_balance = _get_user_balance(current_user_id)
+        old_initial_bank = _get_user_initial_bank(current_user_id)
+
+        # Deletar todas as transações do usuário (inclusive a initial_bank)
+        Transaction.query.filter_by(user_id=current_user_id).delete()
+
+        # Criar nova transação de banca inicial com o saldo atual
+        new_initial_tx = Transaction(
+            user_id=current_user_id,
+            type='deposit',
+            amount=current_balance,
+            category='initial_bank',
+            description='Reset de banca - nova banca inicial',
+            is_initial_bank=True,
+            balance_before=Decimal('0.00'),
+            balance_after=current_balance,
+            date=datetime.utcnow()
+        )
+        db.session.add(new_initial_tx)
+
+        # Atualizar o perfil de apostas ativo com o novo valor
+        active_profile = BettingProfile.query.filter_by(
+            user_id=current_user_id,
+            is_active=True
+        ).first()
+        if active_profile:
+            active_profile.initial_balance = current_balance
+
+        # Atualizar last_bank_reset
+        user.last_bank_reset = datetime.utcnow()
+
+        db.session.commit()
+
+        return jsonify({
+            'success': True,
+            'reset_info': {
+                'reset_performed': True,
+                'old_initial_bank': str(old_initial_bank),
+                'new_initial_bank': str(current_balance),
+                'profit_loss': str(current_balance - old_initial_bank),
+                'reset_date': datetime.utcnow().isoformat()
+            }
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 # === DASHBOARD OVERVIEW ROUTE (NOVA) ===
 

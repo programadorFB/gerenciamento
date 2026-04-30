@@ -1,15 +1,19 @@
 import React from 'react';
-import { useSideMenu } from '../context/SideMenuContext'; // Ajuste o caminho
+import { useSideMenu } from '../contexts/SideMenuContext';
 import { FaBars } from 'react-icons/fa';
 
-const Header = ({ onMenuClick, userName }) => (
+const Header = ({ userName }) => {
+  const { openMenu } = useSideMenu();
+
+  return (
     <header>
-      <button onClick={toggleMenu} aria-label="Abrir menu">
+      <button onClick={openMenu} aria-label="Abrir menu">
         <FaBars size={24} />
-    </button>
-    <div className="greeting">Olá, {userName}!</div>
-    <div className="logo">💰</div>
-  </header>
-);
+      </button>
+      <div className="greeting">Olá, {userName}!</div>
+      <div className="logo">💰</div>
+    </header>
+  );
+};
 
 export default Header;

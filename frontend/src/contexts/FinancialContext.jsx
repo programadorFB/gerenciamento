@@ -1007,7 +1007,8 @@ const calculateObjectiveProgress = (objective, transactions) => {
     // State
     transactions: state.transactions,
     balance: state.balance.current,
-    initialBankBalance: state.balance.initial, // Usar este
+    initialBankBalance: state.balance.initial,
+    initialBank: state.balance.initial,
     objectives: state.objectives,
     analytics: state.analytics,
     loading: state.loading,

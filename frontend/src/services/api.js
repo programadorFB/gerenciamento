@@ -185,7 +185,7 @@ const apiService = {
   // User profile management
   async getUserProfile() {
     try {
-      const response = await api.get('/users/update');
+      const response = await api.get('/user/profile');
       return response;
     } catch (error) {
       return { success: false, error: error.message };
@@ -200,7 +200,7 @@ const apiService = {
         }
       } : {};
 
-      const response = await api.put('/users/update', profileData, config);
+      const response = await api.put('/user/profile', profileData, config);
       return response;
     } catch (error) {
       return { success: false, error: error.message };
@@ -457,6 +457,10 @@ const apiService = {
   
   getOperationalPerformance: (params = {}) => api.get('/analytics/operational-performance', { params }),
   getCashFlowAnalysis: (params = {}) => api.get('/analytics/cash-flow', { params }),
+
+  // Betting Sessions
+  startBettingSession: (data) => api.post('/betting-sessions', data),
+  endBettingSession: (sessionId) => api.post(`/betting-sessions/${sessionId}/end`),
 
   // Categories & Game Types
   getCategories: () => api.get('/categories'),
