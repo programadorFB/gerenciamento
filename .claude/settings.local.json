@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(iconv -f UTF-16LE -t UTF-8 backend/requirements.txt)",
+      "Bash(sed 's/\\\\xEF\\\\xBB\\\\xBF//')",
+      "Bash(sed 's/^[[:space:]]*//')",
+      "Bash(python:*)",
+      "Bash(npm install:*)",
+      "Bash(pip install:*)",
+      "Bash(npx vitest:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(ssh:*)",
+      "Bash(npx --no-install eslint src/App.jsx src/contexts/AuthContext.jsx src/services/api.js src/pages/ResetPassword/ResetPasswordScreen.jsx)",
+      "PowerShell(npx --no-install eslint src/App.jsx src/contexts/AuthContext.jsx src/services/api.js src/pages/ResetPassword/ResetPasswordScreen.jsx 2>&1 | Select-Object -First 60)",
+      "PowerShell(npx --no-install eslint src/pages/ResetPassword/ResetPasswordScreen.jsx 2>&1)",
+      "PowerShell(npx --no-install eslint src/App.jsx src/contexts/AuthContext.jsx src/services/api.js src/pages/ResetPassword/ResetPasswordScreen.jsx 2>&1)"
+    ]
+  }
+}

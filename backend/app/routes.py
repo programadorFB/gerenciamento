@@ -1,7 +1,6 @@
 # routes.py
 
-import profile
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from . import db
 from .models import User, Transaction, BettingProfile, Objective, BettingSession, BettingStats
 from sqlalchemy import desc, func, and_, extract
@@ -9,6 +8,10 @@ from decimal import Decimal
 from datetime import datetime, date, timedelta
 import uuid
 import hashlib
+import secrets
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import jwt as pyjwt
 import os
 from functools import wraps
@@ -189,12 +192,58 @@ def update_user_profile(current_user_id):
                     'success': False,
                     'error': 'ID de avatar inválido'
                 }), 400
-        
+
+        # 4. Atualizar banca inicial (se enviada)
+        if 'initial_bank' in data and data.get('initial_bank') is not None:
+            try:
+                new_initial = Decimal(str(data.get('initial_bank')))
+            except (ValueError, TypeError):
+                return jsonify({'success': False, 'error': 'Valor de banca inicial inválido'}), 400
+
+            if new_initial <= 0:
+                return jsonify({'success': False, 'error': 'Banca inicial deve ser maior que zero'}), 400
+
+            initial_tx = Transaction.query.filter_by(
+                user_id=current_user_id, is_initial_bank=True
+            ).first()
+
+            if initial_tx:
+                initial_tx.amount = new_initial
+                initial_tx.balance_before = Decimal('0.00')
+                initial_tx.balance_after = new_initial
+                initial_tx.updated_at = datetime.utcnow()
+            else:
+                initial_tx = Transaction(
+                    user_id=current_user_id,
+                    type='deposit',
+                    amount=new_initial,
+                    category='Depósito Inicial',
+                    description='Banca inicial - Atualização via perfil',
+                    is_initial_bank=True,
+                    balance_before=Decimal('0.00'),
+                    balance_after=new_initial,
+                    meta={'set_via_profile': True},
+                    date=datetime.utcnow(),
+                )
+                db.session.add(initial_tx)
+
+            profile = BettingProfile.query.filter_by(
+                user_id=current_user_id, is_active=True
+            ).first()
+            if profile:
+                profile.initial_balance = new_initial
+                profile.updated_at = datetime.utcnow()
+
+            print(f"✅ Banca inicial atualizada para: R$ {new_initial}")
+
         user.updated_at = datetime.utcnow()
         db.session.commit()
-        
+
         print(f"✅ Perfil atualizado com sucesso para usuário {user.id}")
-        
+
+        current_balance = _get_user_balance(current_user_id)
+        initial_bank = _get_user_initial_bank(current_user_id)
+
         return jsonify({
             'success': True,
             'message': 'Perfil atualizado com sucesso',
@@ -202,7 +251,9 @@ def update_user_profile(current_user_id):
                 'id': user.id,
                 'name': user.name,
                 'email': user.email,
-                'profile_photo': user.profile_photo
+                'profile_photo': user.profile_photo,
+                'initial_bank': str(initial_bank),
+                'current_balance': str(current_balance),
             }
         })
         
@@ -346,6 +397,258 @@ def login():
             'current_balance': str(current_balance)
         }
     })
+
+
+# === PASSWORD RESET ROUTES ===
+
+RESET_TOKEN_TTL_MINUTES = 30
+
+
+def _send_reset_email(to_email, name, reset_url):
+    """
+    Envia o email de recuperação de senha. Se SMTP não estiver configurado
+    (MAIL_USERNAME/MAIL_PASSWORD ausentes), apenas registra no log e retorna False.
+    """
+    host = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+    port = int(os.getenv('MAIL_PORT', '587'))
+    username = os.getenv('MAIL_USERNAME')
+    password = os.getenv('MAIL_PASSWORD')
+    use_tls = os.getenv('MAIL_USE_TLS', 'True').lower() == 'true'
+    sender = os.getenv('MAIL_DEFAULT_SENDER', username or 'noreply@bettingapp.com')
+
+    if not username or not password:
+        current_app.logger.warning(
+            f"[reset-password] SMTP não configurado. Link de reset para {to_email}: {reset_url}"
+        )
+        print(f"[reset-password] Link para {to_email}: {reset_url}")
+        return False
+
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = 'Recuperação de senha - Futebol Studio'
+    msg['From'] = sender
+    msg['To'] = to_email
+
+    text_body = (
+        f"Olá {name or ''},\n\n"
+        f"Recebemos um pedido para redefinir sua senha.\n"
+        f"Acesse o link abaixo para criar uma nova senha (válido por {RESET_TOKEN_TTL_MINUTES} minutos):\n\n"
+        f"{reset_url}\n\n"
+        f"Se você não solicitou essa alteração, ignore este email.\n"
+    )
+    html_body = f"""
+    <html><body style="font-family:Arial,sans-serif;color:#222;">
+      <p>Olá <strong>{name or ''}</strong>,</p>
+      <p>Recebemos um pedido para redefinir sua senha.</p>
+      <p>
+        <a href="{reset_url}"
+           style="background:#d4af37;color:#000;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block;">
+          Redefinir senha
+        </a>
+      </p>
+      <p>Ou copie e cole este endereço no navegador:</p>
+      <p style="word-break:break-all;color:#555;">{reset_url}</p>
+      <p style="color:#777;font-size:12px;">Link válido por {RESET_TOKEN_TTL_MINUTES} minutos. Se você não solicitou, ignore este email.</p>
+    </body></html>
+    """
+    msg.attach(MIMEText(text_body, 'plain'))
+    msg.attach(MIMEText(html_body, 'html'))
+
+    try:
+        with smtplib.SMTP(host, port, timeout=15) as server:
+            if use_tls:
+                server.starttls()
+            server.login(username, password)
+            server.sendmail(sender, [to_email], msg.as_string())
+        return True
+    except Exception as e:
+        current_app.logger.error(f"[reset-password] Erro SMTP para {to_email}: {e}")
+        print(f"[reset-password] Erro SMTP, link manual para {to_email}: {reset_url}")
+        return False
+
+
+@main.route('/auth/reset-password', methods=['POST'])
+def request_password_reset():
+    """
+    Solicita reset de senha. Sempre retorna success genérico para evitar
+    enumeração de emails cadastrados.
+    """
+    data = request.json or {}
+    email = (data.get('email') or '').strip().lower()
+
+    if not email:
+        return jsonify({'error': 'Email é obrigatório'}), 400
+
+    user = User.query.filter_by(email=email).first()
+
+    # Resposta genérica em ambos os casos para não vazar quais emails existem
+    generic_response = jsonify({
+        'success': True,
+        'message': 'Se o email estiver cadastrado, um link de recuperação foi enviado.'
+    })
+
+    if not user:
+        return generic_response
+
+    try:
+        token = secrets.token_urlsafe(48)
+        user.reset_token = token
+        user.reset_token_expires = datetime.utcnow() + timedelta(minutes=RESET_TOKEN_TTL_MINUTES)
+        db.session.commit()
+
+        frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:5173').rstrip('/')
+        reset_url = f"{frontend_url}/reset-password?token={token}"
+
+        _send_reset_email(user.email, user.name, reset_url)
+
+        return generic_response
+
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"[reset-password] Erro: {e}")
+        return jsonify({'error': 'Erro ao processar solicitação'}), 500
+
+
+@main.route('/auth/reset-password/verify', methods=['GET'])
+def verify_reset_token():
+    """Permite ao frontend validar o token antes de exibir o formulário."""
+    token = (request.args.get('token') or '').strip()
+    if not token:
+        return jsonify({'success': False, 'error': 'Token ausente'}), 400
+
+    user = User.query.filter_by(reset_token=token).first()
+    if not user or not user.reset_token_expires or user.reset_token_expires < datetime.utcnow():
+        return jsonify({'success': False, 'error': 'Token inválido ou expirado'}), 400
+
+    return jsonify({'success': True, 'email': user.email})
+
+
+# === BANK RESET ROUTES (ciclo de 30 dias) ===
+
+BANK_RESET_INTERVAL_DAYS = 30
+
+
+def _bank_reset_status(user):
+    last_reset = user.last_bank_reset or user.created_at or datetime.utcnow()
+    next_reset = last_reset + timedelta(days=BANK_RESET_INTERVAL_DAYS)
+    days_until = (next_reset - datetime.utcnow()).days
+    return {
+        'success': True,
+        'last_reset': last_reset.isoformat(),
+        'next_reset': next_reset.isoformat(),
+        'days_until_reset': max(0, days_until),
+        'reset_due': datetime.utcnow() >= next_reset,
+    }
+
+
+@main.route('/user/bank-reset-status', methods=['GET'])
+@token_required
+def get_bank_reset_status(current_user_id):
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({'success': False, 'error': 'Usuário não encontrado'}), 404
+    return jsonify(_bank_reset_status(user))
+
+
+@main.route('/users/reset-bank', methods=['POST'])
+@token_required
+def force_reset_bank(current_user_id):
+    """
+    Força um reset manual: o saldo atual vira a nova banca inicial.
+    Atualiza a transação is_initial_bank existente (ou cria uma) e
+    registra last_bank_reset.
+    """
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({'success': False, 'error': 'Usuário não encontrado'}), 404
+
+    try:
+        old_initial = _get_user_initial_bank(current_user_id)
+        current_balance = _get_user_balance(current_user_id)
+        profit_loss = current_balance - old_initial
+
+        initial_tx = Transaction.query.filter_by(
+            user_id=current_user_id,
+            is_initial_bank=True,
+        ).first()
+
+        if initial_tx:
+            initial_tx.amount = current_balance
+            initial_tx.balance_before = Decimal('0.00')
+            initial_tx.balance_after = current_balance
+            initial_tx.description = 'Banca inicial - Reset manual'
+            initial_tx.updated_at = datetime.utcnow()
+        else:
+            initial_tx = Transaction(
+                user_id=current_user_id,
+                type='deposit',
+                amount=current_balance,
+                category='Depósito Inicial',
+                description='Banca inicial - Reset manual',
+                is_initial_bank=True,
+                balance_before=Decimal('0.00'),
+                balance_after=current_balance,
+                meta={'created_on_reset': True},
+                date=datetime.utcnow(),
+            )
+            db.session.add(initial_tx)
+
+        profile = BettingProfile.query.filter_by(
+            user_id=current_user_id, is_active=True
+        ).first()
+        if profile:
+            profile.initial_balance = current_balance
+            profile.updated_at = datetime.utcnow()
+
+        user.last_bank_reset = datetime.utcnow()
+        db.session.commit()
+
+        return jsonify({
+            'success': True,
+            'reset_info': {
+                'reset_performed': True,
+                'old_initial_bank': str(old_initial),
+                'new_initial_bank': str(current_balance),
+                'profit_loss': str(profit_loss),
+                'reset_at': user.last_bank_reset.isoformat(),
+            },
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"[reset-bank] Erro: {e}")
+        return jsonify({'success': False, 'error': 'Erro ao forçar reset'}), 500
+
+
+@main.route('/auth/reset-password/confirm', methods=['POST'])
+def confirm_password_reset():
+    """Aplica a nova senha usando o token recebido por email."""
+    data = request.json or {}
+    token = (data.get('token') or '').strip()
+    new_password = data.get('new_password') or data.get('password') or ''
+
+    if not token:
+        return jsonify({'success': False, 'error': 'Token é obrigatório'}), 400
+    if len(new_password) < 6:
+        return jsonify({'success': False, 'error': 'A nova senha deve ter pelo menos 6 caracteres'}), 400
+
+    user = User.query.filter_by(reset_token=token).first()
+    if not user or not user.reset_token_expires or user.reset_token_expires < datetime.utcnow():
+        return jsonify({'success': False, 'error': 'Token inválido ou expirado'}), 400
+
+    try:
+        user.password_hash = hashlib.sha256(new_password.encode()).hexdigest()
+        user.reset_token = None
+        user.reset_token_expires = None
+        user.updated_at = datetime.utcnow()
+        db.session.commit()
+
+        return jsonify({'success': True, 'message': 'Senha redefinida com sucesso'})
+
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"[reset-password/confirm] Erro: {e}")
+        return jsonify({'success': False, 'error': 'Erro ao redefinir senha'}), 500
+
 
 # === BETTING PROFILE ROUTES ===
 

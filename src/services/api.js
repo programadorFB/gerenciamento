@@ -111,11 +111,7 @@ const apiService = {
   // Auth endpoints
   async login(email, password) {
     try {
-      const response = await api.post('/auth/login', { email, password });
-      if (response.success && response.token) {
-        tokenManager.setToken(response.token);
-      }
-      return response;
+      return await api.post('/auth/login', { email, password });
     } catch (error) {
       return {
         success: false,
@@ -124,7 +120,6 @@ const apiService = {
     }
   },
 
-  // REGISTRO ATUALIZADO COM VALIDAÇÃO DE BANCA INICIAL
   async register({name, email, password, initialBank, riskValue}) {
     try {
       if (!name || !email || !password) {
@@ -136,24 +131,18 @@ const apiService = {
       }
 
       const bankAmount = typeof initialBank === 'string' ? parseFloat(initialBank.replace(',', '.')) : initialBank;
-      
+
       if (isNaN(bankAmount) || bankAmount <= 0) {
         return { success: false, error: 'Valor da banca inicial inválido' };
       }
 
-      const response = await api.post('/auth/register', { 
-        name: name.trim(), 
-        email: email.trim().toLowerCase(), 
+      return await api.post('/auth/register', {
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
         password,
         initialBank: bankAmount,
-        riskValue: riskValue 
+        riskValue: riskValue
       });
-
-      if (response.success && response.token) {
-        tokenManager.setToken(response.token);
-      }
-
-      return response;
     } catch (error) {
       return { success: false, error: error.message };
     }
@@ -169,26 +158,22 @@ const apiService = {
     }
   },
   async resetPassword(email) {
-    try {
-      // Confirme se '/auth/reset-password' é o endpoint correto da sua API
-      const response = await api.post('/auth/reset-password', { email });
-      return response; // O interceptor já trata 'response.data'
-    } catch (error) {
-      // O interceptor já transforma o erro, mas para manter
-      // a consistência com login/register, retornamos um objeto de erro
-      return { success: false, error: error.message };
-    }
-  },
-  // User profile management
-  async getUserProfile() {
-    try {
-      const response = await api.get('/users/update');
-      return response;
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
+    // Solicita o link de reset. Lança erro em falha de rede para o
+    // contexto detectar (não silenciar com {success:false}).
+    return await api.post('/auth/reset-password', { email });
   },
 
+  async verifyResetToken(token) {
+    return await api.get('/auth/reset-password/verify', { params: { token } });
+  },
+
+  async confirmResetPassword(token, newPassword) {
+    return await api.post('/auth/reset-password/confirm', {
+      token,
+      new_password: newPassword,
+    });
+  },
+  // User profile management
   async updateUserProfile(profileData) {
     try {
       const config = profileData instanceof FormData ? {
@@ -197,16 +182,7 @@ const apiService = {
         }
       } : {};
 
-      const response = await api.put('/users/update', profileData, config);
-      return response;
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  },
-
-  async changePassword(passwordData) {
-    try {
-      const response = await api.put('/user/change-password', passwordData);
+      const response = await api.put('/user/profile', profileData, config);
       return response;
     } catch (error) {
       return { success: false, error: error.message };
@@ -242,92 +218,6 @@ const apiService = {
     }
   },
 
-  // NOVA FUNÇÃO: Obter saldo da banca inicial
-  async getInitialBankBalance() {
-    try {
-      const response = await api.get('/balance/initial-bank');
-      return response;
-    } catch (error) {
-      // Se o endpoint não existir, calculamos localmente
-      const transactionsResponse = await this.getInitialBankTransactions();
-      if (transactionsResponse.success) {
-        const initialBankBalance = this.calculateInitialBankBalance(transactionsResponse.data);
-        return { 
-          success: true, 
-          balance: initialBankBalance,
-          transactions: transactionsResponse.data 
-        };
-      }
-      return { success: false, error: error.message };
-    }
-  },
-
-  // FUNÇÃO AUXILIAR: Calcular banca inicial localmente
-  calculateInitialBankBalance(transactions) {
-    if (!transactions || transactions.length === 0) return 0;
-
-    const total = transactions.reduce((sum, transaction) => {
-      const amount = transaction.amount && !isNaN(parseFloat(transaction.amount)) 
-        ? parseFloat(transaction.amount) 
-        : 0;
-      
-      if (transaction.type === TRANSACTION_TYPES.DEPOSIT) {
-        return sum + amount;
-      } else if (transaction.type === TRANSACTION_TYPES.WITHDRAW) {
-        return sum - amount;
-      }
-      return sum;
-    }, 0);
-    
-    return Math.max(0, total);
-  },
-// 1. Helper para localizar a transação específica da banca inicial
-  async getInitialBankTransaction() {
-    try {
-      const response = await this.getInitialBankTransactions();
-      if (response.success && response.data && response.data.length > 0) {
-        return response.data[0];
-      }
-      return null;
-    } catch (error) {
-      return null;
-    }
-  },
-
-  // 2. Função INTELIGENTE para definir a Banca Inicial
-  async updateInitialBank(amount) {
-    try {
-      const numericAmount = typeof amount === 'string' ? parseFloat(amount.replace(',', '.')) : amount;
-      if (isNaN(numericAmount) || numericAmount <= 0) {
-        return { success: false, error: 'Valor inválido.' };
-      }
-
-      const existingTx = await this.getInitialBankTransaction();
-
-      if (existingTx) {
-        // ATUALIZA (PUT)
-        const response = await api.put(`/transactions/${existingTx.id}`, {
-          amount: numericAmount,
-          description: existingTx.description || "Banca Inicial",
-          date: existingTx.date, 
-          type: TRANSACTION_TYPES.DEPOSIT,
-          is_initial_bank: true 
-        });
-        return { success: true, data: response.data };
-      } else {
-        // CRIA NOVA (POST)
-        return await this.createTransaction({
-          amount: numericAmount,
-          type: TRANSACTION_TYPES.DEPOSIT,
-          description: "Banca Inicial",
-          date: new Date().toISOString().split('T')[0],
-          isInitialBank: true
-        });
-      }
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  },
   // TRANSAÇÃO COMPLETAMENTE ATUALIZADA PARA O SISTEMA UNIFICADO COM is_initial_bank
   async createTransaction(data) {
     try {
@@ -399,26 +289,6 @@ const apiService = {
     return { isValid: true };
   },
 
-  // Métodos para análise de transações
-  async getTransactionStats(period = 'monthly') {
-    try {
-      return await api.get('/transactions/stats', { params: { period } });
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  },
-
-  async getProfitAnalysis(startDate, endDate) {
-    try {
-      const params = {};
-      if (startDate) params.startDate = startDate;
-      if (endDate) params.endDate = endDate;
-      return await api.get('/transactions/profit-analysis', { params });
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  },
-
   // Métodos para transações por tipo
   async getTransactionsByType(type, params = {}) {
     try {
@@ -452,9 +322,6 @@ const apiService = {
   getPerformanceStats: (period = 'monthly') => api.get('/stats/performance', { params: { period } }),
   getRiskAnalysis: () => api.get('/stats/risk-analysis'),
   
-  getOperationalPerformance: (params = {}) => api.get('/analytics/operational-performance', { params }),
-  getCashFlowAnalysis: (params = {}) => api.get('/analytics/cash-flow', { params }),
-
   // Categories & Game Types
   getCategories: () => api.get('/categories'),
   getGameTypes: () => api.get('/game-types'),

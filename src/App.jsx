@@ -13,6 +13,7 @@ import ReportScreen from './pages/ReportScreen/ReportScreen.jsx';
 import SideMenu from './components/SideMenu.jsx';
 import BottomMenu from './components/BottomMenu.jsx'; // ✅ NOVO: Import do Bottom Menu
 import LoginScreen from './pages/Login/LoginScreen.jsx';
+import ResetPasswordScreen from './pages/ResetPassword/ResetPasswordScreen.jsx';
 import StrategyScreen from './pages/VideoStrategy/StrategyScreen.jsx';
 import DashboardScreen from './pages/Dashboard/DashboardScreen.jsx';
 import ChartsScreen from './pages/ChartScreen/ChartsScreen.jsx';
@@ -64,6 +65,7 @@ function App() {
         <BettingProvider>
           <Routes>
             <Route path="/login" element={<LoginScreen />} />
+            <Route path="/reset-password" element={<ResetPasswordScreen />} />
 
             {/* Rotas Privadas */}
             <Route element={<PrivateRoutes />}>
