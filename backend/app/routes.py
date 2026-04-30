@@ -433,32 +433,116 @@ def _send_reset_email(to_email, name, reset_url):
         print(f"[reset-password] Link para {to_email}: {reset_url}")
         return False
 
-    html_body = f"""
-    <html><body style="font-family:Arial,sans-serif;color:#222;">
-      <p>Olá <strong>{name or ''}</strong>,</p>
-      <p>Recebemos um pedido para redefinir sua senha.</p>
-      <p>
-        <a href="{reset_url}"
-           style="background:#d4af37;color:#000;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block;">
-          Redefinir senha
-        </a>
-      </p>
-      <p>Ou copie e cole este endereço no navegador:</p>
-      <p style="word-break:break-all;color:#555;">{reset_url}</p>
-      <p style="color:#777;font-size:12px;">Link válido por {RESET_TOKEN_TTL_MINUTES} minutos. Se você não solicitou, ignore este email.</p>
-    </body></html>
-    """
+    safe_name = (name or 'Player').strip()
+    html_body = f"""\
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recuperar acesso - Gerenciamento Premium de Banca</title>
+</head>
+<body style="margin:0;padding:0;background:#0a0504;font-family:'Helvetica Neue',Arial,sans-serif;color:#e8d9b0;">
+  <!-- Wrapper -->
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:linear-gradient(180deg,#2a110f 0%,#0a0504 100%);padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <!-- Card -->
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;width:100%;background:#160706;border-radius:18px;border:1px solid rgba(212,175,55,0.35);box-shadow:0 0 40px rgba(212,175,55,0.18);overflow:hidden;">
+          <!-- Top bar dourado -->
+          <tr>
+            <td style="height:4px;background:linear-gradient(90deg,#8B6C2F 0%,#F9E49F 50%,#8B6C2F 100%);"></td>
+          </tr>
+          <!-- Header -->
+          <tr>
+            <td align="center" style="padding:36px 32px 8px 32px;">
+              <div style="font-size:18px;letter-spacing:8px;color:#C19B53;font-weight:600;">♠ &nbsp; ♥ &nbsp; ♦ &nbsp; ♣</div>
+              <h1 style="margin:18px 0 6px 0;font-family:'Cinzel',Georgia,serif;font-size:26px;letter-spacing:4px;color:#E5C07B;text-transform:uppercase;font-weight:700;">Gerenciamento Premium</h1>
+              <div style="font-size:11px;letter-spacing:6px;color:#8B6C2F;text-transform:uppercase;font-weight:600;">de banca</div>
+              <div style="margin:24px auto 0 auto;height:1px;width:80%;background:linear-gradient(90deg,transparent 0%,#8B6C2F 50%,transparent 100%);"></div>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:24px 40px 8px 40px;color:#e8d9b0;font-size:15px;line-height:1.7;">
+              <p style="margin:0 0 14px 0;">Olá <strong style="color:#F9E49F;">{safe_name}</strong>,</p>
+              <p style="margin:0 0 14px 0;">Recebemos um pedido para redefinir a senha da sua conta no <strong style="color:#F9E49F;">Gerenciamento Premium de Banca</strong>.</p>
+              <p style="margin:0 0 22px 0;">Para criar uma nova senha, clique no botão abaixo. Este link é único e válido por <strong style="color:#F9E49F;">{RESET_TOKEN_TTL_MINUTES} minutos</strong>.</p>
+            </td>
+          </tr>
+          <!-- CTA -->
+          <tr>
+            <td align="center" style="padding:8px 32px 32px 32px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="border-radius:10px;background:linear-gradient(135deg,#8B6C2F 0%,#F9E49F 50%,#8B6C2F 100%);padding:2px;">
+                    <a href="{reset_url}"
+                       style="display:inline-block;background:linear-gradient(135deg,#d4af37 0%,#f9d971 50%,#d4af37 100%);color:#1a0b0a;text-decoration:none;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:16px 44px;border-radius:8px;">
+                      Redefinir senha
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- Fallback link -->
+          <tr>
+            <td style="padding:0 40px 28px 40px;">
+              <div style="background:rgba(212,175,55,0.06);border-left:2px solid #8B6C2F;padding:14px 16px;border-radius:4px;">
+                <p style="margin:0 0 6px 0;font-size:12px;color:#8B6C2F;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Botão não funciona?</p>
+                <p style="margin:0;font-size:12px;color:#a08a5a;line-height:1.6;word-break:break-all;">
+                  Copie e cole este endereço no navegador:<br>
+                  <a href="{reset_url}" style="color:#E5C07B;text-decoration:none;">{reset_url}</a>
+                </p>
+              </div>
+            </td>
+          </tr>
+          <!-- Aviso de segurança -->
+          <tr>
+            <td style="padding:0 40px 32px 40px;">
+              <div style="margin:0;padding:14px 16px;background:rgba(0,0,0,0.35);border-radius:6px;border:1px solid rgba(212,175,55,0.12);">
+                <p style="margin:0;font-size:12px;color:#8a7a55;line-height:1.6;">
+                  <span style="color:#C19B53;font-weight:600;">Aviso de segurança:</span>
+                  se você não solicitou essa alteração, ignore este email — sua senha continua a mesma.
+                  Nunca compartilhe este link com terceiros.
+                </p>
+              </div>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="padding:0 32px 28px 32px;">
+              <div style="height:1px;width:60%;margin:0 auto 18px auto;background:linear-gradient(90deg,transparent 0%,#3a2a14 50%,transparent 100%);"></div>
+              <p style="margin:0;font-size:11px;letter-spacing:3px;color:#6b5530;text-transform:uppercase;">Smart Análise · Gerenciamento Premium</p>
+              <p style="margin:6px 0 0 0;font-size:10px;color:#5a4626;">Email automático — não responda esta mensagem.</p>
+            </td>
+          </tr>
+          <!-- Bottom bar dourado -->
+          <tr>
+            <td style="height:4px;background:linear-gradient(90deg,#8B6C2F 0%,#F9E49F 50%,#8B6C2F 100%);"></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>"""
+
     text_body = (
-        f"Olá {name or ''},\n\n"
-        f"Recebemos um pedido para redefinir sua senha.\n"
-        f"Acesse o link abaixo (válido por {RESET_TOKEN_TTL_MINUTES} minutos):\n\n"
+        f"Olá {safe_name},\n\n"
+        f"Recebemos um pedido para redefinir a senha da sua conta no "
+        f"Gerenciamento Premium de Banca.\n\n"
+        f"Acesse o link abaixo para criar uma nova senha "
+        f"(válido por {RESET_TOKEN_TTL_MINUTES} minutos):\n\n"
         f"{reset_url}\n\n"
-        f"Se você não solicitou essa alteração, ignore este email.\n"
+        f"Se você não solicitou essa alteração, ignore este email — "
+        f"sua senha continua a mesma.\n\n"
+        f"Smart Análise · Gerenciamento Premium\n"
     )
 
     try:
         msg = Message(
-            subject='Recuperação de senha - Futebol Studio',
+            subject='Recuperar acesso - Gerenciamento Premium de Banca',
             recipients=[to_email],
             body=text_body,
             html=html_body,
