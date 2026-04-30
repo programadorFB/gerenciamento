@@ -20,7 +20,11 @@ class User(db.Model):
     
     # ✅ NOVO CAMPO PARA RESET AUTOMÁTICO
     last_bank_reset = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    
+
+    # Password reset
+    reset_token = db.Column(db.String(128), nullable=True, index=True)
+    reset_token_expires = db.Column(db.DateTime, nullable=True)
+
     # Relationships
     betting_profiles = db.relationship('BettingProfile', backref='user', lazy=True, cascade='all, delete-orphan')
     transactions = db.relationship('Transaction', backref='user', lazy=True, cascade='all, delete-orphan')

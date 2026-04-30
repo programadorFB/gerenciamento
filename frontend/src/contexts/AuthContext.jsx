@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect, useCallback, useState } from 'react';
 import apiService from '../services/api';
-import { BankResetNotification } from '../components/ManualResetButtom';
+import { BankResetNotification } from '../components/ManualResetButton';
 
 const AuthContext = createContext(null);
 
@@ -78,10 +78,10 @@ const authReducer = (state, action) => {
   }
 };
 
-// Chaves para o localStorage
+// Chaves para o localStorage (mesmas usadas pelo apiService.tokenManager)
 const STORAGE_KEYS = {
-  TOKEN: 'userToken',
-  USER: 'userData',
+  TOKEN: 'auth_token',
+  USER: 'auth_user',
 };
 
 // Componente Provedor
@@ -120,8 +120,6 @@ export const AuthProvider = ({ children }) => {
 
           if (savedToken && savedUser) {
             const userData = JSON.parse(savedUser);
-            apiService.setAuthToken(savedToken);
-            
             dispatch({
               type: AUTH_ACTIONS.RESTORE_SESSION,
               payload: { user: userData, token: savedToken },
@@ -149,7 +147,6 @@ export const AuthProvider = ({ children }) => {
       
       if (response && response.token && response.user) {
         const { token, user, bank_reset } = response;
-        apiService.setAuthToken(token);
         saveToStorage(token, user);
         dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: { token, user } });
         
@@ -180,7 +177,6 @@ export const AuthProvider = ({ children }) => {
       
       if (response.success) {
         const { token, user } = response;
-        apiService.setAuthToken(token);
         saveToStorage(token, user);
         dispatch({ type: AUTH_ACTIONS.REGISTER_SUCCESS, payload: { token, user } });
         return { success: true };
@@ -235,22 +231,33 @@ const updateProfile = useCallback(async (profileData) => {
     dispatch({ type: AUTH_ACTIONS.CLEAR_ERROR });
   }, []);
   
-  // --- ADICIONADO ---
-  // Função para solicitar a recuperação de senha
+  // Solicita o link de recuperação de senha
   const resetPassword = useCallback(async (email) => {
     try {
-      // Assumindo que seu apiService tem um método 'resetPassword'
       const response = await apiService.resetPassword(email);
-      // Se a API for bem-sucedida, a Promise resolve.
+      if (response && response.success === false) {
+        throw new Error(response.error || 'Erro ao enviar email de recuperação.');
+      }
       return { success: true, data: response };
     } catch (error) {
-      // Se a API falhar, ela lançará um erro que será capturado 
-      // pelo bloco try/catch no LoginScreen.jsx
       const errorMessage = error.response?.data?.error || error.message || 'Erro ao enviar email de recuperação.';
       throw new Error(errorMessage);
     }
   }, []);
-  // --- FIM DA ADIÇÃO ---
+
+  // Confirma a nova senha usando token recebido por email
+  const confirmResetPassword = useCallback(async (token, newPassword) => {
+    try {
+      const response = await apiService.confirmResetPassword(token, newPassword);
+      if (response && response.success === false) {
+        throw new Error(response.error || 'Erro ao redefinir senha.');
+      }
+      return { success: true, data: response };
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || error.message || 'Erro ao redefinir senha.';
+      throw new Error(errorMessage);
+    }
+  }, []);
 
   // Valor que será provido para os componentes filhos
   const value = {
@@ -260,7 +267,8 @@ const updateProfile = useCallback(async (profileData) => {
     logout,
     updateProfile,
     clearError,
-    resetPassword, // --- ADICIONADO ---
+    resetPassword,
+    confirmResetPassword,
   };
 
   return (

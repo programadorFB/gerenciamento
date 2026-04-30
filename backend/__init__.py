@@ -21,15 +21,16 @@ def create_app(config_name=None):
         app.config.from_object(config[config_name])
     else:
         # Assumindo que você também tem a classe Config definida
-        from .config import Config 
+        from .config import Config
         app.config.from_object(Config) # Usando a classe base se não houver config_name
-        # Configuração do Flask-Mail
-        app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
-        app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
-        app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'true').lower() in ['true', '1', 't']
-        app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-        app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-        app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', app.config['MAIL_USERNAME'])
+
+    # Configuração do Flask-Mail (aplicada em todos os ambientes)
+    app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+    app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+    app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'true').lower() in ['true', '1', 't']
+    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+    app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', app.config.get('MAIL_USERNAME'))
     # --- CONFIGURAÇÃO DE LOGGING ---
     if not app.debug:
         app.logger.handlers.clear()
@@ -43,8 +44,10 @@ def create_app(config_name=None):
 
     # Aplicar CORS após carregar config para pegar a origem certa
     
-    origins = app.config.get("CORS_ORIGINS", ["http://localhost:5173","https://gerenciamento-1.onrender.com","https://area-backend.sortehub.online"])
-    origins.append(os.environ.get('FRONTEND_URL'))  # Adiciona FRONTEND_URL 
+    origins = list(app.config.get("CORS_ORIGINS", ["http://localhost:5173","https://gerenciamento-1.onrender.com","https://area-backend.sortehub.online"]))
+    frontend_url = os.environ.get('FRONTEND_URL')
+    if frontend_url and frontend_url not in origins:
+        origins.append(frontend_url)
     print(f"Configuring CORS with origins: {origins}")
     CORS(app, origins=origins, supports_credentials=True)
 

@@ -1,7 +1,6 @@
 # routes.py
 
-import profile
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from . import db
 from .models import User, Transaction, BettingProfile, Objective, BettingSession, BettingStats
 from sqlalchemy import desc, func, and_, extract
@@ -9,6 +8,7 @@ from decimal import Decimal, InvalidOperation
 from datetime import datetime, date, timedelta
 import uuid
 import hashlib
+import secrets
 import jwt as pyjwt
 import os
 from functools import wraps
@@ -108,6 +108,30 @@ def logout(current_user_id):
         return jsonify({'error': 'Erro ao realizar logout'}), 500
 # === AUTHENTICATION ROUTES ===
 # Substitua a rota '/user/profile' no seu routes.py por esta versão:
+
+@main.route('/user/profile', methods=['GET'])
+@token_required
+def get_user_profile(current_user_id):
+    """Retorna o perfil do usuário autenticado."""
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({'success': False, 'error': 'Usuário não encontrado'}), 404
+
+    current_balance = _get_user_balance(current_user_id)
+    initial_bank = _get_user_initial_bank(current_user_id)
+
+    return jsonify({
+        'success': True,
+        'user': {
+            'id': user.id,
+            'name': user.name,
+            'email': user.email,
+            'profile_photo': user.profile_photo,
+            'initial_bank': str(initial_bank),
+            'current_balance': str(current_balance),
+        }
+    })
+
 
 @main.route('/user/profile', methods=['PUT'])
 @token_required
@@ -389,24 +413,148 @@ def login():
         }
     })
 
+# === PASSWORD RESET ROUTES ===
+
+RESET_TOKEN_TTL_MINUTES = 30
+
+
+def _send_reset_email(to_email, name, reset_url):
+    """
+    Envia o email de recuperação. Tenta Flask-Mail; se MAIL_USERNAME/MAIL_PASSWORD
+    não estiverem configurados (ou houver erro SMTP), apenas registra no log.
+    """
+    from flask_mail import Message
+    from . import mail
+
+    if not current_app.config.get('MAIL_USERNAME') or not current_app.config.get('MAIL_PASSWORD'):
+        current_app.logger.warning(
+            f"[reset-password] SMTP não configurado. Link de reset para {to_email}: {reset_url}"
+        )
+        print(f"[reset-password] Link para {to_email}: {reset_url}")
+        return False
+
+    html_body = f"""
+    <html><body style="font-family:Arial,sans-serif;color:#222;">
+      <p>Olá <strong>{name or ''}</strong>,</p>
+      <p>Recebemos um pedido para redefinir sua senha.</p>
+      <p>
+        <a href="{reset_url}"
+           style="background:#d4af37;color:#000;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block;">
+          Redefinir senha
+        </a>
+      </p>
+      <p>Ou copie e cole este endereço no navegador:</p>
+      <p style="word-break:break-all;color:#555;">{reset_url}</p>
+      <p style="color:#777;font-size:12px;">Link válido por {RESET_TOKEN_TTL_MINUTES} minutos. Se você não solicitou, ignore este email.</p>
+    </body></html>
+    """
+    text_body = (
+        f"Olá {name or ''},\n\n"
+        f"Recebemos um pedido para redefinir sua senha.\n"
+        f"Acesse o link abaixo (válido por {RESET_TOKEN_TTL_MINUTES} minutos):\n\n"
+        f"{reset_url}\n\n"
+        f"Se você não solicitou essa alteração, ignore este email.\n"
+    )
+
+    try:
+        msg = Message(
+            subject='Recuperação de senha - Futebol Studio',
+            recipients=[to_email],
+            body=text_body,
+            html=html_body,
+        )
+        mail.send(msg)
+        return True
+    except Exception as e:
+        current_app.logger.error(f"[reset-password] Erro SMTP para {to_email}: {e}")
+        print(f"[reset-password] Erro SMTP, link manual para {to_email}: {reset_url}")
+        return False
+
+
 @main.route('/auth/reset-password', methods=['POST'])
 def reset_password():
     """
-    Solicita reset de senha. Por enquanto sem envio de email,
-    apenas valida que o email existe e retorna sucesso para a UI não quebrar.
+    Solicita reset de senha. Sempre retorna sucesso genérico para evitar
+    enumeração de emails cadastrados.
     """
-    data = request.json
-    email = data.get('email', '').strip().lower() if data else ''
+    data = request.json or {}
+    email = (data.get('email') or '').strip().lower()
 
     if not email:
         return jsonify({'success': False, 'error': 'Email é obrigatório'}), 400
 
     user = User.query.filter_by(email=email).first()
-    # Retorna sucesso mesmo se não encontrar, para não expor quais emails existem
-    return jsonify({
+
+    generic_response = jsonify({
         'success': True,
         'message': 'Se o email estiver cadastrado, você receberá instruções para redefinir sua senha.'
     })
+
+    if not user:
+        return generic_response
+
+    try:
+        token = secrets.token_urlsafe(48)
+        user.reset_token = token
+        user.reset_token_expires = datetime.utcnow() + timedelta(minutes=RESET_TOKEN_TTL_MINUTES)
+        db.session.commit()
+
+        frontend_url = (os.getenv('FRONTEND_URL') or 'http://localhost:5173').rstrip('/')
+        reset_url = f"{frontend_url}/reset-password?token={token}"
+
+        _send_reset_email(user.email, user.name, reset_url)
+
+        return generic_response
+
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"[reset-password] Erro: {e}")
+        return jsonify({'success': False, 'error': 'Erro ao processar solicitação'}), 500
+
+
+@main.route('/auth/reset-password/verify', methods=['GET'])
+def verify_reset_token():
+    """Permite ao frontend validar o token antes de exibir o formulário."""
+    token = (request.args.get('token') or '').strip()
+    if not token:
+        return jsonify({'success': False, 'error': 'Token ausente'}), 400
+
+    user = User.query.filter_by(reset_token=token).first()
+    if not user or not user.reset_token_expires or user.reset_token_expires < datetime.utcnow():
+        return jsonify({'success': False, 'error': 'Token inválido ou expirado'}), 400
+
+    return jsonify({'success': True, 'email': user.email})
+
+
+@main.route('/auth/reset-password/confirm', methods=['POST'])
+def confirm_password_reset():
+    """Aplica a nova senha usando o token recebido por email."""
+    data = request.json or {}
+    token = (data.get('token') or '').strip()
+    new_password = data.get('new_password') or data.get('password') or ''
+
+    if not token:
+        return jsonify({'success': False, 'error': 'Token é obrigatório'}), 400
+    if len(new_password) < 6:
+        return jsonify({'success': False, 'error': 'A nova senha deve ter pelo menos 6 caracteres'}), 400
+
+    user = User.query.filter_by(reset_token=token).first()
+    if not user or not user.reset_token_expires or user.reset_token_expires < datetime.utcnow():
+        return jsonify({'success': False, 'error': 'Token inválido ou expirado'}), 400
+
+    try:
+        user.password_hash = hashlib.sha256(new_password.encode()).hexdigest()
+        user.reset_token = None
+        user.reset_token_expires = None
+        user.updated_at = datetime.utcnow()
+        db.session.commit()
+
+        return jsonify({'success': True, 'message': 'Senha redefinida com sucesso'})
+
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"[reset-password/confirm] Erro: {e}")
+        return jsonify({'success': False, 'error': 'Erro ao redefinir senha'}), 500
 
 # === BETTING PROFILE ROUTES ===
 
